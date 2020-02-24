@@ -1,0 +1,33 @@
+---
+title: "An Introduction to the VDRA package"
+author: "Thomas Kent"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{A Short Introduction to the VDRA package}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Title
+
+## Section
+
+### Subsection
+
+#### Subsubsection
+
+## Vertically Partitioned Data
+
+## PopMedNet and the PopMedNet Simulator
+
+## 2-party Vertically Distributed Regression
+
+## 3-party Vertically Distributed Regression
+
+## k-party Vertically Distributed Regression
+

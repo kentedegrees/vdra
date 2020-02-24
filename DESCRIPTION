@@ -1,0 +1,36 @@
+Title: Vertical Distributed Regression Analysis
+Maintainer: Thomas Kent <tfk8.psu@gmail.com>
+Package: vdra
+Type: Package
+Version: 0.1.0
+Author: Thomas Kent [aut, cre],
+    Yuji Samizo [aut]
+Authors@R: c(person("Thomas", "Kent", email = "tfk8.psu@gmai.com", 
+    role = c("aut", "cre")),
+    person("Yuji", "Samizo", role = "aut"))
+Description: Implements linear, logistic, and cox regression on vertically
+    partitioned data across several data partners.  Data is not shared
+    between data partners or the analysis center and the computations can
+    be considered secure.  For each regression, there are three different 
+    methods of sharing data. 2Party: two data partners which communicate 
+    directly without an intermediate analysis center; 3Party: two data 
+    partners which do not communicate expect via an analysis center,
+    and KParty: two or more data partners plus an analysis center which 
+    are all allowed to communicate.  2Party and 3Party use a form of 
+    secure multiplication as found in Karr, et. al, 2007 and Slavkovic
+    et. al. 200x.  Kparty uses.... as found in ....  Full details can 
+    be found in Samizo 2019.
+License: GPL-3
+NeedsCompilation: yes
+Packaged: 2019-10-30 
+URL: 
+Encoding: UTF-8
+LazyData: true
+Suggests:
+    survival (>= 2.44-1.1),
+	knitr (>= 1.27),
+	rmarkdown (>= 2.1)
+VignetterBuilder:
+	knitr (>= 1.27)
+RoxygenNote: 7.0.2
+VignetteBuilder: knitr
