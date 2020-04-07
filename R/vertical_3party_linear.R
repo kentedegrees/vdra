@@ -8,12 +8,15 @@ PrepareFolderLinear.A3 = function(params, monitorFolder = NULL) {
 		params = AddToLog(params, "PrepareFolderLinear.A3", 0, 0, 0, 0)
 		return(params)
   }
-	if (class(monitorFolder) != "character" || !dir.exists(monitorFolder)) {
+	if (class(monitorFolder) != "character") {
 		cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the Datamart Client.\n")
 		params$failed = TRUE
 		params = AddToLog(params, "PrepareFolderLinear.A3", 0, 0, 0, 0)
 		return(params)
 	}
+  while (!dir.exists(monitorFolder)) {
+    Sys.sleep(1)
+  }
 
 	params$dplocalPath   = file.path(monitorFolder, "dplocal")
 	params$rprogramsPath = file.path(monitorFolder, "rprograms")
@@ -67,6 +70,10 @@ PrepareFolderLinear.A3 = function(params, monitorFolder = NULL) {
 																"Check the path and restart the program.\n\n")
 	}
 
+	Sys.sleep(1)
+	DeleteTrigger("files_done.ok", params$readPath[1])
+	DeleteTrigger("files_done.ok", params$readPath[3])
+
 	params = AddToLog(params, "PrepareFolderLinear.A3", 0, 0, 0, 0)
 
 	return(params)
@@ -81,19 +88,15 @@ PrepareFolderLinear.B3 = function(params, monitorFolder = NULL) {
 		params = AddToLog(params, "PrepareFolderLinear.A3", 0, 0, 0, 0)
 		return(params)
 	}
-	if (class(monitorFolder) != "character" || !dir.exists(monitorFolder)) {
+	if (class(monitorFolder) != "character") {
 		cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the Datamart Client.\n")
 		params$failed = TRUE
 		params = AddToLog(params, "PrepareFolderLinear.A3", 0, 0, 0, 0)
 		return(params)
 	}
-  if (!dir.exists(monitorFolder)) {
-    params$failed = TRUE
-    params$errorMessage = paste("Error: monitorFolder directory", monitorFolder, "does not exist.",
-                                "Check the path and restart the program.\n\n")
-    params = AddToLog(params, "PrepareFolderLinear.A3", 0, 0, 0, 0)
-    return(params)
-  }
+  while (!dir.exists(monitorFolder)) {
+	  Sys.sleep(1)
+	}
 
 	params$dplocalPath   = file.path(monitorFolder, "dplocal")
 	params$rprogramsPath = file.path(monitorFolder, "rprograms")
@@ -147,6 +150,10 @@ PrepareFolderLinear.B3 = function(params, monitorFolder = NULL) {
 																"Check the path and restart the program.\n\n")
 	}
 
+	Sys.sleep(1)
+	DeleteTrigger("files_done.ok", params$readPath[1])
+	DeleteTrigger("files_done.ok", params$readPath[2])
+
 	params = AddToLog(params, "PrepareFolderLinear.B3", 0, 0, 0, 0)
 
 	return(params)
@@ -161,18 +168,14 @@ PrepareFolderLinear.T3 = function(params, monitorFolder = NULL) {
 		params = AddToLog(params, "PrepareFolderLinear.A3", 0, 0, 0, 0)
 		return(params)
 	}
-	if (class(monitorFolder) != "character" || !dir.exists(monitorFolder)) {
+	if (class(monitorFolder) != "character") {
 		cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the Datamart Client.\n")
 		params$failed = TRUE
 		params = AddToLog(params, "PrepareFolderLinear.A3", 0, 0, 0, 0)
 		return(params)
 	}
-  if (!dir.exists(monitorFolder)) {
-    params$failed = TRUE
-    params$errorMessage = paste("Error: monitorFolder directory", monitorFolder, "does not exist.",
-                                "Check the path and restart the program.\n\n")
-    params = AddToLog(params, "PrepareFolderLinear.A3", 0, 0, 0, 0)
-    return(params)
+  while (!dir.exists(monitorFolder)) {
+    Sys.sleep(1)
   }
 
 	params$dplocalPath   = file.path(monitorFolder, "dplocal")

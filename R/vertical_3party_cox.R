@@ -1455,10 +1455,7 @@ ProcessXtWXCox.T3 = function(params) {
 
 SurvFitCox.BT3 = function(params, pred) {
   if (params$trace) cat(as.character(Sys.time()), "SurvFitCox.BT3\n\n")
-  print(str(params))
   survival = params$survival
-  print("***** survival *****")
-  print(str(survival))
   surv = rep(1, length(survival$rank))
 	for (i in 1:length(survival$strata)) {
 		if (survival$strata[[i]]$J > 0) {
@@ -1927,6 +1924,7 @@ ComputeResultsCox.B3 = function(params, data) {
 	stats$wald.test    = c(stats$wald.test,
 												 1 - pchisq(stats$wald.test, stats$df))
 
+	params$survival = data$survival
 	pred = data$X %*% stats$coefficients[idx]
 	stats$survival = data.frame(
 		rank   = data$survival$rank,

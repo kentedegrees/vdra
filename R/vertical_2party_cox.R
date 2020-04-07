@@ -13,10 +13,13 @@ PrepareFolderCox.A2 = function(params, monitorFolder) {
 	  params$failed = TRUE
 	  return(params)
 	}
-	if (class(monitorFolder) != "character" || !dir.exists(monitorFolder)) {
+	if (class(monitorFolder) != "character") {
 	  cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the Datamart Client.\n")
 	  params$failed = TRUE
 	  return(params)
+	}
+	while (!dir.exists(monitorFolder)) {
+	  Sys.sleep(1)
 	}
 	params$errorMessage = NULL
 	if (!CreateIOLocation(monitorFolder, "dplocal")) {
@@ -74,11 +77,15 @@ PrepareFolderCox.B2 = function(params, monitorFolder) {
 	  params$failed = TRUE
 	  return(params)
 	}
-	if (class(monitorFolder) != "character" || !dir.exists(monitorFolder)) {
+	if (class(monitorFolder) != "character") {
 	  cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the Datamart Client.\n")
 	  params$failed = TRUE
 	  return(params)
 	}
+	while (!dir.exists(monitorFolder)) {
+	  Sys.sleep(1)
+	}
+
 	params$errorMessage = NULL
 	if (!CreateIOLocation(monitorFolder, "dplocal")) {
 		params$failed = TRUE
@@ -115,6 +122,10 @@ PrepareFolderCox.B2 = function(params, monitorFolder) {
 																paste0(params$readPath, "."),
 																"Check the path and restart the program.\n\n")
 	}
+
+  Sys.sleep(1)
+	DeleteTrigger("files_done.ok", params$readPath)
+
 	params = AddToLog(params, "PrepareDataCox.B2, PrepareFolderCox.B2", 0, 0, 0, 0)
 
 	return(params)
@@ -1942,7 +1953,7 @@ ComputeResultsCox.B2 = function(params, data) {
     rank   = data$survival$rank,
     status = data$survival$status,
     sorted = data$survival$sorted,
-    surv   = SurvFitCox.A2(params, dtaa$survival, pred)
+    surv   = SurvFitCox.A2(params, data$survival, pred)
   )
   stats$strata = as.data.frame(matrix(0, length(data$survival$strata), 3))
   stats$strata$label = ""

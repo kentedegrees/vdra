@@ -7,11 +7,15 @@ PrepareFolder.ACDP = function(params, monitorFolder) {
 		params$failed = TRUE
 		return(params)
 	}
-	if (class(monitorFolder) != "character" || !dir.exists(monitorFolder)) {
+	if (class(monitorFolder) != "character") {
 		cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the Datamart Client.\n")
 		params$failed = TRUE
 		return(params)
 	}
+  while (!dir.exists(monitorFolder)) {
+    Sys.sleep(1)
+  }
+  Sys.sleep(5)
 
 	params$dplocalPath   = file.path(monitorFolder, "dplocal")
 	params$rprogramsPath = file.path(monitorFolder, "rprograms")
@@ -67,6 +71,14 @@ PrepareFolder.ACDP = function(params, monitorFolder) {
 																	paste0(params$readPathDP[id], "."),
 																	"Check the path and restart the program.\n\n")
 		}
+	}
+
+	if (params$dataPartnerID != 0) {
+	  Sys.sleep(1)
+	  DeleteTrigger("files_done.ok", params$readPathAC)
+	  for (id in 1:params$numDataPartners) {
+	    DeleteTrigger("files_done.ok", params$readpathDP[id])
+	  }
 	}
 
 	empty = NULL

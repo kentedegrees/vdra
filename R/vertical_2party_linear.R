@@ -13,12 +13,18 @@ PrepareFolderLinear.A2 = function(params, monitorFolder) {
 	  params$failed = TRUE
 	  return(params)
 	}
-	if (class(monitorFolder) != "character" || !dir.exists(monitorFolder)) {
+	if (class(monitorFolder) != "character") {
 	  cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the Datamart Client.\n")
 	  params$failed = TRUE
 	  return(params)
 	}
 	params$errorMessage = NULL
+
+	while (!dir.exists(monitorFolder)) {
+	  Sys.sleep(1)
+	}
+	Sys.sleep(5)
+
 	if (!CreateIOLocation(monitorFolder, "dplocal")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
@@ -55,7 +61,6 @@ PrepareFolderLinear.A2 = function(params, monitorFolder) {
 																"Check the path and restart the program.\n\n")
 	}
 
-
 	params = AddToLog(params, "PrepareDataLinear.A2, PrepareFolderLinear.A2", 0, 0, 0, 0)
 	return(params)
 }
@@ -75,10 +80,13 @@ PrepareFolderLinear.B2 = function(params, monitorFolder) {
 	  params$failed = TRUE
 	  return(params)
 	}
-	if (class(monitorFolder) != "character" || !dir.exists(monitorFolder)) {
+	if (class(monitorFolder) != "character") {
 	  cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the Datamart Client.\n")
 	  params$failed = TRUE
 	  return(params)
+	}
+	while (!dir.exists(monitorFolder)) {
+	  Sys.sleep(1)
 	}
 	params$errorMessage = NULL
 	if (!CreateIOLocation(monitorFolder, "dplocal")) {
@@ -116,6 +124,9 @@ PrepareFolderLinear.B2 = function(params, monitorFolder) {
 																paste0(params$readPath, "."),
 																"Check the path and restart the program.\n\n")
 	}
+
+	Sys.sleep(1)
+	DeleteTrigger("files_done.ok", params$readPath)
 
 	params = AddToLog(params, "PrepareDataLinear.B2, PrepareFolderLinear.B2", 0, 0, 0, 0)
 	return(params)

@@ -13,10 +13,13 @@ PrepareFolderLogistic.A2 = function(params, monitorFolder) {
 	  params$failed = TRUE
 	  return(params)
 	}
-	if (class(monitorFolder) != "character" || !dir.exists(monitorFolder)) {
+	if (class(monitorFolder) != "character") {
 	  cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the Datamart Client.\n")
 	  params$failed = TRUE
 	  return(params)
+	}
+	while (!dir.exists(monitorFolder)) {
+	  Sys.sleep(1)
 	}
 	params$errorMessage = NULL
 	if (!CreateIOLocation(monitorFolder, "dplocal")) {
@@ -55,7 +58,6 @@ PrepareFolderLogistic.A2 = function(params, monitorFolder) {
 																"Check the path and restart the program.\n\n")
 	}
 
-
 	params = AddToLog(params, "PrepareDataLogistic.A2, PrepareFolderLogistic.A2", 0, 0, 0, 0)
 	return(params)
 }
@@ -75,10 +77,13 @@ PrepareFolderLogistic.B2 = function(params, monitorFolder) {
 	  params$failed = TRUE
 	  return(params)
 	}
-	if (class(monitorFolder) != "character" || !dir.exists(monitorFolder)) {
+	if (class(monitorFolder) != "character") {
 	  cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the Datamart Client.\n")
 	  params$failed = TRUE
 	  return(params)
+	}
+	while (!dir.exists(monitorFolder)) {
+	  Sys.sleep(1)
 	}
 	params$errorMessage = NULL
 	if (!CreateIOLocation(monitorFolder, "dplocal")) {
@@ -116,6 +121,9 @@ PrepareFolderLogistic.B2 = function(params, monitorFolder) {
 																paste0(params$readPath, "."),
 																"Check the path and restart the program.\n\n")
 	}
+
+	Sys.sleep(1)
+	DeleteTrigger("files_done.ok", params$readPath)
 
 	params = AddToLog(params, "PrepareDataLogisitc.B2, PrepareFolderLogistic.B2", 0, 0, 0, 0)
 
@@ -814,7 +822,7 @@ ComputeInitialBetasLogistic.A2 = function(params, data) {
   xtx    = params$xtx
 
   betas = 4 * solve(xtx) %*% xty
-  betas[1] = betas[1] - 2
+  # betas[1] = betas[1] - 2
 
   Abetas   = betas[1:p1]
   Bbetas   = betas[(p1 + 1):(p1 + p2)]

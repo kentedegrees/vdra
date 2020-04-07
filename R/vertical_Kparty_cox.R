@@ -837,10 +837,9 @@ UpdateParamsCox.DP = function(params) {
 	pReduct  = NULL
 	readTime = proc.time()[3]
 	load(file.path(params$readPathAC, "indicies.rdata"))
-	filename = paste0("u.rdata")
-	load(file.path(params$readPathAC, filename))
+	load(file.path(params$readPathAC, "u.rdata"))
 	readSize = file.size(file.path(params$readPathAC, "indicies.rdata")) +
-		file.size(file.path(params$readPathAC, filename))
+		file.size(file.path(params$readPathAC, "u.rdata"))
 	readTime = proc.time()[3] - readTime
 	betas = matrix(0, nrow = length(indicies[[params$dataPartnerID]]), ncol = 1)
 	params$u             = u
@@ -894,7 +893,6 @@ ComputeSBetaCox.DP = function(params, data) {
 	for (id in 1:params$numDataPartners) {
 		set.seed(params$seeds[id] + params$algIterationCounter)
 		v = rnorm(n, mean = runif(n = 1, min = -1, max = 1), sd = 20)
-		v = rep(id, n)
 		V = V + v
 		if (id == params$dataPartnerID) {
 			sBetaPart = sBetaPart + v
@@ -1122,7 +1120,7 @@ ComputeProductsCox.DP = function(params, data) {
 			for (id2 in 2:params$numDataPartners) {
 				set.seed(params$seeds[id2], kind = "Mersenne-Twister")
 				halfshare.RL = matrix(rnorm(params$n * params$ps[id2], sd = 20),
-															nrow = params$n, ncol = params$ps[id2])
+															nrow = params$n, ncol = params$ps[id2])  # needed to get randomization to right spot
 				halfshare.RL = matrix(rnorm(params$n * params$ps[id2], sd = 20),
 															nrow = params$n, ncol = params$ps[id2])[, params$indicies[[id2]], drop = FALSE]
 				E1[[id2]] = solve(D) %*% t(data$X) %*% params$W.S.L[, params$idx[[id2]], drop = FALSE] +
@@ -1165,11 +1163,11 @@ ComputeProductsCox.DP = function(params, data) {
 		set.seed(params$seed, kind = "Mersenne-Twister")
 		halfshare.L = matrix(rnorm(params$n * params$p, sd = 20), nrow = params$n, ncol = params$p)[, params$indicies[[params$dataPartnerID]], drop = FALSE]
 		halfshare.R = data$X - halfshare.L
-		halfshare.L = matrix(rnorm(params$n * params$p, sd = 20), nrow = params$n, ncol = params$p)[, params$indicies[[params$dataPartnerID]], drop = FALSE]
-		halfshare.R = halfshare.R - halfshare.L
+		halfshare.R.L = matrix(rnorm(params$n * params$p, sd = 20), nrow = params$n, ncol = params$p)[, params$indicies[[params$dataPartnerID]], drop = FALSE]
+		halfshare.R.R = halfshare.R - halfshare.R.L  # This is halfshare.R.L and halfshare.R.R
 		for (id in 1:params$numDataPartners) {
-			F[[id]] = params$scaler / (params$scalers[1] + params$scaler) * t(scaled.W.S.L.L[, params$idx[[id]], drop = FALSE]) %*% halfshare.L +
-				t(scaled.W.S.L.L[, params$idx[[id]], drop = FALSE]) %*% halfshare.R
+			F[[id]] = params$scaler / (params$scalers[1] + params$scaler) * t(scaled.W.S.L.L[, params$idx[[id]], drop = FALSE]) %*% halfshare.R.L +
+				t(scaled.W.S.L.L[, params$idx[[id]], drop = FALSE]) %*% halfshare.R.R
 		}
 		writeTime = proc.time()[3]
 		save(F, file = file.path(params$writePath, "products.rdata"))
@@ -1413,10 +1411,7 @@ UpdateBetasCox.DP = function(params) {
 
 SurvFitCox.AC = function(params, pred) {
   if (params$trace) cat(as.character(Sys.time()), "SurvFitCox.AC\n\n")
-  print(str(params))
   survival = params$survival
-  print("***** survival *****")
-  print(str(survival))
   surv = rep(1, length(survival$rank))
 	for (i in 1:length(survival$strata)) {
 		if (survival$strata[[i]]$J > 0) {
