@@ -91,13 +91,13 @@ Returns an object of \code{\link{class}} \code{"\link{vdralinear}"} for linear
     # Analysis Center -- To be run in one instance of R.
     # The working directory should be the same as specified in the PopMedNet
     # requset for the analysis center.
-    fit = AnalysisCenter.2Party(regression = "linear", data = vdra_data[, c(1, 5:20)],
+    fit = AnalysisCenter.2Party(regression = "linear", data = vdra_data[, c(1, 5:7)],
             response = "Change_BMI")
 
     # Data Partner -- To be run in second instand of R, on perhaps a different machine.
     # The working directory should be the same as specified in the PopMedNet
     # request for the data partner.
-    fit = DataPartner.2Party(regression = "linear", data = vdra_data[, 21:41])
+    fit = DataPartner.2Party(regression = "linear", data = vdra_data[, 8:11])
 
 
     ## 2 party logistic regression
@@ -105,13 +105,13 @@ Returns an object of \code{\link{class}} \code{"\link{vdralinear}"} for linear
     # Analysis Center -- To be run in one instance of R.
     # The working directory should be the same as specified in the PopMedNet
     # requset for the analysis center.
-    fit = AnalysisCenter.2Party(regression = "logistic", data = vdra_data[, c(2, 5:20)],
+    fit = AnalysisCenter.2Party(regression = "logistic", data = vdra_data[, c(2, 5:7)],
             response = "WtLost")
 
     # Data Partner -- To be run in second instand of R, on perhaps a different machine.
     # The working directory should be the same as specified in the PopMedNet
     # request for the data partner.
-    fit = DataPartner.2Party(regression = "logistic", data = vdra_data[, 21:41])
+    fit = DataPartner.2Party(regression = "logistic", data = vdra_data[, 8:11])
 
 
     ## 2 party cox regression
@@ -119,12 +119,12 @@ Returns an object of \code{\link{class}} \code{"\link{vdralinear}"} for linear
     # Analysis Center -- To be run in one instance of R.
     # The working directory should be the same as specified in the PopMedNet
     # requset for the analysis center.
-    fit = AnalysisCenter.2Party(regression = "cox", data = vdra_data[, 3:20],
+    fit = AnalysisCenter.2Party(regression = "cox", data = vdra_data[, c(3:4, 5:7)],
             response = c("Time", "Status"), strata = c("Exposure", "Sex"))
 
     # Data Partner -- To be run in second instand of R, on perhaps a different machine.
     # The working directory should be the same as specified in the PopMedNet
     # request for the data partner.
-    fit = DataPartner.2Party(regression = "cox", data = vdra_data[, 21:41],
+    fit = DataPartner.2Party(regression = "cox", data = vdra_data[, 8:11],
             strata = c("Exposure", "Sex"))
 }

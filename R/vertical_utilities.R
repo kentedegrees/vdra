@@ -5,7 +5,7 @@ AnalysisCenter.2Party = function(regression            = "linear",
                                  response              = NULL,
                                  strata                = NULL,
                                  mask                  = TRUE,
-                                 monitorFolder         = NULL,
+                                 monitorFolder         = getwd(),
                                  msreqid               = "v_default_00_000",
                                  blocksize             = 500,
                                  tol                   = 1e-8,
@@ -49,7 +49,7 @@ DataPartner.2Party = function(regression          = "linear",
                               data                = NULL,
                               strata              = NULL,
                               mask                = TRUE,
-                              monitorFolder       = NULL,
+                              monitorFolder       = getwd(),
                               sleepTime           = 10,
                               maxWaitingTime      = 24 * 60 * 60,
                               popmednet           = TRUE,
@@ -87,11 +87,11 @@ DataPartner1.3Party = function(regression            = "linear",
                                response              = NULL,
                                strata                = NULL,
                                mask                  = TRUE,
-                               monitorFolder         = NULL,
+                               monitorFolder         = getwd(),
                                sleepTime             = 10,
                                maxWaitingTime        = 24 * 60 * 60,
-															 popmednet             = TRUE,
-															 trace                 = FALSE) {
+                               popmednet             = TRUE,
+                               trace                 = FALSE) {
 
   digits.secs = getOption("digits.secs")
   options(digits.secs = 2)
@@ -123,12 +123,12 @@ DataPartner2.3Party = function(regression          = "linear",
                                data                = NULL,
                                strata              = NULL,
                                mask                = TRUE,
-                               monitorFolder       = NULL,
+                               monitorFolder       = getwd(),
                                sleepTime           = 10,
                                maxWaitingTime      = 24 * 60 * 60,
-															 popmednet           = TRUE,
-															 trace               = FALSE) {
-	digits.secs = getOption("digits.secs")
+                               popmednet           = TRUE,
+                               trace               = FALSE) {
+  digits.secs = getOption("digits.secs")
   options(digits.secs = 2)
   startTime = proc.time()
   cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
@@ -155,16 +155,16 @@ DataPartner2.3Party = function(regression          = "linear",
 
 
 AnalysisCenter.3Party = function(regression            = "linear",
-                                 monitorFolder         = NULL,
+                                 monitorFolder         = getwd(),
                                  msreqid               = "v_default_00_000",
                                  blocksize             = 500,
                                  tol                   = 1e-8,
                                  maxIterations         = 25,
                                  sleepTime             = 10,
                                  maxWaitingTime        = 24 * 60 * 60,
-																 popmednet             = TRUE,
-																 trace                 = FALSE) {
-	digits.secs = getOption("digits.secs")
+                                 popmednet             = TRUE,
+                                 trace                 = FALSE) {
+  digits.secs = getOption("digits.secs")
   options(digits.secs = 2)
   startTime = proc.time()
   cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
@@ -200,11 +200,11 @@ DataPartner.KParty = function(regression            = "linear",
                               mask                  = TRUE,
                               numDataPartners       = NULL,
                               dataPartnerID         = NULL,
-                              monitorFolder         = NULL,
+                              monitorFolder         = getwd(),
                               sleepTime             = 10,
                               maxWaitingTime        = 24 * 60 * 60,
-															popmednet             = TRUE,
-															trace                 = FALSE) {
+                              popmednet             = TRUE,
+                              trace                 = FALSE) {
   digits.secs = getOption("digits.secs")
   options(digits.secs = 2)
   startTime = proc.time()
@@ -243,14 +243,14 @@ DataPartner.KParty = function(regression            = "linear",
 
 AnalysisCenter.KParty = function(regression            = "linear",
                                  numDataPartners       = NULL,
-                                 monitorFolder         = NULL,
+                                 monitorFolder         = getwd(),
                                  msreqid               = "v_default_00_000",
                                  tol                   = 1e-8,
                                  maxIterations         = 25,
                                  sleepTime             = 10,
                                  maxWaitingTime        = 24 * 60 * 60,
-																 popmednet             = TRUE,
-																 trace                 = FALSE) {
+                                 popmednet             = TRUE,
+                                 trace                 = FALSE) {
   digits.secs = getOption("digits.secs")
   options(digits.secs = 2)
   startTime = proc.time()
@@ -1153,9 +1153,7 @@ SendPauseQuit.kp = function(params,
 
   if (params$dataPartnerID == 0) {
     WriteTrackingTableCSV(params)
-    files       = "dl_track_tbl.csv"
-    transfer    = 10
-    destination = 10
+    files       = c("dl_track_tbl.csv", "file_list.csv")
     if (job_failed) {
       files = c(files, "job_fail.ok")
       params = StoreStampsEntry(params, "Job failed trigger file", "Trigger File created")
@@ -1163,8 +1161,8 @@ SendPauseQuit.kp = function(params,
       files = c(files, "job_done.ok")
       params = StoreStampsEntry(params, "Job done trigger file", "Trigger File created")
     }
-    transfer = c(transfer, 10)
-    destination = c(destination, 10)
+    transfer = c(10, 10, 10)
+    destination = c(10, 10, 10)
   }
 
   MakeCSV(files, transfer, destination, params$writePath)

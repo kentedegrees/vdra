@@ -30,18 +30,15 @@
 AnalysisCenter.3Party(regression = "linear", monitorFolder = getwd(),
                       msreqid = "v_default_00_000", blocksize = 500,
                       tol = 1e-8, maxIterations = 25, sleepTime = 10,
-                      maxWaitingTime = 86400, delayOffset = TRUE,
-                      popmednet = TRUE)
+                      maxWaitingTime = 86400, popmednet = TRUE)
 
 DataPartner1.3Party(regression = "linear", data = NULL, response = NULL,
                     strata = NULL, mask = TRUE, monitorFolder = getwd(),
-                    sleepTime = 10, maxWaitingTime = 86400, delayOffset = TRUE,
-                    popmednet = TRUE)
+                    sleepTime = 10, maxWaitingTime = 86400, popmednet = TRUE)
 
 DataPartner2.3Party(regression = "linear", data = NULL, strata = NULL,
                     mask = TRUE, monitorFolder = getwd(), sleepTime = 10,
-                    maxWaitingTime = 86400, delayOffset = TRUE,
-                    popmednet = TRUE)
+                    maxWaitingTime = 86400, popmednet = TRUE)
 }
 \arguments{
 \item{regression}{the model to be used to fit the data.  The default regression
@@ -89,15 +86,9 @@ DataPartner2.3Party(regression = "linear", data = NULL, strata = NULL,
 \item{maxWaitingTime}{the number of seconds to wait to receive
     files before a transfer error is declared and the program halts execution.
     Should be the same for both parties when \code{delayOffset = TRUE}.}
-\item{delayOffset}{logical value.  If \code{TRUE}, when both data partners are
-    executing code in parallel an additional amount of time is alloted for each
-    party between when the last file is written and when the PMN Datamart Client
-    is signaled to that files are ready to be transfer.  This additional time
-    guarentees that there is at least a 15 second delay between when each party
-    signals the PMN Datamart Client.}
 \item{popmednet}{logical value:  if \code{TRUE}, assumes that PopMednet is being
     used to transfer the files and implements PopMedNet specific routines. In
-    particular, a 15 second offset terminiation of routines that execute in
+    particular, a 15 second offset between terminiation of routines that execute in
     parallel is implemented.}
 }
 \value{
@@ -119,13 +110,13 @@ Returns an object of \code{\link{class}} \code{"\link{vdralinear}"} for linear
     # Data Partner 1 -- To be run in second instand of R, on perhaps a different machine.
     # The working directory should be the same as specified in the PopMedNet
     # request for the data partner.
-    fit = DataPartner1.3Party(regression = "linear", data = vdra_data[, c(1, 5:20)],
+    fit = DataPartner1.3Party(regression = "linear", data = vdra_data[, c(1, 5:7)],
               response = "Change_BMI")
 
     # Data Partner 2 -- To be run in third instand of R, on perhaps a different machine.
     # The working directory should be the same as specified in the PopMedNet
     # request for the data partner.
-    fit = DataPartner2.3Party(regression = "linear", data = vdra_data[, 21:41])
+    fit = DataPartner2.3Party(regression = "linear", data = vdra_data[, 8:11])
 
 
     ## 3 party logistic regression
@@ -138,13 +129,13 @@ Returns an object of \code{\link{class}} \code{"\link{vdralinear}"} for linear
     # Data Partner 1 -- To be run in second instand of R, on perhaps a different machine.
     # The working directory should be the same as specified in the PopMedNet
     # request for the data partner.
-    fit = DataPartner1.3Party(regression = "logistic", data = vdra_data[, c(1, 5:20)],
+    fit = DataPartner1.3Party(regression = "logistic", data = vdra_data[, c(2, 5:7)],
               response = "WtLost")
 
     # Data Partner 2 -- To be run in third instand of R, on perhaps a different machine.
     # The working directory should be the same as specified in the PopMedNet
     # request for the data partner.
-    fit = DataPartner2.3Party(regression = "logistic", data = vdra_data[, 21:41])
+    fit = DataPartner2.3Party(regression = "logistic", data = vdra_data[, 8:11])
 
     ## 3 party cox regression
 
@@ -156,13 +147,13 @@ Returns an object of \code{\link{class}} \code{"\link{vdralinear}"} for linear
     # Data Partner 1 -- To be run in second instand of R, on perhaps a different machine.
     # The working directory should be the same as specified in the PopMedNet
     # request for the data partner.
-    fit = DataPartner1.3Party(regression = "cox", data = vdra_data[, c(1, 5:20)],
+    fit = DataPartner1.3Party(regression = "cox", data = vdra_data[, c(3:4, 5:7)],
             response = c("Time", "Status"), strata = c("Exposure", "Sex"))
 
     # Data Partner 2 -- To be run in third instand of R, on perhaps a different machine.
     # The working directory should be the same as specified in the PopMedNet
     # request for the data partner.
-    fit = DataPartner2.3Party(regression = "cox", data = vdra_data[, 21:41],
+    fit = DataPartner2.3Party(regression = "cox", data = vdra_data[, 8:11],
              strata = c("Exposure", "Sex"))
 
 }

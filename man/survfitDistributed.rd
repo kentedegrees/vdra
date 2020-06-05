@@ -12,7 +12,7 @@
 \arguments{
 	\item{x}{a \code{\link{vdracox}}} object.
 	\item{formula}{a formula to which defines alternative strata for the survival curve}
-	\item{data}{if formual is specified, this should be the data that was supplied by calling party}
+	\item{data}{if formula is specified, this should be the data that was supplied by calling party}
 }
 \seealso{
   \code{\link{survfitDistributed.object}}, \code{\link{plot.survfitDistributed}}
@@ -23,8 +23,8 @@
   plot(sfit)
 
   # From Data Partner 1
-  sfit = survfitDistributed(vdra_fit_cox_A, Exposure, data = vdra_data[, 3:20])
+  sfit = survfitDistributed(vdra_fit_cox_A, Exposure, data = vdra_data[, c(3:4, 5:7)])
 
   # From Data Partner 2
-  sfit = survfitDistributed(vdra_fit_cox_B, Race + Sex, data = vdra_data[, 21:41])
+  sfit = survfitDistributed(vdra_fit_cox_B, Race + Sex, data = vdra_data[, 8:11])
 }
