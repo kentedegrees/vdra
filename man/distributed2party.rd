@@ -86,6 +86,7 @@ Returns an object of \code{\link{class}} \code{"\link{vdralinear}"} for linear
     \code{\link{vdracox}}, \code{\link{vdralinear}}, \code{\link{vdralogistic}}, \code{\link{AnalysisCenter.3Party}}, \code{\link{AnalysisCenter.KParty}}
 }
 \examples{
+    ## Not run:
     ## 2 party linear regression
 
     # Analysis Center -- To be run in one instance of R.
@@ -127,4 +128,5 @@ Returns an object of \code{\link{class}} \code{"\link{vdralinear}"} for linear
     # request for the data partner.
     fit = DataPartner.2Party(regression = "cox", data = vdra_data[, 8:11],
             strata = c("Exposure", "Sex"))
+    ## End(Not run)
 }
