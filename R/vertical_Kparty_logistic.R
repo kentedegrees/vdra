@@ -491,7 +491,6 @@ ComputeStWSLogistic.AC = function(params) {
   readTime = 0
 	readSize = 0
 	W = params$pi_ * (1 - params$pi_)
-
 	StWS = matrix(0, sum(params$pReduct), sum(params$pReduct))
 
 	for (id1 in 1:params$numDataPartners) {

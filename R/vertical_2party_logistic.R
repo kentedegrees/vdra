@@ -822,7 +822,6 @@ ComputeInitialBetasLogistic.A2 = function(params, data) {
   xtx    = params$xtx
 
   betas = 4 * solve(xtx) %*% xty
-  # betas[1] = betas[1] - 2
 
   Abetas   = betas[1:p1]
   Bbetas   = betas[(p1 + 1):(p1 + p2)]
