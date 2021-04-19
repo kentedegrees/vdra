@@ -74,7 +74,7 @@ As `pmn()` (or PopMedNet if you are using that) and the data partners all run in
 
 The next sections of the vignette demonstrate how to use this package to perform parallel computations.
 
-# 2-party Vertically Distributed Regression <a name="twoparty"></a">
+# 2-party Vertically Distributed Regression <a name="twoparty"></a>
 
 For 2-party Vertically Distributed Regression, we will run three sessions of R simultaneously.  If you are using R-Studio, you can open up two more sessions of R-Studio by choosing the menu item `Session`&rarr;`New Session`.  The first session will run the PopMedNet Simulator, `pmn()`, and the other two sessions will run the analysis center (Data Partner 0) and the Data Partner 1, respectively.  Once you run one block of code in a session of R, immediately move to the next R session to execute the next block of code.  The scripts interact in such a way that they all need to run in parallel for the the computation to proceed to completion.  
 
