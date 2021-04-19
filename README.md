@@ -1,6 +1,6 @@
 # An Introduction to the VDRA package
 
-**"2021-04-19"**
+**2021-04-19**
 
 # Background
 
