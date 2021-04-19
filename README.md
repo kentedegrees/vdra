@@ -74,7 +74,7 @@ As `pmn()` (or PopMedNet if you are using that) and the data partners all run in
 
 The next sections of the vignette demonstrate how to use this package to perform parallel computations.
 
-# 2-party Vertically Distributed Regression {#twoparty}
+# 2-party Vertically Distributed Regression
 
 For 2-party Vertically Distributed Regression, we will run three sessions of R simultaneously.  If you are using R-Studio, you can open up two more sessions of R-Studio by choosing the menu item `Session`&rarr;`New Session`.  The first session will run the PopMedNet Simulator, `pmn()`, and the other two sessions will run the analysis center (Data Partner 0) and the Data Partner 1, respectively.  Once you run one block of code in a session of R, immediately move to the next R session to execute the next block of code.  The scripts interact in such a way that they all need to run in parallel for the the computation to proceed to completion.  
 
@@ -91,7 +91,7 @@ At this point, `pmn()` will have created directories `~/vdra/dp0` and `~/vdra/dp
 
 Once `pmn()` is running, proceed to the section indicating the regression you wish to perform.
 
-## Linear Regression {#twoparty-linear}
+## Linear Regression
 
 In order to perform linear regression in a 2-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first.
 
@@ -183,7 +183,7 @@ summary(fit)
 ```
 
 
-## Logistic Regression {#twoparty-logistic}
+## Logistic Regression
 
 As with the linear regression, we are already running the following block of code in an R session.
 
@@ -293,7 +293,7 @@ summary(fit)
 ## Number of Fisher Scoring iterations: 5
 ```
 	
-## Cox Regression {#twoparty-cox}
+## Cox Regression
 
 As with the linear regression, we are already running the following block of code in an R session.
 
@@ -421,7 +421,7 @@ summary(fit)
 ## Score (logrank) test = 1378  on 11 df,   p=<2e-16
 ```
 
-# 2<sup>T</sup>-party Vertically Distributed Regression {#twoTparty}
+# 2<sup>T</sup>-party Vertically Distributed Regression
 
 For 2<sup>T</sup>-party Vertically Distributed Regression, we will run four sessions of R simultaneously.  If you are using R-Studio, you can open up three more sessions of R-Studio by choosing the menu item `Session`&rarr;`New Session`.  The first session will run the PopMedNet Simulator, `pmn()`, and the other three sessions will run the analysis center (Data Partner 0), Data Partner 1, and Data Partner 2, respectively.  Once you run one block of code in a session of R, immediately move to the next R session to execute the next block of code.  The scripts interact in such a way that they all need to run in parallel for the the computation to proceed to completion.  
 
@@ -438,7 +438,7 @@ At this point, `pmn()` will have created directories `~/vdra/dp0`, `~/vdra/dp1`,
 
 Once `pmn()` is running, proceed to the section indicating the regression you wish to perform.
 
-## Linear Regression {#twoTparty-linear}
+## Linear Regression
 
 In order to perform linear regression in a 2<sup>T</sup>-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first.
 
@@ -478,7 +478,7 @@ summary(fit)
 	
 After a few minutes, you should see the same output as in the 2-party scenario.
 	
-## Logistic Regression {#twoTparty-logistic}
+## Logistic Regression
 
 As with linear regression, we are already running the following block of code in an R session.
 
@@ -528,7 +528,7 @@ summary(fit)
 	
 After a few minutes, you should see the same output as in the 2-party scenario
 	
-## Cox Regression {#twoTparty-cox}
+## Cox Regression
 
 As with linear regression, we are already running the following block of code in an R session.
 
@@ -578,7 +578,7 @@ summary(fit)
 After a few minutes, you should see the same output as in the 2-party scenario
 
 
-# K<sup>T</sup>-party Vertically Distributed Regression {#kTparty}
+# K<sup>T</sup>-party Vertically Distributed Regression
 
 For k-party Vertically Distributed Regression, we are not limited to two data partners beyond the analysis center, but we can have any number.  In fact, we have successfully run this program for *k = 10* data partners.  However, for the sake of this vignette, we will restrict ourselves to just two and note that we would only have to change the value of `numDataPartners`. For example, if we had *k = 10* data partners, we would need to set `numDataPartners = 10` in each of the following code blocks.  Since we have two data partners, we will run four sessions of R simultaneously.  If you are using R-Studio, you can open up three more sessions of R-Studio by choosing the menu item `Session`&rarr;`New Session`.  The first session will run the PopMedNet Simulator, `pmn()`, and the other three sessions will run the analysis Center (Data Partner 0), Data Partner 1, and Data Partner 2, respectively.  Once you run one block of code in a session of R, immediately move to the next R session to execute the next block of code.  The scripts interact in such a way that they all need to run in parallel for the the computation to proceed to completion.  
 
@@ -596,7 +596,7 @@ At this point, `pmn()` will have created directories `~/vdra/dp0`, `~/vdra/dp1`,
 Once `pmn()` is running, proceed to the section indicating the regression you wish to perform.
 
 
-## Linear Regression {#kTparty-linear}
+## Linear Regression
 
 In order to perform linear regression in a K<sup>T</sup>-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first.
 
@@ -639,7 +639,7 @@ fit = DataPartner.KParty(regression      = "linear",
 summary(fit)
 ```
 
-## Logistic Regression {#kTparty-logistic}
+## Logistic Regression
 
 As with linear regression, we are already running the following block of code in an R session.
 
@@ -691,7 +691,7 @@ fit = DataPartner.KParty(regression      = "logistic",
 summary(fit)
 ```
 
-## Cox Regression {#kTparty-cox}
+## Cox Regression
 
 As with linear regression, we are already running the following block of code in an R session.
 
