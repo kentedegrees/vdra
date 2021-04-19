@@ -1,5 +1,32 @@
 # An Introduction to the VDRA package
 
+-[Background](#background)
+	-[Dependencies](#dependencies)
+	-[A Word of Caution](#a-word-of-caution)
+	-[2-party VDRA](#2-party-vdra)
+	-[2<sup>T</sup>-party VDRA](#2t-party-vdra)
+	-[k<sup>T</sup>-party VDRA](#kt-party-vdra)
+-[PopMedNet and the PopMedNet Simulator](#popmednet-and-the-popmednet-simulator)
+-[Data](#data)
+-[The Directory Structure and the Order of Execution](#the-directory-structure-and-the-order-of-execution)
+-[2-party Vertically Distributed Regression](#2-party-vertically-distributed-regression-)
+	-[Linear Regression](#linear-regression-)
+	-[Logistic Regression](#logistic-regression-)
+	-[Cox Regression](#cox-regression-)
+-[2<sup>T</sup>-party Vertically Distributed Regression](#2t-party-vertically-distributed-regression-)
+	-[Linear Regression](#linear-regression--1)
+	-[Logistic Regression](#logistic-regression--1)
+	-[-Cox Regression](#cox-regression--1)
+-[k<sup>T</sup>-party Vertically Distributed Regression](#kt-party-vertically-distributed-regression-)
+	-[Linear Regression](#linear-regression--2)
+	-[Logistic Regression](#logistic-regression--2)
+	-[Cox Regression](#cox-regression--2)
+-[Utilities](#utilities)
+	-[Linear Regression](#linear-regression)
+	-[Logistic Regression](#logistic-regression)
+	-[Cox Regression](#cox-regression)
+
+
 # Background
 
 In medical research, it is common for researchers to gather data from multiple sources.  However, due to privacy concerns (e.g. HIPAA) or the propitiatory nature of the data, one or more of the potential sources may not be in a position to share the data.  Various methods have been proposed in the literature, and some R packages have been written (e.g `distcomp`, `ppmHR`), which allow analyses to be performed on distributed data in a secure setting.  That is, the analyses are performed as if the data were aggregated, but in reality each data partner maintains control over their own data and only shares high level statistics in such a way that the original data cannot be deduced by the other data partners.
