@@ -31,7 +31,7 @@ The name DP0 indicates which party is acting as the analysis center.  This is th
 
 With 2<sup>T</sup>-party VDRA, there are only two data holders, DP1 and DP2, and an analysis center, DP0.  DP1 and DP2 cannot communicate directly with each other, but all communication must pass through DP0.  DP0 is a trusted third party that helps facilitate communication and performs much of the computation that was performed by DP1 in the 2-party protocol.  Whenever possible, any intermediate statistics shared with DP0 from one data partner (never patient level data) are multiplied by a random orthonormal matrix before being sent to the other data partner.  This adds an extra layer of security at the expense of sending more data.  The final regression results are computed by DP0 and shared with DP1 and DP2.  A pictorial representation of the data flow between the parties is shown below.  
 
-<img src="2Tparty.png" width="75%" style="display: block; margin: auto;" />
+<img src="./vignettes/2Tparty.png" width="75%" style="display: block; margin: auto;" />
 
 ## K<sup>T</sup>-party VDRA
 
