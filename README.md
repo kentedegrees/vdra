@@ -29,15 +29,15 @@ With $2$-party VDRA, there are only two data holders, DP0 and DP1 (short for "Da
 
 The name DP0 indicates which party is acting as the analysis center.  This is the only protocol where the analysis center also provides data.  For the next two protocols, the analysis center does not provide any data.
 
-## $2^T$-party VDRA
+## 2<sup>T</sup>-party VDRA
 
-With $2^T$-party VDRA, there are only two data holders, DP1 and DP2, and an analysis center, DP0.  DP1 and DP2 cannot communicate directly with each other, but all communication must pass through DP0.  DP0 is a trusted third party that helps facilitate communication and performs much of the computation that was performed by DP1 in the $2$-party protocol.  Whenever possible, any intermediate statistics shared with DP0 from one data partner (never patient level data) are multiplied by a random orthonormal matrix before being sent to the other data partner.  This adds an extra layer of security at the expense of sending more data.  The final regression results are computed by DP0 and shared with DP1 and DP2.  A pictorial representation of the data flow between the parties is shown below.  
+With 2<sup>T</sup>-party VDRA, there are only two data holders, DP1 and DP2, and an analysis center, DP0.  DP1 and DP2 cannot communicate directly with each other, but all communication must pass through DP0.  DP0 is a trusted third party that helps facilitate communication and performs much of the computation that was performed by DP1 in the $2$-party protocol.  Whenever possible, any intermediate statistics shared with DP0 from one data partner (never patient level data) are multiplied by a random orthonormal matrix before being sent to the other data partner.  This adds an extra layer of security at the expense of sending more data.  The final regression results are computed by DP0 and shared with DP1 and DP2.  A pictorial representation of the data flow between the parties is shown below.  
 
 <img src="2Tparty.png" width="75%" style="display: block; margin: auto;" />
 
-## $k^T$-party VDRA
+## K<sup>T</sup>-party VDRA
 
-With $k^T$-party VDRA, there are two or more data holders, DP1, DP2, ... DPk, and one analysis center, DP0.  We have tested the package with up to 10 data holders, but there is no reason why there could not be more.  With this protocol, all data partners are able to communicate with each other with the benefit that less data is transferred.  As with $2^T$-party VDRA, DP0 facilitates the computations and computes the final regression results, which are then sent to all the data partners.  The one possible concern with this method is that a data breach at both the analysis center and one of the data partners could expose another data partner's data, even though neither the analysis center nor any data partner have enough information to reconstruct any part of any other data partners' data on their own.  A pictorial representation of the data flow between the parties is shown below.  
+With K<sup>T</sup>-party VDRA, there are two or more data holders, DP1, DP2, ... DPk, and one analysis center, DP0.  We have tested the package with up to 10 data holders, but there is no reason why there could not be more.  With this protocol, all data partners are able to communicate with each other with the benefit that less data is transferred.  As with 2<sup>T</sup>-party VDRA, DP0 facilitates the computations and computes the final regression results, which are then sent to all the data partners.  The one possible concern with this method is that a data breach at both the analysis center and one of the data partners could expose another data partner's data, even though neither the analysis center nor any data partner have enough information to reconstruct any part of any other data partners' data on their own.  A pictorial representation of the data flow between the parties is shown below.  
 
 <img src="kTparty.png" width="75%" style="display: block; margin: auto;" />
 
@@ -47,7 +47,7 @@ PopMedNet (https://www.popmednet.org/), short for Population Medicine Network, i
 
 If a group of data partners wishes to use PopMedNet and this package for analysis of vertically distributed data, please refer to the vignette *How to use the vdra package with PopMedNet* for further information.  However, for the individuals which are interested in testing out the package to see how it works, a PopMedNet simulator, `pmn()`, has been supplied as part of the package.  This allows the individual to play the part of the all the data partners and the analysis center on a single computer in order to gain an understanding of how to use the package before implementation in a real world setting.
 
-We demonstrate the usage of this package using `pmn()` as the file transfer protocol for $2$-party, $2^T$-party, and $k^T$-party situations.  Take careful note the use of the parameter `popmednet = FALSE` in all function calls.  When `popmednet = TRUE` is used, an offset is added to make sure that when two or more data partners are running in parallel, there is a at least a 15 second window between when they signal PopMedNet that they are ready to upload files.  There are technical reasons for this that are specific to PopMedNet, but are not applicable when other file transfer protocols are utilized.
+We demonstrate the usage of this package using `pmn()` as the file transfer protocol for $2$-party, 2<sup>T</sup>-party, and K<sup>T</sup>-party situations.  Take careful note the use of the parameter `popmednet = FALSE` in all function calls.  When `popmednet = TRUE` is used, an offset is added to make sure that when two or more data partners are running in parallel, there is a at least a 15 second window between when they signal PopMedNet that they are ready to upload files.  There are technical reasons for this that are specific to PopMedNet, but are not applicable when other file transfer protocols are utilized.
 
 # Data
 
@@ -423,9 +423,9 @@ summary(fit)
 ## Score (logrank) test = 1378  on 11 df,   p=<2e-16
 ```
 
-# $2^T$-party Vertically Distributed Regression {#twoTparty}
+# 2<sup>T</sup>-party Vertically Distributed Regression {#twoTparty}
 
-For $2^T$-party Vertically Distributed Regression, we will run four sessions of R simultaneously.  If you are using R-Studio, you can open up three more sessions of R-Studio by choosing the menu item `Session`$\rightarrow$`New Session`.  The first session will run the PopMedNet Simulator, `pmn()`, and the other three sessions will run the analysis center (Data Partner 0), Data Partner 1, and Data Partner 2, respectively.  Once you run one block of code in a session of R, immediately move to the next R session to execute the next block of code.  The scripts interact in such a way that they all need to run in parallel for the the computation to proceed to completion.  
+For 2<sup>T</sup>-party Vertically Distributed Regression, we will run four sessions of R simultaneously.  If you are using R-Studio, you can open up three more sessions of R-Studio by choosing the menu item `Session`$\rightarrow$`New Session`.  The first session will run the PopMedNet Simulator, `pmn()`, and the other three sessions will run the analysis center (Data Partner 0), Data Partner 1, and Data Partner 2, respectively.  Once you run one block of code in a session of R, immediately move to the next R session to execute the next block of code.  The scripts interact in such a way that they all need to run in parallel for the the computation to proceed to completion.  
 
 In our code, we assume that we run `pmn()` first, as this simulates PopMedNet being run first, which delivers the requests in a real-world setting.  Before you run `pmn()`, be sure that `~/vdra` is empty (or at least does not contain any files of the form `*.ok`).  When we run `pmn()`, we tell it that there will be one data partner beyond the analysis center and that the working directory is `~/vdra`.
 
@@ -442,7 +442,7 @@ Once `pmn()` is running, proceed to the section indicating the regression you wi
 
 ## Linear Regression {#twoTparty-linear}
 
-In order to perform linear regression in a $2^T$-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first.
+In order to perform linear regression in a 2<sup>T</sup>-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first.
 
 
 ```r
@@ -492,7 +492,7 @@ pmn(3, "~/vdra")
 ```
 
 	
-In order to perform logistic regression in a $2^T$-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first. Notice that this time we are using the binary variable `WtLost` as the response.
+In order to perform logistic regression in a 2<sup>T</sup>-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first. Notice that this time we are using the binary variable `WtLost` as the response.
 	
 
 ```r
@@ -541,7 +541,7 @@ if (!dir.exists("~/vdra")) dir.create("~/vdra")
 pmn(3, "~/vdra")
 ```
 	
-In order to perform Cox regression in a $2^T$-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first. Notice that this time we are using the two variables for the response: `Time` which measures the time to event and the binary variable `Status` which records if the event happened or was censored.  
+In order to perform Cox regression in a 2<sup>T</sup>-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first. Notice that this time we are using the two variables for the response: `Time` which measures the time to event and the binary variable `Status` which records if the event happened or was censored.  
 	
 
 ```r
@@ -580,7 +580,7 @@ summary(fit)
 After a few minutes, you should see the same output as in the $2$-party scenario
 
 
-# $k^T$-party Vertically Distributed Regression {#kTparty}
+# K<sup>T</sup>-party Vertically Distributed Regression {#kTparty}
 
 For $k$-party Vertically Distributed Regression, we are not limited to two data partners beyond the analysis center, but we can have any number.  In fact, we have successfully run this program for $k = 10$ data partners.  However, for the sake of this vignette, we will restrict ourselves to just two and note that we would only have to change the value of `numDataPartners`. For example, if we had $k = 10$ data partners, we would need to set `numDataPartners = 10` in each of the following code blocks.  Since we have two data partners, we will run four sessions of R simultaneously.  If you are using R-Studio, you can open up three more sessions of R-Studio by choosing the menu item `Session`$\rightarrow$`New Session`.  The first session will run the PopMedNet Simulator, `pmn()`, and the other three sessions will run the analysis Center (Data Partner 0), Data Partner 1, and Data Partner 2, respectively.  Once you run one block of code in a session of R, immediately move to the next R session to execute the next block of code.  The scripts interact in such a way that they all need to run in parallel for the the computation to proceed to completion.  
 
@@ -600,7 +600,7 @@ Once `pmn()` is running, proceed to the section indicating the regression you wi
 
 ## Linear Regression {#kTparty-linear}
 
-In order to perform linear regression in a $k^T$-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first.
+In order to perform linear regression in a K<sup>T</sup>-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first.
 
 
 ```r
@@ -652,7 +652,7 @@ if (!dir.exists("~/vdra")) dir.create("~/vdra")
 pmn(3, "~/vdra")
 ```
 
-In order to perform logistic regression in a $k^T$-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first. Notice that this time we are using the binary variable `WtLost` as the response.
+In order to perform logistic regression in a K<sup>T</sup>-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first. Notice that this time we are using the binary variable `WtLost` as the response.
 
 
 ```r
@@ -704,7 +704,7 @@ if (!dir.exists("~/vdra")) dir.create("~/vdra")
 pmn(3, "~/vdra")
 ```
 
-In order to perform Cox regression in a $k^T$-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first. Notice that this time we are using the two variables for the response: `Time` which measures the time to event and the binary variable `Status` which records if the event happened or was censored.  
+In order to perform Cox regression in a K<sup>T</sup>-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first. Notice that this time we are using the two variables for the response: `Time` which measures the time to event and the binary variable `Status` which records if the event happened or was censored.  
 
 
 ```r
@@ -752,7 +752,7 @@ In order to facilitate the the user to further analyze the data and the model, f
 
 ## Linear Regression
 
-For linear regression, we allow the creation of sub-models.  As an example, we have stored the output of the distributed linear regression (either [2-party](#twoparty-linear), [$2^T$-party](#twoTparty-linear), or [$k^T$-party](#kTparty-linear)) from the data partner which holds the response in `vdra_fit_linear_A` (which comes with the package).  We can check the fit of different sub-models as shown in the following script.  All data partners can use this function.  The first argument is a standard R formula using the variables that are found in the fit, and the second argument is the results of the regression.
+For linear regression, we allow the creation of sub-models.  As an example, we have stored the output of the distributed linear regression (either [2-party](#twoparty-linear), [2<sup>T</sup>-party](#twoTparty-linear), or [K<sup>T</sup>-party](#kTparty-linear)) from the data partner which holds the response in `vdra_fit_linear_A` (which comes with the package).  We can check the fit of different sub-models as shown in the following script.  All data partners can use this function.  The first argument is a standard R formula using the variables that are found in the fit, and the second argument is the results of the regression.
 
 
 ```r
@@ -841,7 +841,7 @@ summary(fit4)
 
 ## Logistic Regression
 
-For logistic regression, we can perform both the Hosmer-Lemeshow goodness of fit test for logistic regression and plot the receiver operating curve (ROC).  We run these tests on `vdra_fit_logistic_A`, which is the results of the distributed logistic regression (either [2-party](#twoparty-logistic), [$2^T$-party](#twoTparty-logistic), or [$k^T$-party](#kTparty-logistic)) as seen by the data partner which holds the response.  Only the data partner which holds the response can run these functions.  In both cases, the second argument is optional and is the number or groups, or bins, on which to perform the analysis.
+For logistic regression, we can perform both the Hosmer-Lemeshow goodness of fit test for logistic regression and plot the receiver operating curve (ROC).  We run these tests on `vdra_fit_logistic_A`, which is the results of the distributed logistic regression (either [2-party](#twoparty-logistic), [2<sup>T</sup>-party](#twoTparty-logistic), or [K<sup>T</sup>-party](#kTparty-logistic)) as seen by the data partner which holds the response.  Only the data partner which holds the response can run these functions.  In both cases, the second argument is optional and is the number or groups, or bins, on which to perform the analysis.
 
 
 ```r
@@ -876,7 +876,7 @@ RocTest(vdra_fit_logistic_A, 50)
 
 ## Cox Regression
 
-We can compute the survival curve for a distributed Cox regression (either [2-party](#twoparty-cox), [$2^T$-party](#twoTparty-cox), or [$k^T$-party](#kTparty-cox)).  This function is works similar to `survfit()` in the `survival` package.  The results can be both printed and plotted.  Only the data partner which holds the response can run this function.  The plot command takes only takes the plotting parameters: `xlim`, `ylim`, `xlab`, `ylab`, and `main`.
+We can compute the survival curve for a distributed Cox regression (either [2-party](#twoparty-cox), [2<sup>T</sup>-party](#twoTparty-cox), or [K<sup>T</sup>-party](#kTparty-cox)).  This function is works similar to `survfit()` in the `survival` package.  The results can be both printed and plotted.  Only the data partner which holds the response can run this function.  The plot command takes only takes the plotting parameters: `xlim`, `ylim`, `xlab`, `ylab`, and `main`.
 
 
 ```r
