@@ -864,13 +864,13 @@ HoslemTest(vdra_fit_logistic_A, 50)
 RocTest(vdra_fit_logistic_A)
 ```
 
-<img src="vdra_files/figure-html/unnamed-chunk-44-1.png" width="75%" />
+<img src="./vignettes/vdra_files/figure-html/unnamed-chunk-44-1.png" width="75%" />
 
 ```r
 RocTest(vdra_fit_logistic_A, 50)
 ```
 
-<img src="vdra_files/figure-html/unnamed-chunk-44-2.png" width="75%" />
+<img src="./vignettes/vdra_files/figure-html/unnamed-chunk-44-2.png" width="75%" />
 
 ## Cox Regression
 
@@ -891,7 +891,7 @@ print(sf)
 plot(sf)
 ```
 
-<img src="vdra_files/figure-html/unnamed-chunk-45-1.png" width="75%" />
+<img src="./vignettes/vdra_files/figure-html/unnamed-chunk-45-1.png" width="75%" />
 
 ```r
 # Calculate the results based on strat that the data partner with the response holds
@@ -912,11 +912,13 @@ plot(sf, xlim = c(0, 400), ylim = c(0, 1),
          main = "BMI Study")
 ```
 
-<img src="vdra_files/figure-html/unnamed-chunk-45-2.png" width="75%" />
+<img src="./vignettes/vdra_files/figure-html/unnamed-chunk-45-2.png" width="75%" />
 
 ```r
 # plot curves in two different plots.
 plot(sf, merge = FALSE)
 ```
 
-<img src="vdra_files/figure-html/unnamed-chunk-45-3.png" width="75%" /><img src="vdra_files/figure-html/unnamed-chunk-45-4.png" width="75%" />
+<img src="./vignettes/vdra_files/figure-html/unnamed-chunk-45-3.png" width="75%" />
+
+<img src="./vignettes/vdra_files/figure-html/unnamed-chunk-45-4.png" width="75%" />
