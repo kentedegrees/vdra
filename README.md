@@ -8,10 +8,10 @@ In medical research, it is common for researchers to gather data from multiple s
 
 Each of these methods assumes that the data is horizontally partitioned.  That is, each data partner has the same response variable and covariates for distinct cohorts.  What makes this package novel is that we assume that the data is vertically partitioned.  That is, each data partner holds a set of unique covariates for the same cohort of observations.  (One way to think about this is with horizontally partitioned data, the observation matrix is partitioned by horizontal lines and in vertically partitioned data, the observation matrix is partitioned by vertical lines.)
 
-In this package, we implement three different protocols for vertical distributed regression analysis (VDRA) in a secure setting.  They are called $2$-party, $2^T$-party, and $k^T$-party.  Each of these protocols can be used to perform linear, logistic, and Cox regression.  The purpose of this vignette is to demonstrate how to use this package, so we will not go into details of the protocols and algorithms here.  Specific information on the algorithms and a discussion of their security can be found in the following papers:
+In this package, we implement three different protocols for vertical distributed regression analysis (VDRA) in a secure setting.  They are called 2-party, 2<sup>T</sup>-party, and k<sup>T</sup>-party.  Each of these protocols can be used to perform linear, logistic, and Cox regression.  The purpose of this vignette is to demonstrate how to use this package, so we will not go into details of the protocols and algorithms here.  Specific information on the algorithms and a discussion of their security can be found in the following papers:
 
-* *Automatable Distributed Regression Analysis of Vertically Partitioned Data Facilitated by PopMedNet: A Feasibility and Enhancement Study*, Q.\ Her, T.\ Kent, Y.\ Samizo, A.\ Slackovic, S.\ Toh, Y.\ Vilk, submitted to Journal of Medical Internet Research	
-* *Distributed Regression Analysis on Vertically Partitioned Data in R*, Q.\ Her, T.\ Kent, Y.\ Samizo, A.\ Slackovic, S.\ Toh, Y.\ Vilk, in preparation.  
+* *Automatable Distributed Regression Analysis of Vertically Partitioned Data Facilitated by PopMedNet: A Feasibility and Enhancement Study*, Q. Her, T. Kent, Y. Samizo, A. Slackovic, S. Toh, Y. Vilk, submitted to Journal of Medical Internet Research	
+* *Distributed Regression Analysis on Vertically Partitioned Data in R*, Q. Her, T. Kent, Y. Samizo, A. Slackovic, S. Toh, Y. Vilk, in preparation.  
 
 ## Dependencies
 
