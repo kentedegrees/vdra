@@ -1,11 +1,11 @@
 # An Introduction to the VDRA package
 
--[Background](#background)
-	-[Dependencies](#dependencies)
-	-[A Word of Caution](#a-word-of-caution)
-	-[2-party VDRA](#2-party-vdra)
-	-[2<sup>T</sup>-party VDRA](#2t-party-vdra)
-	-[k<sup>T</sup>-party VDRA](#kt-party-vdra)
+- [Background](#background)
+	- [Dependencies](#dependencies)
+	- [A Word of Caution](#a-word-of-caution)
+	- [2-party VDRA](#2-party-vdra)
+	- [2<sup>T</sup>-party VDRA](#2t-party-vdra)
+	- [k<sup>T</sup>-party VDRA](#kt-party-vdra)
 -[PopMedNet and the PopMedNet Simulator](#popmednet-and-the-popmednet-simulator)
 -[Data](#data)
 -[The Directory Structure and the Order of Execution](#the-directory-structure-and-the-order-of-execution)
