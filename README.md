@@ -1,5 +1,7 @@
 # An Introduction to the VDRA package
 
+**2021-04-19**
+
 # Background
 
 In medical research, it is common for researchers to gather data from multiple sources.  However, due to privacy concerns (e.g. HIPAA) or the propitiatory nature of the data, one or more of the potential sources may not be in a position to share the data.  Various methods have been proposed in the literature, and some R packages have been written (e.g `distcomp`, `ppmHR`), which allow analyses to be performed on distributed data in a secure setting.  That is, the analyses are performed as if the data were aggregated, but in reality each data partner maintains control over their own data and only shares high level statistics in such a way that the original data cannot be deduced by the other data partners.
@@ -19,9 +21,9 @@ This package was designed to run in Base-R.  However, there are select cases whe
 
 When using this package on PopMedNet, the computations can take tens of minutes for linear regression on a data set with a few thousand observations, to hours for Cox regression on a data set with hundreds of thousands, or millions of observations.  Even when running the simulation on your local computer using the PopMedNet simulator `pmn()`, the computations can take several minutes.  These times are due to the large about of data that needs to be transferred back and forth between the data partners in order to ensure that the computations are secure and that there is no data leakage.  If one were able to aggregate the data from the different data sources without concern for privacy, then they would do so and use more efficient functions.  However, there is no free lunch, and the price for security and privacy is time.  So, when working through the examples in this vignette, grab a drink, put on some nice music, and find pleasure in the journey.
 
-## $2$-party VDRA
+## 2-party VDRA
 
-With $2$-party VDRA, there are only two data holders, DP0 and DP1 (short for "Data Partner 0" and "Data Partner 1").  This protocol allows DP0 and DP1 to communicate directly with each other, but they never share patient level data with each other nor information which would allow the other party to deduce patient level information.  DP0 and DP1 share intermediate statistics with each other multiple times in an iterative manner until the final regression results are computed by DP0 and shared with DP1.  A pictorial representation of the data flow between the parties is shown below.
+With 2-party VDRA, there are only two data holders, DP0 and DP1 (short for "Data Partner 0" and "Data Partner 1").  This protocol allows DP0 and DP1 to communicate directly with each other, but they never share patient level data with each other nor information which would allow the other party to deduce patient level information.  DP0 and DP1 share intermediate statistics with each other multiple times in an iterative manner until the final regression results are computed by DP0 and shared with DP1.  A pictorial representation of the data flow between the parties is shown below.
 
 <img src="2party.png" width="75%" style="display: block; margin: auto;" />
 
@@ -29,7 +31,7 @@ The name DP0 indicates which party is acting as the analysis center.  This is th
 
 ## 2<sup>T</sup>-party VDRA
 
-With 2<sup>T</sup>-party VDRA, there are only two data holders, DP1 and DP2, and an analysis center, DP0.  DP1 and DP2 cannot communicate directly with each other, but all communication must pass through DP0.  DP0 is a trusted third party that helps facilitate communication and performs much of the computation that was performed by DP1 in the $2$-party protocol.  Whenever possible, any intermediate statistics shared with DP0 from one data partner (never patient level data) are multiplied by a random orthonormal matrix before being sent to the other data partner.  This adds an extra layer of security at the expense of sending more data.  The final regression results are computed by DP0 and shared with DP1 and DP2.  A pictorial representation of the data flow between the parties is shown below.  
+With 2<sup>T</sup>-party VDRA, there are only two data holders, DP1 and DP2, and an analysis center, DP0.  DP1 and DP2 cannot communicate directly with each other, but all communication must pass through DP0.  DP0 is a trusted third party that helps facilitate communication and performs much of the computation that was performed by DP1 in the 2-party protocol.  Whenever possible, any intermediate statistics shared with DP0 from one data partner (never patient level data) are multiplied by a random orthonormal matrix before being sent to the other data partner.  This adds an extra layer of security at the expense of sending more data.  The final regression results are computed by DP0 and shared with DP1 and DP2.  A pictorial representation of the data flow between the parties is shown below.  
 
 <img src="2Tparty.png" width="75%" style="display: block; margin: auto;" />
 
@@ -45,7 +47,7 @@ PopMedNet (https://www.popmednet.org/), short for Population Medicine Network, i
 
 If a group of data partners wishes to use PopMedNet and this package for analysis of vertically distributed data, please refer to the vignette *How to use the vdra package with PopMedNet* for further information.  However, for the individuals which are interested in testing out the package to see how it works, a PopMedNet simulator, `pmn()`, has been supplied as part of the package.  This allows the individual to play the part of the all the data partners and the analysis center on a single computer in order to gain an understanding of how to use the package before implementation in a real world setting.
 
-We demonstrate the usage of this package using `pmn()` as the file transfer protocol for $2$-party, 2<sup>T</sup>-party, and K<sup>T</sup>-party situations.  Take careful note the use of the parameter `popmednet = FALSE` in all function calls.  When `popmednet = TRUE` is used, an offset is added to make sure that when two or more data partners are running in parallel, there is a at least a 15 second window between when they signal PopMedNet that they are ready to upload files.  There are technical reasons for this that are specific to PopMedNet, but are not applicable when other file transfer protocols are utilized.
+We demonstrate the usage of this package using `pmn()` as the file transfer protocol for 2-party, 2<sup>T</sup>-party, and K<sup>T</sup>-party situations.  Take careful note the use of the parameter `popmednet = FALSE` in all function calls.  When `popmednet = TRUE` is used, an offset is added to make sure that when two or more data partners are running in parallel, there is a at least a 15 second window between when they signal PopMedNet that they are ready to upload files.  There are technical reasons for this that are specific to PopMedNet, but are not applicable when other file transfer protocols are utilized.
 
 # Data
 
@@ -74,9 +76,9 @@ As `pmn()` (or PopMedNet if you are using that) and the data partners all run in
 
 The next sections of the vignette demonstrate how to use this package to perform parallel computations.
 
-# $2$-party Vertically Distributed Regression {#twoparty}
+# 2-party Vertically Distributed Regression {#twoparty}
 
-For $2$-party Vertically Distributed Regression, we will run three sessions of R simultaneously.  If you are using R-Studio, you can open up two more sessions of R-Studio by choosing the menu item `Session`$\rightarrow$`New Session`.  The first session will run the PopMedNet Simulator, `pmn()`, and the other two sessions will run the analysis center (Data Partner 0) and the Data Partner 1, respectively.  Once you run one block of code in a session of R, immediately move to the next R session to execute the next block of code.  The scripts interact in such a way that they all need to run in parallel for the the computation to proceed to completion.  
+For 2-party Vertically Distributed Regression, we will run three sessions of R simultaneously.  If you are using R-Studio, you can open up two more sessions of R-Studio by choosing the menu item `Session`$\rightarrow$`New Session`.  The first session will run the PopMedNet Simulator, `pmn()`, and the other two sessions will run the analysis center (Data Partner 0) and the Data Partner 1, respectively.  Once you run one block of code in a session of R, immediately move to the next R session to execute the next block of code.  The scripts interact in such a way that they all need to run in parallel for the the computation to proceed to completion.  
 
 In our code, we assume that we run `pmn()` first, as this simulates PopMedNet being run first, which delivers the requests in a real-world setting.  Before you run `pmn()`, be sure that `~/vdra` is empty (or at least does not contain any files of the form `*.ok`.  When we run `pmn()`, we tell it that there will be one data partner beyond the analysis center and that the working directory is `~/vdra`.
 
@@ -93,7 +95,7 @@ Once `pmn()` is running, proceed to the section indicating the regression you wi
 
 ## Linear Regression {#twoparty-linear}
 
-In order to perform linear regression in a $2$-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first.
+In order to perform linear regression in a 2-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first.
 
 
 ```r
@@ -194,7 +196,7 @@ if (!dir.exists("~/vdra")) dir.create("~/vdra")
 pmn(2, "~/vdra")
 ```
 	
-In order to perform logistic regression in a $2$-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first. Notice that this time we are using the binary variable `WtLost` as the response.
+In order to perform logistic regression in a 2-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first. Notice that this time we are using the binary variable `WtLost` as the response.
 	
 
 ```r
@@ -304,7 +306,7 @@ if (!dir.exists("~/vdra")) dir.create("~/vdra")
 pmn(2, "~/vdra")
 ```
 
-In order to perform Cox regression in a $2$-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first. Notice that this time we are using the two variables for the response: `Time` which measures the time to event and the binary variable `Status` which records if the event happened or was censored.  
+In order to perform Cox regression in a 2-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first. Notice that this time we are using the two variables for the response: `Time` which measures the time to event and the binary variable `Status` which records if the event happened or was censored.  
 	
 
 ```r
@@ -476,7 +478,7 @@ fit = DataPartner2.3Party(regression    = "linear",
 summary(fit)
 ```
 	
-After a few minutes, you should see the same output as in the $2$-party scenario.
+After a few minutes, you should see the same output as in the 2-party scenario.
 	
 ## Logistic Regression {#twoTparty-logistic}
 
@@ -526,7 +528,7 @@ fit = DataPartner2.3Party(regression    = "logistic",
 summary(fit)
 ```
 	
-After a few minutes, you should see the same output as in the $2$-party scenario
+After a few minutes, you should see the same output as in the 2-party scenario
 	
 ## Cox Regression {#twoTparty-cox}
 
@@ -575,7 +577,7 @@ fit = DataPartner2.3Party(regression    = "cox",
 summary(fit)
 ```
 
-After a few minutes, you should see the same output as in the $2$-party scenario
+After a few minutes, you should see the same output as in the 2-party scenario
 
 
 # K<sup>T</sup>-party Vertically Distributed Regression {#kTparty}
