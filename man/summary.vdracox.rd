@@ -1,5 +1,7 @@
 \name{summary.vdracox}
 \alias{summary.vdracox}
+\alias{summary.vdracox.object}
+\alias{print.summary.vdracox}
 \title{
 	Summary Method for Vertical Distributed COX Models}
 \description{
@@ -13,7 +15,7 @@ summary(x)
 	\item{x}{a \code{vdracox} object.}
 }
 \value{
-  An object of \code{summary.vdracox} with components:
+  Returns an object of class \code{summary.vdracox}. Objects of this class have a method for the function \code{print}.  The following components must be included in \code{summary.vdracox} object.
     \item{failed}{logical value.  If \code{FALSE}, then there was an error processing the data.  if \code{TRUE}, there were no errors.}
     \item{converged}{logical value.  If \code{TRUE}, the regression converged.  If \code{FALSE}, it did not.}
     \item{party}{a vector which indicates the party from which each covariate came.}
@@ -37,4 +39,7 @@ summary(x)
 }
 \seealso{
   \code{\link{vdracox}}
+}
+\examples{
+  summary(vdra_fit_cox_A)
 }

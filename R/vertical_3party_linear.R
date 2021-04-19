@@ -1258,8 +1258,6 @@ PartyAProcess3Linear = function(data,
 		return(params$stats)
 	}
 
-
-  params$algIterationCounter = 1
   params = PrepareBlocksLinear.A3(params)
   params = GetZLinear.A3(params, data)
   files = SeqZW("cz_", length(params$container$filebreak.Z))
@@ -1271,8 +1269,6 @@ PartyAProcess3Linear = function(data,
   params = SendPauseContinue.3p(params, filesT = files, from = "T",
   													 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
 
-
-  params$algIterationCounter = 2
   params = GetResultsLinear.A3(params)
   params = SendPauseQuit.3p(params, sleepTime = sleepTime, waitForTurn = TRUE)
   return(params$stats)
@@ -1323,14 +1319,12 @@ PartyBProcess3Linear = function(data,
   	return(params$stats)
   }
 
-  params$algIterationCounter = 1
   params = PrepareBlocksLinear.B3(params)
   params = GetRWLinear.B3(params, data)
   files = c("xbtxb.rdata", SeqZW("crw_", length(params$container$filebreak.RW)))
   params = SendPauseContinue.3p(params, filesT = files, from = "T",
   													 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
 
-  params$algIterationCounter = 2
   params = GetResultsLinear.B3(params)
   params = SendPauseQuit.3p(params, sleepTime = sleepTime, waitForTurn = TRUE)
   return(params$stats)
@@ -1409,7 +1403,6 @@ PartyTProcess3Linear = function(monitorFolder         = NULL,
 	params = SendPauseContinue.3p(params, filesA = files, from = "A",
 														 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
 
-	params$algIterationCounter = 1
 	params = ProcessZLinear.T3(params)
 	files = c("blocks.rdata", SeqZW("crz_", length(params$container$filebreak.RZ)))
 	params = SendPauseContinue.3p(params, filesB = files, from  = "B",
@@ -1420,7 +1413,6 @@ PartyTProcess3Linear = function(monitorFolder         = NULL,
 	params = SendPauseContinue.3p(params, filesA = files, from  = "A",
 														 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
 
-	params$algIterationCounter = 2
 	params = GetProductsLinear.T3(params)
 	params = ComputeResultsLinear.T3(params)
 	files = "stats.rdata"

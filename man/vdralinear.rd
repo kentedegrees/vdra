@@ -1,5 +1,6 @@
 \name{vdralinear}
 \alias{vdralinear}
+\alias{vdralinear.object}
 \alias{print.vdralinear}
 \title{
     Vertical Distributed Linear Regression Results Object
@@ -12,7 +13,7 @@
     \item{failed}{logical value.  If \code{FALSE}, then there was an error processing the data.  if \code{TRUE}, there were no errors.}
     \item{converged}{logical value.  If \code{TRUE}, the regression converged.  If \code{FALSE}, it did not.}
     \item{party}{a vector which indicates the party from which each covariate came.}
-    \item{coefficients}{the vector of coefficients.  If the model is over-determined, there will be missing values in the vector corresponding to the redudant columns model matrix.}
+    \item{coefficients}{the vector of coefficients.  If the model is over-determined, there will be \code{NA} values in the vector corresponding to the redudant columns model matrix.}
     \item{tvals}{the t-values of the coefficietns.}
     \item{secoef}{the vector of the standard error of the coefficients.}
     \item{pvals}{the p-values of the coefficients.}
@@ -22,8 +23,8 @@
     \item{adjrsquare}{adjusted r squared.}
     \item{Fstat}{the F-statistic for the linear regression.}
     \item{Fpval}{the p-value of the F-statistic for the linear regression.}
-    \item{df1}{The numerator degrees of freedom for the F-statistic}
-    \item{df2}{The denominator degrees of freedom for the F-statistic}
+    \item{df1}{The numerator degrees of freedom for the F-statistic.}
+    \item{df2}{The denominator degrees of freedom for the F-statistic.}
     \item{n}{the number of observations in the data.}
     \item{xtx}{a matrix of the transpose of the covariates times the covarites.  Used by \code{\link{differentModel}}.}
     \item{xty}{a matrix of the transpose of the covarites times the response.  Used by \code{\link{differentModel}}.}

@@ -1,8 +1,0 @@
-Vignettes
-  How to work with PopMedNet
-  How to work with pmn()
-
-  2 party linear, logistic, cox
-  3 party linear, logistic, cox
-  k party linear, logistic, cox
-

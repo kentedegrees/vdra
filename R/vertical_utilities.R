@@ -521,41 +521,49 @@ EndingIteration = function(params) {
 
 
 GetLion = function(p) {
-  lion = rep("", p)
-  lion2 = rep("", 13)
-  lion2[1 ] = "    (\"`-''-/\").___..--''\"`-._\"      "
-  lion2[2 ] = "    `6_ 6 ) `-. ( ).`-.__.`)        "
-  lion2[3 ] = "    (_Y_.)' ._ ) `._ `. ``-..-'     "
-  lion2[4 ] = "     _..`--'_..-_/ /--'_.' ,'       "
-  lion2[5 ] = "    (il),-'' (li),' ((!.-'          "
-  lion2[6 ] = "        ___  ___  _  _  _  _        "
-  lion2[7 ] = "       | -_>||__>|\\ |||\\ ||       "
-  lion2[8 ] = "       | |  ||__>| \\||| \\||       "
-  lion2[9 ] = "       |_|  ||__>|_\\_||_\\_|       "
-  lion2[10] = "     ___  _____  ___  _____  ___    "
-  lion2[11] = "    //__>|_   _|//_\\|_   _|||__>   "
-  lion2[12] = "    \\_\\  | |  | | |  | |  ||__>   "
-  lion2[13] = "    <__//  |_|  |_|_|  |_|  ||__>   "
+  lion1 = rep("", 5)
+  lion1[1] = "    (\"`-''-/\").___..--''\"`-._\"      "
+  lion1[2] = "    `6_ 6 ) `-. ( ).`-.__.`)        "
+  lion1[3] = "    (_Y_.)' ._ ) `._ `. ``-..-'     "
+  lion1[4] = "     _..`--'_..-_/ /--'_.' ,'       "
+  lion1[5] = "    (il),-'' (li),' ((!.-'          "
 
-  if (p >= 12) {
-    if (p < 16) kk = p - 11
-    else kk = ceiling(p / 2) - 7
-    lion[kk:(kk + 12)] = lion2
-  } else if (p >= 8) {
-    kk = p - 7
-    if (p >= 10) ceiling(p / 2) - 3
-    lion2[6 ]  = "        ___   ___   _   _   "
-    lion2[7 ]  = "       | -_> //__> | | | |  "
-    lion2[8 ]  = "       | |   \\_\\ | |_| |  "
-    lion2[9 ]  = "       |_|   <__// \\___//  "
-    lion[kk:(kk + 8)] = lion2[1:9]
-  } else if (p >= 4) {
-    kk = p - 3
-    if (p >= 5) kk = ceiling(p / 2) - 1
-    lion2[5 ] = "    (il),-'' (li),' ((!.-'      PSU "
-    lion[kk:(kk + 4)] = lion2[1:5]
+  lion2 = rep("", 8)
+  lion2[1] = "        ___  ___  _  _  _  _        "
+  lion2[2] = "       | -_>||__>|\\ |||\\ ||       "
+  lion2[3] = "       | |  ||__>| \\||| \\||       "
+  lion2[4] = "       |_|  ||__>|_\\_||_\\_|       "
+  lion2[5] = "     ___  _____  ___  _____  ___    "
+  lion2[6] = "    //__>|_   _|//_\\|_   _|||__>   "
+  lion2[7] = "    \\_\\  | |  | | |  | |  ||__>   "
+  lion2[8] = "    <__//  |_|  |_|_|  |_|  ||__>   "
+
+  lion3 = rep("", 4)
+  lion3[1] = "        ___   ___   _   _           "
+  lion3[2] = "        | -_> //__> | | | |         "
+  lion3[3] = "        | |   \\_\\ | |_| |         "
+  lion3[4] = "        |_|   <__// \\___//         "
+
+  lion4 =    "    (il),-'' (li),' ((!.-'      PSU "
+
+  lion5 =    "              PSU    "
+
+  if (p >= 13) {
+    nittany = c(lion1, lion2)
+  } else if (p >= 9) {
+    nittany = c(lion1, lion3)
+  } else if (p >= 5) {
+    nittany    = lion1
+    nittany[5] = lion4
+  } else {
+    nittany = lion5
   }
-  return(lion)
+
+  diff = p - length(nittany)
+  top = floor(diff / 2)
+  bottom = diff - top
+  nittany = c(rep("", top), nittany, rep("", bottom))
+  return(nittany)
 }
 
 
@@ -1950,7 +1958,7 @@ NewLogEntry.2p = function(params) {
 
 StoreLogEntry.2p = function(params, files) {
 	params$log$current$Step          = params$pmnStepCounter
-	params$log$current$Iteration.alg = params$iter
+	params$log$current$Iteration.alg = params$algIterationCounter
 	params$log$current$Party = params$partyName
 	params$log$current$End.Time = GetUTCTime()
 	params$log$current$Computation.Time = round(as.numeric(difftime(
@@ -2023,7 +2031,7 @@ SummarizeLog.2p = function(params) {
 	Party.B.Total.Time = round(as.numeric(difftime(
 		Party.B.End.Time, Party.B.Start.Time, units = "secs")), digits = 2)
 	Party.B.Reading.Time = sum(log$Read.Time[indexB])
-	Party.B.Writing.Time = sum(log$Wait.Time[indexB])
+	Party.B.Writing.Time = sum(log$Write.Time[indexB])
 	Party.B.Computing.Time = sum(log$Computation.Time[indexB])
 	Party.B.Waiting.Time = Party.B.Total.Time - Party.B.Reading.Time -
 		Party.B.Writing.Time - Party.B.Computing.Time
@@ -2068,9 +2076,9 @@ SummarizeLog.2p = function(params) {
 	if (!is.null(params$n))   WriteToLogSummary(c1 = "N", c2 = params$n, writePath = writePath)
 
 	p = max(0, params$p1.old - (params$analysis != "cox"))
-	WriteToLogSummary(c1 = "p1", c2 = p, writePath = writePath)
+	WriteToLogSummary(c1 = "pA", c2 = p, writePath = writePath)
 	p = params$p2.old
-	WriteToLogSummary(c1 = "p2", c2 = p, writePath = writePath)
+	WriteToLogSummary(c1 = "pB", c2 = p, writePath = writePath)
 
 	WriteToLogSummary(writePath = writePath)
 	WriteToLogSummary(c1 = "Party A Start Time", c2 = Party.A.Start.Time, writePath = writePath)
@@ -2152,7 +2160,7 @@ NewLogEntry.3p = function(params) {
 
 
 StoreLogEntry.3p = function(params, files) {
-	params$log$current$Step          = params$pmnStepCounter
+  params$log$current$Step          = params$pmnStepCounter
 	params$log$current$Iteration.alg = params$algIterationCounter
 	params$log$current$Party = params$partyName
 	params$log$current$End.Time = GetUTCTime()
@@ -2393,7 +2401,7 @@ NewLogEntry.kp = function(params) {
 
 
 StoreLogEntry.kp = function(params, files) {
-	params$log$current$Step          = params$pmnStepCounter
+  params$log$current$Step          = params$pmnStepCounter
 	params$log$current$Iteration.alg = params$algIterationCounter
 	params$log$current$Party = paste0("dp", params$dataPartnerID)
 	params$log$current$End.Time = GetUTCTime()
@@ -2479,7 +2487,7 @@ SummarizeLog.kp = function(params) {
 		if (is.null(params$pi))  {
 			p = 0
 		} else {
-			p = params$pi[i] - (i == 1) * (2 - (params$analysis == "cox"))
+			p = params$pi[i] - (i == 1) * (2 + (params$analysis == "cox"))
 		}
 		WriteToLogSummary(c1 = paste0("p", i), c2 = p, writePath = writePath)
 	}
@@ -2905,7 +2913,7 @@ validFormula2 = function(expression) {
 
 print.vdralinear = function(x) {
   if (x$failed) {
-    cat("Two party distributed linear regression failed.  No results to print.\n\n")
+    cat("Distributed linear regression failed.  No results to print.\n\n")
     return(invisible(NULL))
   }
   cat("Coefficients:\n")
@@ -2939,7 +2947,7 @@ summary.vdralinear = function(x) {
 
 print.summary.vdralinear = function(x, lion = FALSE) {
   if (x$failed) {
-    cat("Two party distributed linear regression failed.  No results to print.\n\n")
+    cat("Distributed linear regression failed.  No results to print.\n\n")
     return(invisible(NULL))
   }
 
@@ -2974,11 +2982,11 @@ print.summary.vdralinear = function(x, lion = FALSE) {
 
 print.vdralogistic = function(x) {
   if (x$failed) {
-    cat("Two party distributed logistic regression failed.  No results to print.\n\n")
+    cat("Distributed logistic regression failed.  No results to print.\n\n")
     return(invisible(NULL))
   }
   if (!x$converged) {
-    cat("Warning: Two party distributed logistic regression did not converge in",
+    cat("Warning: Distributed logistic regression did not converge in",
         x$iter, "iterations. Reported statistics are approximate.\n\n")
   }
 
@@ -3018,11 +3026,11 @@ summary.vdralogistic = function(x, lion = FALSE) {
 
 print.summary.vdralogistic = function(x, lion = FALSE) {
   if (x$failed) {
-    cat("Two party distributed logistic regression failed.  No results to print.\n\n")
+    cat("Distributed logistic regression failed.  No results to print.\n\n")
     return(invisible(NULL))
   }
   if (!x$converged) {
-    cat("Warning: Two party distributed logistic regression did not converge in",
+    cat("Warning: Distributed logistic regression did not converge in",
         x$iter, "iterations. Reported statistics are approximate.\n\n")
   }
   x$stars = sapply(x$pvals, function(x) {
@@ -3060,11 +3068,11 @@ print.summary.vdralogistic = function(x, lion = FALSE) {
 
 print.vdracox = function(x) {
   if (x$failed) {
-    cat("Two party cox logistic regression failed.  No results to print.\n\n")
+    cat("Distributed Cox regression failed.  No results to print.\n\n")
     return(invisible(NULL))
   }
   if (!x$converged) {
-    cat("Warning: Two party distributed cox regression did not converge in",
+    cat("Warning: Distributed Cox regression did not converge in",
         x$iter, "iterations. Reported statistics are approximate.\n\n")
   }
 
@@ -3111,11 +3119,11 @@ summary.vdracox = function(x) {
 
 print.summary.vdracox = function(x, lion = FALSE) {
   if (x$failed) {
-    cat("Two party cox logistic regression failed.  No results to print.\n\n")
+    cat("Distributed Cox regression failed.  No results to print.\n\n")
     return(invisible(NULL))
   }
   if (!x$converged) {
-    cat("Warning: Two party distributed cox regression did not converge in",
+    cat("Warning: Distributed Cox regression did not converge in",
         x$iter, "iterations. Reported statistics are approximate.\n\n")
   }
 
@@ -3175,7 +3183,7 @@ differentModel = function(formula = NULL, x = NULL) {
     return(invisible(x))
   }
   if (x$failed) {
-    cat("Error: linear regression failed.  Cannot compute a different model.\n\n")
+    cat("Error: Distributed linear regression failed.  Cannot compute a different model.\n\n")
     return(invisible(x))
   }
   if (max(table(names(x$party))) > 1) {
@@ -3472,7 +3480,7 @@ print.rocdistributed = function(x) {
   #   cat("Warning: Process did not converge.  Cannot generate ROC.\n")
   #   return(invisible(NULL))
   # }
-  rtrn = x$ROC$roc
+  rtrn = x$roc
   plot(rtrn[, 1], rtrn[, 2], xaxt = "n", yaxt = "n",
        xlim = c(-0.2, 1.2), ylim = c(0,1 ),
        type = "s", ylab = "Sensitivity", xlab = "1 - Specificity", col = "blue",
@@ -3481,7 +3489,7 @@ print.rocdistributed = function(x) {
   axis(side = 2, at = seq(0,1, 0.2))
   lines(x = c(0, 1), y = c(0, 1), col = "limegreen")
   text(0.8, 0.05, paste("Area under the curve:",
-                        format(x$ROC$auc, digits = 4)))
+                        format(x$auc, digits = 4)))
 }
 
 
@@ -3499,8 +3507,8 @@ RocTest = function(x = NULL, bins = 10) {
     return(invisible(NULL))
   } else if (is.numeric(bins)) {
     temp = list()
+    temp = RocInternal(x, bins = bins)
     class(temp) = "rocdistributed"
-    temp$ROC = RocInternal(x, bins = bins)
     # temp$singularMatrix = x$singularMatrix
     return(temp)
   }

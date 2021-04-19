@@ -1,5 +1,7 @@
 \name{summary.vdralogistic}
 \alias{summary.vdralogistic}
+\alias{summary.vdralogistic.object}
+\alias{print.summary.vdralogistic}
 \title{
 	Summary Method for Vertical Distributed Logistic Regression Models
 }
@@ -14,7 +16,7 @@ summary(x)
 	\item{x}{a \code{vdralogistic} object.}
 }
 \value{
-  An object of \code{summary.vdralogistic} with components:
+  Returns an object of class \code{summary.vdralogistic}. Objects of this class have a method for the function \code{print}.  The following components must be included in \code{summary.vdralogistic} object.
     \item{failed}{logical value.  If \code{FALSE}, then there was an error processing the data.  if \code{TRUE}, there were no errors.}
     \item{converged}{logical value.  If \code{TRUE}, the regression converged.  If \code{FALSE}, it did not.}
     \item{party}{a vector which indicates the party from which each covariate came.}
@@ -32,4 +34,9 @@ summary(x)
 }
 \seealso{
   \code{\link{vdralogistic}}
+}
+\examples{
+  summary(vdra_fit_logistic_A)
+
+  print(summary(vdra_fit_logistic_A), lion = TRUE) # prints the PSU Nittany lion to the right of the summary statistics
 }

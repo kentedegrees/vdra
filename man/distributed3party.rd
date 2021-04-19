@@ -10,7 +10,7 @@
     \code{DataPartner2.3Party} are used in conjuction
     with PopMedNet to perform linear, logistic, or cox regression on data that has
     been partitioned vertically between two data partners.  The data partner
-    which hold the response variable(s) uses \code{Datapartner1.3Party} and the
+    which holds the response variable(s) uses \code{Datapartner1.3Party} and the
     other data partner uses \code{DataPartner2.3Party}.  Data partners are not
     allowed to communicate with each other, but share inforamtion via a
     trusted third party analysis center.  While any infomration that is shared
@@ -66,7 +66,7 @@ DataPartner2.3Party(regression = "linear", data = NULL, strata = NULL,
     belong to the party which specified \code{FALSE} will be identified by name.
     If \code{TRUE}, levels for the strata which belong to the party which
     specified \code{TRUE} will be put in a random order and level names will be
-    changed to \code{"NA"}.}
+    changed to \code{NA}.}
 \item{monitorFolder}{the folder where the directories \code{dplocal},
     \code{inputfiles}, \code{macros}, \code{msoc}, and \code{rprograms} are
     located.}
@@ -92,12 +92,12 @@ DataPartner2.3Party(regression = "linear", data = NULL, strata = NULL,
     parallel is implemented.}
 }
 \value{
-Returns an object of \code{\link{class}} \code{"\link{vdralinear}"} for linear
-    regression, \code{"\link{vdralogistic}"} for logistic regression, or
-    \code{"\link{vdracox}"} for cox regression.
+Returns an object of \code{\link{class}} \code{\link{vdralinear}} for linear
+    regression, \code{\link{vdralogistic}} for logistic regression, or
+    \code{\link{vdracox}} for cox regression.
 }
 \seealso{
-    \code{\link{vdracox}}, \code{\link{vdralinear}}, \code{\link{vdralogistic}}, \code{\link{AnalysisCenter.2Party}}, \code{\link{AnalysisCenter.KParty}}
+    \code{\link{AnalysisCenter.2Party}}, \code{\link{AnalysisCenter.KParty}}
 }
 \examples{
     ## Not run:

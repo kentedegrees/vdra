@@ -8,7 +8,7 @@
 \code{AnalysisCenter.KParty} and \code{DataPartner.KParty} are used in conjuction
     with PopMedNet to perform linear, logistic, or cox regression on data that has
     been partitioned vertically between two or more data partners.  The data partners which
-    hold the data use \code{DataPartner.KParty} while a trusted "third" party uses
+    holds the data use \code{DataPartner.KParty} while a trusted "third" party uses
     \code{AnalysisCenter.KParty}.  Data partners are
     allowed to communicate with each other and the analysis center, no information is
     shared between the data partners or analysis center that would allow one data partner
@@ -56,7 +56,7 @@ DataPartner.KParty(regression = "linear", data = NULL, response = NULL,
     belong to the party which specified \code{FALSE} will be identified by name.
     If \code{TRUE}, levels for the strata which belong to the party which
     specified \code{TRUE} will be put in a random order and level names will be
-    changed to \code{"NA"}.}
+    changed to \code{NA}.}
 \item{numDataPartners}{the number of data partners which are supplying data for
     the regression.}
 \item{dataPartnerID}{a unique identifier for each data partner.  The data partner
@@ -85,12 +85,12 @@ DataPartner.KParty(regression = "linear", data = NULL, response = NULL,
     parallel is implemented.}
 }
 \value{
-Returns an object of \code{\link{class}} \code{"\link{vdralinear}"} for linear
-    regression, \code{"\link{vdralogistic}"} for logistic regression, or
-    \code{"\link{vdracox}"} for cox regression.
+Returns an object of \code{\link{class}} \code{\link{vdralinear}} for linear
+    regression, \code{\link{vdralogistic}} for logistic regression, or
+    \code{\link{vdracox}} for cox regression.
 }
 \seealso{
-    \code{\link{vdracox}}, \code{\link{vdralinear}}, \code{\link{vdralogistic}}, \code{\link{AnalysisCenter.2Party}}, \code{\link{AnalysisCenter.KParty}}
+    \code{\link{AnalysisCenter.2Party}}, \code{\link{AnalysisCenter.KParty}}
 }
 \examples{
     ## Not run:

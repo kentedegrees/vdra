@@ -22,15 +22,15 @@ Description: Implements linear, logistic, and cox regression on vertically
     be found in Samizo 2019.
 License: GPL-3
 NeedsCompilation: yes
-Packaged: 2019-10-30 
+Packaged: 2021-02-26 
 URL: 
 Encoding: UTF-8
 LazyData: true
 Suggests:
-    survival (>= 2.44-1.1),
-	knitr (>= 1.27),
-	rmarkdown (>= 2.1)
+    survival (>= 3.2-7),
+	knitr (>= 1.31),
+	rmarkdown (>= 2.6)
 VignetterBuilder:
-	knitr (>= 1.27)
-RoxygenNote: 7.1.0
+	knitr (>= 1.31)
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr

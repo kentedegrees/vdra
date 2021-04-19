@@ -1,5 +1,6 @@
 \name{vdralogistic}
 \alias{vdralogistic}
+\alias{vdralogistic.object}
 \alias{print.vdralogistic}
 \title{
     Vertical Distributed Logistic Regression Results Object
@@ -12,7 +13,7 @@
     \item{failed}{logical value.  If \code{FALSE}, then there was an error processing the data.  if \code{TRUE}, there were no errors.}
     \item{converged}{logical value.  If \code{TRUE}, the regression converged.  If \code{FALSE}, it did not.}
     \item{party}{a vector which indicates the party from which each covariate came.}
-    \item{coefficients}{the vector of coefficients.  If the model is over-determined, there will be missing values in the vector corresponding to the redudant columns model matrix.}
+    \item{coefficients}{the vector of coefficients.  If the model is over-determined, there will be \code{NA} values in the vector corresponding to the redudant columns model matrix.}
     \item{secoef}{the vector of the standard error of the coefficients.}
     \item{tvals}{the t-values of the coefficietns.}
     \item{pvals}{the p-values of the coefficients.}

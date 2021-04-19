@@ -1,18 +1,19 @@
 \name{vdracox}
 \alias{vdracox}
+\alias{vdracox.object}
 \alias{print.vdracox}
 \title{
     Vertical Distributed Cox Regression Results Object
 }
 \description{
-    This class of object is returned by the two party, three party, and K-party distributed regression analysis programs when "cox" regression is specified.  Objects of this class have methods for the functions \code{print}, \code{summary}, and \code{survfitDistributed}.
+    This class of object is returned by the two party, three party, and K-party distributed regression analysis programs when "cox" regression is specified.  Objects of this class have methods for the functions \code{print} and \code{summary}.
 }
 \arguments{
     The following components must be included in a legitimate \code{vdracox} object.
     \item{failed}{logical value.  If \code{FALSE}, then there was an error processing the data.  if \code{TRUE}, there were no errors.}
     \item{converged}{logical value.  If \code{TRUE}, the regression converged.  If \code{FALSE}, it did not.}
     \item{party}{a vector which indicates the party from which each covariate came.}
-    \item{coefficients}{the vector of coefficients.  If the model is over-determined, there will be missing values in the vector corresponding to the redudant columns model matrix.}
+    \item{coefficients}{the vector of coefficients.  If the model is over-determined, there will be \code{NA} values in the vector corresponding to the redudant columns model matrix.}
     \item{expcoef}{a vector which represents exp(coefficients).}
     \item{expncoef}{a vector which represents exp(-coefficients).}
     \item{var}{the variance matrix of the coefficients. Rows and columns corresponding to any missing coefficients are set to zero.}

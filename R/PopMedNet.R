@@ -1,4 +1,4 @@
-pmn = function(numDataPartners, directory = getwd()) {
+pmn = function(numParty, directory = getwd()) {
   sleepTime = 0.5
 
   hms = function(time) {
@@ -13,24 +13,24 @@ pmn = function(numDataPartners, directory = getwd()) {
 
   startTime = proc.time()[3]
 
-  if (missing(numDataPartners) ||
-      !is.numeric(numDataPartners) ||
-      (round(numDataPartners, 0) != numDataPartners) ||
-      (numDataPartners <= 0)) {
-    cat("Parameter numDataPartners not specified or not valid.\n")
-    cat("Usage: pmn(numDataPartners, directory)\n")
-    cat("  numDataPartners: number of data partners being simulated, at least 1\n")
+
+  if (missing(numParty) ||
+      !is.numeric(numParty) ||
+      (round(numParty, 0) != numParty) ||
+      (numParty <= 1)) {
+    cat("Parameter numParty not specified or not valid.\n")
+    cat("Usage: pmn(numParty, directory)\n")
+    cat("  numParty: number of parties being simulated, at least 2\n")
     cat("  directory: the directory where the data partner directories will be located\n")
     return(invisible(NULL))
   }
-  numParty = numDataPartners + 1
-  partyName = paste0("dp", 0:numDataPartners)
+  partyName = paste0("dp", 0:(numParty - 1))
   paths = file.path(directory, partyName)
 
   if (!dir.exists(directory)) {
     cat("Directory", directory, "does not exist.\n")
-    cat("Usage: pmn(numDataPartners, directory)\n")
-    cat("  numDataPartners: number of data partners being simulated, at least 1\n")
+    cat("Usage: pmn(numParty, directory)\n")
+    cat("  numParty: number of parties being simulated, at least 2\n")
     cat("  directory: the directory where the data partner directories will be located\n")
     return(invisible(NULL))
   }
