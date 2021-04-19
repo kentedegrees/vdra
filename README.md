@@ -1,7 +1,5 @@
 # An Introduction to the VDRA package
 
-**2021-04-19**
-
 # Background
 
 In medical research, it is common for researchers to gather data from multiple sources.  However, due to privacy concerns (e.g. HIPAA) or the propitiatory nature of the data, one or more of the potential sources may not be in a position to share the data.  Various methods have been proposed in the literature, and some R packages have been written (e.g `distcomp`, `ppmHR`), which allow analyses to be performed on distributed data in a secure setting.  That is, the analyses are performed as if the data were aggregated, but in reality each data partner maintains control over their own data and only shares high level statistics in such a way that the original data cannot be deduced by the other data partners.
