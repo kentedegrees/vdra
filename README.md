@@ -23,7 +23,7 @@ When using this package on PopMedNet, the computations can take tens of minutes 
 
 With 2-party VDRA, there are only two data holders, DP0 and DP1 (short for "Data Partner 0" and "Data Partner 1").  This protocol allows DP0 and DP1 to communicate directly with each other, but they never share patient level data with each other nor information which would allow the other party to deduce patient level information.  DP0 and DP1 share intermediate statistics with each other multiple times in an iterative manner until the final regression results are computed by DP0 and shared with DP1.  A pictorial representation of the data flow between the parties is shown below.
 
-<img src="2party.png" width="75%" style="display: block; margin: auto;" />
+<img src="./vignettes/2party.png" width="75%" style="display: block; margin: auto;" />
 
 The name DP0 indicates which party is acting as the analysis center.  This is the only protocol where the analysis center also provides data.  For the next two protocols, the analysis center does not provide any data.
 
@@ -37,7 +37,7 @@ With 2<sup>T</sup>-party VDRA, there are only two data holders, DP1 and DP2, and
 
 With K<sup>T</sup>-party VDRA, there are two or more data holders, DP1, DP2, ... DPk, and one analysis center, DP0.  We have tested the package with up to 10 data holders, but there is no reason why there could not be more.  With this protocol, all data partners are able to communicate with each other with the benefit that less data is transferred.  As with 2<sup>T</sup>-party VDRA, DP0 facilitates the computations and computes the final regression results, which are then sent to all the data partners.  The one possible concern with this method is that a data breach at both the analysis center and one of the data partners could expose another data partner's data, even though neither the analysis center nor any data partner have enough information to reconstruct any part of any other data partners' data on their own.  A pictorial representation of the data flow between the parties is shown below.  
 
-<img src="kTparty.png" width="75%" style="display: block; margin: auto;" />
+<img src="./vignettes/kTparty.png" width="75%" style="display: block; margin: auto;" />
 
 # PopMedNet and the PopMedNet Simulator
 
