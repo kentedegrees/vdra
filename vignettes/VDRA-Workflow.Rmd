@@ -1,0 +1,47 @@
+---
+title: "VDRA Workflow"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{VDRA Workflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+# Putting it all Together - The VDRA Workflow
+
+The purpose of this vignette is to help you when you are ready to run a Vertically Distributed Regression Analysis, either on your own machine to play with the code or as part of a true statistical analysis where multiple parties are contributing sensitive or private data.  The list below is a good guide to follow and points out where you can find further details in each vignette.
+
+
+1. Decide who is involved in the analysis and which parties will contribute which data.  Decide which variables will be used from each party.  Decide which records will be used in the analysis.  Decide how to sort the records so that records from each part will align (VDRA assumes that each individual row number of the data contributed by each party corresponds to the same individual / record).  Decide what regression will be performed: linear, logistic, or Cox.  Decide on response variables.  
+
+2. Set up the DataMarts as outlined in the vignette "How to use the VDRA Package with PopMedNet."  Each data partner should have a fixed Datamart that is assigned to them and only them, and that Datamart should be used only by them in any regression.  Data partners should not have access to the datamarts of other data partners.
+
+3.  The analysis center should create the R scripts for each Data Partner as outlined in the vignette "An Outline to the VDRA Package."  The scripts should zipped into a single file
+
+4. The Analysis Center should create the VDRA request as outlined in "How to use the VDRA Package with PopMedNet."  As part of this, the Analysis Center should upload the zipped scripts.
+
+5. Each Data Partner and the Analysis Center should run the DataMart Client on each computer which will be used in the computation.  If you are running all parties on a single machine to test this out, you just need to run one instance of the DMC.  After a breif wait, the DMC should indicate that the request has been received and unpacked into the appropriate directory.
+
+6. Before running the appropriate script, each party should check that the directories in the script are correct, and should make any changes as needed.Each Party runs the appropriate script.  If you are running all parties on a single computer, each script should be run in a separate session of R.
+
+7. Each party should run the appropriate script.  If everything is set up correctly, then the computation proceed normally on its own.  If something doesn't work quite right, see the section on Troubleshooting.
+
+# Troubleshooting
+
+1. If it seems it is taking an inordinately long time for files to arrive at the desitnation, have all parties restart DMC.  Sometimes (rarely) the DMC freezes. 
+
+2. Check the directories.  Are the files being dropped by the DMC where they should be? Does the Monitor Folder for the script for each data partner / analysis center agree with the monitor folder for that data partner as defined in the DMC?
+
+3. Are the trigger files set up correctly in the DMC? See the vignette "How to Use the VDRA Package with PopMedNet."
+
+4. Is the program exiting prematurely?  Read the error message.  We tried to be clear on what the problem was.
+
+5. If you tried everything and still can figure it out, send in a request for assistance. 
+
+6.  File a bug report.  While a lot of effort has gone into testing this package, as with any piece of software, unforeseen circumstances can cause unaticpated errors.
+
+

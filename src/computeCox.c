@@ -12,6 +12,12 @@
 #include <stdlib.h>
 #include "computeCox.h"
 
+void flush_console() {
+#if !defined(WIN32) && !defined(__WIN32) && !defined(__WIN32__)
+  R_FlushConsole();
+#endif
+}
+
 bool strata_ok(SEXP x)
 {
   bool ok = true;
@@ -31,8 +37,9 @@ bool strata_ok(SEXP x)
 }
 
 int printInitialMessage() {
-  Rprintf("Processing W*X               :   0%%|                    |\r");
-  fflush(stdout);
+  Rprintf("Processing W*X               :   0%%|....................|\r");
+  // fflush(stdout);
+  flush_console();
   return(0);
 }
 
@@ -49,7 +56,8 @@ int printMessage(int stepCounter, int numEvents, int currentPercent)
       Rprintf("\n\n");
     }
   }
-  fflush(stdout);
+  // fflush(stdout);
+  flush_console();
   return(newPercent);
 }
 
@@ -158,7 +166,8 @@ SEXP ComputeCox(SEXP _strata, SEXP _X, SEXP _w, SEXP _deltal, SEXP _WX, SEXP _n,
       }
     }
   }
-  fflush(stdout);
+  // fflush(stdout);
+  flush_console();
   free(wz);
   free(YWX);
   free(ZWX);

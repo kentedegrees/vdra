@@ -7,12 +7,16 @@
   Plots a survivial curve as specified by \code{survfitDistributed} object.
 }
 \usage{
-plot.survfitDistributed(x, merge = TRUE, ...)
+  \method{plot}{survfitDistributed}(x, merge = FALSE, ...)
 }
 \arguments{
 	\item{x}{a \code{survfitDistributed} object.}
-	\item{merge}{logical.  It \code{TRUE}, plots all strata of the survival curve on one plot.  If \code{FALSE}, plots all strata in different plots.}
-	\item{...}{common graphical parameters (not fully implemented.}
+	\item{merge}{logical.  It \code{TRUE}, plots all strata of the survival curve
+	on one plot.  If \code{FALSE}, plots all strata in different plots.}
+	\item{...}{common graphical parameters (not fully implemented).}
+}
+\value{
+    No return value.
 }
 \seealso{
   \code{\link{survfitDistributed}}

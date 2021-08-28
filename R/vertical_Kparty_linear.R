@@ -3,12 +3,12 @@
 PrepareFolder.ACDP = function(params, monitorFolder) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareFolder.ACDP\n\n")
   if (is.null(monitorFolder)) {
-		cat("monitorFolder must be specified.  Please use the same monitorFolder as the Datamart Client.\n")
+		cat("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.\n")
 		params$failed = TRUE
 		return(params)
 	}
 	if (class(monitorFolder) != "character") {
-		cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the Datamart Client.\n")
+		cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.\n")
 		params$failed = TRUE
 		return(params)
 	}
@@ -87,165 +87,95 @@ PrepareFolder.ACDP = function(params, monitorFolder) {
 	writeSize = file.size(file.path(params$writePath, "empty.rdata"))
 	writeTime = proc.time()[3] - writeTime
 
-
 	params = AddToLog(params, "PrepareFolder.ACDP", 0, 0, writeTime, writeSize)
 	return(params)
 }
 
 
-PrepareDataLinear.DP = function(params, data, yname = NULL) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareDataLinear.DP\n\n")
+PrepareDataLinLog.DP1 = function(params, data, yname = NULL) {
+  if (params$trace) cat(as.character(Sys.time()), "PrepareDataLinLog.DP1\n\n")
+
   workdata = list()
-	workdata$failed = FALSE
+  workdata$failed = FALSE
 
-	if (class(data) %in% c("character", "double", "integer", "logical",
-												 "numeric", "single", "factor")) {
-		data = as.data.frame(data)
-	}
-	if (class(data) != "data.frame" && class(data) != "matrix") {
-		cat("Error: data is not a matrix or a data frame.\n\n")
-		workdata$failed = TRUE
-		return(workdata)
-	}
-	if (nrow(data) < 1 || ncol(data) < 1) {
-		cat("Error: the data is empty.\n\n")
-		workdata$failed = TRUE
-		return(workdata)
-	}
-	badValue = rep(FALSE, nrow(data))
-	for (i in 1:ncol(data)) {
-		if (class(data[, i]) %in% c("integer", "single", "double", "numeric")) {
-			badValue = badValue | !is.finite(data[, i])
-		} else {
-			badValue = badValue | is.na(data[, i])
-		}
-	}
-	idx = data.frame(which(badValue))
-	colnames(idx) = "Observations with invalid entries"
-	if (nrow(idx) > 0) {
-		cat("Error: Some observations contain invalid values: NA, NaN, or InF.",
-				"A list of all such observations has been outputted to",
-				file.path(params$writePath, "invalidEntries.csv"),
-				". Terinating program.\n\n")
-		write.csv(idx, file.path(params$writePath, "invalidEntries.csv"))
-		workdata$failed = TRUE
-		return(workdata)
-	}
-	if ("(Intercept)" %in% colnames(data)) {
-		cat("Error: \"(Intercept)\" is not a valid covariate name.  Please change it.  Terminiating Program.\n\n")
-		workdata$failed = TRUE
-		return(workdata)
-	}
-	if (max(table(colnames(data))) > 1) {
-		cat("Error: duplicate column names found.\n\n")
-		workdata$failed = TRUE
-		return(workdata)
-	}
-	if (params$dataPartnerID == 1) {
-		if (!is.null(yname) && class(yname) != "character") {
-			cat("Error: response label is not a string.\n\n")
-			workdata$failed = TRUE
-			return(workdata)
-		}
-		if (length(yname) > 1) {
-			cat("Error: More than one name for response variable provided.\n\n")
-			workdata$failed = TRUE
-			return(workdata)
-		}
-		if (is.null(colnames(data))) {
-			cat("Warning: variables are not named. Assuming variable 1 is response.  Assigning labels to the rest of the columns.\n\n")
-			if (is.null(yname)) {
-				yname = c("y")
-			}
-			if (ncol(data) == 1) {
-				colnames(data) = yname
-			} else {
-				colnames(data) = c(yname, paste0("A", 1:(ncol(data) - 1)))
-			}
-		} else {
-			if (is.null(yname)) {
-				yname = colnames(data)[1]
-			}
-		}
-		if (!(yname %in% colnames(data))) {
-			cat("Error: response variable", paste0("'", yname, "'"), "not found.\n\n")
-			workdata$failed = TRUE
-			return(workdata)
-		}
-		responseColIndex = which(colnames(data) %in% yname)
-		if (class(data[1, responseColIndex]) != "numeric" & class(data[1, responseColIndex]) != "integer") {
-			cat("Error: response variable", paste0("'", yname, "'"), "is not numeric.\n\n")
-			workdata$failed = TRUE
-			return(workdata)
-		}
-		workdata$X = matrix(data[, responseColIndex], ncol = 1)
-		workdata$X = cbind(workdata$X, 1)
-		data = data[, -responseColIndex, drop = FALSE]
-		colnames(workdata$X) = c(yname, "(Intercept)")
-	} else {
-		workdata$X = matrix(0, nrow = nrow(data), ncol = 0)
-	}
-	if (class(data) == "matrix") {
-		workdata$X = cbind(workdata$X, data)
-	} else if (ncol(data) >= 1) { # class(data) == "data.frame"
-		varNames = c()
-		covariateNames = setdiff(colnames(data), yname)
-		for (name in covariateNames) {
-			if (class(data[[name]]) %in% c("integer", "numeric", "single", "double")) {
-				varNames = c(varNames, name)
-			} else {
-				if (class(data[[name]]) %in% c("character", "logical")) {
-					data[[name]] = as.factor(data[[name]])
-				}
-				if (class(data[[name]]) != "factor") {
-					cat("Error: variable", name, "is not numeric and cannot be converted to a factor.\n\n")
-					workdata$failed = TRUE
-					return(workdata)
-				}
-				levelNames = levels(data[[name]])
-				if (length(levelNames) == 1) {
-					data[[name]] = rep(1, nrow(data))
-					varNames = c(varNames, name)
-				} else {
-					for (lname in levelNames[-1]) {
-						newName = paste0(name, ":", lname)
-						if (newName %in% varNames) {
-							cat("Error: variable", newName, "already exists.\n\n")
-							workdata$failed = TRUE
-							return(workdata)
-						}
-						data[[newName]] = ifelse(data[[name]] == lname, 1, 0)
-						varNames = c(varNames, newName)
-					}
-					data[[name]] = NULL
-				}
-			}
-		}
-		index = match(varNames, colnames(data))
-		workdata$X = cbind(workdata$X, as.matrix(data[index]))
-	}
+  workdata$failed = CheckDataFormat(params, data)
 
-	workdata$n        = nrow(workdata$X)
-	workdata$colmin   = apply(workdata$X, 2, min)
-	workdata$colmax   = apply(workdata$X, 2, max)
-	workdata$colsum   = apply(workdata$X, 2, sum)
-	workdata$colrange = workdata$colmax - workdata$colmin
-	for (i in 1:ncol(workdata$X)) {
-		if (workdata$colmin[i] == workdata$colmax[i]) {
-			workdata$colmin[i] = 0
-			workdata$colrange[i] = workdata$colmax[i]
-			if (workdata$colrange[i] == 0) {
-				workdata$colrange[i] = 1
-			}
-		}
-	}
-	for (i in 1:ncol(workdata$X)) {
-		workdata$X[, i] = (workdata$X[, i] - workdata$colmin[i]) / workdata$colrange[i]
-	}
+  if (workdata$failed) {
+    return(workdata)
+  }
 
-	return(workdata)
+  data = data.frame(data) # convert to a clean data.frame
+
+  responseIndex = CheckResponse(params, data, yname)
+
+  if (is.null(responseIndex)) {
+    workdata$failed == TRUE
+    return(workdata)
+  }
+  covariateIndex = setdiff(1:ncol(data), responseIndex)
+  workdata$tags = CreateModelMatrixTags(data[, covariateIndex, drop = FALSE])
+  workdata$tags = c("(Intercept)", workdata$tags)
+  names(workdata$tags)[1] = "numeric"
+  X = model.matrix(~ ., data[, c(responseIndex, covariateIndex), drop = FALSE])
+  rownames(X) = NULL
+  covariateIndex = setdiff(1:ncol(X), 2)
+  workdata$X = X[, c(2, covariateIndex), drop = FALSE]
+
+  workdata$n        = nrow(workdata$X)
+  workdata$colmin   = apply(workdata$X, 2, min)
+  workdata$colmax   = apply(workdata$X, 2, max)
+  workdata$colsum   = apply(workdata$X, 2, sum)
+  workdata$colrange = workdata$colmax - workdata$colmin
+  for (i in 1:ncol(workdata$X)) {
+    if (workdata$colmin[i] == workdata$colmax[i]) {
+      workdata$colmin[i] = 0
+      workdata$colrange[i] = 1
+    }
+    workdata$X[, i] = (workdata$X[, i] - workdata$colmin[i]) / workdata$colrange[i]
+  }
+
+  return(workdata)
 }
 
+PrepareDataLinLog.DPk = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "PrepareDataLinLog.DPk\n\n")
+
+  workdata = list()
+  workdata$failed = FALSE
+
+  workdata$failed = CheckDataFormat(params, data)
+
+  if (workdata$failed) {
+    return(workdata)
+  }
+
+  data = data.frame(data) # convert to a clean data.frame
+
+  workdata$tags = CreateModelMatrixTags(data)
+  # if (ncol(data) < 2 | !("numeric" %in% names(workdata$tags))) {
+  #   cat("Error: The data partner that does not have the response must have at least 2 covariates at least one of which must be numeric.\n")
+  #   workdata$failed = TRUE
+  #   return(workdata)
+  # }
+  workdata$X = model.matrix(~ ., data)
+  rownames(workdata$X) = NULL
+  workdata$X = workdata$X[, -1, drop = FALSE]
+
+  workdata$n        = nrow(workdata$X)
+  workdata$colmin   = apply(workdata$X, 2, min)
+  workdata$colmax   = apply(workdata$X, 2, max)
+  workdata$colsum   = apply(workdata$X, 2, sum)
+  workdata$colrange = workdata$colmax - workdata$colmin
+  for (i in 1:ncol(workdata$X)) {
+    if (workdata$colmin[i] == workdata$colmax[i]) {
+      workdata$colmin[i] = 0
+      workdata$colrange[i] = 1
+    }
+    workdata$X[, i] = (workdata$X[, i] - workdata$colmin[i]) / workdata$colrange[i]
+  }
+
+  return(workdata)
+}
 
 SendBasicInfo.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "SendbasicInfo.DP\n\n")
@@ -270,7 +200,9 @@ CheckAgreement.AC = function(params) {
 	nDataPartnerID = rep(0, params$numDataPartners)
 	message1    = NULL
 	message2    = NULL
-	n = analysis = NULL
+	n           = NULL
+	analysis    = NULL
+	dataPartnerID = NULL
 	for (id in 1:params$numDataPartners) {
 		readTime = readTime - proc.time()[3]
 		load(file.path(params$readPathDP[id], "n_analysis.rdata"))
@@ -391,11 +323,12 @@ PrepareSharesLinear.DP = function(params, data) {
 	colrange  = data$colrange
 	colsum    = data$colsum
 	colnames  = colnames(data$X)
+	tags      = data$tags
 
 	writeTime = proc.time()[3]
 	save(products, file = file.path(params$writePath, "products.rdata"))
 	save(halfshare, file = file.path(params$writePath, "halfshare.rdata"))
-	save(colmin, colrange, colsum, colnames, file = file.path(params$writePath, "colstats.rdata"))
+	save(colmin, colrange, colsum, colnames, tags, file = file.path(params$writePath, "colstats.rdata"))
 	writeSize = sum(file.size(file.path(params$writePath, c("products.rdata",
 																													"halfshare.rdata",
 																													"colstats.rdata"))))
@@ -413,10 +346,12 @@ GetProductsLinear.AC = function(params) {
 	p = 0
 	n = 0
 
-	allproducts = rep(list(list()), params$numDataPartners)
+	allproducts  = rep(list(list()), params$numDataPartners)
 	allhalfshare = rep(list(list()), params$numDataPartners)
-	products = NULL
+	alltags      = rep(list(list()), params$numDataPartners)
+	products  = NULL
 	halfshare = NULL
+	tags      = NULL
 	allcolmin = allcolrange = allcolsum = allcolnames = NULL
 	colmin = colrange = colsum = colnames = NULL
 	party = NULL
@@ -433,6 +368,7 @@ GetProductsLinear.AC = function(params) {
 
 		allproducts[[id]]  = products
 		allhalfshare[[id]] = halfshare
+		alltags[[id]]      = tags
 		allcolmin          = c(allcolmin, colmin)
 		allcolrange        = c(allcolrange, colrange)
 		allcolsum          = c(allcolsum, colsum)
@@ -480,6 +416,7 @@ GetProductsLinear.AC = function(params) {
 	params$colnames     = allcolnames[-1]
 	params$party        = party[-1]
 	params$converged    = TRUE
+  params$tags         = alltags
 
 	params = AddToLog(params, "GetProductsLinear.AC", readTime, readSize, 0, 0)
 	return(params)
@@ -490,7 +427,6 @@ ComputeResultsLinear.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLinear.AC\n\n")
   stats           = params$stats
 	stats$converged = params$converged
-	stats$failed    = FALSE
 	n        = params$n
 	yty      = params$yty
 	xty      = params$xty
@@ -503,10 +439,46 @@ ComputeResultsLinear.AC = function(params) {
 	indicies = c(1)
 	for (i in 2:nrow) {
 		tempIndicies = c(indicies, i)
-		if (rcond(xtx[tempIndicies, tempIndicies]) > 10^3 * .Machine$double.eps) {
+		if (rcond(xtx[tempIndicies, tempIndicies]) > 10^8 * .Machine$double.eps) {
 			indicies = c(indicies, i)
 		}
 	}
+
+	tags = params$tags
+	min = 1
+	for (id in 1:params$numDataPartners) {
+	  max = min + params$pi[id] - 1
+	  if (id == 1) {
+	    max = max - 1
+	  }
+	  idx = indicies[which(min <= indicies & indicies <= max)] - min + 1
+	  print(idx)
+	  temp = tags[[id]]
+	  temp = temp[idx]
+	  tags[[id]] = temp
+	  min = max + 1
+	}
+
+	params$errorMessage = ""
+	numeric_found = FALSE
+	for (id in 2:params$numDataPartners) {
+	  if (length(unique(tags[[id]])) == 0) {
+	    params$failed = TRUE
+	    params$errorMessage = paste0(params$errorMessage,
+	                                 paste("After removing colinear covariates, Data Partner", id, "has no covariates.\n"))
+	  } else {
+	    numeric_found = numeric_found | "numeric" %in% names(tags[[id]])
+	  }
+	}
+	if (!numeric_found) {
+	  params$failed = TRUE
+	  params$errorMessage = paste0(params$errorMessage,
+	                               paste("After removing colinear covariates, no Data Partner > DP1 has a numeric covariate.\n"))
+	}
+
+	stats$failed    = params$failed
+
+
 
 	p             = length(indicies)
 	p1            = ncol(xtx)
@@ -642,8 +614,15 @@ DataPartnerKLinear = function(data,
 		return(invisible(NULL))
 	}
 
-	data = PrepareDataLinear.DP(params, data, yname)
-	params = AddToLog(params, "PrepareDataLinear.DP", 0, 0, 0, 0)
+	if (dataPartnerID == 1) {
+	  # data = PrepareDataLinear.DP(params, data, yname)
+	  data = PrepareDataLinLog.DP1(params, data, yname)
+	  params = AddToLog(params, "PrepareDataLinLog.DP1", 0, 0, 0, 0)
+	} else {
+	  data = PrepareDataLinLog.DPk(params, data)
+	  params = AddToLog(params, "PrepareDataLinLog.DP2", 0, 0, 0, 0)
+	}
+
 
 	if (data$failed) {
 		params$errorMessage = paste("Error processing data for data partner", params$dataPartnerID, "\n")
@@ -680,9 +659,17 @@ DataPartnerKLinear = function(data,
 	params = SendPauseContinue.kp(params, filesAC = files, from = "AC",
 														 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
 
-	params = GetResultsLinear.DP(params)
-	params = SendPauseQuit.kp(params, sleepTime = sleepTime, waitForTurn = TRUE)
-	return(params$stats)
+	possibleError = ReceivedError.kp(params, from = "AC")
+	if (possibleError$error) {
+	  params$errorMessage = possibleError$message
+	  cat(possibleError$message, "\n")
+	  params = SendPauseQuit.kp(params, sleepTime = sleepTime, waitForTurn = TRUE)
+	  return(params$stats)
+	} else {
+	  params = GetResultsLinear.DP(params)
+	  params = SendPauseQuit.kp(params, sleepTime = sleepTime, waitForTurn = TRUE)
+	  return(params$stats)
+	}
 }
 
 
@@ -745,10 +732,22 @@ AnalysisCenterKLinear = function(numDataPartners = NULL,
 
 	params = GetProductsLinear.AC(params)
 	params = ComputeResultsLinear.AC(params)
-	files = "stats.rdata"
-	params = SendPauseContinue.kp(params, filesDP = files, from = "DP",
-														 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
-	params = SendPauseQuit.kp(params, sleepTime = sleepTime)
-	SummarizeLog.kp(params)
-	return(params$stats)
+
+	if (params$failed) {
+	  MakeErrorMessage(params$writePath, params$errorMessage)
+	  files = "errorMessage.rdata"
+	  cat(params$errorMessage, "\n")
+	  params = SendPauseContinue.kp(params, filesDP = files, from = "DP",
+	                                sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
+	  params = SendPauseQuit.kp(params, sleepTime = sleepTime, job_failed = TRUE)
+	  SummarizeLog.kp(params)
+	  return(params$stats)
+	} else {
+	  files = "stats.rdata"
+	  params = SendPauseContinue.kp(params, filesDP = files, from = "DP",
+	                                sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
+	  params = SendPauseQuit.kp(params, sleepTime = sleepTime)
+	  SummarizeLog.kp(params)
+	  return(params$stats)
+	}
 }

@@ -1,163 +1,5 @@
 ################### DISTRIBUTED LOGISTIC REGRESSION FUNCTIONS ###################
 
-PrepareDataLogistic.DP = function(params, data, yname = NULL) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareDataLogistic.DP\n\n")
-  workdata = list()
-	workdata$failed = FALSE
-
-	if (class(data) %in% c("character", "double", "integer", "logical",
-												 "numeric", "single", "factor")) {
-		data = as.data.frame(data)
-	}
-	if (class(data) != "data.frame" && class(data) != "matrix") {
-		cat("Error: data is not a matrix or a data frame.\n\n")
-		workdata$failed = TRUE
-		return(workdata)
-	}
-	if (nrow(data) < 1 || ncol(data) < 1) {
-		cat("Error: the data is empty.\n\n")
-		workdata$failed = TRUE
-		return(workdata)
-	}
-	badValue = rep(FALSE, nrow(data))
-	for (i in 1:ncol(data)) {
-		if (class(data[, i]) %in% c("integer", "single", "double", "numeric")) {
-			badValue = badValue | !is.finite(data[, i])
-		} else {
-			badValue = badValue | is.na(data[, i])
-		}
-	}
-	idx = data.frame(which(badValue))
-	colnames(idx) = "Observations with invalid entries"
-	if (nrow(idx) > 0) {
-		cat("Error: Some observations contain invalid values: NA, NaN, or InF.",
-				"A list of all such observations has been outputted to",
-				file.path(params$writePath, "invalidEntries.csv"),
-				". Terinating program.\n\n")
-		write.csv(idx, file.path(params$writePath, "invalidEntries.csv"))
-		workdata$failed = TRUE
-		return(workdata)
-	}
-	if ("(Intercept)" %in% colnames(data)) {
-		cat("Error: \"(Intercept)\" is not a valid covariate name.  Please change it.  Terminiating Program.\n\n")
-		workdata$failed = TRUE
-		return(workdata)
-	}
-	if (max(table(colnames(data))) > 1) {
-		cat("Error: duplicate column names found.\n\n")
-		workdata$failed = TRUE
-		return(workdata)
-	}
-	if (params$dataPartnerID == 1) {
-		if (!is.null(yname) && class(yname) != "character") {
-			cat("Error: response label is not a string.\n\n")
-			workdata$failed = TRUE
-			return(workdata)
-		}
-		if (length(yname) > 1) {
-			cat("Error: More than one name for response variable provided.\n\n")
-			workdata$failed = TRUE
-			return(workdata)
-		}
-		if (is.null(colnames(data))) {
-			cat("Warning: variables are not named. Assuming variable 1 is response.  Assigning labels to the rest of the columns.\n\n")
-			if (is.null(yname)) {
-				yname = c("y")
-			}
-			if (ncol(data) == 1) {
-				colnames(data) = yname
-			} else {
-				colnames(data) = c(yname, paste0("A", 1:(ncol(data) - 1)))
-			}
-		} else {
-			if (is.null(yname)) {
-				yname = colnames(data)[1]
-			}
-		}
-		if (!(yname %in% colnames(data))) {
-			cat("Error: response variable", paste0("'", yname, "'"), "not found.\n\n")
-			workdata$failed = TRUE
-			return(workdata)
-		}
-		responseColIndex = which(colnames(data) %in% yname)
-		if (class(data[1, responseColIndex]) != "numeric" & class(data[1, responseColIndex]) != "integer") {
-			cat("Error: response variable", paste0("'", yname, "'"), "is not numeric.\n\n")
-			workdata$failed = TRUE
-			return(workdata)
-		}
-		workdata$X = matrix(data[, responseColIndex], ncol = 1)
-		workdata$X = cbind(workdata$X, 1)
-		if (sum(!(workdata$X[, 1] %in% c(0, 1))) > 0) {
-			cat("Error: response variable is not binary.  It should only be 0's and 1's.  Terminating program.\n\n")
-			workdata$failed = TRUE
-			return(workdata)
-		}
-		data = data[, -responseColIndex, drop = FALSE]
-		colnames(workdata$X) = c(yname, "(Intercept)")
-	} else {
-		workdata$X = matrix(0, nrow = nrow(data), ncol = 0)
-	}
-	if (class(data) == "matrix") {
-		workdata$X = cbind(workdata$X, data)
-	} else if (ncol(data) >= 1) { # class(data) == "data.frame"
-		varNames = c()
-		covariateNames = setdiff(colnames(data), yname)
-		for (name in covariateNames) {
-			if (class(data[[name]]) %in% c("integer", "numeric", "single", "double")) {
-				varNames = c(varNames, name)
-			} else {
-				if (class(data[[name]]) %in% c("character", "logical")) {
-					data[[name]] = as.factor(data[[name]])
-				}
-				if (class(data[[name]]) != "factor") {
-					cat("Error: variable", name, "is not numeric and cannot be converted to a factor.\n\n")
-					workdata$failed = TRUE
-					return(workdata)
-				}
-				levelNames = levels(data[[name]])
-				if (length(levelNames) == 1) {
-					data[[name]] = rep(1, nrow(data))
-					varNames = c(varNames, name)
-				} else {
-					for (lname in levelNames[-1]) {
-						newName = paste0(name, ":", lname)
-						if (newName %in% varNames) {
-							cat("Error: variable", newName, "already exists.\n\n")
-							workdata$failed = TRUE
-							return(workdata)
-						}
-						data[[newName]] = ifelse(data[[name]] == lname, 1, 0)
-						varNames = c(varNames, newName)
-					}
-					data[[name]] = NULL
-				}
-			}
-		}
-		index = match(varNames, colnames(data))
-		workdata$X = cbind(workdata$X, as.matrix(data[index]))
-	}
-
-	workdata$n        = nrow(workdata$X)
-	workdata$colmin   = apply(workdata$X, 2, min)
-	workdata$colmax   = apply(workdata$X, 2, max)
-	workdata$colsum   = apply(workdata$X, 2, sum)
-	workdata$colrange = workdata$colmax - workdata$colmin
-	for (i in 1:ncol(workdata$X)) {
-		if (workdata$colmin[i] == workdata$colmax[i]) {
-			workdata$colmin[i] = 0
-			workdata$colrange[i] = workdata$colmax[i]
-			if (workdata$colrange[i] == 0) {
-				workdata$colrange[i] = 1
-			}
-		}
-	}
-	for (i in 1:ncol(workdata$X)) {
-		workdata$X[, i] = (workdata$X[, i] - workdata$colmin[i]) / workdata$colrange[i]
-	}
-	return(workdata)
-}
-
-
 GetProductsLogistic.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetProductsLogistic.AC\n\n")
 	readTime = 0
@@ -166,10 +8,12 @@ GetProductsLogistic.AC = function(params) {
 	n = 0
 	pi = c()
 
-	allproducts = rep(list(list()), params$numDataPartners)
+	allproducts  = rep(list(list()), params$numDataPartners)
 	allhalfshare = rep(list(list()), params$numDataPartners)
-	products = NULL
+	alltags      = rep(list(list()), params$numDataPartners)
+	products  = NULL
 	halfshare = NULL
+	tags      = NULL
 	allcolmin = allcolrange = allcolsum = allcolnames = NULL
 	colmin = colrange = colsum = colnames = NULL
 	party = NULL
@@ -186,6 +30,7 @@ GetProductsLogistic.AC = function(params) {
 
 		allproducts[[id]]  = products
 		allhalfshare[[id]] = halfshare
+		alltags[[id]]      = tags
 		allcolmin          = c(allcolmin, colmin)
 		allcolrange        = c(allcolrange, colrange)
 		allcolsum          = c(allcolsum, colsum)
@@ -235,6 +80,7 @@ GetProductsLogistic.AC = function(params) {
 	params$colsum       = allcolsum[-1]
 	params$colnames     = allcolnames[-1]
 	params$party        = party[-1]
+	params$tags         = alltags
 
 	params = AddToLog(params, "GetProductsLogistic.AC", readTime, readSize, 0, 0)
 	return(params)
@@ -255,6 +101,7 @@ CheckColinearityLogistic.AC = function(params) {
 		}
 	}
 
+
 	sts = sts[indicies, indicies, drop = FALSE]
 	sty = sty[indicies, drop = FALSE]
 
@@ -271,44 +118,40 @@ CheckColinearityLogistic.AC = function(params) {
 
 	indicies = indicies + 1  # take into account that pi still counts sty, which we removed earlier.
 
-	params$indicies = rep(list(list()), params$numDataPartners)
-
+	params$indicies   = rep(list(list()), params$numDataPartners)
+	tags              = rep(list(list()), params$numDataPartners)
 	min = 1
+
 	for (id in 1:params$numDataPartners) {
 		max = min + params$pi[id] - 1
-		params$indicies[[id]] =  indicies[which(min <= indicies & indicies <= max)] - min + 1
+		idx = indicies[which(min <= indicies & indicies <= max)] - min + 1
+		params$indicies[[id]] = idx
+    if (id == 1) {
+      idx = (idx - 1)[-1]
+    }
+		temp = params$tags[[id]]
+		temp = temp[idx]
+		tags[[id]] = temp
 		min = max + 1
 	}
 
-	if (params$numDataPartners == 2) {
-		if (length(params$indicies[[1]]) == 2) {
-			params$failed = TRUE
-			params$errorMessage = "Data Partner 1 has only one covaraite. This is not secure.\n"
-		}
-		if (length(params$indicies[[2]]) == 1) {
-			params$failed = TRUE
-			errorMessage = "Data Partner 2 has only one covariate. This is not secure.\n"
-			params$errorMessage = paste0(params$errorMessage, errorMessage)
-		} else if (length(params$indicies[[2]]) == 0) {
-			params$failed = TRUE
-			errorMessage = "All of Data Partner 2's covariates are coliner with Data Partner 1's covariates.\n"
-			params$errorMessage = paste0(params$errorMessage, errorMessage)
-		}
-	} else {
-		errorid = c()
-		for (id in 1:params$numDataPartners) {
-			if (length(params$indicies[[id]]) == 0) {
-				params$failed = TRUE
-				errorid = c(errorid, id)
-			}
-		}
-		if (params$failed) {
-			for (id in 1:length(errorid)) {
-				params$errorMessage = paste0(params$errorMessage,
-						 paste("All of Data Partner", errorid[id], "covariates are colinear with covariates from other data partners.\n"))
-			}
-		}
+	params$errorMessage = ""
+	if ((length(unique(tags[[1]])) == 1) | (length(unique(tags[[1]])) >= 2 & !("numeric" %in% names(tags[[1]])))) {
+	  params$failed = TRUE
+	  params$errorMessage = "Data Partner 1 must have no covariates or at least 2 covariates at least one of which is continuous.\n"
 	}
+	for (id in 2:params$numDataPartners) {
+	  if (length(unique(tags[[id]])) < 2) {
+	    params$failed = TRUE
+	    params$errorMessage = paste0(params$errorMessage,
+	                                 paste("After removing colinear covariates, Data Partner", id, "has 1 or fewer covariates.\n"))
+	  } else if (!("numeric" %in% names(tags[[id]]))) {
+	    params$failed = TRUE
+	    params$errorMessage = paste0(params$errorMessage,
+	                                 paste("After removing colinear covariates, Data Partner", id, "has no continuous covariates.\n"))
+	  }
+	}
+
 	indicies = params$indicies
 
 	params$pReduct = c()
@@ -490,6 +333,7 @@ ComputeStWSLogistic.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeStWSLogistic.AC\n\n")
   readTime = 0
 	readSize = 0
+	C        = NULL
 	W = params$pi_ * (1 - params$pi_)
 	StWS = matrix(0, sum(params$pReduct), sum(params$pReduct))
 
@@ -537,10 +381,10 @@ ComputeStWSLogistic.AC = function(params) {
 		params$errorMessage =
 			paste0("ERROR: The matrix t(X)*W*X is not invertible.\n",
 						 "       This may be due to one of two possible problems.\n",
-						 "       1. Poor random initilization of the security matricies.\n",
-						 "       2. Near multicolinearity in the data\n",
+						 "       1. Poor random initialization of the security matrices.\n",
+						 "       2. Near multicollinearity in the data\n",
 						 "SOLUTIONS: \n",
-						 "       1. Rerun the data analaysis.\n",
+						 "       1. Rerun the data analysis.\n",
 						 "       2. If the problem persists, check the variables for\n",
 						 "          duplicates for both parties and / or reduce the\n",
 						 "          number of variables used. Once this is done,\n",
@@ -644,6 +488,7 @@ ComputeConvergeStatusLogistic.AC = function(params) {
 
 
 GetConvergeStatusLogistic.DP = function(params) {
+  converged = NULL
   if (params$trace) cat(as.character(Sys.time()), "GetconvergeStatusLogistic.DP\n\n")
   u = converge = maxIterExceeded = NULL
 	readTime = proc.time()[3]
@@ -721,6 +566,10 @@ ComputeResultsLogistic.DP = function(params, data) {
 
 ComputeResultsLogistic.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLogistic.AC\n\n")
+  nulldev = NULL
+  resdev  = NULL
+  hoslem  = NULL
+  ROC     = NULL
   readTime = proc.time()[3]
 	load(file.path(params$readPathDP[1], "logisticstats.rdata"))
 	readSize = file.size(file.path(params$readPathDP[1], "logisticstats.rdata"))
@@ -837,7 +686,15 @@ DataPartnerKLogistic = function(data,
 		return(invisible(NULL))
 	}
 
-	data = PrepareDataLogistic.DP(params, data, yname)
+	if (dataPartnerID == 1) {
+	  # data = PrepareDataLogistic.DP(params, data, yname)
+	  data = PrepareDataLinLog.DP1(params, data, yname)
+	  params = AddToLog(params, "PrepareParamsLinLog.DP1", 0, 0, 0, 0)
+	} else {
+	  data = PrepareDataLinLog.DPk(params, data)
+	  params = AddToLog(params, "PrepareParamsLinLog.DPk", 0, 0, 0, 0)
+	}
+
 	params = AddToLog(params, "PrepareParamsLinear.DP", 0, 0, 0, 0)
 
 	if (data$failed) {

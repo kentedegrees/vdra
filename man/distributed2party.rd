@@ -18,14 +18,14 @@
 }
 \usage{
 AnalysisCenter.2Party(regression = "linear", data = NULL, response = NULL,
-                      strata = NULL, mask = TRUE, monitorFolder = getwd(),
+                      strata = NULL, mask = TRUE, monitorFolder = NULL,
                       msreqid = "v_default_00_000", blocksize = 500,
                       tol = 1e-8, maxIterations = 25, sleepTime = 10,
-                      maxWaitingTime = 86400, popmednet = TRUE)
+                      maxWaitingTime = 86400, popmednet = TRUE, trace = FALSE)
 
 DataPartner.2Party(regression = "linear", data = NULL, strata = NULL,
-                   mask = TRUE, monitorFolder = getwd(), sleepTime = 10,
-                   maxWaitingTime = 86400, popmednet = TRUE)
+                   mask = TRUE, monitorFolder = NULL, sleepTime = 10,
+                   maxWaitingTime = 86400, popmednet = TRUE, trace = FALSE)
 }
 \arguments{
 \item{regression}{the model to be used to fit the data.  The default regression
@@ -76,6 +76,7 @@ DataPartner.2Party(regression = "linear", data = NULL, strata = NULL,
     used to transfer the files and implements PopMedNet specific routines. In
     particular, a 15 second offset terminiation of routines that execute in
     parallel is implemented.}
+\item{trace}{logical value: if code{TRUE}, prints every function called during execution. Used for debugging.}
 }
 \value{
 Returns an object of \code{\link{class}} \code{\link{vdralinear}} for linear
@@ -86,47 +87,54 @@ Returns an object of \code{\link{class}} \code{\link{vdralinear}} for linear
     \code{\link{AnalysisCenter.3Party}}, \code{\link{AnalysisCenter.KParty}}
 }
 \examples{
-    ## Not run:
-    ## 2 party linear regression
+\dontrun{
+## 2 party linear regression
 
-    # Analysis Center -- To be run in one instance of R.
-    # The working directory should be the same as specified in the PopMedNet
-    # requset for the analysis center.
-    fit = AnalysisCenter.2Party(regression = "linear", data = vdra_data[, c(1, 5:7)],
-            response = "Change_BMI")
+# Analysis Center -- To be run in one instance of R.
+# The working directory should be the same as specified in the PopMedNet
+# requset for the analysis center.
 
-    # Data Partner -- To be run in second instand of R, on perhaps a different machine.
-    # The working directory should be the same as specified in the PopMedNet
-    # request for the data partner.
-    fit = DataPartner.2Party(regression = "linear", data = vdra_data[, 8:11])
+fit = AnalysisCenter.2Party(regression = "linear", data = vdra_data[, c(1, 5:7)],
+        response = "Change_BMI", monitorFolder = getwd())
 
+# Data Partner -- To be run in second instand of R, on perhaps a different machine.
+# The working directory should be the same as specified in the PopMedNet
+# request for the data partner.
 
-    ## 2 party logistic regression
+fit = DataPartner.2Party(regression = "linear", data = vdra_data[, 8:11],
+        monitorFolder = getwd())
 
-    # Analysis Center -- To be run in one instance of R.
-    # The working directory should be the same as specified in the PopMedNet
-    # requset for the analysis center.
-    fit = AnalysisCenter.2Party(regression = "logistic", data = vdra_data[, c(2, 5:7)],
-            response = "WtLost")
+## 2 party logistic regression
 
-    # Data Partner -- To be run in second instand of R, on perhaps a different machine.
-    # The working directory should be the same as specified in the PopMedNet
-    # request for the data partner.
-    fit = DataPartner.2Party(regression = "logistic", data = vdra_data[, 8:11])
+# Analysis Center -- To be run in one instance of R.
+# The working directory should be the same as specified in the PopMedNet
+# requset for the analysis center.
 
+fit = AnalysisCenter.2Party(regression = "logistic", data = vdra_data[, c(2, 5:7)],
+        response = "WtLost", monitorFolder = getwd())
 
-    ## 2 party cox regression
+# Data Partner -- To be run in second instand of R, on perhaps a different machine.
+# The working directory should be the same as specified in the PopMedNet
+# request for the data partner.
 
-    # Analysis Center -- To be run in one instance of R.
-    # The working directory should be the same as specified in the PopMedNet
-    # requset for the analysis center.
-    fit = AnalysisCenter.2Party(regression = "cox", data = vdra_data[, c(3:4, 5:7)],
-            response = c("Time", "Status"), strata = c("Exposure", "Sex"))
+fit = DataPartner.2Party(regression = "logistic", data = vdra_data[, 8:11],
+        monitorFolder = getwd())
 
-    # Data Partner -- To be run in second instand of R, on perhaps a different machine.
-    # The working directory should be the same as specified in the PopMedNet
-    # request for the data partner.
-    fit = DataPartner.2Party(regression = "cox", data = vdra_data[, 8:11],
-            strata = c("Exposure", "Sex"))
-    ## End(Not run)
+## 2 party cox regression
+
+# Analysis Center -- To be run in one instance of R.
+# The working directory should be the same as specified in the PopMedNet
+# requset for the analysis center.
+
+fit = AnalysisCenter.2Party(regression = "cox", data = vdra_data[, c(3:4, 5:7)],
+        response = c("Time", "Status"), strata = c("Exposure", "Sex"),
+        monitorFolder = getwd())
+
+# Data Partner -- To be run in second instand of R, on perhaps a different machine.
+# The working directory should be the same as specified in the PopMedNet
+# request for the data partner.
+
+fit = DataPartner.2Party(regression = "cox", data = vdra_data[, 8:11],
+        strata = c("Exposure", "Sex"), monitorFolder = getwd())
+}
 }

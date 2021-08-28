@@ -1,230 +1,69 @@
 ################### DISTRIBUTED COX REGRESSION FUNCTIONS ##################
 
 PrepareDataCox.DP = function(params, data, yname, strata, mask) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareDataCox.DP\n\n")
+  if (params$trace) cat(as.character(Sys.time()), "PrepareDataCox.23\n\n")
+
   workdata = list()
-	workdata$failed = FALSE
-	if (class(data) %in% c("character", "double", "integer", "logical",
-												 "numeric", "single", "factor")) {
-		data = as.data.frame(data)
-	}
-	if (class(data) != "data.frame" && class(data) != "matrix") {
-		cat("Error: data is not a matrix or a data frame.  Terminating program.\n\n")
-		workdata$failed = TRUE
-		return(workdata)
-	}
-	if (ncol(data) < 1 | nrow(data) < 1) {
-		cat("Error: the data is empty. Terminating program.\n\n")
-		workdata$failed = TRUE
-		return(workdata)
-	}
-	if (max(table(colnames(data))) > 1) {
-		cat("Error: duplicate column names found. Terminating program.\n\n")
-		workdata$failed = TRUE
-		return(workdata)
-	}
-	badValue = rep(FALSE, nrow(data))
-	for (i in 1:ncol(data)) {
-		if (class(data[, i]) %in% c("integer", "single", "double", "numeric")) {
-			data[, i] = as.numeric(data[, i])
-			badValue = badValue | !is.finite(data[, i])
-		} else {
-			badValue = badValue | is.na(data[, i])
-		}
-	}
-	idx = data.frame(which(badValue))
-	if (nrow(idx) > 0) {
-		cat("Error: Some observations contain invalid values: NA, NaN, or InF.",
-				"A list of all such observations has been outputted to",
-				file.path(params$writePath, "invalidEntries.csv"),
-				". Terinating program.\n\n")
-		write.csv(idx, file.path(params$writePath, "invalidEntries.csv"))
-		workdata$failed = TRUE
-		return(workdata)
-	}
-	if (params$dataPartnerID == 1) {
-		if (ncol(data) == 1) {
-			cat("Error: There is only one variable.  Need at least two variables for time and censoring.  Terminating program.\n ")
-			workdata$failed = TRUE
-			return(workdata)
-		}
-		if (!is.null(yname) && class(yname) != "character") {
-			cat("Error: time and censor labels are not strings.  Terminating program.\n\n")
-			workdata$failed = TRUE
-			return(workdata)
-		}
-		if (length(yname) == 1) {
-			cat("Error: Only one name for time and censor variables provided.  Terminating program.\n\n")
-			workdata$failed = TRUE
-			return(workdata)
-		}
-		if (length(yname) > 2) {
-			cat("Error: More than two names for time and censor variables provided.  Terminating program.\n\n")
-			workdata$failed = TRUE
-			return(workdata)
-		}
-		if (is.null(colnames(data))) {
-			cat("Warning: variables are not named. Assuming variable 1 is time and variable 2 is censoring.  Assigning labels to the rest of the columns.\n\n")
-			if (is.null(yname)) {
-				yname = c("time", "censor")
-			}
-			if (ncol(data) == 2) {
-				colnames(data) = yname
-			} else {
-				colnames(data) = c(yname, paste0("DP1:var", 1:(ncol(data) - 2)))
-			}
-		} else {
-			if (is.null(yname)) {
-				yname = colnames(data)[1:2]
-			}
-		}
-		if (!(yname[1] %in% colnames(data))) {
-			cat("Error: time variable", paste0("'", yname[1], "'"), "not found.  Terminating program.\n\n")
-			workdata$failed = TRUE
-			return(workdata)
-		}
-		if (!(yname[2] %in% colnames(data))) {
-			cat("Error: censoring variable", paste0("'", yname[2], "'"), "not found.  Terminating program.\n\n")
-			workdata$failed = TRUE
-			return(workdata)
-		}
-		timeColIndex = which(colnames(data) %in% yname[1])
-		if (class(data[1, timeColIndex]) != "numeric" & class(data[1, timeColIndex]) != "integer") {
-			cat("Error: time variable", paste0("'", yname[1], "'"), "is not numeric.  Terminating program.\n\n")
-			workdata$failed = TRUE
-			return(workdata)
-		}
-		censorColIndex = which(colnames(data) %in% yname[2])
-		if (class(data[1, censorColIndex]) != "numeric" & class(data[1, censorColIndex]) != "integer") {
-			cat("Error: censoring variable", paste0("'", yname[2], "'"), "is not numeric.  Terminating program.\n\n")
-			workdata$failed = TRUE
-			return(workdata)
-		}
-		if (sum(data[, censorColIndex] %in% c(0, 1)) < nrow(data)) {
-			cat("Error: censoring data should be only 0's and 1's.  Terminating program.\n\n")
-			workdata$failed = TRUE
-			return(workdata)
-		}
-		workdata$survival        = list()
-		workdata$survival$rank   = data[, timeColIndex]
-		workdata$survival$status = data[, censorColIndex]
-		data = data[, -c(timeColIndex, censorColIndex), drop = FALSE]
-	} else {
-		if (is.null(colnames(data))) {
-			cat("Warning: variables are not named.  Assigning labels.\n\n")
-			colnames(data) = paste0("DP", params$dataPartnerID, ":", 1:ncol(data))
-		}
-	}
-	# Extract the strata First
-	workdata$strata = list()
-	if (!is.null(strata)) {
-		if (class(strata) != "character") {
-			cat("Error: strata is not a valid variable name. Terminating program.\n\n")
-			workdata$failed = TRUE
-			return(workdata)
-		}
-		if (length(strata) > 0) {
-			idx = which(strata %in% colnames(data))
-			if (length(idx) > 0) {
-				workdata$strata$strataFromMe = strata[idx]
-				workdata$strata$strataFromOthers = strata[-idx]
-			} else {
-				workdata$strata$strataFromMe = c()
-				workdata$strata$strataFromOthers = strata
-			}
-			idx = which(colnames(data) %in% workdata$strata$strataFromMe)
-			if (length(idx) > 0) {
-				workdata$strata$X = as.data.frame(data[, idx, drop = FALSE])
-				colnames(workdata$strata$X) = colnames(data)[idx]
-				workdata$strata$legend = list()
-				data              = data[, -idx, drop = FALSE]
-				#randomize values for levels for each strata
-				for (i in 1:ncol(workdata$strata$X)) {
-					levels = levels(as.factor(workdata$strata$X[, i]))
-					workdata$strata$legend[[colnames(workdata$strata$X)[i]]] = levels
-					if (mask) {
-						levels = sample(levels, length(levels))
-						workdata$strata$legend[[colnames(workdata$strata$X)[i]]] = rep("NA", length(levels))
-					}
-					workdata$strata$X[, i] = sapply(workdata$strata$X[, i], function(x) { which(levels %in% x)})
-				}
-			}
-		}
-	}
+  workdata$failed = CheckDataFormat(params, data)
+  if (workdata$failed) {
+    return(workdata)
+  }
+  data = data.frame(data) # convert to a clean data.frame
+  workdata$strata = extractStrata(params, data, strata, mask)
+  if (workdata$strata$failed) {
+    workdata$failed == TRUE
+    return(workdata)
+  }
+  strataIndex = workdata$strata$strataIndex
+  responseIndex = numeric()
+  if (params$dataPartnerID == 1) {
+    responseIndex = CheckResponse(params, data, yname)
+    if (is.null(responseIndex)) {
+      workdata$failed == TRUE
+      return(workdata)
+    }
+    workdata$survival        = list()
+    workdata$survival$rank   = data[, responseIndex[1]]
+    workdata$survival$status = data[, responseIndex[2]]
+    if (length(intersect(strataIndex, responseIndex)) > 0) {
+      cat("Error: response and strata share a variable.\n\n")
+      workdata$failed == TRUE
+      return(workdata)
+    }
+  }
+  covariateIndex = setdiff(1:ncol(data), union(strataIndex, responseIndex))
+  workdata$n = nrow(data)
+  if (length(covariateIndex) == 0) {
+    if (params$dataPartnerID == 1) {
+      workdata$X = matrix(0, nrow = nrow(data), ncol = 0)
+    } else {
+      cat("Error: After removing strata, data is empty.  Party B must supply at least one non-strata covariate.\n\n")
+      workdata$failed = TRUE
+      return(workdata)
+    }
+  } else {
+    workdata$tags = CreateModelMatrixTags(data[, covariateIndex, drop = FALSE])
+    # if (params$dataPartnerID != 1 & (ncol(data) < 2 | !("numeric" %in% names(workdata$tags)))) {
+    #   cat("Error: A data partner that does not have the response must have at least 2 covariates at least one of which must be numeric.\n")
+    #   workdata$failed = TRUE
+    #   return(workdata)
+    # }
+    workdata$X = model.matrix(~ ., data[, covariateIndex, drop = FALSE])
+    workdata$X = workdata$X[, -1, drop = FALSE]
+    workdata$colmin   = apply(workdata$X, 2, min)
+    workdata$colmax   = apply(workdata$X, 2, max)
+    workdata$colsum   = apply(workdata$X, 2, sum)
+    workdata$colrange = workdata$colmax - workdata$colmin
+    for (i in 1:ncol(workdata$X)) {
+      if (workdata$colmin[i] == workdata$colmax[i]) {
+        workdata$colmin[i] = 0
+        workdata$colrange[i] = 1
+      }
+      workdata$X[, i] = (workdata$X[, i] - workdata$colmin[i]) / workdata$colrange[i]
+    }
+  }
 
-	if ((params$dataPartnerID > 1) && (ncol(data) < 1)) {
-		cat("Error: After removing strata, data is empty.  This party must supply at least one non-strata covariate. Terminating program.\n\n")
-		workdata$failed = TRUE
-		return(workdata)
-	}
-	# Now covert what is left to a matrix and convert all non-numeric data to indicators
-	if (class(data) == "matrix") {
-		if (ncol(data) == 0 || class(data[1, 1]) == "numeric") {
-			workdata$X = data
-		} else {
-			data = as.data.frame(data)
-		}
-	}
-	if (class(data) == "data.frame") {
-		varNames = c()
-		for (name in colnames(data)) {
-			if (class(data[[name]]) %in% c("integer", "numeric", "single", "double")) {
-				varNames = c(varNames, name)
-			} else {
-				if (class(data[[name]]) %in% c("character", "logical")) {
-					data[[name]] = as.factor(data[[name]])
-				}
-				if (class(data[[name]]) != "factor") {
-					cat("Error: variable", name, "is not numeric and cannot be converted to a factor. Terminating program.\n\n")
-					workdata$failed = TRUE
-					return(workdata)
-				}
-				levelNames = levels(data[[name]])
-				if (length(levelNames) == 1) {
-					data[[name]] = rep(1, nrow(data))
-					varNames = c(varNames, name)
-				} else {
-					for (lname in levelNames[-1]) {
-						newName = paste0(name, ":", lname)
-						if (newName %in% varNames) {
-							cat("Error: variable", newName, "already exists.  Terminating program.\n\n")
-							workdata$failed = TRUE
-							return(workdata)
-						}
-						data[[newName]] = ifelse(data[[name]] == lname, 1, 0)
-						varNames = c(varNames, newName)
-					}
-					data[[name]] = NULL
-				}
-			}
-		}
-		index = match(varNames, colnames(data))
-		workdata$X = as.matrix(data[, index])
-		colnames(workdata$X) = colnames(data)[index]
-	}
-
-	workdata$n        = nrow(workdata$X)
-	workdata$colmin   = apply(workdata$X, 2, min)
-	workdata$colmax   = apply(workdata$X, 2, max)
-	workdata$colsum   = apply(workdata$X, 2, sum)
-	workdata$colrange = workdata$colmax - workdata$colmin
-
-	if (ncol(workdata$X)) {
-		for (i in 1:ncol(workdata$X)) {
-			if (workdata$colmin[i] == workdata$colmax[i]) {
-				workdata$colmin[i] = 0
-				workdata$colrange[i] = workdata$colmax[i]
-				if (workdata$colrange[i] == 0) {
-					workdata$colrange[i] = 1
-				}
-			}
-		}
-		for (i in 1:ncol(workdata$X)) {
-			workdata$X[, i] = (workdata$X[, i] - workdata$colmin[i]) / workdata$colrange[i]
-		}
-	}
-
-	return(workdata)
+  return(workdata)
 }
 
 
@@ -334,7 +173,7 @@ CheckStrataNamesCox.DP = function(params, data) {
 	if (!passed) {
 		params$failed = TRUE
 		params$errorMessage = "Error: No data partner has the following specified strata: "
-		params$errorMessage = paste0(params$errorMessage, paste0(unclaimed[which(!(unclaimed %in% claimed1))], collapse = ", "))
+		params$errorMessage = paste0(params$errorMessage, paste0(unclaimed[which(!(unclaimed %in% claimed1))], collapse = ", "), ".\n")
 		params = AddToLog(params, "CheckStrataNamesCox.DP", readTime, readSize, 0, 0)
 		return(params)
 	}
@@ -596,11 +435,12 @@ PrepareSharesCox.DP = function(params, data) {
 	colrange  = data$colrange
 	colsum    = data$colsum
 	colnames  = colnames(data$X)
+  tags      = data$tags
 
 	writeTime = proc.time()[3]
 	save(products, file = file.path(params$writePath, "products.rdata"))
 	save(halfshare.R, file = file.path(params$writePath, "halfshare.rdata"))
-	save(colmin, colrange, colsum, colnames, file = file.path(params$writePath, "colstats.rdata"))
+	save(colmin, colrange, colsum, colnames, tags, file = file.path(params$writePath, "colstats.rdata"))
 	writeSize = sum(file.size(file.path(params$writePath, c("products.rdata",
 																													"halfshare.rdata",
 																													"colstats.rdata"))))
@@ -614,6 +454,8 @@ PrepareSharesCox.DP = function(params, data) {
 
 GetStrata.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetStrata.AC\n\n")
+  survival = NULL
+  pStrata  = NULL
   readTime = proc.time()[3]
 	load(file.path(params$readPathDP[1], "survival.rdata"))
 	readSize = file.size(file.path(params$readPathDP[1], "survival.rdata"))
@@ -632,10 +474,12 @@ GetProductsCox.AC = function(params) {
 	p = 0
 	n = 0
 
-	allproducts = rep(list(list()), params$numDataPartners)
+	allproducts  = rep(list(list()), params$numDataPartners)
 	allhalfshare = rep(list(list()), params$numDataPartners)
-	products = NULL
+	alltags      = rep(list(list()), params$numDataPartners)
+	products    = NULL
 	halfshare.R = NULL
+	tags        = NULL
 	allcolmin = allcolrange = allcolsum = allcolnames = NULL
 	colmin = colrange = colsum = colnames = NULL
 	party = NULL
@@ -652,6 +496,7 @@ GetProductsCox.AC = function(params) {
 
 		allproducts[[id]]  = products
 		allhalfshare[[id]] = halfshare.R
+		alltags[[id]]      = tags
 		allcolmin          = c(allcolmin, colmin)
 		allcolrange        = c(allcolrange, colrange)
 		allcolsum          = c(allcolsum, colsum)
@@ -693,6 +538,7 @@ GetProductsCox.AC = function(params) {
 	params$colsum       = allcolsum
 	params$colnames     = allcolnames
 	params$party        = party
+  params$tags         = alltags
 
 	params$halfshare    = allhalfshare
 
@@ -712,11 +558,13 @@ CheckColinearityCox.AC = function(params) {
 			indicies = c(indicies, i)
 		}
 	}
+
 	if (max(indicies) > params$pStrata) {
 		indicies = indicies[which(indicies > params$pStrata)]
 	} else {
 		indicies = c()
 	}
+
 
 	sts = sts[indicies, indicies, drop = FALSE]
 
@@ -732,6 +580,7 @@ CheckColinearityCox.AC = function(params) {
 
 	params$indicies = rep(list(c()), params$numDataPartners)
 	params$idx      = rep(list(c()), params$numDataPartners)
+  tags            = rep(list(c()), params$numDataPartners)
 
 	start = 1
 	min = 1
@@ -739,39 +588,66 @@ CheckColinearityCox.AC = function(params) {
 		max = min + params$pi[id] - 1
 		idx = which(min <= indicies & indicies <= max)
 		if (length(idx) > 0) {
-			params$indicies[[id]] =  indicies[idx] - min + 1
-			end = start + length(idx) - 1
+		  idx_1 = indicies[idx] - min + 1
+		  end   = start + length(idx) - 1
+
+		  params$indicies[[id]] = idx_1
 			params$idx[[id]] = start:end
+
 			start = end + 1
+      if (id >= 2) {
+        temp = params$tags[[id]]
+        temp = temp[idx_1]
+        tags[[id]] = temp
+      }
+
 		}
 		min = max + 1
 	}
 
-	if (params$numDataPartners == 2) {
-		if (length(params$indicies[[2]]) == 1) {
-			params$failed = TRUE
-			errorMessage = "Data Partner 2 has only one covariate. This is not secure.\n"
-			params$errorMessage = paste0(params$errorMessage, errorMessage)
-		} else if (length(params$indicies[[2]]) == 0) {
-			params$failed = TRUE
-			errorMessage = "All of Data Partner 2's covariates are coliner with Data Partner 1's covariates or the strata.\n"
-			params$errorMessage = paste0(params$errorMessage, errorMessage)
-		}
-	} else {
-		errorid = c()
-		for (id in 2:params$numDataPartners) {
-			if (length(params$indicies[[id]]) == 0) {
-				params$failed = TRUE
-				errorid = c(errorid, id)
-			}
-		}
-		if (params$failed) {
-			for (id in 1:length(errorid)) {
-				params$errorMessage = paste0(params$errorMessage,
-																		 paste("All of Data Partner", errorid[id], "covariates are colinear with covariates from other data partners or the strata.\n"))
-			}
-		}
-	}
+  params$errorMessage = ""
+  numeric_found = FALSE
+  for (id in 2:params$numDataPartners) {
+    if (length(unique(tags[[id]])) == 0) {
+      params$failed = TRUE
+      params$errorMessage = paste0(params$errorMessage,
+                                   paste("After removing colinear covariates, Data Partner", id, "has no covariates.\n"))
+    }
+  # else {
+  #     numeric_found = numeric_found | "numeric" %in% names(tags[[id]])
+  #   }
+  # }
+  # if (!numeric_found) {
+  #   params$failed = TRUE
+  #   params$errorMessage = paste0(params$errorMessage,
+  #                                paste("After removing colinear covariates, no Data Partner > DP1 has a numeric covariate.\n"))
+  }
+
+	# if (params$numDataPartners == 2) {
+	# 	if (length(params$indicies[[2]]) == 1) {
+	# 		params$failed = TRUE
+	# 		errorMessage = "Data Partner 2 has only one covariate. This is not secure.\n"
+	# 		params$errorMessage = paste0(params$errorMessage, errorMessage)
+	# 	} else if (length(params$indicies[[2]]) == 0) {
+	# 		params$failed = TRUE
+	# 		errorMessage = "All of Data Partner 2's covariates are colinear with Data Partner 1's covariates or the strata.\n"
+	# 		params$errorMessage = paste0(params$errorMessage, errorMessage)
+	# 	}
+	# } else {
+	# 	errorid = c()
+	# 	for (id in 2:params$numDataPartners) {
+	# 		if (length(params$indicies[[id]]) == 0) {
+	# 			params$failed = TRUE
+	# 			errorid = c(errorid, id)
+	# 		}
+	# 	}
+	# 	if (params$failed) {
+	# 		for (id in 1:length(errorid)) {
+	# 			params$errorMessage = paste0(params$errorMessage,
+	# 																	 paste("All of Data Partner", errorid[id], "covariates are colinear with covariates from other data partners or the strata.\n"))
+	# 		}
+	# 	}
+	# }
 	if (params$failed) {
 		params = AddToLog(params, "CheckColinearityLogistic.AC", 0, 0, 0, 0)
 	}
@@ -1276,10 +1152,10 @@ ComputeStWSCox.AC = function(params) {
 		params$errorMessage =
 			paste0("ERROR: The matrix t(S)*W*S is not invertible.\n",
 						 "       This may be due to one of two possible problems.\n",
-						 "       1. Poor random initilization of the security halfshares.\n",
-						 "       2. Near multicolinearity in the data\n",
+						 "       1. Poor random initialization of the security halfshares.\n",
+						 "       2. Near multicollinearity in the data\n",
 						 "SOLUTIONS: \n",
-						 "       1. Rerun the data analaysis.\n",
+						 "       1. Rerun the data analysis.\n",
 						 "       2. If the problem persists, check the variables for\n",
 						 "          duplicates for both parties and / or reduce the\n",
 						 "          number of variables used. Once this is done,\n",
@@ -1510,13 +1386,15 @@ ComputeResultsCox.AC = function(params) {
 												 1 - pchisq(stats$wald.test, stats$df))
 	pred = -params$sBeta[params$survival$sortedIdx]
 	if (requireNamespace("survival", quietly = TRUE)) {
-		library(survival)
-		surv = Surv(params$survival$rank, params$survival$status)
+	  if (!("package:survival" %in% search())) {
+	    attachNamespace("survival")
+	  }
+		surv = survival::Surv(params$survival$rank, params$survival$status)
 		strat = rep(0, length(surv))
 		for (i in 1:length(params$survival$strata)) {
 			strat[params$survival$strata[[i]]$start:params$survival$strata[[i]]$end] = i
 		}
-		results = concordance(surv~pred + strata(strat))
+		results = survival::concordance(surv~pred + strata(strat))
 		if (class(results$stats) == "matrix") {  # more than one strata
 			stats$concordance = c(apply(results$count, 2, sum)[1:4], results$concordance, sqrt(results$var))
 		} else {                                 # only one strata, so a numeric vector

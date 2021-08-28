@@ -1,5 +1,5 @@
 ---
-title: "An Introduction to the VDRA package"
+title: "An Introduction to the VDRA Package"
 date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
@@ -7,10 +7,15 @@ output:
     toc: true
     number_sections: true
 vignette: >
-  %\VignetteIndexEntry{An Introduction to the VDRA package}
+  %\VignetteIndexEntry{An Introduction to the VDRA Package}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
+
+```{r, echo = FALSE, warning=FALSE}
+library(knitr)
+```
+
 # Background
 
 In medical research, it is common for researchers to gather data from multiple sources.  However, due to privacy concerns (e.g. HIPAA) or the propitiatory nature of the data, one or more of the potential sources may not be in a position to share the data.  Various methods have been proposed in the literature, and some R packages have been written (e.g `distcomp`, `ppmHR`), which allow analyses to be performed on distributed data in a secure setting.  That is, the analyses are performed as if the data were aggregated, but in reality each data partner maintains control over their own data and only shares high level statistics in such a way that the original data cannot be deduced by the other data partners.
@@ -19,7 +24,7 @@ Each of these methods assumes that the data is horizontally partitioned.  That i
 
 In this package, we implement three different protocols for vertical distributed regression analysis (VDRA) in a secure setting.  They are called $2$-party, $2^T$-party, and $k^T$-party.  Each of these protocols can be used to perform linear, logistic, and Cox regression.  The purpose of this vignette is to demonstrate how to use this package, so we will not go into details of the protocols and algorithms here.  Specific information on the algorithms and a discussion of their security can be found in the following papers:
 
-* *Automatable Distributed Regression Analysis of Vertically Partitioned Data Facilitated by PopMedNet: A Feasibility and Enhancement Study*, Q.\ Her, T.\ Kent, Y.\ Samizo, A.\ Slackovic, S.\ Toh, Y.\ Vilk, submitted to Journal of Medical Internet Research	
+* *Automatable Distributed Regression Analysis of Vertically Partitioned Data Facilitated by PopMedNet: A Feasibility and Enhancement Study*, (doi: 10.2196/21459), Q.\ Her, T.\ Kent, Y.\ Samizo, A.\ Slackovic, S.\ Toh, Y.\ Vilk, submitted to Journal of Medical Internet Research	 
 * *Distributed Regression Analysis on Vertically Partitioned Data in R*, Q.\ Her, T.\ Kent, Y.\ Samizo, A.\ Slackovic, S.\ Toh, Y.\ Vilk, in preparation.  
 
 ## Dependencies
@@ -58,9 +63,9 @@ knitr::include_graphics("kTparty.png")
 
 # PopMedNet and the PopMedNet Simulator
 
-PopMedNet (https://www.popmednet.org/), short for Population Medicine Network, is a "scalable and extensible open-source informatics platform designed to facilitate the implementation and operation of distributed health data networks."  PopMedNet is maintained by Department of Population Medicine at the Harvard Medical School and the Harvard Pilgrim Health Care Institute.  Through two generous National Institute of Health Grants, we were able to make modifications to PopMedNet which allowed us to transmit data between data partners in a secure and automatic fashion.  These modification were made specifically with the intent of the creation of this package.  While this package has been designed to work seamlessly with PopMedNet as a means of communication, it should be possible to use other file transfer software to perform the same task.
+PopMedNet (https://pmnplayground-1.popmednet.org/), short for Population Medicine Network, is a "scalable and extensible open-source informatics platform designed to facilitate the implementation and operation of distributed health data networks."  PopMedNet is maintained by Department of Population Medicine at the Harvard Medical School and the Harvard Pilgrim Health Care Institute.  Through two generous National Institute of Health Grants, we were able to make modifications to PopMedNet which allowed us to transmit data between data partners in a secure and automatic fashion.  These modification were made specifically with the intent of the creation of this package.  While this package has been designed to work seamlessly with PopMedNet as a means of communication, it should be possible to use other file transfer software to perform the same task.
 
-If a group of data partners wishes to use PopMedNet and this package for analysis of vertically distributed data, please refer to the vignette *How to use the vdra package with PopMedNet* for further information.  However, for the individuals which are interested in testing out the package to see how it works, a PopMedNet simulator, `pmn()`, has been supplied as part of the package.  This allows the individual to play the part of the all the data partners and the analysis center on a single computer in order to gain an understanding of how to use the package before implementation in a real world setting.
+If a group of data partners wishes to use PopMedNet and this package for analysis of vertically distributed data, please refer to the vignette "How to Use the VDRA Package with PopMedNet" for further information.  However, for the individuals which are interested in testing out the package to see how it works, a PopMedNet simulator, `pmn()`, has been supplied as part of the package.  This allows the individual to play the part of the all the data partners and the analysis center on a single computer in order to gain an understanding of how to use the package before implementation in a real world setting.
 
 We demonstrate the usage of this package using `pmn()` as the file transfer protocol for $2$-party, $2^T$-party, and $k^T$-party situations.  Take careful note the use of the parameter `popmednet = FALSE` in all function calls.  When `popmednet = TRUE` is used, an offset is added to make sure that when two or more data partners are running in parallel, there is a at least a 15 second window between when they signal PopMedNet that they are ready to upload files.  There are technical reasons for this that are specific to PopMedNet, but are not applicable when other file transfer protocols are utilized.
 
@@ -70,16 +75,15 @@ The `VDRA` package comes with a data set `vdra_data` which contains simulated da
 
 The four response variables are:
 
-```{r table2, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
-tabl <- " 
-| Variable(s)   | Intended Use        |
-|---------------|---------------------|
-| Change_BMI    | Linear Regression   |
-| WtLost        | Logistic Regression |
-| Time, Status  | Cox Regression      |
-"
-cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
+```{r, echo = FALSE}
+kable(data.frame(`Variable(s)` = c("Change_BMI", 
+                                   "WtLost", 
+                                   "Time, Status"),
+                 `Intended Use` = c("Linear Regression", 
+                                    "Logistic Regression",
+                                    "Cox Regression")))
 ```
+
 
 If each data partner is using their own data, it is assumed that each data partner has the same number of observations and that observations on corresponding rows are for the same patient.  In other words, it is assumed that the data are already aligned according to some common key, and it will be treated as such.  Additionally, it is expected that the data will have already been cleaned and only valid values are presented.  Some checking of the data is performed by the package, including looking for missing values. During this step, if any problems are found a descriptive error message will be given and the program will terminate.  
 

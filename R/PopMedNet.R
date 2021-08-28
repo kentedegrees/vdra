@@ -81,6 +81,9 @@ pmn = function(numParty, directory = getwd()) {
           if (file.exists(file.path(writeDirectory[i], "files_done.ok"))) {
             Sys.sleep(sleepTime)
             files = read.csv(file.path(writeDirectory[i], "file_list.csv"))
+            cat("\n")
+            print(files)
+            cat("\n")
             if (i == 1) {
               jobdone = files$file_nm == "job_done.ok" &
                 files$dp_cd_list == 10 &
@@ -102,6 +105,7 @@ pmn = function(numParty, directory = getwd()) {
                 filesToSend = rbind(filesToSend, files)
               }
             }
+            # Sys.sleep(sleepTime)
             file.remove(file.path(writeDirectory[i], "files_done.ok"))
             cat("  Party", partyName[i], "- files_done.ok\n")
             source[i] = FALSE
@@ -109,7 +113,7 @@ pmn = function(numParty, directory = getwd()) {
           }
         }
       }
-      Sys.sleep(1)
+      Sys.sleep(sleepTime)
     }
 
     if (quit) break

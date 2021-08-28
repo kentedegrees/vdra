@@ -5,19 +5,22 @@ AnalysisCenter.2Party = function(regression            = "linear",
                                  response              = NULL,
                                  strata                = NULL,
                                  mask                  = TRUE,
-                                 monitorFolder         = getwd(),
+                                 monitorFolder         = NULL,
                                  msreqid               = "v_default_00_000",
                                  blocksize             = 500,
                                  tol                   = 1e-8,
                                  maxIterations         = 25,
                                  sleepTime             = 10,
-                                 maxWaitingTime        = 24 * 60 * 60,
+                                 maxWaitingTime        = 86400,
                                  popmednet             = TRUE,
                                  trace                 = FALSE) {
-  digits.secs = getOption("digits.secs")
-  options(digits.secs = 2)
+  # digits.secs = getOption("digits.secs")
+  # options(digits.secs = 2)
   startTime = proc.time()
   cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
+  if (is.null(monitorFolder)) {
+    stop("monitorFolder must be specified.\n\n")
+  }
   stats = list()
   if (regression == "cox") {
     stats = PartyAProcess2Cox(data, response, strata, mask, monitorFolder,
@@ -27,20 +30,18 @@ AnalysisCenter.2Party = function(regression            = "linear",
     stats = PartyAProcess2Linear(data, response, monitorFolder, msreqid,
                                  blocksize, sleepTime, maxWaitingTime,
                                  popmednet, trace)
-  } else  if (regression == "logistic") {
+  } else if (regression == "logistic") {
     stats = PartyAProcess2Logistic(data, response, monitorFolder, msreqid,
                                    blocksize, tol, maxIterations, sleepTime,
                                    maxWaitingTime, popmednet, trace)
-  }
-
-  else {
+  } else {
     cat("Regression type must be \"cox\", \"linear\" or \"logistic\"\n\n")
   }
 
   elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
   cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   cat(elp, "\n")
-  options(digits.secs = digits.secs)
+  # options(digits.secs = digits.secs)
   return(stats)
 }
 
@@ -49,15 +50,18 @@ DataPartner.2Party = function(regression          = "linear",
                               data                = NULL,
                               strata              = NULL,
                               mask                = TRUE,
-                              monitorFolder       = getwd(),
+                              monitorFolder       = NULL,
                               sleepTime           = 10,
-                              maxWaitingTime      = 24 * 60 * 60,
+                              maxWaitingTime      = 86400,
                               popmednet           = TRUE,
                               trace               = FALSE) {
-  digits.secs = getOption("digits.secs")
-  options(digits.secs = 2)
+  # digits.secs = getOption("digits.secs")
+  # options(digits.secs = 2)
   startTime = proc.time()
   cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
+  if (is.null(monitorFolder)) {
+    stop("monitorFolder must be specified.\n\n")
+  }
   stats = list()
   if (regression == "cox") {
     stats = PartyBProcess2Cox(data, strata, mask,
@@ -76,7 +80,7 @@ DataPartner.2Party = function(regression          = "linear",
   elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
   cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   cat(elp, "\n")
-  options(digits.secs = digits.secs)
+  # options(digits.secs = digits.secs)
   return(stats)
 }
 
@@ -87,16 +91,19 @@ DataPartner1.3Party = function(regression            = "linear",
                                response              = NULL,
                                strata                = NULL,
                                mask                  = TRUE,
-                               monitorFolder         = getwd(),
+                               monitorFolder         = NULL,
                                sleepTime             = 10,
-                               maxWaitingTime        = 24 * 60 * 60,
+                               maxWaitingTime        = 86400,
                                popmednet             = TRUE,
                                trace                 = FALSE) {
 
-  digits.secs = getOption("digits.secs")
-  options(digits.secs = 2)
+  # digits.secs = getOption("digits.secs")
+  # options(digits.secs = 2)
   startTime = proc.time()
   cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
+  if (is.null(monitorFolder)) {
+    stop("monitorFolder must be specified.\n\n")
+  }
   stats = list()
   if (regression == "cox") {
     stats = PartyAProcess3Cox(data, response, strata, mask, monitorFolder,
@@ -114,7 +121,7 @@ DataPartner1.3Party = function(regression            = "linear",
   elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
   cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   cat(elp, "\n")
-  options(digits.secs = digits.secs)
+  # options(digits.secs = digits.secs)
   return(stats)
 }
 
@@ -123,15 +130,18 @@ DataPartner2.3Party = function(regression          = "linear",
                                data                = NULL,
                                strata              = NULL,
                                mask                = TRUE,
-                               monitorFolder       = getwd(),
+                               monitorFolder       = NULL,
                                sleepTime           = 10,
-                               maxWaitingTime      = 24 * 60 * 60,
+                               maxWaitingTime      = 86400,
                                popmednet           = TRUE,
                                trace               = FALSE) {
-  digits.secs = getOption("digits.secs")
-  options(digits.secs = 2)
+  # digits.secs = getOption("digits.secs")
+  # options(digits.secs = 2)
   startTime = proc.time()
   cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
+  if (is.null(monitorFolder)) {
+    stop("monitorFolder must be specified.\n\n")
+  }
   stats = list()
   if (regression == "cox") {
     stats = PartyBProcess3Cox(data, strata, mask, monitorFolder,
@@ -149,25 +159,28 @@ DataPartner2.3Party = function(regression          = "linear",
   elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
   cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   cat(elp, "\n")
-  options(digits.secs = digits.secs)
+  # options(digits.secs = digits.secs)
   return(stats)
 }
 
 
 AnalysisCenter.3Party = function(regression            = "linear",
-                                 monitorFolder         = getwd(),
+                                 monitorFolder         = NULL,
                                  msreqid               = "v_default_00_000",
                                  blocksize             = 500,
                                  tol                   = 1e-8,
                                  maxIterations         = 25,
                                  sleepTime             = 10,
-                                 maxWaitingTime        = 24 * 60 * 60,
+                                 maxWaitingTime        = 86400,
                                  popmednet             = TRUE,
                                  trace                 = FALSE) {
-  digits.secs = getOption("digits.secs")
-  options(digits.secs = 2)
+  # digits.secs = getOption("digits.secs")
+  # options(digits.secs = 2)
   startTime = proc.time()
   cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
+  if (is.null(monitorFolder)) {
+    stop("monitorFolder must be specified.\n\n")
+  }
   stats = list()
   if (regression == "cox") {
     stats = PartyTProcess3Cox(monitorFolder, msreqid, blocksize, tol,
@@ -187,7 +200,7 @@ AnalysisCenter.3Party = function(regression            = "linear",
   elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
   cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   cat(elp, "\n")
-  options(digits.secs = digits.secs)
+  # options(digits.secs = digits.secs)
   return(stats)
 }
 
@@ -200,15 +213,18 @@ DataPartner.KParty = function(regression            = "linear",
                               mask                  = TRUE,
                               numDataPartners       = NULL,
                               dataPartnerID         = NULL,
-                              monitorFolder         = getwd(),
+                              monitorFolder         = NULL,
                               sleepTime             = 10,
-                              maxWaitingTime        = 24 * 60 * 60,
+                              maxWaitingTime        = 86400,
                               popmednet             = TRUE,
                               trace                 = FALSE) {
-  digits.secs = getOption("digits.secs")
-  options(digits.secs = 2)
+  # digits.secs = getOption("digits.secs")
+  # options(digits.secs = 2)
   startTime = proc.time()
   cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
+  if (is.null(monitorFolder)) {
+    stop("monitorFolder must be specified.\n\n")
+  }
   stats = list()
   if (is.null(numDataPartners)) {
     stop("numDataPartners must be specified\n")
@@ -236,25 +252,28 @@ DataPartner.KParty = function(regression            = "linear",
   elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
   cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   cat(elp, "\n\n")
-  options(digits.secs = digits.secs)
+  # options(digits.secs = digits.secs)
   return(stats)
 }
 
 
 AnalysisCenter.KParty = function(regression            = "linear",
                                  numDataPartners       = NULL,
-                                 monitorFolder         = getwd(),
+                                 monitorFolder         = NULL,
                                  msreqid               = "v_default_00_000",
                                  tol                   = 1e-8,
                                  maxIterations         = 25,
                                  sleepTime             = 10,
-                                 maxWaitingTime        = 24 * 60 * 60,
+                                 maxWaitingTime        = 86400,
                                  popmednet             = TRUE,
                                  trace                 = FALSE) {
-  digits.secs = getOption("digits.secs")
-  options(digits.secs = 2)
+  # digits.secs = getOption("digits.secs")
+  # options(digits.secs = 2)
   startTime = proc.time()
   cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
+  if (is.null(monitorFolder)) {
+    stop("monitorFolder must be specified.\n\n")
+  }
   stats = list()
   if (is.null(numDataPartners)) {
     stop("numDataPartners must be specified.")
@@ -279,7 +298,7 @@ AnalysisCenter.KParty = function(regression            = "linear",
   elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
   cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   cat(elp, "\n\n")
-  options(digits.secs = digits.secs)
+  # options(digits.secs = digits.secs)
   return(stats)
 }
 
@@ -298,6 +317,138 @@ CreateIOLocation = function(monitorFolder, folder) {
   }
   # file with directory name exists.  cannot create directory
   return(FALSE)
+}
+
+
+CheckDataFormat = function(params, data) {
+  if ("data.frame" %in% class(data)) {
+    data = data.frame(data)
+  } else if ("matrix" %in% class(data)) {
+    data = matrix(data)
+  } else {
+    cat("Error: data is not a matrix or a data frame.\n\n")
+    return(TRUE)
+  }
+
+  if (nrow(data) == 0 || ncol(data) == 0) {
+    cat("Error: the data is empty.\n\n")
+    return(TRUE)
+  }
+  badValue = rep(FALSE, nrow(data))
+  for (i in 1:ncol(data)) {
+    if (class(data[, i]) %in% c("integer", "single", "double", "numeric")) {
+      badValue = badValue | !is.finite(data[, i])
+    } else {
+      badValue = badValue | is.na(data[, i])
+    }
+  }
+  idx = data.frame(which(badValue))
+  colnames(idx) = "Observations with invalid entries"
+  if (nrow(idx) > 0) {
+    cat("Error: Some observations contain invalid values: NA, NaN, or Inf.",
+        "A list of all such observations has been outputted to",
+        file.path(params$writePath, "invalidEntries.csv"),
+        ". Terminating program.\n\n")
+    write.csv(idx, file.path(params$writePath, "invalidEntries.csv"))
+    return(TRUE)
+  }
+  if (is.null(colnames(data))) {
+    cat("Error: variables are not named.\n\n")
+    return(TRUE)
+  }
+  return(FALSE)
+}
+
+CheckResponse = function(params, data, yname) {
+  if (is.null(yname)) {
+    cat("Error: Response is not specified.\n\n")
+    return(NULL)
+  }
+  if (class(yname) != "character") {
+    cat("Error: response label is not a character string.\n\n")
+    return(NULL)
+  }
+  yname = unique(yname)
+  if (params$analysis == "linear" || params$analysis == "logistic") {
+    if (length(yname) != 1) {
+      cat("Error: Specify only one reponse for", params$analysis, "regression.\n\n")
+      return(NULL)
+    }
+    responseColIndex = which(colnames(data) %in% yname)
+    if (length(responseColIndex) == 0) {
+      cat("Error: response variable not found.\n\n")
+      return(NULL)
+    }
+    if (length(responseColIndex) > 1) {
+      cat("Error: response variable appears more than once.\n\n")
+      return(NULL)
+    }
+  }
+  if (params$analysis == "cox") {
+    if (length(yname) != 2) {
+      cat("Error: Specify exactly two variables (time and censor) for Cox regression.\n\n")
+      return(NULL)
+    }
+    responseColIndexTime   = c(which(colnames(data) %in% yname[1]))
+    responseColIndexCensor = c(which(colnames(data) %in% yname[2]))
+    if (length(responseColIndexTime) == 0) {
+      cat("Error: Time variable not found.\n\n")
+      return(NULL)
+    }
+    if (length(responseColIndexTime) > 1) {
+      cat("Error: Time variable appears more than once.\n\n")
+      return(NULL)
+    }
+    if (length(responseColIndexCensor) == 0) {
+      cat("Error: Censor variable not found.\n\n")
+      return(NULL)
+    }
+    if (length(responseColIndexCensor) > 1) {
+      cat("Error: Censor variable appears more than once.\n\n")
+      return(NULL)
+    }
+    responseColIndex = c(responseColIndexTime, responseColIndexCensor)
+  }
+  for (i in 1:length(yname)) {
+    if (!("numeric" %in% class(data[, responseColIndex[i]])) &&
+        !("integer" %in% class(data[, responseColIndex[i]]))) {
+      cat("Error:",  yname[i], "is not numeric.\n\n")
+      return(NULL)
+    }
+  }
+  if (params$analysis == "logistic") {
+    if (sum(!(data[, responseColIndex] %in% c(0, 1))) > 0) {
+      cat("Error: response variable is not binary.  It should only be 0's and  1's.\n\n")
+      return(NULL)
+    }
+  }
+  if (params$analysis == "cox") {
+    if (sum(!(data[, responseColIndex[2]] %in% c(0, 1))) > 0) {
+      cat("Error: censoring variable is not binary.  It should only be 0's and  1's.\n\n")
+      return(NULL)
+    }
+  }
+  return(responseColIndex)
+}
+
+CreateModelMatrixTags = function(data) {
+  if (ncol(data) == 0) {
+    return(c())
+  }
+  num     = numeric(ncol(data))
+  classes = character(ncol(data))
+  for (i in 1:ncol(data)) {
+    if (class(data[, i]) %in% c("integer", "single", "double", "numeric")) {
+      num[i] = 1
+      classes[i] = "numeric"
+    } else {
+      num[i] = length(unique(data[, i])) - 1
+      classes[i] = "factor"
+    }
+  }
+  tags = rep(names(data), times = num)
+  names(tags) = rep(classes, times = num)
+  return(tags)
 }
 
 ########################### 2 PARTY SETUP FUNCTIONS ############################
@@ -386,7 +537,7 @@ PrepareParams.kp = function(analysis, dataPartnerID, numDataPartners,
   params$stats$failed        = TRUE
   params$stats$converged     = FALSE
   if ((class(numDataPartners) != "integer" &&
-      class(numDataPartners) != "numeric") ||
+       class(numDataPartners) != "numeric") ||
       numDataPartners <= 0 ||
       is.infinite(numDataPartners) ||
       round(numDataPartners) != numDataPartners) {
@@ -651,7 +802,7 @@ RandomOrthonomalMatrix = function(size) {
   return(qr.Q(qr(matrix(runif(size * size), size, size)), complete = TRUE))
 }
 
-########################## SHARED PMN COMM FUNCTIONS ###########################
+#################### SHARED PMN COMMUNICATION FUNCTIONS ###################
 
 MakeCSV = function(file_nm, transfer_to_site_in, dp_cd_list, writePath) {
   dframe = data.frame(file_nm, transfer_to_site_in, dp_cd_list)
@@ -695,6 +846,8 @@ Standby = function(triggerName, triggerLocation,
     stop("Exceeded maximum time waiting for files to be dropped.")
     return("exmwt")
   }
+
+  Sys.sleep(sleepTime)
 
   if (remove) DeleteTrigger(triggerName, triggerLocation)
 
@@ -758,12 +911,12 @@ ReadErrorMessage = function(readPath) {
   return(message)
 }
 
-########################## 2 PARTY PMN COMM FUNCTIONS ##########################
+###################### 2 PARTY PMN COMMUNICATION FUNCTIONS ######################
 
 SendPauseQuit.2p = function(params,
-                         files = c(),
-                         sleepTime = 10,
-                         job_failed = FALSE) {
+                            files = c(),
+                            sleepTime = 10,
+                            job_failed = FALSE) {
 
   params = StoreLogEntry.2p(params, files)
   params = StoreTrackingTableEntry.2p(params)
@@ -799,7 +952,7 @@ SendPauseQuit.2p = function(params,
                             "Tracking Table")
   WriteStampsCSV(params)
   WriteStampsRaw(params)
-  Sys.sleep(sleepTime)
+  # Sys.sleep(sleepTime)
   if (job_failed)  {
     MakeTrigger("job_fail.ok",  params$writePath)
   } else {
@@ -810,10 +963,10 @@ SendPauseQuit.2p = function(params,
 }
 
 SendPauseContinue.2p = function(params,
-                             files = c(),
-                             sleepTime = 10,
-                             maxWaitingTime = NULL,
-                             job_started = FALSE) {
+                                files = c(),
+                                sleepTime = 10,
+                                maxWaitingTime = NULL,
+                                job_started = FALSE) {
   params = StoreLogEntry.2p(params, files)
   params = StoreTrackingTableEntry.2p(params)
   WriteLogCSV(params)
@@ -836,16 +989,16 @@ SendPauseContinue.2p = function(params,
   WriteStampsCSV(params)
   WriteStampsRaw(params)
   params$pmnStepCounter      = params$pmnStepCounter + 2
-  Sys.sleep(sleepTime)
+  # Sys.sleep(sleepTime)
   if (job_started) {
     MakeTrigger("job_started.ok", params$writePath)
   } else {
     MakeTrigger("files_done.ok", params$writePath)
   }
   if (params$partyName == "A") {
-  	cat("Waiting for data partner\n")
+    cat("Waiting for data partner\n")
   } else {
-  	cat("Waiting for analysis center\n")
+    cat("Waiting for analysis center\n")
   }
   tryCatch(Standby("files_done.ok", params$readPath, maxWaitingTime = maxWaitingTime))
   cat("Resuming local processing\n\n")
@@ -865,9 +1018,9 @@ PauseContinue.2p = function(params, maxWaitingTime) {
   params = StoreLogEntry.2p(params, "")
   WriteLogCSV(params)
   if (params$partyName == "A") {
-  	cat("Waiting for data partner\n")
+    cat("Waiting for data partner\n")
   } else {
-  	cat("Waiting for analysis center\n")
+    cat("Waiting for analysis center\n")
   }
   tryCatch(Standby("files_done.ok", params$readPath, maxWaitingTime = maxWaitingTime))
   cat("Resuming local processing\n\n")
@@ -880,7 +1033,7 @@ PauseContinue.2p = function(params, maxWaitingTime) {
   return(params)
 }
 
-########################## 3 PARTY PMN COMM FUNCTIONS ##########################
+###################### 3 PARTY PMN COMMUNICATION FUNCTIONS ######################
 
 WaitForTurn.3p = function(params, sleepTime) {
   Sys.sleep(sleepTime)
@@ -912,12 +1065,12 @@ WaitForTurn.3p = function(params, sleepTime) {
 
 
 SendPauseQuit.3p = function(params,
-                         filesA = NULL,
-                         filesB = NULL,
-                         filesT = NULL,
-                         sleepTime = 10,
-                         job_failed = FALSE,
-                         waitForTurn = FALSE) {
+                            filesA = NULL,
+                            filesB = NULL,
+                            filesT = NULL,
+                            sleepTime = 10,
+                            job_failed = FALSE,
+                            waitForTurn = FALSE) {
 
   params$lastIteration = TRUE
   params$completed     = TRUE
@@ -963,11 +1116,11 @@ SendPauseQuit.3p = function(params,
   params = StoreStampsEntry(params, "Files done trigger file", "Trigger File Created")
   params = StoreStampsEntry(params, "R program execution complete, output files written",
                             "Tracking Table")
-	if (waitForTurn) {
-	  params = StoreStampsEntry(params, "R program execution delayed", "Tracking Table")
+  if (waitForTurn) {
+    params = StoreStampsEntry(params, "R program execution delayed", "Tracking Table")
     WaitForTurn.3p(params, sleepTime)
     params = StoreStampsEntry(params, "R program execution restarted", "Tracking Table")
-	}
+  }
   WriteStampsCSV(params)
   WriteStampsRaw(params)
   if (params$party == "T") {
@@ -982,14 +1135,14 @@ SendPauseQuit.3p = function(params,
 }
 
 SendPauseContinue.3p = function(params,
-                             filesA = NULL,
-                             filesB = NULL,
-                             filesT = NULL,
-                             from   = NULL,
-                             sleepTime = 10,
-                             maxWaitingTime = 24 * 60 * 60,
-                             job_started = FALSE,
-                             waitForTurn = FALSE) {
+                                filesA = NULL,
+                                filesB = NULL,
+                                filesT = NULL,
+                                from   = NULL,
+                                sleepTime = 10,
+                                maxWaitingTime = 24 * 60 * 60,
+                                job_started = FALSE,
+                                waitForTurn = FALSE) {
   params = StoreLogEntry.3p(params, c(filesA, filesB, filesT))
   params = StoreTrackingTableEntry.3p(params)
   WriteLogCSV(params)
@@ -1039,15 +1192,15 @@ SendPauseContinue.3p = function(params,
     MakeTrigger("files_done.ok", params$writePath)
   }
   if (length(from) == 1) {
-  	if (from == "T") {
-  		cat("Waiting for analysis center\n")
-  	} else if (from == "A") {
-  		cat("Waiting for data partner 1\n")
-  	} else {
-  		cat("Waiting for data partner 2\n")
-  	}
+    if (from == "T") {
+      cat("Waiting for analysis center\n")
+    } else if (from == "A") {
+      cat("Waiting for data partner 1\n")
+    } else {
+      cat("Waiting for data partner 2\n")
+    }
   } else if (length(from) == 2) {
-  	cat("Waiting for data partners\n")
+    cat("Waiting for data partners\n")
   }
   tryCatch(Standby("files_done.ok", params$readPath[from], maxWaitingTime = maxWaitingTime))
   cat("Resuming local processing\n\n")
@@ -1067,15 +1220,15 @@ PauseContinue.3p = function(params, from = NULL, maxWaitingTime = 24 * 60 * 60) 
   params = StoreTrackingTableEntry.3p(params)
   WriteLogCSV(params)
   if (length(from) == 1) {
-  	if (from == "T") {
-  		cat("Waiting for analysis center\n")
-  	} else if (from == "A") {
-  		cat("Waiting for data partner 1\n")
-  	} else {
-  		cat("Waiting for data partner 2\n")
-  	}
+    if (from == "T") {
+      cat("Waiting for analysis center\n")
+    } else if (from == "A") {
+      cat("Waiting for data partner 1\n")
+    } else {
+      cat("Waiting for data partner 2\n")
+    }
   } else if (length(from) == 2) {
-  	cat("Waiting for data partners\n")
+    cat("Waiting for data partners\n")
   }
   tryCatch(Standby("files_done.ok", params$readPath[from], maxWaitingTime = maxWaitingTime))
   cat("Resuming local processing\n\n")
@@ -1095,12 +1248,12 @@ UpdateCounters.3p = function(params) {
   return(params)
 }
 
-########################## K PARTY PMN COMM FUNCTIONS ##########################
+###################### K PARTY PMN COMMUNICATION FUNCTIONS ######################
 
 WaitForTurn.kp = function(params, sleepTime) {
   Sys.sleep(sleepTime)
 
-	if (!params$popmednet) return(NULL)
+  if (!params$popmednet) return(NULL)
 
   cat("Waiting For Turn\n")
   startTime = proc.time()[3]
@@ -1127,11 +1280,11 @@ WaitForTurn.kp = function(params, sleepTime) {
 
 
 SendPauseQuit.kp = function(params,
-                         filesAC = NULL,
-                         filesDP = NULL,
-                         sleepTime = 10,
-                         job_failed = FALSE,
-                         waitForTurn = FALSE) {
+                            filesAC = NULL,
+                            filesDP = NULL,
+                            sleepTime = 10,
+                            job_failed = FALSE,
+                            waitForTurn = FALSE) {
 
   # Assumes that upon quitting, same thing is sent to everyone, so filesDP cannot be a list
 
@@ -1197,13 +1350,13 @@ SendPauseQuit.kp = function(params,
 
 
 SendPauseContinue.kp = function(params,
-                             filesAC = NULL,
-                             filesDP = NULL,
-                             from   = NULL,
-                             sleepTime = 10,
-                             maxWaitingTime = 24 * 60 * 60,
-                             job_started = FALSE,
-                             waitForTurn = FALSE) {
+                                filesAC = NULL,
+                                filesDP = NULL,
+                                from   = NULL,
+                                sleepTime = 10,
+                                maxWaitingTime = 24 * 60 * 60,
+                                job_started = FALSE,
+                                waitForTurn = FALSE) {
   if (class(filesDP) != "list") {
     params = StoreLogEntry.kp(params, c(filesAC, filesDP))
     params = StoreTrackingTableEntry.kp(params)
@@ -1299,9 +1452,6 @@ SendPauseContinue.kp = function(params,
     cat("Waiting for data partner 2\n")
     tryCatch(Standby("files_done.ok", params$readPathDP[2], maxWaitingTime = maxWaitingTime))
     DeleteTrigger("files_done.ok", params$readPathDP[2])
-  } else {
-    cat("I don't know this command for \"from\"\n")
-    Sys.sleep(10000)
   }
   cat("Resuming local processing\n\n")
   params = MergeLogRaw.kp(params, from)
@@ -1351,24 +1501,24 @@ UpdateCounters.kp = function(params) {
 }
 
 ReceivedError.kp = function(params, from) {
-	result = list()
-	message = ""
-	if (from == "AC") {
-		messageExists = file.exists(file.path(params$readPathAC, "errorMessage.rdata"))
-		if (messageExists) {
-			message = ReadErrorMessage(params$readPathAC)
-		}
-	} else {
-		messageExists = file.exists(file.path(params$readPathDP, "errorMessage.rdata"))
-		for (id in 1:params$numDataPartners) {
-			if (messageExists[id]) {
-				message = paste0(message, ReadErrorMessage(params$readPathDP[id]), " ")
-			}
-		}
-	}
-	result$error = any(messageExists)
-	result$message = message
-	return(result)
+  result = list()
+  message = ""
+  if (from == "AC") {
+    messageExists = file.exists(file.path(params$readPathAC, "errorMessage.rdata"))
+    if (messageExists) {
+      message = ReadErrorMessage(params$readPathAC)
+    }
+  } else {
+    messageExists = file.exists(file.path(params$readPathDP, "errorMessage.rdata"))
+    for (id in 1:params$numDataPartners) {
+      if (messageExists[id]) {
+        message = paste0(message, ReadErrorMessage(params$readPathDP[id]), " ")
+      }
+    }
+  }
+  result$error = any(messageExists)
+  result$message = message
+  return(result)
 }
 
 ################################ TIME FUNCTIONS ################################
@@ -1474,8 +1624,8 @@ GetBlockSize = function(pA, pB) {
 
 CreateBlocks = function(pA, pB, n, blocksize) {
 
-  # Divides the matrix with ncol(n) into submatricies of approximately
-  # equal size. Minmum size is blocksize.
+  # Divides the matrix with ncol(n) into submatrices of approximately
+  # equal size. minimum size is blocksize.
 
   blocks = list()
 
@@ -1625,745 +1775,749 @@ CreateContainers = function(pA, pB, blocks) {
 ########################### OUTPUT FORMAT FUNCTIONS ############################
 
 formatPValue = function(pvals, width = 7) {
-	p = c()
-	for (x in pvals) {
-		if (is.na(x)) {
-			x = format("NA", width = width, justify = "right")
-		} else if (x > 1e-3) {
-			x = format(round(x, 5),  width = width, justify = "right", nsmall = 5)
-		} else if (x > 2e-16) {
-			x = formatC(x, format = "e", digits = 1)
-		} else {
-			x = format("<2e-16", width = width, justify = "right")
-		}
-		p = c(p, x)
-	}
-	return(p)
+  p = c()
+  for (x in pvals) {
+    if (is.na(x)) {
+      x = format("NA", width = width, justify = "right")
+    } else if (x > 1e-3) {
+      x = format(round(x, 5),  width = width, justify = "right", nsmall = 5)
+    } else if (x > 2e-16) {
+      x = formatC(x, format = "e", digits = 1)
+    } else {
+      x = format("<2e-16", width = width, justify = "right")
+    }
+    p = c(p, x)
+  }
+  return(p)
 }
 
 
 formatStrings = function(x, minWidth = NULL, justify = "left") {
-	width = max(max(nchar(x)), minWidth)
-	x = format(x, justify = justify, width = width)
-	return(x)
+  width = max(max(nchar(x)), minWidth)
+  x = format(x, justify = justify, width = width)
+  return(x)
 }
 
 
 formatStat = function(x) {
-	if (is.na(x)) {
-		"NA"
-	} else if (x >= 1000000) {
-		formatC(x, format = "e", digits = 3)
-	} else if (x >= 1000) {
-		as.character(round(x, 0))
-	} else if (x > 1e-3) {
-		format(signif(x, 4))
-	} else {
-		formatC(x, format = "e", digits = 3)
-	}
+  if (is.na(x)) {
+    "NA"
+  } else if (x >= 1000000) {
+    formatC(x, format = "e", digits = 3)
+  } else if (x >= 1000) {
+    as.character(round(x, 0))
+  } else if (x > 1e-3) {
+    format(signif(x, 4))
+  } else {
+    formatC(x, format = "e", digits = 3)
+  }
 }
 
 
 formatStatList = function(vals) {
-	# Assumes that x is non-empty set of numeric or NA and there are no NaN's
-	# width = 10, justify = right => standard output, so no worries about justify nor width
-	notNA = which(!is.na(vals))
-	notZero = which(vals != 0)
-	keep = intersect(notNA, notZero)
-	if (length(keep) == 0) {
-		f = c()
-		for (x in vals) {
-			if (is.na(x)) {
-				f = c(f, "NA")
-			} else {
-				f = c(f, "0")
-			}
-		}
-		return(f)
-	}
-	temp = vals[keep]  # All non-zero, non-NA
-	minval = min(abs(temp))
-	maxval = max(abs(temp))
-	#Where most significant digit is located
-	decmin = floor(log10(minval))
-	decmax = floor(log10(maxval))
-	if (minval >= 1) decmin = decmin + 1
-	if (maxval >= 1) decmax = decmax + 1
-	if ((decmin < -3) || (decmax > 6) || (decmax - decmin > 3)) {
-		# scientific
-		f = c()
-		for (x in vals) {
-			if (is.na(x)) {
-				f = c(f, "NA")
-			} else {
-				f = c(f, formatC(x, format = "e", digits = 3))
-			}
-		}
-		return(f)
-	} else {
-		# standard
-		if (decmin < 0) {
-			nsmall = 6
-		} else {
-			nsmall = 6 - decmin
-		}
-		f = c()
-		for (x in vals) {
-			if (is.na(x)) {
-				f = c(f, "NA")
-			} else {
-				f = c(f, format(round(x, nsmall), scientific = FALSE, nsmall = nsmall))
-			}
-		}
-		return(f)
-	}
+  # Assumes that x is non-empty set of numeric or NA and there are no NaN's
+  # width = 10, justify = right => standard output, so no worries about justify nor width
+  notNA = which(!is.na(vals))
+  notZero = which(vals != 0)
+  keep = intersect(notNA, notZero)
+  if (length(keep) == 0) {
+    f = c()
+    for (x in vals) {
+      if (is.na(x)) {
+        f = c(f, "NA")
+      } else {
+        f = c(f, "0")
+      }
+    }
+    return(f)
+  }
+  temp = vals[keep]  # All non-zero, non-NA
+  minval = min(abs(temp))
+  maxval = max(abs(temp))
+  #Where most significant digit is located
+  decmin = floor(log10(minval))
+  decmax = floor(log10(maxval))
+  if (minval >= 1) decmin = decmin + 1
+  if (maxval >= 1) decmax = decmax + 1
+  if ((decmin < -3) || (decmax > 6) || (decmax - decmin > 3)) {
+    # scientific
+    f = c()
+    for (x in vals) {
+      if (is.na(x)) {
+        f = c(f, "NA")
+      } else {
+        f = c(f, formatC(x, format = "e", digits = 3))
+      }
+    }
+    return(f)
+  } else {
+    # standard
+    if (decmin < 0) {
+      nsmall = 6
+    } else {
+      nsmall = 6 - decmin
+    }
+    f = c()
+    for (x in vals) {
+      if (is.na(x)) {
+        f = c(f, "NA")
+      } else {
+        f = c(f, format(round(x, nsmall), scientific = FALSE, nsmall = nsmall))
+      }
+    }
+    return(f)
+  }
 }
 
 ########################### SHARED STAMPS FUNCTIONS ############################
 
 StoreStampsEntry = function(params, description = "", type = "") {
-	newEntry             = params$stamps$blank
-	newEntry$Step        = params$pmnStepCounter
-	newEntry$Description = description
-	newEntry$Time        = GetRoundTripTime()
-	newEntry$Type        = type
-	params$stamps$history = rbind(params$stamps$history, newEntry)
-	return(params)
+  newEntry             = params$stamps$blank
+  newEntry$Step        = params$pmnStepCounter
+  newEntry$Description = description
+  newEntry$Time        = GetRoundTripTime()
+  newEntry$Type        = type
+  params$stamps$history = rbind(params$stamps$history, newEntry)
+  return(params)
 }
 
 
 WriteStampsRaw = function(params) {
-	stamps = params$stamps$history
-	save(stamps, file = file.path(params$writePath, "stamps.rdata"))
+  stamps = params$stamps$history
+  save(stamps, file = file.path(params$writePath, "stamps.rdata"))
 }
 
 
 WriteStampsCSV = function(params) {
-	write.csv(params$stamps$history, file.path(params$writePath, "stamps.csv"),
-						row.names = FALSE)
+  write.csv(params$stamps$history, file.path(params$writePath, "stamps.csv"),
+            row.names = FALSE)
 }
 
 ########################### 2 PARTY STAMPS FUNCTIONS ###########################
 
 InitializeStamps.2p = function(params) {
-	stamps = list()
-	stamps$blank = data.frame(#Iteration   = params$pmnIterationCounter,
-														Step        = params$pmnStepCounter,
-														Source      = paste("Org", params$partyName, "Dist Reg"),
-														Description = "R program execution begins",
-														Time        = GetRoundTripTime(),
-														Type        = "Tracking Table")
-	stamps$history = stamps$blank
-	params$stamps = stamps
-	return(params)
+  stamps = list()
+  stamps$blank = data.frame(#Iteration   = params$pmnIterationCounter,
+    Step        = params$pmnStepCounter,
+    Source      = paste("Org", params$partyName, "Dist Reg"),
+    Description = "R program execution begins",
+    Time        = GetRoundTripTime(),
+    Type        = "Tracking Table")
+  stamps$history = stamps$blank
+  params$stamps = stamps
+  return(params)
 }
 
 
 ReadStampsRaw.2p = function(params) {
-	load(file.path(params$readPath, "stamps.rdata"))
-	params$stamps$history = stamps
-	return(params)
+  stamps = NULL
+  load(file.path(params$readPath, "stamps.rdata"))
+  params$stamps$history = stamps
+  return(params)
 }
 
 
 MergeStampsRaw.2p = function(params) {
-	# This function will only be used in the function Pause Continue
-	# When party A and party B run simultaneously, but Party A can run first
-	# even if Party B starts the whole thing.  We append party B's log
-	# to the end of Party A's log.
-	load(file.path(params$readPath, "stamps.rdata"))
-	params$stamps$history = rbind(params$stamps$history, stamps)
-	return(params)
+  # This function will only be used in the function Pause Continue
+  # When party A and party B run simultaneously, but Party A can run first
+  # even if Party B starts the whole thing.  We append party B's log
+  # to the end of Party A's log.
+  stamps = NULL
+  load(file.path(params$readPath, "stamps.rdata"))
+  params$stamps$history = rbind(params$stamps$history, stamps)
+  return(params)
 }
 
 ########################### 3 PARTY STAMPS FUNCTIONS ###########################
 
 InitializeStamps.3p = function(params) {
-	stamps = list()
-	stamps$blank = data.frame(#Iteration   = params$pmnIterationCounter,
-														Step        = params$pmnStepCounter,
-														Source      = paste("Org", params$partyName, "Dist Reg"),
-														Description = "R program execution begins",
-														Time        = GetRoundTripTime(),
-														Type        = "Tracking Table")
-	stamps$history = stamps$blank
-	params$stamps = stamps
-	return(params)
+  stamps = list()
+  stamps$blank = data.frame(#Iteration   = params$pmnIterationCounter,
+    Step        = params$pmnStepCounter,
+    Source      = paste("Org", params$partyName, "Dist Reg"),
+    Description = "R program execution begins",
+    Time        = GetRoundTripTime(),
+    Type        = "Tracking Table")
+  stamps$history = stamps$blank
+  params$stamps = stamps
+  return(params)
 }
 
 
 MergeStampsRaw.3p = function(params, from) {
-	for (party in from) {
-		load(file.path(params$readPath[[party]], "stamps.rdata"))
-		key1 = paste0(params$stamps$history$Step,
-									params$stamps$history$Source,
-									params$stamps$history$Description)
-		key2 = paste0(stamps$Step,
-									stamps$Source,
-									stamps$Description)
-		idx = which(key2 %in% key1)
-		if (length(idx) == 0) {
-			params$stamps$history = rbind(params$stamps$history, stamps)
-		} else if (length(idx) < length(key2)) {
-			params$stamps$history = rbind(params$stamps$history, stamps[-idx, ])
-		}
-	}
-	idx = order(as.character(params$stamps$history$Time))
-	params$stamps$history = params$stamps$history[idx, ]
-	return(params)
+  stamps = NULL
+  for (party in from) {
+    load(file.path(params$readPath[[party]], "stamps.rdata"))
+    key1 = paste0(params$stamps$history$Step,
+                  params$stamps$history$Source,
+                  params$stamps$history$Description)
+    key2 = paste0(stamps$Step,
+                  stamps$Source,
+                  stamps$Description)
+    idx = which(key2 %in% key1)
+    if (length(idx) == 0) {
+      params$stamps$history = rbind(params$stamps$history, stamps)
+    } else if (length(idx) < length(key2)) {
+      params$stamps$history = rbind(params$stamps$history, stamps[-idx, ])
+    }
+  }
+  idx = order(as.character(params$stamps$history$Time))
+  params$stamps$history = params$stamps$history[idx, ]
+  return(params)
 }
 
 ########################### K PARTY STAMPS FUNCTIONS ###########################
 
 InitializeStamps.kp = function(params) {
-	stamps = list()
-	stamps$blank = data.frame(Step        = params$pmnStepCounter,
-														Source      = paste0("Org dp", params$dataPartnerID, " Dist Reg"),
-														Description = "R program execution begins",
-														Time        = GetRoundTripTime(),
-														Type        = "Tracking Table")
-	stamps$history = stamps$blank
-	params$stamps = stamps
-	return(params)
+  stamps = list()
+  stamps$blank = data.frame(Step        = params$pmnStepCounter,
+                            Source      = paste0("Org dp", params$dataPartnerID, " Dist Reg"),
+                            Description = "R program execution begins",
+                            Time        = GetRoundTripTime(),
+                            Type        = "Tracking Table")
+  stamps$history = stamps$blank
+  params$stamps = stamps
+  return(params)
 }
 
 
 MergeStampsRaw.kp = function(params, from) {
-	if (from == "AC") {
-		load(file.path(params$readPathAC, "stamps.rdata"))
-		key1 = paste0(params$stamps$history$Step,
-									params$stamps$history$Source,
-									params$stamps$history$Description)
-		key2 = paste0(stamps$Step,
-									stamps$Source,
-									stamps$Description)
-		idx = which(key2 %in% key1)
-		if (length(idx) == 0) {
-			params$stamps$history = rbind(params$stamps$history, stamps)
-		} else if (length(idx) < length(key2)) {
-			params$stamps$history = rbind(params$stamps$history, stamps[-idx, ])
-		}
-	} else if (from == "DP1") {
-		load(file.path(params$readPathDP[1], "stamps.rdata"))
-		key1 = paste0(params$stamps$history$Step,
-									params$stamps$history$Source,
-									params$stamps$history$Description)
-		key2 = paste0(stamps$Step,
-									stamps$Source,
-									stamps$Description)
-		idx = which(key2 %in% key1)
-		if (length(idx) == 0) {
-			params$stamps$history = rbind(params$stamps$history, stamps)
-		} else if (length(idx) < length(key2)) {
-			params$stamps$history = rbind(params$stamps$history, stamps[-idx, ])
-		}
-	} else {
-		for (id in 1:params$numDataPartners) {
-			if (id == params$dataPartnerID) next
-			load(file.path(params$readPathDP[id], "stamps.rdata"))
-			key1 = paste0(params$stamps$history$Step,
-										params$stamps$history$Source,
-										params$stamps$history$Description)
-			key2 = paste0(stamps$Step,
-										stamps$Source,
-										stamps$Description)
-			idx = which(key2 %in% key1)
-			if (length(idx) == 0) {
-				params$stamps$history = rbind(params$stamps$history, stamps)
-			} else if (length(idx) < length(key2)) {
-				params$stamps$history = rbind(params$stamps$history, stamps[-idx, ])
-			}
-		}
-	}
-	idx = order(as.character(params$stamps$history$Time))
-	params$stamps$history = params$stamps$history[idx, ]
-	return(params)
+  stamps = NULL
+  if (from == "AC") {
+    load(file.path(params$readPathAC, "stamps.rdata"))
+    key1 = paste0(params$stamps$history$Step,
+                  params$stamps$history$Source,
+                  params$stamps$history$Description)
+    key2 = paste0(stamps$Step,
+                  stamps$Source,
+                  stamps$Description)
+    idx = which(key2 %in% key1)
+    if (length(idx) == 0) {
+      params$stamps$history = rbind(params$stamps$history, stamps)
+    } else if (length(idx) < length(key2)) {
+      params$stamps$history = rbind(params$stamps$history, stamps[-idx, ])
+    }
+  } else if (from == "DP1") {
+    load(file.path(params$readPathDP[1], "stamps.rdata"))
+    key1 = paste0(params$stamps$history$Step,
+                  params$stamps$history$Source,
+                  params$stamps$history$Description)
+    key2 = paste0(stamps$Step,
+                  stamps$Source,
+                  stamps$Description)
+    idx = which(key2 %in% key1)
+    if (length(idx) == 0) {
+      params$stamps$history = rbind(params$stamps$history, stamps)
+    } else if (length(idx) < length(key2)) {
+      params$stamps$history = rbind(params$stamps$history, stamps[-idx, ])
+    }
+  } else {
+    for (id in 1:params$numDataPartners) {
+      if (id == params$dataPartnerID) next
+      load(file.path(params$readPathDP[id], "stamps.rdata"))
+      key1 = paste0(params$stamps$history$Step,
+                    params$stamps$history$Source,
+                    params$stamps$history$Description)
+      key2 = paste0(stamps$Step,
+                    stamps$Source,
+                    stamps$Description)
+      idx = which(key2 %in% key1)
+      if (length(idx) == 0) {
+        params$stamps$history = rbind(params$stamps$history, stamps)
+      } else if (length(idx) < length(key2)) {
+        params$stamps$history = rbind(params$stamps$history, stamps[-idx, ])
+      }
+    }
+  }
+  idx = order(as.character(params$stamps$history$Time))
+  params$stamps$history = params$stamps$history[idx, ]
+  return(params)
 }
 
 ############################# SHARED LOG FUNCTIONS #############################
 
 AddToLog = function(params, functionName, readTime, readSize, writeTime, writeSize) {
-	readTime  = round(as.numeric(readTime),  digits = 2)
-	writeTime = round(as.numeric(writeTime), digits = 2)
-	readSize  = round(as.numeric(readSize),  digits = 0)
-	writeSize = round(as.numeric(writeSize), digits = 0)
-	if (params$log$current$Functions == "") {
-		params$log$current$Functions = functionName
-	} else {
-		params$log$current$Functions = paste0(params$log$current$Functions,
-																					", ", functionName)
-	}
-	params$log$current$Read.Time = params$log$current$Read.Time + readTime
-	params$log$current$Read.Size = params$log$current$Read.Size + readSize
-	params$log$current$Write.Time = params$log$current$Write.Time + writeTime
-	params$log$current$Write.Size = params$log$current$Write.Size + writeSize
-	return(params)
+  readTime  = round(as.numeric(readTime),  digits = 2)
+  writeTime = round(as.numeric(writeTime), digits = 2)
+  readSize  = round(as.numeric(readSize),  digits = 0)
+  writeSize = round(as.numeric(writeSize), digits = 0)
+  if (params$log$current$Functions == "") {
+    params$log$current$Functions = functionName
+  } else {
+    params$log$current$Functions = paste0(params$log$current$Functions,
+                                          ", ", functionName)
+  }
+  params$log$current$Read.Time = params$log$current$Read.Time + readTime
+  params$log$current$Read.Size = params$log$current$Read.Size + readSize
+  params$log$current$Write.Time = params$log$current$Write.Time + writeTime
+  params$log$current$Write.Size = params$log$current$Write.Size + writeSize
+  return(params)
 }
 
 
 WriteLogRaw = function(params) {
-	log = params$log$history
-	save(log, file = file.path(params$writePath, "log.rdata"))
+  log = params$log$history
+  save(log, file = file.path(params$writePath, "log.rdata"))
 }
 
 
 WriteLogCSV = function(params) {
-	write.csv(params$log$history, file.path(params$writePath, "log.csv"),
-						row.names = FALSE)
+  write.csv(params$log$history, file.path(params$writePath, "log.csv"),
+            row.names = FALSE)
 }
 
 
 WriteToLogSummary = function(c1 = "", c2 = "", c3 = "",
-														 writePath = getwd(), append = TRUE) {
-	if (is.numeric(c2)) {
-		c2 = round(c2, 2)
-	}
-	write.table(data.frame(c1, c2, c3),
-							file.path(writePath, "log_summary.csv"), sep = ",", col.names = FALSE,
-							row.names = FALSE, append = append)
+                             writePath = getwd(), append = TRUE) {
+  if (is.numeric(c2)) {
+    c2 = round(c2, 2)
+  }
+  write.table(data.frame(c1, c2, c3),
+              file.path(writePath, "log_summary.csv"), sep = ",", col.names = FALSE,
+              row.names = FALSE, append = append)
 }
 
 ############################# 2 PARTY LOG FUNCTIONS ############################
 
 InitializeLog.2p = function(params) {
-	log = list()
-	log$blank = data.frame(Step             = 0,
-												 Iteration.alg    = 0,
-												 Party            = "",
-												 Functions        = "",
-												 Wait.Time        = 0,
-												 Start.Time       = GetUTCTime(),
-												 End.Time         = GetUTCTime(),
-												 Read.Time        = 0,
-												 Read.Size        = 0,
-												 Write.Time       = 0,
-												 Write.Size       = 0,
-												 Computation.Time = 0,
-												 Files.Sent       = "",
-												 Bytes.Sent       = 0)
-	log$current = log$blank
-	log$history = log$blank
-	params$log  = log
-	return(params)
+  log = list()
+  log$blank = data.frame(Step             = 0,
+                         Iteration.alg    = 0,
+                         Party            = "",
+                         Functions        = "",
+                         Wait.Time        = 0,
+                         Start.Time       = GetUTCTime(),
+                         End.Time         = GetUTCTime(),
+                         Read.Time        = 0,
+                         Read.Size        = 0,
+                         Write.Time       = 0,
+                         Write.Size       = 0,
+                         Computation.Time = 0,
+                         Files.Sent       = "",
+                         Bytes.Sent       = 0)
+  log$current = log$blank
+  log$history = log$blank
+  params$log  = log
+  return(params)
 }
 
 
 NewLogEntry.2p = function(params) {
-	params$log$current = params$log$blank
-	params$log$current$Party         = params$partyName
-	params$log$current$Start.Time    = GetUTCTime()
-	return(params)
+  params$log$current = params$log$blank
+  params$log$current$Party         = params$partyName
+  params$log$current$Start.Time    = GetUTCTime()
+  return(params)
 }
 
 
 StoreLogEntry.2p = function(params, files) {
-	params$log$current$Step          = params$pmnStepCounter
-	params$log$current$Iteration.alg = params$algIterationCounter
-	params$log$current$Party = params$partyName
-	params$log$current$End.Time = GetUTCTime()
-	params$log$current$Computation.Time = round(as.numeric(difftime(
-		params$log$current$End.Time, params$log$current$Start.Time, units = "secs")) -
-			params$log$current$Read.Time - params$log$current$Write.Time, 2)
-	params$log$current$Files.Sent = paste(files, collapse = ", ")
-	params$log$current$Bytes.Sent = sum(file.size(file.path(params$writePath, files)))
-	if (is.na(params$log$current$Bytes.Sent)) {
-		params$log$current$Bytes.Sent = 0
-	}
-	nrows = nrow(params$log$history)
-	if (nrows >= 2) {
-		params$log$current$Wait.Time =
-			round(as.numeric(difftime(
-				params$log$current$Start.Time,
-				max(params$log$history$End.Time[which(params$log$history$Party ==
-																								params$log$current$Party)]),
-				units = "secs")), 2)
-	}
-	if (params$log$history$Party[nrows] == "") {
-		params$log$history = params$log$current
-	} else {
-		params$log$history = rbind(params$log$history, params$log$current)
-	}
-	nrows = nrow(params$log$history)
-	return(params)
+  params$log$current$Step          = params$pmnStepCounter
+  params$log$current$Iteration.alg = params$algIterationCounter
+  params$log$current$Party = params$partyName
+  params$log$current$End.Time = GetUTCTime()
+  params$log$current$Computation.Time = round(as.numeric(difftime(
+    params$log$current$End.Time, params$log$current$Start.Time, units = "secs")) -
+      params$log$current$Read.Time - params$log$current$Write.Time, 2)
+  params$log$current$Files.Sent = paste(files, collapse = ", ")
+  params$log$current$Bytes.Sent = sum(file.size(file.path(params$writePath, files)))
+  if (is.na(params$log$current$Bytes.Sent)) {
+    params$log$current$Bytes.Sent = 0
+  }
+  nrows = nrow(params$log$history)
+  if (nrows >= 2) {
+    params$log$current$Wait.Time =
+      round(as.numeric(difftime(
+        params$log$current$Start.Time,
+        max(params$log$history$End.Time[which(params$log$history$Party ==
+                                                params$log$current$Party)]),
+        units = "secs")), 2)
+  }
+  if (params$log$history$Party[nrows] == "") {
+    params$log$history = params$log$current
+  } else {
+    params$log$history = rbind(params$log$history, params$log$current)
+  }
+  nrows = nrow(params$log$history)
+  return(params)
 }
 
 ReadLogRaw.2p = function(params) {
-	load(file.path(params$readPath, "log.rdata"))
-	params$log$history = log
-	return(params)
+  load(file.path(params$readPath, "log.rdata"))
+  params$log$history = log
+  return(params)
 }
 
 
 MergeLogRaw.2p = function(params) {
-	# This function will only be used in the function Pause Continue
-	# When party A and party B run simultaneously, but Party A can run first
-	# even if Party B starts the whole thing.  We append party B's log
-	# to the end of Party A's log.
-	load(file.path(params$readPath, "log.rdata"))
-	params$log$history = rbind(params$log$history, log)
-	return(params)
+  # This function will only be used in the function Pause Continue
+  # When party A and party B run simultaneously, but Party A can run first
+  # even if Party B starts the whole thing.  We append party B's log
+  # to the end of Party A's log.
+  load(file.path(params$readPath, "log.rdata"))
+  params$log$history = rbind(params$log$history, log)
+  return(params)
 }
 
 
 SummarizeLog.2p = function(params) {
-	writePath = params$writePath
-	log    = params$log$history
-	indexA = which(log$Party == "A")
-	indexB = which(log$Party == "B")
-	Party.A.Start.Time = log$Start.Time[indexA[1]]
-	Party.A.End.Time   = log$End.Time[indexA[length(indexA)]]
-	Party.A.Total.Time = round(as.numeric(difftime(
-		Party.A.End.Time, Party.A.Start.Time, units = "secs")), digits = 2)
-	Party.A.Reading.Time = sum(log$Read.Time[indexA])
-	Party.A.Writing.Time = sum(log$Write.Time[indexA])
-	Party.A.Computing.Time = sum(log$Computation.Time[indexA])
-	Party.A.Waiting.Time = sum(log$Wait.Time[indexA])
-	Party.A.Total.Time.HMS = ConvertSecsToHMS(Party.A.Total.Time, timeOnly = TRUE)
-	Party.A.Reading.Time.HMS = ConvertSecsToHMS(Party.A.Reading.Time, timeOnly = TRUE)
-	Party.A.Writing.Time.HMS = ConvertSecsToHMS(Party.A.Writing.Time, timeOnly = TRUE)
-	Party.A.Computing.Time.HMS = ConvertSecsToHMS(Party.A.Computing.Time, timeOnly = TRUE)
-	Party.A.Waiting.Time.HMS = ConvertSecsToHMS(Party.A.Waiting.Time, timeOnly = TRUE)
-	Party.A.Bytes.Read = sum(log$Read.Size[indexA])
-	Party.A.Bytes.Written = sum(log$Write.Size[indexA])
+  writePath = params$writePath
+  log    = params$log$history
+  indexA = which(log$Party == "A")
+  indexB = which(log$Party == "B")
+  Party.A.Start.Time = log$Start.Time[indexA[1]]
+  Party.A.End.Time   = log$End.Time[indexA[length(indexA)]]
+  Party.A.Total.Time = round(as.numeric(difftime(
+    Party.A.End.Time, Party.A.Start.Time, units = "secs")), digits = 2)
+  Party.A.Reading.Time = sum(log$Read.Time[indexA])
+  Party.A.Writing.Time = sum(log$Write.Time[indexA])
+  Party.A.Computing.Time = sum(log$Computation.Time[indexA])
+  Party.A.Waiting.Time = sum(log$Wait.Time[indexA])
+  Party.A.Total.Time.HMS = ConvertSecsToHMS(Party.A.Total.Time, timeOnly = TRUE)
+  Party.A.Reading.Time.HMS = ConvertSecsToHMS(Party.A.Reading.Time, timeOnly = TRUE)
+  Party.A.Writing.Time.HMS = ConvertSecsToHMS(Party.A.Writing.Time, timeOnly = TRUE)
+  Party.A.Computing.Time.HMS = ConvertSecsToHMS(Party.A.Computing.Time, timeOnly = TRUE)
+  Party.A.Waiting.Time.HMS = ConvertSecsToHMS(Party.A.Waiting.Time, timeOnly = TRUE)
+  Party.A.Bytes.Read = sum(log$Read.Size[indexA])
+  Party.A.Bytes.Written = sum(log$Write.Size[indexA])
 
-	Party.B.Start.Time = log$Start.Time[indexB[1]]
-	Party.B.End.Time   = log$End.Time[indexB[length(indexB)]]
-	Party.B.Total.Time = round(as.numeric(difftime(
-		Party.B.End.Time, Party.B.Start.Time, units = "secs")), digits = 2)
-	Party.B.Reading.Time = sum(log$Read.Time[indexB])
-	Party.B.Writing.Time = sum(log$Write.Time[indexB])
-	Party.B.Computing.Time = sum(log$Computation.Time[indexB])
-	Party.B.Waiting.Time = Party.B.Total.Time - Party.B.Reading.Time -
-		Party.B.Writing.Time - Party.B.Computing.Time
-	Party.B.Total.Time.HMS = ConvertSecsToHMS(Party.B.Total.Time, timeOnly = TRUE)
-	Party.B.Reading.Time.HMS = ConvertSecsToHMS(Party.B.Reading.Time, timeOnly = TRUE)
-	Party.B.Writing.Time.HMS = ConvertSecsToHMS(Party.B.Writing.Time, timeOnly = TRUE)
-	Party.B.Computing.Time.HMS = ConvertSecsToHMS(Party.B.Computing.Time, timeOnly = TRUE)
-	Party.B.Waiting.Time.HMS = ConvertSecsToHMS(Party.B.Waiting.Time, timeOnly = TRUE)
-	Party.B.Bytes.Read = sum(log$Read.Size[indexB])
-	Party.B.Bytes.Written = sum(log$Write.Size[indexB])
+  Party.B.Start.Time = log$Start.Time[indexB[1]]
+  Party.B.End.Time   = log$End.Time[indexB[length(indexB)]]
+  Party.B.Total.Time = round(as.numeric(difftime(
+    Party.B.End.Time, Party.B.Start.Time, units = "secs")), digits = 2)
+  Party.B.Reading.Time = sum(log$Read.Time[indexB])
+  Party.B.Writing.Time = sum(log$Write.Time[indexB])
+  Party.B.Computing.Time = sum(log$Computation.Time[indexB])
+  Party.B.Waiting.Time = Party.B.Total.Time - Party.B.Reading.Time -
+    Party.B.Writing.Time - Party.B.Computing.Time
+  Party.B.Total.Time.HMS = ConvertSecsToHMS(Party.B.Total.Time, timeOnly = TRUE)
+  Party.B.Reading.Time.HMS = ConvertSecsToHMS(Party.B.Reading.Time, timeOnly = TRUE)
+  Party.B.Writing.Time.HMS = ConvertSecsToHMS(Party.B.Writing.Time, timeOnly = TRUE)
+  Party.B.Computing.Time.HMS = ConvertSecsToHMS(Party.B.Computing.Time, timeOnly = TRUE)
+  Party.B.Waiting.Time.HMS = ConvertSecsToHMS(Party.B.Waiting.Time, timeOnly = TRUE)
+  Party.B.Bytes.Read = sum(log$Read.Size[indexB])
+  Party.B.Bytes.Written = sum(log$Write.Size[indexB])
 
-	Total.Transfer.Time = 0
-	if (max(log$Step) > 1) {
-		for (i in 2:max(log$Step)) {
-			idx1 = which(log$Step == i - 1)
-			idx2 = which(log$Step == i)
-			Total.Transfer.Time = Total.Transfer.Time +
-				as.numeric(difftime(min(log$Start.Time[idx2]),
-														max(log$End.Time[idx1]), units = "secs"))
-		}
-	}
-	Total.Transfer.Time = round(Total.Transfer.Time, 2)
+  Total.Transfer.Time = 0
+  if (max(log$Step) > 1) {
+    for (i in 2:max(log$Step)) {
+      idx1 = which(log$Step == i - 1)
+      idx2 = which(log$Step == i)
+      Total.Transfer.Time = Total.Transfer.Time +
+        as.numeric(difftime(min(log$Start.Time[idx2]),
+                            max(log$End.Time[idx1]), units = "secs"))
+    }
+  }
+  Total.Transfer.Time = round(Total.Transfer.Time, 2)
 
-	Total.Reading.Time = sum(log$Read.Time)
-	Total.Writing.Time = sum(log$Write.Time)
-	Total.Computing.Time = sum(log$Computation.Time)
-	Elapsed.Computing.Time = Party.A.Total.Time - Total.Transfer.Time
-	Total.Reading.Time.HMS = ConvertSecsToHMS(Total.Reading.Time, timeOnly = TRUE)
-	Total.Writing.Time.HMS = ConvertSecsToHMS(Total.Writing.Time, timeOnly = TRUE)
-	Total.Computing.Time.HMS = ConvertSecsToHMS(Total.Computing.Time, timeOnly = TRUE)
-	Elapsed.Computing.Time.HMS = ConvertSecsToHMS(Elapsed.Computing.Time, timeOnly = TRUE)
-	Total.Transfer.Time.HMS = ConvertSecsToHMS(Total.Transfer.Time, timeOnly = TRUE)
-	Total.Bytes.Transfered = sum(log$Bytes.Sent)
-	KB.Per.Second = round(Total.Bytes.Transfered / (Total.Transfer.Time * 1024), digits = 2)
-	WriteToLogSummary(c1 = "Analysis", c2 = params$analysis, writePath = writePath, append = FALSE)
-	if (!is.null(params$blocks)) {
-		WriteToLogSummary(c1 = "Blocksize", c2 = params$blocks$littleBlocksize, writePath = writePath)
-		WriteToLogSummary(c1 = "Number of Blocks",
-											c2 = params$blocks$numLittleBlocks + params$blocks$numBigBlocks,
-											writePath = writePath)
-	}
-	if (!is.null(params$n))   WriteToLogSummary(c1 = "N", c2 = params$n, writePath = writePath)
+  Total.Reading.Time = sum(log$Read.Time)
+  Total.Writing.Time = sum(log$Write.Time)
+  Total.Computing.Time = sum(log$Computation.Time)
+  Elapsed.Computing.Time = Party.A.Total.Time - Total.Transfer.Time
+  Total.Reading.Time.HMS = ConvertSecsToHMS(Total.Reading.Time, timeOnly = TRUE)
+  Total.Writing.Time.HMS = ConvertSecsToHMS(Total.Writing.Time, timeOnly = TRUE)
+  Total.Computing.Time.HMS = ConvertSecsToHMS(Total.Computing.Time, timeOnly = TRUE)
+  Elapsed.Computing.Time.HMS = ConvertSecsToHMS(Elapsed.Computing.Time, timeOnly = TRUE)
+  Total.Transfer.Time.HMS = ConvertSecsToHMS(Total.Transfer.Time, timeOnly = TRUE)
+  Total.Bytes.Transferred = sum(log$Bytes.Sent)
+  KB.Per.Second = round(Total.Bytes.Transferred / (Total.Transfer.Time * 1024), digits = 2)
+  WriteToLogSummary(c1 = "Analysis", c2 = params$analysis, writePath = writePath, append = FALSE)
+  if (!is.null(params$blocks)) {
+    WriteToLogSummary(c1 = "Blocksize", c2 = params$blocks$littleBlocksize, writePath = writePath)
+    WriteToLogSummary(c1 = "Number of Blocks",
+                      c2 = params$blocks$numLittleBlocks + params$blocks$numBigBlocks,
+                      writePath = writePath)
+  }
+  if (!is.null(params$n))   WriteToLogSummary(c1 = "N", c2 = params$n, writePath = writePath)
 
-	p = max(0, params$p1.old - (params$analysis != "cox"))
-	WriteToLogSummary(c1 = "pA", c2 = p, writePath = writePath)
-	p = params$p2.old
-	WriteToLogSummary(c1 = "pB", c2 = p, writePath = writePath)
+  p = max(0, params$p1.old - (params$analysis != "cox"))
+  WriteToLogSummary(c1 = "pA", c2 = p, writePath = writePath)
+  p = params$p2.old
+  WriteToLogSummary(c1 = "pB", c2 = p, writePath = writePath)
 
-	WriteToLogSummary(writePath = writePath)
-	WriteToLogSummary(c1 = "Party A Start Time", c2 = Party.A.Start.Time, writePath = writePath)
-	WriteToLogSummary(c1 = "Party A End Time", c2 = Party.A.End.Time, writePath = writePath)
-	WriteToLogSummary(c1 = "Party A Total Run Time", c2 = Party.A.Total.Time,
-										c3 = Party.A.Total.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Party A Total Reading Time", c2 = Party.A.Reading.Time,
-										c3 = Party.A.Reading.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Party A Total Bytes Read", c2 = Party.A.Bytes.Read, writePath = writePath)
-	WriteToLogSummary(c1 = "Party A Total Writing Time", c2 = Party.A.Writing.Time,
-										c3 = Party.A.Writing.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Party A Total Bytes Written", c2 = Party.A.Bytes.Written, writePath = writePath)
-	WriteToLogSummary(c1 = "Party A Total Computing Time", c2 = Party.A.Computing.Time,
-										c3 = Party.A.Computing.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Party A Total Waiting Time", c2 = Party.A.Waiting.Time,
-										c3 = Party.A.Waiting.Time.HMS, writePath = writePath)
-	WriteToLogSummary(writePath = writePath)
-	WriteToLogSummary(c1 = "Party B Start Time", c2 = Party.B.Start.Time, writePath = writePath)
-	WriteToLogSummary(c1 = "Party B End Time", c2 = Party.B.End.Time, writePath = writePath)
-	WriteToLogSummary(c1 = "Party B Total Run Time", c2 = Party.B.Total.Time,
-										c3 = Party.B.Total.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Party B Total Reading Time", c2 = Party.B.Reading.Time,
-										c3 = Party.B.Reading.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Party B Total Bytes Read", c2 = Party.B.Bytes.Read, writePath = writePath)
-	WriteToLogSummary(c1 = "Party B Total Writing Time", c2 = Party.B.Writing.Time,
-										c3 = Party.B.Writing.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Party B Total Bytes Written", c2 = Party.B.Bytes.Written, writePath = writePath)
-	WriteToLogSummary(c1 = "Party B Total Computing Time", c2 = Party.B.Computing.Time,
-										c3 = Party.B.Computing.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Party B Total Waiting Time", c2 = Party.B.Waiting.Time,
-										c3 = Party.B.Waiting.Time.HMS, writePath = writePath)
-	WriteToLogSummary(writePath = writePath)
-	WriteToLogSummary(c1 = "Total Reading Time", c2 = Total.Reading.Time,
-										c3 = Total.Reading.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Total Writing Time", c2 = Total.Writing.Time,
-										c3 = Total.Writing.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Total Computing Time", c2 = Total.Computing.Time,
-										c3 = Total.Computing.Time.HMS,  writePath = writePath)
-	WriteToLogSummary(c1 = "Elapsed Computing Time", c2 = Elapsed.Computing.Time,
-										c3 = Elapsed.Computing.Time.HMS,  writePath = writePath)
-	WriteToLogSummary(c1 = "Total Transfer Time", c2 = Total.Transfer.Time,
-										c3 = Total.Transfer.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Total Bytes Transfered", c2 = Total.Bytes.Transfered, writePath = writePath)
-	WriteToLogSummary(c1 = "KB / Sec Transfer Rate", c2 = KB.Per.Second, writePath = writePath)
+  WriteToLogSummary(writePath = writePath)
+  WriteToLogSummary(c1 = "Party A Start Time", c2 = Party.A.Start.Time, writePath = writePath)
+  WriteToLogSummary(c1 = "Party A End Time", c2 = Party.A.End.Time, writePath = writePath)
+  WriteToLogSummary(c1 = "Party A Total Run Time", c2 = Party.A.Total.Time,
+                    c3 = Party.A.Total.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Party A Total Reading Time", c2 = Party.A.Reading.Time,
+                    c3 = Party.A.Reading.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Party A Total Bytes Read", c2 = Party.A.Bytes.Read, writePath = writePath)
+  WriteToLogSummary(c1 = "Party A Total Writing Time", c2 = Party.A.Writing.Time,
+                    c3 = Party.A.Writing.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Party A Total Bytes Written", c2 = Party.A.Bytes.Written, writePath = writePath)
+  WriteToLogSummary(c1 = "Party A Total Computing Time", c2 = Party.A.Computing.Time,
+                    c3 = Party.A.Computing.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Party A Total Waiting Time", c2 = Party.A.Waiting.Time,
+                    c3 = Party.A.Waiting.Time.HMS, writePath = writePath)
+  WriteToLogSummary(writePath = writePath)
+  WriteToLogSummary(c1 = "Party B Start Time", c2 = Party.B.Start.Time, writePath = writePath)
+  WriteToLogSummary(c1 = "Party B End Time", c2 = Party.B.End.Time, writePath = writePath)
+  WriteToLogSummary(c1 = "Party B Total Run Time", c2 = Party.B.Total.Time,
+                    c3 = Party.B.Total.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Party B Total Reading Time", c2 = Party.B.Reading.Time,
+                    c3 = Party.B.Reading.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Party B Total Bytes Read", c2 = Party.B.Bytes.Read, writePath = writePath)
+  WriteToLogSummary(c1 = "Party B Total Writing Time", c2 = Party.B.Writing.Time,
+                    c3 = Party.B.Writing.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Party B Total Bytes Written", c2 = Party.B.Bytes.Written, writePath = writePath)
+  WriteToLogSummary(c1 = "Party B Total Computing Time", c2 = Party.B.Computing.Time,
+                    c3 = Party.B.Computing.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Party B Total Waiting Time", c2 = Party.B.Waiting.Time,
+                    c3 = Party.B.Waiting.Time.HMS, writePath = writePath)
+  WriteToLogSummary(writePath = writePath)
+  WriteToLogSummary(c1 = "Total Reading Time", c2 = Total.Reading.Time,
+                    c3 = Total.Reading.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Total Writing Time", c2 = Total.Writing.Time,
+                    c3 = Total.Writing.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Total Computing Time", c2 = Total.Computing.Time,
+                    c3 = Total.Computing.Time.HMS,  writePath = writePath)
+  WriteToLogSummary(c1 = "Elapsed Computing Time", c2 = Elapsed.Computing.Time,
+                    c3 = Elapsed.Computing.Time.HMS,  writePath = writePath)
+  WriteToLogSummary(c1 = "Total Transfer Time", c2 = Total.Transfer.Time,
+                    c3 = Total.Transfer.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Total Bytes Transferred", c2 = Total.Bytes.Transferred, writePath = writePath)
+  WriteToLogSummary(c1 = "KB / Sec Transfer Rate", c2 = KB.Per.Second, writePath = writePath)
 
 }
 
 ############################# 3 PARTY LOG FUNCTIONS ############################
 
 InitializeLog.3p = function(params) {
-	log = list()
-	log$blank = data.frame(Step             = 0,
-												 Iteration.alg    = 0,
-												 Party            = "",
-												 Functions        = "",
-												 Wait.Time        = 0,
-												 Start.Time       = GetUTCTime(),
-												 End.Time         = GetUTCTime(),
-												 Read.Time        = 0,
-												 Read.Size        = 0,
-												 Write.Time       = 0,
-												 Write.Size       = 0,
-												 Computation.Time = 0,
-												 Files.Sent       = "",
-												 Bytes.Sent       = 0)
-	log$current = log$blank
-	log$history = log$blank
-	params$log  = log
-	return(params)
+  log = list()
+  log$blank = data.frame(Step             = 0,
+                         Iteration.alg    = 0,
+                         Party            = "",
+                         Functions        = "",
+                         Wait.Time        = 0,
+                         Start.Time       = GetUTCTime(),
+                         End.Time         = GetUTCTime(),
+                         Read.Time        = 0,
+                         Read.Size        = 0,
+                         Write.Time       = 0,
+                         Write.Size       = 0,
+                         Computation.Time = 0,
+                         Files.Sent       = "",
+                         Bytes.Sent       = 0)
+  log$current = log$blank
+  log$history = log$blank
+  params$log  = log
+  return(params)
 }
 
 
 NewLogEntry.3p = function(params) {
-	params$log$current = params$log$blank
-	params$log$current$Party         = params$partyName
-	params$log$current$Start.Time    = GetUTCTime()
-	return(params)
+  params$log$current = params$log$blank
+  params$log$current$Party         = params$partyName
+  params$log$current$Start.Time    = GetUTCTime()
+  return(params)
 }
 
 
 StoreLogEntry.3p = function(params, files) {
   params$log$current$Step          = params$pmnStepCounter
-	params$log$current$Iteration.alg = params$algIterationCounter
-	params$log$current$Party = params$partyName
-	params$log$current$End.Time = GetUTCTime()
-	params$log$current$Computation.Time = round(as.numeric(difftime(
-		params$log$current$End.Time, params$log$current$Start.Time, units = "secs")) -
-			params$log$current$Read.Time - params$log$current$Write.Time, 2)
-	params$log$current$Files.Sent = paste(files, collapse = ", ")
-	params$log$current$Bytes.Sent = sum(file.size(file.path(params$writePath, files)))
-	if (is.na(params$log$current$Bytes.Sent)) {
-		params$log$current$Bytes.Sent = 0
-	}
-	nrows = nrow(params$log$history)
-	if (nrows >= 3) {
-		params$log$current$Wait.Time =
-			round(as.numeric(difftime(
-				params$log$current$Start.Time,
-				max(params$log$history$End.Time[which(params$log$history$Party ==
-																								params$log$current$Party)]),
-				units = "secs")), 2)
-	}
-	if (params$log$history$Party[nrows] == "") {
-		params$log$history = params$log$current
-	} else {
-		params$log$history = rbind(params$log$history, params$log$current)
-	}
-	return(params)
+  params$log$current$Iteration.alg = params$algIterationCounter
+  params$log$current$Party = params$partyName
+  params$log$current$End.Time = GetUTCTime()
+  params$log$current$Computation.Time = round(as.numeric(difftime(
+    params$log$current$End.Time, params$log$current$Start.Time, units = "secs")) -
+      params$log$current$Read.Time - params$log$current$Write.Time, 2)
+  params$log$current$Files.Sent = paste(files, collapse = ", ")
+  params$log$current$Bytes.Sent = sum(file.size(file.path(params$writePath, files)))
+  if (is.na(params$log$current$Bytes.Sent)) {
+    params$log$current$Bytes.Sent = 0
+  }
+  nrows = nrow(params$log$history)
+  if (nrows >= 3) {
+    params$log$current$Wait.Time =
+      round(as.numeric(difftime(
+        params$log$current$Start.Time,
+        max(params$log$history$End.Time[which(params$log$history$Party ==
+                                                params$log$current$Party)]),
+        units = "secs")), 2)
+  }
+  if (params$log$history$Party[nrows] == "") {
+    params$log$history = params$log$current
+  } else {
+    params$log$history = rbind(params$log$history, params$log$current)
+  }
+  return(params)
 }
 
 
 MergeLogRaw.3p = function(params, from) {
-	# This function will only be used in the function Pause Continue
-	# When party A and party B run simultaneously, but Party A can run first
-	# even if Party B starts the whole thing.  We append party B's log
-	# to the end of Party A's log.
-	for (party in from) {
-		load(file.path(params$readPath[[party]], "log.rdata"))
-		key1 = paste0(params$log$history$Step, params$log$history$Party)
-		key2 = paste0(log$Step, log$Party)
-		idx = which(key2 %in% key1)
-		if (length(idx) == 0) {
-			params$log$history = rbind(params$log$history, log)
-		} else if (length(idx) < length(key2)) {
-			params$log$history = rbind(params$log$history, log[-idx, ])
-		}
-	}
-	idx = order(params$log$history$Step, params$log$history$Party)
-	params$log$history = params$log$history[idx, ]
+  # This function will only be used in the function Pause Continue
+  # When party A and party B run simultaneously, but Party A can run first
+  # even if Party B starts the whole thing.  We append party B's log
+  # to the end of Party A's log.
+  for (party in from) {
+    load(file.path(params$readPath[[party]], "log.rdata"))
+    key1 = paste0(params$log$history$Step, params$log$history$Party)
+    key2 = paste0(log$Step, log$Party)
+    idx = which(key2 %in% key1)
+    if (length(idx) == 0) {
+      params$log$history = rbind(params$log$history, log)
+    } else if (length(idx) < length(key2)) {
+      params$log$history = rbind(params$log$history, log[-idx, ])
+    }
+  }
+  idx = order(params$log$history$Step, params$log$history$Party)
+  params$log$history = params$log$history[idx, ]
 
-	return(params)
+  return(params)
 }
 
 
 SummarizeLog.3p = function(params) {
-	writePath = params$writePath
+  writePath = params$writePath
 
-	log    = params$log$history
-	indexA = which(log$Party == "A")
-	indexB = which(log$Party == "B")
-	indexT = which(log$Party == "T")
-	Party.A.Start.Time = log$Start.Time[indexA[1]]
-	Party.A.End.Time   = log$End.Time[indexA[length(indexA)]]
-	Party.A.Total.Time = round(as.numeric(difftime(
-		Party.A.End.Time, Party.A.Start.Time, units = "secs")), digits = 2)
-	Party.A.Reading.Time = sum(log$Read.Time[indexA])
-	Party.A.Writing.Time = sum(log$Write.Time[indexA])
-	Party.A.Computing.Time = sum(log$Computation.Time[indexA])
-	Party.A.Waiting.Time = sum(log$Wait.Time[indexA])
-	Party.A.Total.Time.HMS = ConvertSecsToHMS(Party.A.Total.Time, timeOnly = TRUE)
-	Party.A.Reading.Time.HMS = ConvertSecsToHMS(Party.A.Reading.Time, timeOnly = TRUE)
-	Party.A.Writing.Time.HMS = ConvertSecsToHMS(Party.A.Writing.Time, timeOnly = TRUE)
-	Party.A.Computing.Time.HMS = ConvertSecsToHMS(Party.A.Computing.Time, timeOnly = TRUE)
-	Party.A.Waiting.Time.HMS = ConvertSecsToHMS(Party.A.Waiting.Time, timeOnly = TRUE)
-	Party.A.Bytes.Read = sum(log$Read.Size[indexA])
-	Party.A.Bytes.Written = sum(log$Write.Size[indexA])
+  log    = params$log$history
+  indexA = which(log$Party == "A")
+  indexB = which(log$Party == "B")
+  indexT = which(log$Party == "T")
+  Party.A.Start.Time = log$Start.Time[indexA[1]]
+  Party.A.End.Time   = log$End.Time[indexA[length(indexA)]]
+  Party.A.Total.Time = round(as.numeric(difftime(
+    Party.A.End.Time, Party.A.Start.Time, units = "secs")), digits = 2)
+  Party.A.Reading.Time = sum(log$Read.Time[indexA])
+  Party.A.Writing.Time = sum(log$Write.Time[indexA])
+  Party.A.Computing.Time = sum(log$Computation.Time[indexA])
+  Party.A.Waiting.Time = sum(log$Wait.Time[indexA])
+  Party.A.Total.Time.HMS = ConvertSecsToHMS(Party.A.Total.Time, timeOnly = TRUE)
+  Party.A.Reading.Time.HMS = ConvertSecsToHMS(Party.A.Reading.Time, timeOnly = TRUE)
+  Party.A.Writing.Time.HMS = ConvertSecsToHMS(Party.A.Writing.Time, timeOnly = TRUE)
+  Party.A.Computing.Time.HMS = ConvertSecsToHMS(Party.A.Computing.Time, timeOnly = TRUE)
+  Party.A.Waiting.Time.HMS = ConvertSecsToHMS(Party.A.Waiting.Time, timeOnly = TRUE)
+  Party.A.Bytes.Read = sum(log$Read.Size[indexA])
+  Party.A.Bytes.Written = sum(log$Write.Size[indexA])
 
-	Party.B.Start.Time = log$Start.Time[indexB[1]]
-	Party.B.End.Time   = log$End.Time[indexB[length(indexB)]]
-	Party.B.Total.Time = round(as.numeric(difftime(
-		Party.B.End.Time, Party.B.Start.Time, units = "secs")), digits = 2)
-	Party.B.Reading.Time = sum(log$Read.Time[indexB])
-	Party.B.Writing.Time = sum(log$Write.Time[indexB])
-	Party.B.Computing.Time = sum(log$Computation.Time[indexB])
-	Party.B.Waiting.Time = sum(log$Wait.Time[indexB])
-	Party.B.Total.Time.HMS = ConvertSecsToHMS(Party.B.Total.Time, timeOnly = TRUE)
-	Party.B.Reading.Time.HMS = ConvertSecsToHMS(Party.B.Reading.Time, timeOnly = TRUE)
-	Party.B.Writing.Time.HMS = ConvertSecsToHMS(Party.B.Writing.Time, timeOnly = TRUE)
-	Party.B.Computing.Time.HMS = ConvertSecsToHMS(Party.B.Computing.Time, timeOnly = TRUE)
-	Party.B.Waiting.Time.HMS = ConvertSecsToHMS(Party.B.Waiting.Time, timeOnly = TRUE)
-	Party.B.Bytes.Read = sum(log$Read.Size[indexB])
-	Party.B.Bytes.Written = sum(log$Write.Size[indexB])
+  Party.B.Start.Time = log$Start.Time[indexB[1]]
+  Party.B.End.Time   = log$End.Time[indexB[length(indexB)]]
+  Party.B.Total.Time = round(as.numeric(difftime(
+    Party.B.End.Time, Party.B.Start.Time, units = "secs")), digits = 2)
+  Party.B.Reading.Time = sum(log$Read.Time[indexB])
+  Party.B.Writing.Time = sum(log$Write.Time[indexB])
+  Party.B.Computing.Time = sum(log$Computation.Time[indexB])
+  Party.B.Waiting.Time = sum(log$Wait.Time[indexB])
+  Party.B.Total.Time.HMS = ConvertSecsToHMS(Party.B.Total.Time, timeOnly = TRUE)
+  Party.B.Reading.Time.HMS = ConvertSecsToHMS(Party.B.Reading.Time, timeOnly = TRUE)
+  Party.B.Writing.Time.HMS = ConvertSecsToHMS(Party.B.Writing.Time, timeOnly = TRUE)
+  Party.B.Computing.Time.HMS = ConvertSecsToHMS(Party.B.Computing.Time, timeOnly = TRUE)
+  Party.B.Waiting.Time.HMS = ConvertSecsToHMS(Party.B.Waiting.Time, timeOnly = TRUE)
+  Party.B.Bytes.Read = sum(log$Read.Size[indexB])
+  Party.B.Bytes.Written = sum(log$Write.Size[indexB])
 
-	Party.T.Start.Time = log$Start.Time[indexT[1]]
-	Party.T.End.Time   = log$End.Time[indexT[length(indexT)]]
-	Party.T.Total.Time = round(as.numeric(difftime(
-		Party.T.End.Time, Party.T.Start.Time, units = "secs")), digits = 2)
-	Party.T.Reading.Time = sum(log$Read.Time[indexT])
-	Party.T.Writing.Time = sum(log$Write.Time[indexT])
-	Party.T.Computing.Time = sum(log$Computation.Time[indexT])
-	Party.T.Waiting.Time = sum(log$Wait.Time[indexT])
-	Party.T.Total.Time.HMS = ConvertSecsToHMS(Party.T.Total.Time, timeOnly = TRUE)
-	Party.T.Reading.Time.HMS = ConvertSecsToHMS(Party.T.Reading.Time, timeOnly = TRUE)
-	Party.T.Writing.Time.HMS = ConvertSecsToHMS(Party.T.Writing.Time, timeOnly = TRUE)
-	Party.T.Computing.Time.HMS = ConvertSecsToHMS(Party.T.Computing.Time, timeOnly = TRUE)
-	Party.T.Waiting.Time.HMS = ConvertSecsToHMS(Party.T.Waiting.Time, timeOnly = TRUE)
-	Party.T.Bytes.Read = sum(log$Read.Size[indexT])
-	Party.T.Bytes.Written = sum(log$Write.Size[indexT])
+  Party.T.Start.Time = log$Start.Time[indexT[1]]
+  Party.T.End.Time   = log$End.Time[indexT[length(indexT)]]
+  Party.T.Total.Time = round(as.numeric(difftime(
+    Party.T.End.Time, Party.T.Start.Time, units = "secs")), digits = 2)
+  Party.T.Reading.Time = sum(log$Read.Time[indexT])
+  Party.T.Writing.Time = sum(log$Write.Time[indexT])
+  Party.T.Computing.Time = sum(log$Computation.Time[indexT])
+  Party.T.Waiting.Time = sum(log$Wait.Time[indexT])
+  Party.T.Total.Time.HMS = ConvertSecsToHMS(Party.T.Total.Time, timeOnly = TRUE)
+  Party.T.Reading.Time.HMS = ConvertSecsToHMS(Party.T.Reading.Time, timeOnly = TRUE)
+  Party.T.Writing.Time.HMS = ConvertSecsToHMS(Party.T.Writing.Time, timeOnly = TRUE)
+  Party.T.Computing.Time.HMS = ConvertSecsToHMS(Party.T.Computing.Time, timeOnly = TRUE)
+  Party.T.Waiting.Time.HMS = ConvertSecsToHMS(Party.T.Waiting.Time, timeOnly = TRUE)
+  Party.T.Bytes.Read = sum(log$Read.Size[indexT])
+  Party.T.Bytes.Written = sum(log$Write.Size[indexT])
 
-	Total.Transfer.Time = 0
-	if (max(log$Step) > 1) {
-		for (i in 2:max(log$Step)) {
-			idx1 = which(log$Step == i - 1)
-			idx2 = which(log$Step == i)
-			Total.Transfer.Time = Total.Transfer.Time +
-				as.numeric(difftime(min(log$Start.Time[idx2]),
-														max(log$End.Time[idx1]), units = "secs"))
-		}
-	}
-	Total.Transfer.Time = round(Total.Transfer.Time, 2)
-	Elapsed.Computing.Time = Party.T.Total.Time - Total.Transfer.Time
+  Total.Transfer.Time = 0
+  if (max(log$Step) > 1) {
+    for (i in 2:max(log$Step)) {
+      idx1 = which(log$Step == i - 1)
+      idx2 = which(log$Step == i)
+      Total.Transfer.Time = Total.Transfer.Time +
+        as.numeric(difftime(min(log$Start.Time[idx2]),
+                            max(log$End.Time[idx1]), units = "secs"))
+    }
+  }
+  Total.Transfer.Time = round(Total.Transfer.Time, 2)
+  Elapsed.Computing.Time = Party.T.Total.Time - Total.Transfer.Time
 
-	Total.Reading.Time = sum(log$Read.Time)
-	Total.Writing.Time = sum(log$Write.Time)
-	Total.Computing.Time = sum(log$Computation.Time)
-	Total.Reading.Time.HMS = ConvertSecsToHMS(Total.Reading.Time, timeOnly = TRUE)
-	Total.Writing.Time.HMS = ConvertSecsToHMS(Total.Writing.Time, timeOnly = TRUE)
-	Total.Transfer.Time.HMS = ConvertSecsToHMS(Total.Transfer.Time, timeOnly = TRUE)
-	Total.Computing.Time.HMS = ConvertSecsToHMS(Total.Computing.Time, timeOnly = TRUE)
-	Elapsed.Computing.Time.HMS = ConvertSecsToHMS(Elapsed.Computing.Time, timeOnly = TRUE)
-	Total.Bytes.Transfered = sum(log$Bytes.Sent)
-	KB.Per.Second = round(Total.Bytes.Transfered / (Total.Transfer.Time * 1024), digits = 2)
+  Total.Reading.Time = sum(log$Read.Time)
+  Total.Writing.Time = sum(log$Write.Time)
+  Total.Computing.Time = sum(log$Computation.Time)
+  Total.Reading.Time.HMS = ConvertSecsToHMS(Total.Reading.Time, timeOnly = TRUE)
+  Total.Writing.Time.HMS = ConvertSecsToHMS(Total.Writing.Time, timeOnly = TRUE)
+  Total.Transfer.Time.HMS = ConvertSecsToHMS(Total.Transfer.Time, timeOnly = TRUE)
+  Total.Computing.Time.HMS = ConvertSecsToHMS(Total.Computing.Time, timeOnly = TRUE)
+  Elapsed.Computing.Time.HMS = ConvertSecsToHMS(Elapsed.Computing.Time, timeOnly = TRUE)
+  Total.Bytes.Transferred = sum(log$Bytes.Sent)
+  KB.Per.Second = round(Total.Bytes.Transferred / (Total.Transfer.Time * 1024), digits = 2)
 
-	WriteToLogSummary(c1 = "Analysis", c2 = params$analysis, writePath = writePath, append = FALSE)
-	if (!is.null(params$blocks)) {
-		WriteToLogSummary(c1 = "Blocksize", c2 = params$blocks$littleBlocksize, writePath = writePath)
-		WriteToLogSummary(c1 = "Number of Blocks",
-											c2 = params$blocks$numLittleBlocks + params$blocks$numBigBlocks,
-											writePath = writePath)
-	}
-	if (!is.null(params$n))   WriteToLogSummary(c1 = "N", c2 = params$n, writePath = writePath)
+  WriteToLogSummary(c1 = "Analysis", c2 = params$analysis, writePath = writePath, append = FALSE)
+  if (!is.null(params$blocks)) {
+    WriteToLogSummary(c1 = "Blocksize", c2 = params$blocks$littleBlocksize, writePath = writePath)
+    WriteToLogSummary(c1 = "Number of Blocks",
+                      c2 = params$blocks$numLittleBlocks + params$blocks$numBigBlocks,
+                      writePath = writePath)
+  }
+  if (!is.null(params$n))   WriteToLogSummary(c1 = "N", c2 = params$n, writePath = writePath)
 
-	p = max(0, params$p1.old - (params$analysis != "cox"))
-	WriteToLogSummary(c1 = "pA", c2 = p, writePath = writePath)
-	p = params$p2.old
-	WriteToLogSummary(c1 = "pB", c2 = p, writePath = writePath)
+  p = max(0, params$p1.old - (params$analysis != "cox"))
+  WriteToLogSummary(c1 = "pA", c2 = p, writePath = writePath)
+  p = params$p2.old
+  WriteToLogSummary(c1 = "pB", c2 = p, writePath = writePath)
 
-	WriteToLogSummary(writePath = writePath)
-	WriteToLogSummary(c1 = "Party A Start Time", c2 = Party.A.Start.Time, writePath = writePath)
-	WriteToLogSummary(c1 = "Party A End Time", c2 = Party.A.End.Time, writePath = writePath)
-	WriteToLogSummary(c1 = "Party A Total Run Time", c2 = Party.A.Total.Time,
-										c3 = Party.A.Total.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Party A Total Reading Time", c2 = Party.A.Reading.Time,
-										c3 = Party.A.Reading.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Party A Total Bytes Read", c2 = Party.A.Bytes.Read, writePath = writePath)
-	WriteToLogSummary(c1 = "Party A Total Writing Time", c2 = Party.A.Writing.Time,
-										c3 = Party.A.Writing.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Party A Total Bytes Written", c2 = Party.A.Bytes.Written, writePath = writePath)
-	WriteToLogSummary(c1 = "Party A Total Computing Time", c2 = Party.A.Computing.Time,
-										c3 = Party.A.Computing.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Party A Total Waiting Time", c2 = Party.A.Waiting.Time,
-										c3 = Party.A.Waiting.Time.HMS, writePath = writePath)
-	WriteToLogSummary(writePath = writePath)
-	WriteToLogSummary(c1 = "Party B Start Time", c2 = Party.B.Start.Time, writePath = writePath)
-	WriteToLogSummary(c1 = "Party B End Time", c2 = Party.B.End.Time, writePath = writePath)
-	WriteToLogSummary(c1 = "Party B Total Run Time", c2 = Party.B.Total.Time,
-										c3 = Party.B.Total.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Party B Total Reading Time", c2 = Party.B.Reading.Time,
-										c3 = Party.B.Reading.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Party B Total Bytes Read", c2 = Party.B.Bytes.Read, writePath = writePath)
-	WriteToLogSummary(c1 = "Party B Total Writing Time", c2 = Party.B.Writing.Time,
-										c3 = Party.B.Writing.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Party B Total Bytes Written", c2 = Party.B.Bytes.Written, writePath = writePath)
-	WriteToLogSummary(c1 = "Party B Total Computing Time", c2 = Party.B.Computing.Time,
-										c3 = Party.B.Computing.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Party B Total Waiting Time", c2 = Party.B.Waiting.Time,
-										c3 = Party.B.Waiting.Time.HMS, writePath = writePath)
-	WriteToLogSummary(writePath = writePath)
-	WriteToLogSummary(c1 = "Party T Start Time", c2 = Party.T.Start.Time, writePath = writePath)
-	WriteToLogSummary(c1 = "Party T End Time", c2 = Party.T.End.Time, writePath = writePath)
-	WriteToLogSummary(c1 = "Party T Total Run Time", c2 = Party.T.Total.Time,
-										c3 = Party.T.Total.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Party T Total Reading Time", c2 = Party.T.Reading.Time,
-										c3 = Party.T.Reading.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Party T Total Bytes Read", c2 = Party.T.Bytes.Read, writePath = writePath)
-	WriteToLogSummary(c1 = "Party T Total Writing Time", c2 = Party.T.Writing.Time,
-										c3 = Party.T.Writing.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Party T Total Bytes Written", c2 = Party.T.Bytes.Written, writePath = writePath)
-	WriteToLogSummary(c1 = "Party T Total Computing Time", c2 = Party.T.Computing.Time,
-										c3 = Party.T.Computing.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Party T Total Waiting Time", c2 = Party.T.Waiting.Time,
-										c3 = Party.T.Waiting.Time.HMS, writePath = writePath)
-	WriteToLogSummary(writePath = writePath)
-	WriteToLogSummary(c1 = "Total Reading Time", c2 = Total.Reading.Time,
-										c3 = Total.Reading.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Total Writing Time", c2 = Total.Writing.Time,
-										c3 = Total.Writing.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Total Computing Time", c2 = Total.Computing.Time,
-										c3 = Total.Computing.Time.HMS,  writePath = writePath)
-	WriteToLogSummary(c1 = "Elapsed Computing Time", c2 = Elapsed.Computing.Time,
-										c3 = Elapsed.Computing.Time.HMS,  writePath = writePath)
-	WriteToLogSummary(c1 = "Total Transfer Time", c2 = Total.Transfer.Time,
-										c3 = Total.Transfer.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Total Bytes Transfered", c2 = Total.Bytes.Transfered, writePath = writePath)
-	WriteToLogSummary(c1 = "KB / Sec Transfer Rate", c2 = KB.Per.Second, writePath = writePath)
+  WriteToLogSummary(writePath = writePath)
+  WriteToLogSummary(c1 = "Party A Start Time", c2 = Party.A.Start.Time, writePath = writePath)
+  WriteToLogSummary(c1 = "Party A End Time", c2 = Party.A.End.Time, writePath = writePath)
+  WriteToLogSummary(c1 = "Party A Total Run Time", c2 = Party.A.Total.Time,
+                    c3 = Party.A.Total.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Party A Total Reading Time", c2 = Party.A.Reading.Time,
+                    c3 = Party.A.Reading.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Party A Total Bytes Read", c2 = Party.A.Bytes.Read, writePath = writePath)
+  WriteToLogSummary(c1 = "Party A Total Writing Time", c2 = Party.A.Writing.Time,
+                    c3 = Party.A.Writing.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Party A Total Bytes Written", c2 = Party.A.Bytes.Written, writePath = writePath)
+  WriteToLogSummary(c1 = "Party A Total Computing Time", c2 = Party.A.Computing.Time,
+                    c3 = Party.A.Computing.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Party A Total Waiting Time", c2 = Party.A.Waiting.Time,
+                    c3 = Party.A.Waiting.Time.HMS, writePath = writePath)
+  WriteToLogSummary(writePath = writePath)
+  WriteToLogSummary(c1 = "Party B Start Time", c2 = Party.B.Start.Time, writePath = writePath)
+  WriteToLogSummary(c1 = "Party B End Time", c2 = Party.B.End.Time, writePath = writePath)
+  WriteToLogSummary(c1 = "Party B Total Run Time", c2 = Party.B.Total.Time,
+                    c3 = Party.B.Total.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Party B Total Reading Time", c2 = Party.B.Reading.Time,
+                    c3 = Party.B.Reading.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Party B Total Bytes Read", c2 = Party.B.Bytes.Read, writePath = writePath)
+  WriteToLogSummary(c1 = "Party B Total Writing Time", c2 = Party.B.Writing.Time,
+                    c3 = Party.B.Writing.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Party B Total Bytes Written", c2 = Party.B.Bytes.Written, writePath = writePath)
+  WriteToLogSummary(c1 = "Party B Total Computing Time", c2 = Party.B.Computing.Time,
+                    c3 = Party.B.Computing.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Party B Total Waiting Time", c2 = Party.B.Waiting.Time,
+                    c3 = Party.B.Waiting.Time.HMS, writePath = writePath)
+  WriteToLogSummary(writePath = writePath)
+  WriteToLogSummary(c1 = "Party T Start Time", c2 = Party.T.Start.Time, writePath = writePath)
+  WriteToLogSummary(c1 = "Party T End Time", c2 = Party.T.End.Time, writePath = writePath)
+  WriteToLogSummary(c1 = "Party T Total Run Time", c2 = Party.T.Total.Time,
+                    c3 = Party.T.Total.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Party T Total Reading Time", c2 = Party.T.Reading.Time,
+                    c3 = Party.T.Reading.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Party T Total Bytes Read", c2 = Party.T.Bytes.Read, writePath = writePath)
+  WriteToLogSummary(c1 = "Party T Total Writing Time", c2 = Party.T.Writing.Time,
+                    c3 = Party.T.Writing.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Party T Total Bytes Written", c2 = Party.T.Bytes.Written, writePath = writePath)
+  WriteToLogSummary(c1 = "Party T Total Computing Time", c2 = Party.T.Computing.Time,
+                    c3 = Party.T.Computing.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Party T Total Waiting Time", c2 = Party.T.Waiting.Time,
+                    c3 = Party.T.Waiting.Time.HMS, writePath = writePath)
+  WriteToLogSummary(writePath = writePath)
+  WriteToLogSummary(c1 = "Total Reading Time", c2 = Total.Reading.Time,
+                    c3 = Total.Reading.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Total Writing Time", c2 = Total.Writing.Time,
+                    c3 = Total.Writing.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Total Computing Time", c2 = Total.Computing.Time,
+                    c3 = Total.Computing.Time.HMS,  writePath = writePath)
+  WriteToLogSummary(c1 = "Elapsed Computing Time", c2 = Elapsed.Computing.Time,
+                    c3 = Elapsed.Computing.Time.HMS,  writePath = writePath)
+  WriteToLogSummary(c1 = "Total Transfer Time", c2 = Total.Transfer.Time,
+                    c3 = Total.Transfer.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Total Bytes Transferred", c2 = Total.Bytes.Transferred, writePath = writePath)
+  WriteToLogSummary(c1 = "KB / Sec Transfer Rate", c2 = KB.Per.Second, writePath = writePath)
 
 }
 
@@ -2371,547 +2525,550 @@ SummarizeLog.3p = function(params) {
 
 InitializeLog.kp = function(params) {
   log = list()
-	log$blank = data.frame(Step             = 0,
-												 Iteration.alg    = 0,
-												 Party            = "",
-												 Functions        = "",
-												 Wait.Time        = 0,
-												 Start.Time       = GetUTCTime(),
-												 End.Time         = GetUTCTime(),
-												 Read.Time        = 0,
-												 Read.Size        = 0,
-												 Write.Time       = 0,
-												 Write.Size       = 0,
-												 Computation.Time = 0,
-												 Files.Sent       = "",
-												 Bytes.Sent       = 0)
-	log$current = log$blank
-	log$history = log$blank
-	params$log  = log
-	return(params)
+  log$blank = data.frame(Step             = 0,
+                         Iteration.alg    = 0,
+                         Party            = "",
+                         Functions        = "",
+                         Wait.Time        = 0,
+                         Start.Time       = GetUTCTime(),
+                         End.Time         = GetUTCTime(),
+                         Read.Time        = 0,
+                         Read.Size        = 0,
+                         Write.Time       = 0,
+                         Write.Size       = 0,
+                         Computation.Time = 0,
+                         Files.Sent       = "",
+                         Bytes.Sent       = 0)
+  log$current = log$blank
+  log$history = log$blank
+  params$log  = log
+  return(params)
 }
 
 
 NewLogEntry.kp = function(params) {
-	params$log$current = params$log$blank
-	params$log$current$Party         = paste0("dp", params$dataPartnerID)
-	params$log$current$Start.Time    = GetUTCTime()
-	return(params)
+  params$log$current = params$log$blank
+  params$log$current$Party         = paste0("dp", params$dataPartnerID)
+  params$log$current$Start.Time    = GetUTCTime()
+  return(params)
 }
 
 
 StoreLogEntry.kp = function(params, files) {
   params$log$current$Step          = params$pmnStepCounter
-	params$log$current$Iteration.alg = params$algIterationCounter
-	params$log$current$Party = paste0("dp", params$dataPartnerID)
-	params$log$current$End.Time = GetUTCTime()
-	params$log$current$Computation.Time = round(as.numeric(difftime(
-		params$log$current$End.Time, params$log$current$Start.Time, units = "secs")) -
-			params$log$current$Read.Time - params$log$current$Write.Time, 2)
-	params$log$current$Files.Sent = paste(files, collapse = ", ")
-	params$log$current$Bytes.Sent = sum(file.size(file.path(params$writePath, files)))
-	if (is.na(params$log$current$Bytes.Sent)) {
-		params$log$current$Bytes.Sent = 0
-	}
-	nrows = nrow(params$log$history)
-	if (nrows >= 3) {
-		params$log$current$Wait.Time =
-			round(as.numeric(difftime(
-				params$log$current$Start.Time,
-				max(params$log$history$End.Time[which(params$log$history$Party ==
-																								params$log$current$Party)]),
-				units = "secs")), 2)
-	}
-	if (params$log$history$Party[nrows] == "") {
-		params$log$history = params$log$current
-	} else {
-		params$log$history = rbind(params$log$history, params$log$current)
-	}
-	return(params)
+  params$log$current$Iteration.alg = params$algIterationCounter
+  params$log$current$Party = paste0("dp", params$dataPartnerID)
+  params$log$current$End.Time = GetUTCTime()
+  params$log$current$Computation.Time = round(as.numeric(difftime(
+    params$log$current$End.Time, params$log$current$Start.Time, units = "secs")) -
+      params$log$current$Read.Time - params$log$current$Write.Time, 2)
+  params$log$current$Files.Sent = paste(files, collapse = ", ")
+  params$log$current$Bytes.Sent = sum(file.size(file.path(params$writePath, files)))
+  if (is.na(params$log$current$Bytes.Sent)) {
+    params$log$current$Bytes.Sent = 0
+  }
+  nrows = nrow(params$log$history)
+  if (nrows >= 3) {
+    params$log$current$Wait.Time =
+      round(as.numeric(difftime(
+        params$log$current$Start.Time,
+        max(params$log$history$End.Time[which(params$log$history$Party ==
+                                                params$log$current$Party)]),
+        units = "secs")), 2)
+  }
+  if (params$log$history$Party[nrows] == "") {
+    params$log$history = params$log$current
+  } else {
+    params$log$history = rbind(params$log$history, params$log$current)
+  }
+  return(params)
 }
 
 
 MergeLogRaw.kp = function(params, from) {
-	# This function will only be used in the function Pause Continue
-	# When party A and party B run simultaneously, but Party A can run first
-	# even if Party B starts the whole thing.  We append party B's log
-	# to the end of Party A's log.
-	if (from == "AC") {
-		load(file.path(params$readPathAC, "log.rdata"))
-		key1 = paste0(params$log$history$Step, params$log$history$Party)
-		key2 = paste0(log$Step, log$Party)
-		idx = which(key2 %in% key1)
-		if (length(idx) == 0) {
-			params$log$history = rbind(params$log$history, log)
-		} else if (length(idx) < length(key2)) {
-			params$log$history = rbind(params$log$history, log[-idx, ])
-		}
-	} else if (from == "DP1") {
-		load(file.path(params$readPathDP[1], "log.rdata"))
-		key1 = paste0(params$log$history$Step, params$log$history$Party)
-		key2 = paste0(log$Step, log$Party)
-		idx = which(key2 %in% key1)
-		if (length(idx) == 0) {
-			params$log$history = rbind(params$log$history, log)
-		} else if (length(idx) < length(key2)) {
-			params$log$history = rbind(params$log$history, log[-idx, ])
-		}
-	} else {
-		for (id in 1:params$numDataPartners) {
-			if (id == params$dataPartnerID) next
-			load(file.path(params$readPathDP[id], "log.rdata"))
-			key1 = paste0(params$log$history$Step, params$log$history$Party)
-			key2 = paste0(log$Step, log$Party)
-			idx = which(key2 %in% key1)
-			if (length(idx) == 0) {
-				params$log$history = rbind(params$log$history, log)
-			} else if (length(idx) < length(key2)) {
-				params$log$history = rbind(params$log$history, log[-idx, ])
-			}
-		}
-	}
-	idx = order(params$log$history$Step, params$log$history$Party)
-	params$log$history = params$log$history[idx, ]
-	return(params)
+  # This function will only be used in the function Pause Continue
+  # When party A and party B run simultaneously, but Party A can run first
+  # even if Party B starts the whole thing.  We append party B's log
+  # to the end of Party A's log.
+  if (from == "AC") {
+    load(file.path(params$readPathAC, "log.rdata"))
+    key1 = paste0(params$log$history$Step, params$log$history$Party)
+    key2 = paste0(log$Step, log$Party)
+    idx = which(key2 %in% key1)
+    if (length(idx) == 0) {
+      params$log$history = rbind(params$log$history, log)
+    } else if (length(idx) < length(key2)) {
+      params$log$history = rbind(params$log$history, log[-idx, ])
+    }
+  } else if (from == "DP1") {
+    load(file.path(params$readPathDP[1], "log.rdata"))
+    key1 = paste0(params$log$history$Step, params$log$history$Party)
+    key2 = paste0(log$Step, log$Party)
+    idx = which(key2 %in% key1)
+    if (length(idx) == 0) {
+      params$log$history = rbind(params$log$history, log)
+    } else if (length(idx) < length(key2)) {
+      params$log$history = rbind(params$log$history, log[-idx, ])
+    }
+  } else {
+    for (id in 1:params$numDataPartners) {
+      if (id == params$dataPartnerID) next
+      load(file.path(params$readPathDP[id], "log.rdata"))
+      key1 = paste0(params$log$history$Step, params$log$history$Party)
+      key2 = paste0(log$Step, log$Party)
+      idx = which(key2 %in% key1)
+      if (length(idx) == 0) {
+        params$log$history = rbind(params$log$history, log)
+      } else if (length(idx) < length(key2)) {
+        params$log$history = rbind(params$log$history, log[-idx, ])
+      }
+    }
+  }
+  idx = order(params$log$history$Step, params$log$history$Party)
+  params$log$history = params$log$history[idx, ]
+  return(params)
 }
 
 
 SummarizeLog.kp = function(params) {
-	writePath = params$writePath
-	log       = params$log$history
+  writePath = params$writePath
+  log       = params$log$history
 
-	WriteToLogSummary(c1 = "Analysis", c2 = params$analysis, writePath = writePath, append = FALSE)
-	if (!is.null(params$n))   WriteToLogSummary(c1 = "N", c2 = params$n, writePath = writePath)
+  WriteToLogSummary(c1 = "Analysis", c2 = params$analysis, writePath = writePath, append = FALSE)
+  if (!is.null(params$n))   WriteToLogSummary(c1 = "N", c2 = params$n, writePath = writePath)
 
-	for (i in 1:params$numDataPartners) {
-		if (is.null(params$pi))  {
-			p = 0
-		} else {
-			p = params$pi[i] - (i == 1) * (2 + (params$analysis == "cox"))
-		}
-		WriteToLogSummary(c1 = paste0("p", i), c2 = p, writePath = writePath)
-	}
+  for (i in 1:params$numDataPartners) {
+    if (is.null(params$pi))  {
+      p = 0
+    } else {
+      p = params$pi[i] - (i == 1) * (2 + (params$analysis == "cox"))
+    }
+    WriteToLogSummary(c1 = paste0("p", i), c2 = p, writePath = writePath)
+  }
 
-	WriteToLogSummary(writePath = writePath)
+  WriteToLogSummary(writePath = writePath)
 
-	total.time.0 = 0
-	for (party in 0:params$numDataPartners) {
-		partyName = paste0("dp", party)
-		index = which(log$Party == partyName)
-		if (length(index) > 0) {
-		  Start.Time = log$Start.Time[index[1]]
-		  End.Time   = log$End.Time[index[length(index)]]
-		  Total.Time = round(as.numeric(difftime(End.Time, Start.Time, units = "secs")), digits = 2)
-		  if (party == 0) { total.time.0 = Total.Time }
-		  Reading.Time = sum(log$Read.Time[index])
-		  Writing.Time = sum(log$Write.Time[index])
-		  Computing.Time = sum(log$Computation.Time[index])
-		  Waiting.Time = sum(log$Wait.Time[index])
-		  Total.Time.HMS = ConvertSecsToHMS(Total.Time, timeOnly = TRUE)
-		  Reading.Time.HMS = ConvertSecsToHMS(Reading.Time, timeOnly = TRUE)
-		  Writing.Time.HMS = ConvertSecsToHMS(Writing.Time, timeOnly = TRUE)
-		  Computing.Time.HMS = ConvertSecsToHMS(Computing.Time, timeOnly = TRUE)
-		  Waiting.Time.HMS = ConvertSecsToHMS(Waiting.Time, timeOnly = TRUE)
-		  Bytes.Read = sum(log$Read.Size[index])
-		  Bytes.Written = sum(log$Write.Size[index])
-		  WriteToLogSummary(c1 = paste(partyName, "Start Time"), c2 = Start.Time, writePath = writePath)
-		  WriteToLogSummary(c1 = paste(partyName, "End Time"), c2 = End.Time, writePath = writePath)
-		  WriteToLogSummary(c1 = paste(partyName, "Total Run Time"), c2 = Total.Time,
-		                    c3 = Total.Time.HMS, writePath = writePath)
-		  WriteToLogSummary(c1 = paste(partyName, "Total Reading Time"), c2 = Reading.Time,
-		                    c3 = Reading.Time.HMS, writePath = writePath)
-		  WriteToLogSummary(c1 = paste(partyName, "Total Bytes Read"), c2 = Bytes.Read, writePath = writePath)
-		  WriteToLogSummary(c1 = paste(partyName, "Total Writing Time"), c2 = Writing.Time,
-		                    c3 = Writing.Time.HMS, writePath = writePath)
-		  WriteToLogSummary(c1 = paste(partyName, "Total Bytes Written"), c2 = Bytes.Written, writePath = writePath)
-		  WriteToLogSummary(c1 = paste(partyName, "Total Computing Time"), c2 = Computing.Time,
-		                    c3 = Computing.Time.HMS, writePath = writePath)
-		  WriteToLogSummary(c1 = paste(partyName, "Total Waiting Time"), c2 = Waiting.Time,
-		                    c3 = Waiting.Time.HMS, writePath = writePath)
-		  WriteToLogSummary(writePath = writePath)
-		}
-	}
+  total.time.0 = 0
+  for (party in 0:params$numDataPartners) {
+    partyName = paste0("dp", party)
+    index = which(log$Party == partyName)
+    if (length(index) > 0) {
+      Start.Time = log$Start.Time[index[1]]
+      End.Time   = log$End.Time[index[length(index)]]
+      Total.Time = round(as.numeric(difftime(End.Time, Start.Time, units = "secs")), digits = 2)
+      if (party == 0) { total.time.0 = Total.Time }
+      Reading.Time = sum(log$Read.Time[index])
+      Writing.Time = sum(log$Write.Time[index])
+      Computing.Time = sum(log$Computation.Time[index])
+      Waiting.Time = sum(log$Wait.Time[index])
+      Total.Time.HMS = ConvertSecsToHMS(Total.Time, timeOnly = TRUE)
+      Reading.Time.HMS = ConvertSecsToHMS(Reading.Time, timeOnly = TRUE)
+      Writing.Time.HMS = ConvertSecsToHMS(Writing.Time, timeOnly = TRUE)
+      Computing.Time.HMS = ConvertSecsToHMS(Computing.Time, timeOnly = TRUE)
+      Waiting.Time.HMS = ConvertSecsToHMS(Waiting.Time, timeOnly = TRUE)
+      Bytes.Read = sum(log$Read.Size[index])
+      Bytes.Written = sum(log$Write.Size[index])
+      WriteToLogSummary(c1 = paste(partyName, "Start Time"), c2 = Start.Time, writePath = writePath)
+      WriteToLogSummary(c1 = paste(partyName, "End Time"), c2 = End.Time, writePath = writePath)
+      WriteToLogSummary(c1 = paste(partyName, "Total Run Time"), c2 = Total.Time,
+                        c3 = Total.Time.HMS, writePath = writePath)
+      WriteToLogSummary(c1 = paste(partyName, "Total Reading Time"), c2 = Reading.Time,
+                        c3 = Reading.Time.HMS, writePath = writePath)
+      WriteToLogSummary(c1 = paste(partyName, "Total Bytes Read"), c2 = Bytes.Read, writePath = writePath)
+      WriteToLogSummary(c1 = paste(partyName, "Total Writing Time"), c2 = Writing.Time,
+                        c3 = Writing.Time.HMS, writePath = writePath)
+      WriteToLogSummary(c1 = paste(partyName, "Total Bytes Written"), c2 = Bytes.Written, writePath = writePath)
+      WriteToLogSummary(c1 = paste(partyName, "Total Computing Time"), c2 = Computing.Time,
+                        c3 = Computing.Time.HMS, writePath = writePath)
+      WriteToLogSummary(c1 = paste(partyName, "Total Waiting Time"), c2 = Waiting.Time,
+                        c3 = Waiting.Time.HMS, writePath = writePath)
+      WriteToLogSummary(writePath = writePath)
+    }
+  }
 
-	Total.Transfer.Time = 0
-	if (max(log$Step) > 1) {
-		for (i in 2:max(log$Step)) {
-			idx1 = which(log$Step == i - 1)
-			idx2 = which(log$Step == i)
-			Total.Transfer.Time = Total.Transfer.Time +
-				as.numeric(difftime(min(log$Start.Time[idx2]),
-														max(log$End.Time[idx1]), units = "secs"))
-		}
-	}
-	Total.Transfer.Time = round(Total.Transfer.Time, 2)
-	Elapsed.Computing.Time = total.time.0 - Total.Transfer.Time
+  Total.Transfer.Time = 0
+  if (max(log$Step) > 1) {
+    for (i in 2:max(log$Step)) {
+      idx1 = which(log$Step == i - 1)
+      idx2 = which(log$Step == i)
+      Total.Transfer.Time = Total.Transfer.Time +
+        as.numeric(difftime(min(log$Start.Time[idx2]),
+                            max(log$End.Time[idx1]), units = "secs"))
+    }
+  }
+  Total.Transfer.Time = round(Total.Transfer.Time, 2)
+  Elapsed.Computing.Time = total.time.0 - Total.Transfer.Time
 
-	Total.Reading.Time = sum(log$Read.Time)
-	Total.Writing.Time = sum(log$Write.Time)
-	Total.Computing.Time = sum(log$Computation.Time)
-	Total.Reading.Time.HMS = ConvertSecsToHMS(Total.Reading.Time, timeOnly = TRUE)
-	Total.Writing.Time.HMS = ConvertSecsToHMS(Total.Writing.Time, timeOnly = TRUE)
-	Total.Transfer.Time.HMS = ConvertSecsToHMS(Total.Transfer.Time, timeOnly = TRUE)
-	Total.Computing.Time.HMS = ConvertSecsToHMS(Total.Computing.Time, timeOnly = TRUE)
-	Elapsed.Computing.Time.HMS = ConvertSecsToHMS(Elapsed.Computing.Time, timeOnly = TRUE)
-	Total.Bytes.Transfered = sum(log$Bytes.Sent)
-	KB.Per.Second = round(Total.Bytes.Transfered / (Total.Transfer.Time * 1024), digits = 2)
+  Total.Reading.Time = sum(log$Read.Time)
+  Total.Writing.Time = sum(log$Write.Time)
+  Total.Computing.Time = sum(log$Computation.Time)
+  Total.Reading.Time.HMS = ConvertSecsToHMS(Total.Reading.Time, timeOnly = TRUE)
+  Total.Writing.Time.HMS = ConvertSecsToHMS(Total.Writing.Time, timeOnly = TRUE)
+  Total.Transfer.Time.HMS = ConvertSecsToHMS(Total.Transfer.Time, timeOnly = TRUE)
+  Total.Computing.Time.HMS = ConvertSecsToHMS(Total.Computing.Time, timeOnly = TRUE)
+  Elapsed.Computing.Time.HMS = ConvertSecsToHMS(Elapsed.Computing.Time, timeOnly = TRUE)
+  Total.Bytes.Transferred = sum(log$Bytes.Sent)
+  KB.Per.Second = round(Total.Bytes.Transferred / (Total.Transfer.Time * 1024), digits = 2)
 
-	WriteToLogSummary(c1 = "Total Reading Time", c2 = Total.Reading.Time,
-										c3 = Total.Reading.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Total Writing Time", c2 = Total.Writing.Time,
-										c3 = Total.Writing.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Total Computing Time", c2 = Total.Computing.Time,
-										c3 = Total.Computing.Time.HMS,  writePath = writePath)
-	WriteToLogSummary(c1 = "Elapsed Computing Time", c2 = Elapsed.Computing.Time,
-										c3 = Elapsed.Computing.Time.HMS,  writePath = writePath)
-	WriteToLogSummary(c1 = "Total Transfer Time", c2 = Total.Transfer.Time,
-										c3 = Total.Transfer.Time.HMS, writePath = writePath)
-	WriteToLogSummary(c1 = "Total Bytes Transfered", c2 = Total.Bytes.Transfered, writePath = writePath)
-	WriteToLogSummary(c1 = "KB / Sec Transfer Rate", c2 = KB.Per.Second, writePath = writePath)
+  WriteToLogSummary(c1 = "Total Reading Time", c2 = Total.Reading.Time,
+                    c3 = Total.Reading.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Total Writing Time", c2 = Total.Writing.Time,
+                    c3 = Total.Writing.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Total Computing Time", c2 = Total.Computing.Time,
+                    c3 = Total.Computing.Time.HMS,  writePath = writePath)
+  WriteToLogSummary(c1 = "Elapsed Computing Time", c2 = Elapsed.Computing.Time,
+                    c3 = Elapsed.Computing.Time.HMS,  writePath = writePath)
+  WriteToLogSummary(c1 = "Total Transfer Time", c2 = Total.Transfer.Time,
+                    c3 = Total.Transfer.Time.HMS, writePath = writePath)
+  WriteToLogSummary(c1 = "Total Bytes Transferred", c2 = Total.Bytes.Transferred, writePath = writePath)
+  WriteToLogSummary(c1 = "KB / Sec Transfer Rate", c2 = KB.Per.Second, writePath = writePath)
 }
 
 ####################### SHARED TRACKING TABLE FUNCTIONS ########################
 
 WriteTrackingTableRaw = function(params) {
-	trackingTable = params$trackingTable$history
-	save(trackingTable, file = file.path(params$writePath, "tr_tb_updt.rdata"))
-	return(params)
+  trackingTable = params$trackingTable$history
+  save(trackingTable, file = file.path(params$writePath, "tr_tb_updt.rdata"))
+  return(params)
 }
 
 
 WriteTrackingTableCSV = function(params) {
-	write.csv(params$trackingTable$history, file.path(params$writePath, "dl_track_tbl.csv"),
-						row.names = FALSE)
-	return(params)
+  write.csv(params$trackingTable$history, file.path(params$writePath, "dl_track_tbl.csv"),
+            row.names = FALSE)
+  return(params)
 }
 
 ####################### 2 PARTY TRACKING TABLE FUNCTIONS #######################
 
 InitializeTrackingTable.2p = function(params) {
-	trackingTable = list()
-	trackingTable$current = data.frame(DP_CD              = ifelse(params$partyName == "A", 0, 1),
-																		 MSREQID            = params$msreqid,
-																		 RUNID              = "dl",
-																		 ITER_NB            = 0,  # params$pmnIterationCounter
-																		 STEP_NB            = 0, # ifelse(params$partyName == "A", 2, 1),
-																		 START_DTM          = GetUTCTime(), # from log$Start.Time
-																		 END_DTM            = GetUTCTime(), # from log$End.Time
-																		 CURR_STEP_IN       = 0,
-																		 STEP_RETURN_CD     = 0,
-																		 STEP_RETURN_MSG    = "PASS", # copy errorMessage.rdata here if exists
-																		 REG_CONV_IN        = 0,  # 1 = converge, 0 = no converge
-																		 REG_CONV_MSG       = "", # Success or Failed when decided
-																		 LAST_ITER_IN       = 0,  # 1 at last iteration, so right before quit
-																		 LAST_RUNID_IN      = 0,
-																		 UTC_OFFSET_DISPLAY = GetUTCOffset(),
-																		 UTC_OFFSET_SEC     = GetUTCOffsetSeconds(),
-																		 REGR_TYPE_CD       = params$analysis
-	)
-	trackingTable$history = NA
-	params$trackingTable = trackingTable
-	return(params)
+  trackingTable = list()
+  trackingTable$current = data.frame(DP_CD              = ifelse(params$partyName == "A", 0, 1),
+                                     MSREQID            = params$msreqid,
+                                     RUNID              = "dl",
+                                     ITER_NB            = 0,  # params$pmnIterationCounter
+                                     STEP_NB            = 0, # ifelse(params$partyName == "A", 2, 1),
+                                     START_DTM          = GetUTCTime(), # from log$Start.Time
+                                     END_DTM            = GetUTCTime(), # from log$End.Time
+                                     CURR_STEP_IN       = 0,
+                                     STEP_RETURN_CD     = 0,
+                                     STEP_RETURN_MSG    = "PASS", # copy errorMessage.rdata here if exists
+                                     REG_CONV_IN        = 0,  # 1 = converge, 0 = no converge
+                                     REG_CONV_MSG       = "", # Success or Failed when decided
+                                     LAST_ITER_IN       = 0,  # 1 at last iteration, so right before quit
+                                     LAST_RUNID_IN      = 0,
+                                     UTC_OFFSET_DISPLAY = GetUTCOffset(),
+                                     UTC_OFFSET_SEC     = GetUTCOffsetSeconds(),
+                                     REGR_TYPE_CD       = params$analysis
+  )
+  trackingTable$history = NA
+  params$trackingTable = trackingTable
+  return(params)
 }
 
 StoreTrackingTableEntry.2p = function(params) {
-	params$trackingTable$current$ITER_NB = params$pmnStepCounter
-	params$trackingTable$current$START_DTM = params$log$current$Start.Time
-	params$trackingTable$current$END_DTM = params$log$current$End.Time
-	if (file.exists(file.path(params$readPath, "errorMessage.rdata"))) {
-		load(file.path(params$readPath, "errorMessage.rdata"))
-		params$trackingTable$current$STEP_RETURN_MSG = message
-	} else if (file.exists(file.path(params$writePath, "errorMessage.rdata"))) {
-		load(file.path(params$writePath, "errorMessage.rdata"))
-		params$trackingTable$current$STEP_RETURN_MSG = message
-	}
-	params$trackingTable$current$REG_CONV_IN = ifelse(params$completed, 1, 0)
-	if (params$completed) {
-		params$trackingTable$current$REG_CONV_MSG = ifelse(params$converged, "Success", "Failed")
-	}
-	params$trackingTable$current$LAST_ITER_IN = ifelse(params$lastIteration, 1, 0)
+  params$trackingTable$current$ITER_NB = params$pmnStepCounter
+  params$trackingTable$current$START_DTM = params$log$current$Start.Time
+  params$trackingTable$current$END_DTM = params$log$current$End.Time
+  if (file.exists(file.path(params$readPath, "errorMessage.rdata"))) {
+    load(file.path(params$readPath, "errorMessage.rdata"))
+    params$trackingTable$current$STEP_RETURN_MSG = message
+  } else if (file.exists(file.path(params$writePath, "errorMessage.rdata"))) {
+    load(file.path(params$writePath, "errorMessage.rdata"))
+    params$trackingTable$current$STEP_RETURN_MSG = message
+  }
+  params$trackingTable$current$REG_CONV_IN = ifelse(params$completed, 1, 0)
+  if (params$completed) {
+    params$trackingTable$current$REG_CONV_MSG = ifelse(params$converged, "Success", "Failed")
+  }
+  params$trackingTable$current$LAST_ITER_IN = ifelse(params$lastIteration, 1, 0)
 
-	if (params$partyName == "A") {
-		if (class(params$trackingTable$history) == "data.frame") {
-			params$trackingTable$history = rbind(params$trackingTable$history,
-																					 params$trackingTable$current)
-		} else {
-			params$trackingTable$history = params$trackingTable$current
-		}
-		write.csv(params$trackingTable$history, file.path(params$writePath, "dl_track_tbl.csv"),
-							row.names = FALSE)
-	} else {
-		trackingTableEntry = params$trackingTable$current
-		save(trackingTableEntry, file = file.path(params$writePath, "tr_tb_updt.rdata"))
-	}
-	return(params)
+  if (params$partyName == "A") {
+    if (class(params$trackingTable$history) == "data.frame") {
+      params$trackingTable$history = rbind(params$trackingTable$history,
+                                           params$trackingTable$current)
+    } else {
+      params$trackingTable$history = params$trackingTable$current
+    }
+    write.csv(params$trackingTable$history, file.path(params$writePath, "dl_track_tbl.csv"),
+              row.names = FALSE)
+  } else {
+    trackingTableEntry = params$trackingTable$current
+    save(trackingTableEntry, file = file.path(params$writePath, "tr_tb_updt.rdata"))
+  }
+  return(params)
 }
 
 ReadTrackingTableUpdate.2p = function(params) {
-	load(file.path(params$readPath, "tr_tb_updt.rdata"))
-	trackingTableEntry$MSREQID = params$msreqid
-	if (class(params$trackingTable$history) == "data.frame") {
-		params$trackingTable$history = rbind(params$trackingTable$history,
-																				 trackingTableEntry)
-	} else {
-		params$trackingTable$history = trackingTableEntry
-	}
-	return(params)
+  trackingTableEntry = NULL
+  load(file.path(params$readPath, "tr_tb_updt.rdata"))
+  trackingTableEntry$MSREQID = params$msreqid
+  if (class(params$trackingTable$history) == "data.frame") {
+    params$trackingTable$history = rbind(params$trackingTable$history,
+                                         trackingTableEntry)
+  } else {
+    params$trackingTable$history = trackingTableEntry
+  }
+  return(params)
 }
 
 ####################### 3 PARTY TRACKING TABLE FUNCTIONS #######################
 
 InitializeTrackingTable.3p = function(params) {
-	trackingTable = list()
-	trackingTable$current = data.frame(DP_CD              = ifelse(params$partyName == "T", 0,
-																																 ifelse(params$partyName == "A", 1, 2)),
-																		 MSREQID            = params$msreqid,
-																		 RUNID              = "dl",
-																		 ITER_NB            = 0,  # params$pmnIterationCounter
-																		 STEP_NB            = 0,
-																		 START_DTM          = GetUTCTime(), # from log$Start.Time
-																		 END_DTM            = GetUTCTime(), # from log$End.Time
-																		 CURR_STEP_IN       = 0,
-																		 STEP_RETURN_CD     = 0,
-																		 STEP_RETURN_MSG    = "PASS", # copy errorMessage.rdata here if exists
-																		 REG_CONV_IN        = 0,  # 1 = converge, 0 = no converge
-																		 REG_CONV_MSG       = "", # Success or Failed when decided
-																		 LAST_ITER_IN       = 0,  # 1 at last iteration, so right before quit
-																		 LAST_RUNID_IN      = 0,
-																		 UTC_OFFSET_DISPLAY = GetUTCOffset(),
-																		 UTC_OFFSET_SEC     = GetUTCOffsetSeconds(),
-																		 REGR_TYPE_CD       = params$analysis
-	)
-	trackingTable$history = NA
-	params$trackingTable = trackingTable
-	return(params)
+  trackingTable = list()
+  trackingTable$current = data.frame(DP_CD              = ifelse(params$partyName == "T", 0,
+                                                                 ifelse(params$partyName == "A", 1, 2)),
+                                     MSREQID            = params$msreqid,
+                                     RUNID              = "dl",
+                                     ITER_NB            = 0,  # params$pmnIterationCounter
+                                     STEP_NB            = 0,
+                                     START_DTM          = GetUTCTime(), # from log$Start.Time
+                                     END_DTM            = GetUTCTime(), # from log$End.Time
+                                     CURR_STEP_IN       = 0,
+                                     STEP_RETURN_CD     = 0,
+                                     STEP_RETURN_MSG    = "PASS", # copy errorMessage.rdata here if exists
+                                     REG_CONV_IN        = 0,  # 1 = converge, 0 = no converge
+                                     REG_CONV_MSG       = "", # Success or Failed when decided
+                                     LAST_ITER_IN       = 0,  # 1 at last iteration, so right before quit
+                                     LAST_RUNID_IN      = 0,
+                                     UTC_OFFSET_DISPLAY = GetUTCOffset(),
+                                     UTC_OFFSET_SEC     = GetUTCOffsetSeconds(),
+                                     REGR_TYPE_CD       = params$analysis
+  )
+  trackingTable$history = NA
+  params$trackingTable = trackingTable
+  return(params)
 }
 
 StoreTrackingTableEntry.3p = function(params) {
-	params$trackingTable$current$ITER_NB = params$pmnStepCounter
-	params$trackingTable$current$START_DTM = params$log$current$Start.Time
-	params$trackingTable$current$END_DTM = params$log$current$End.Time
-	if (file.exists(file.path(params$writePath, "errorMessage.rdata"))) {
-		load(file.path(params$writePath, "errorMessage.rdata"))
-		params$trackingTable$current$STEP_RETURN_MSG = message
-	} else {
-		msg = ""
-		for (party in c("A", "B", "T")) {
-			if (!is.na(params$readPath[[party]]) &&
-					file.exists(file.path(params$readPath[[party]], "errorMessage.rdata"))) {
-				load(file.path(params$readPath[[party]], "errorMessage.rdata"))
-				msg = paste0(msg, message)
-			}
-		}
-		params$trackingTable$current$STEP_RETURN_MSG = msg
-	}
-	params$trackingTable$current$REG_CONV_IN = ifelse(params$completed, 1, 0)
-	if (params$completed) {
-		params$trackingTable$current$REG_CONV_MSG = ifelse(params$converged, "Success", "Failed")
-	}
-	params$trackingTable$current$LAST_ITER_IN = ifelse(params$lastIteration, 1, 0)
-	if (params$pmnStepCounter == 0) {
-		params$trackingTable$history = params$trackingTable$current
-	} else {
-		params$trackingTable$history = rbind(params$trackingTable$history,
-																				 params$trackingTable$current)
-	}
-	return(params)
+  params$trackingTable$current$ITER_NB = params$pmnStepCounter
+  params$trackingTable$current$START_DTM = params$log$current$Start.Time
+  params$trackingTable$current$END_DTM = params$log$current$End.Time
+  if (file.exists(file.path(params$writePath, "errorMessage.rdata"))) {
+    load(file.path(params$writePath, "errorMessage.rdata"))
+    params$trackingTable$current$STEP_RETURN_MSG = message
+  } else {
+    msg = ""
+    for (party in c("A", "B", "T")) {
+      if (!is.na(params$readPath[[party]]) &&
+          file.exists(file.path(params$readPath[[party]], "errorMessage.rdata"))) {
+        load(file.path(params$readPath[[party]], "errorMessage.rdata"))
+        msg = paste0(msg, message)
+      }
+    }
+    params$trackingTable$current$STEP_RETURN_MSG = msg
+  }
+  params$trackingTable$current$REG_CONV_IN = ifelse(params$completed, 1, 0)
+  if (params$completed) {
+    params$trackingTable$current$REG_CONV_MSG = ifelse(params$converged, "Success", "Failed")
+  }
+  params$trackingTable$current$LAST_ITER_IN = ifelse(params$lastIteration, 1, 0)
+  if (params$pmnStepCounter == 0) {
+    params$trackingTable$history = params$trackingTable$current
+  } else {
+    params$trackingTable$history = rbind(params$trackingTable$history,
+                                         params$trackingTable$current)
+  }
+  return(params)
 }
 
 
 MergeTrackingTableRAW.3p = function(params, from) {
-	for (party in from) {
-		load(file.path(params$readPath[[party]], "tr_tb_updt.rdata"))
-		key1 = paste0(params$trackingTable$history$ITER_NB,
-									params$trackingTable$history$DP_CD)
-		key2 = paste0(trackingTable$ITER_NB,
-									trackingTable$DP_CD)
+  trackingTable = NULL
+  for (party in from) {
+    load(file.path(params$readPath[[party]], "tr_tb_updt.rdata"))
+    key1 = paste0(params$trackingTable$history$ITER_NB,
+                  params$trackingTable$history$DP_CD)
+    key2 = paste0(trackingTable$ITER_NB,
+                  trackingTable$DP_CD)
 
-		idx = which(key2 %in% key1)
-		if (length(idx) == 0) {
-			params$trackingTable$history =
-				rbind(params$trackingTable$history, trackingTable)
-		} else if (length(idx) < length(key2)) {
-			params$trackingTable$history =
-				rbind(params$trackingTable$history, trackingTable[-idx, ])
-		}
-	}
-	idx = order(params$trackingTable$history$START_DTM)
-	params$trackingTable$history = params$trackingTable$history[idx, ]
-	params$trackingTable$history$MSREQID = params$msreqid
-	return(params)
+    idx = which(key2 %in% key1)
+    if (length(idx) == 0) {
+      params$trackingTable$history =
+        rbind(params$trackingTable$history, trackingTable)
+    } else if (length(idx) < length(key2)) {
+      params$trackingTable$history =
+        rbind(params$trackingTable$history, trackingTable[-idx, ])
+    }
+  }
+  idx = order(params$trackingTable$history$START_DTM)
+  params$trackingTable$history = params$trackingTable$history[idx, ]
+  params$trackingTable$history$MSREQID = params$msreqid
+  return(params)
 }
 
 ####################### K PARTY TRACKING TABLE FUNCTIONS #######################
 
 InitializeTrackingTable.kp = function(params) {
-	trackingTable = list()
-	trackingTable$current = data.frame(DP_CD              = params$dataPartnerID,
-																		 MSREQID            = params$msreqid,
-																		 RUNID              = "dl",
-																		 ITER_NB            = 0,  # params$pmnIterationCounter
-																		 STEP_NB            = 0,
-																		 START_DTM          = GetUTCTime(), # from log$Start.Time
-																		 END_DTM            = GetUTCTime(), # from log$End.Time
-																		 CURR_STEP_IN       = 0,
-																		 STEP_RETURN_CD     = 0,
-																		 STEP_RETURN_MSG    = "PASS", # copy errorMessage.rdata here if exists
-																		 REG_CONV_IN        = 0,  # 1 = converge, 0 = no converge
-																		 REG_CONV_MSG       = "", # Success or Failed when decided
-																		 LAST_ITER_IN       = 0,  # 1 at last iteration, so right before quit
-																		 LAST_RUNID_IN      = 0,
-																		 UTC_OFFSET_DISPLAY = GetUTCOffset(),
-																		 UTC_OFFSET_SEC     = GetUTCOffsetSeconds(),
-																		 REGR_TYPE_CD       = params$analysis
-	)
-	trackingTable$history = NA
-	params$trackingTable = trackingTable
-	return(params)
+  trackingTable = list()
+  trackingTable$current = data.frame(DP_CD              = params$dataPartnerID,
+                                     MSREQID            = params$msreqid,
+                                     RUNID              = "dl",
+                                     ITER_NB            = 0,  # params$pmnIterationCounter
+                                     STEP_NB            = 0,
+                                     START_DTM          = GetUTCTime(), # from log$Start.Time
+                                     END_DTM            = GetUTCTime(), # from log$End.Time
+                                     CURR_STEP_IN       = 0,
+                                     STEP_RETURN_CD     = 0,
+                                     STEP_RETURN_MSG    = "PASS", # copy errorMessage.rdata here if exists
+                                     REG_CONV_IN        = 0,  # 1 = converge, 0 = no converge
+                                     REG_CONV_MSG       = "", # Success or Failed when decided
+                                     LAST_ITER_IN       = 0,  # 1 at last iteration, so right before quit
+                                     LAST_RUNID_IN      = 0,
+                                     UTC_OFFSET_DISPLAY = GetUTCOffset(),
+                                     UTC_OFFSET_SEC     = GetUTCOffsetSeconds(),
+                                     REGR_TYPE_CD       = params$analysis
+  )
+  trackingTable$history = NA
+  params$trackingTable = trackingTable
+  return(params)
 }
 
 StoreTrackingTableEntry.kp = function(params) {
-	params$trackingTable$current$ITER_NB = params$pmnStepCounter
-	params$trackingTable$current$START_DTM = params$log$current$Start.Time
-	params$trackingTable$current$END_DTM = params$log$current$End.Time
-	if (file.exists(file.path(params$writePath, "errorMessage.rdata"))) {
-		load(file.path(params$writePath, "errorMessage.rdata"))
-		params$trackingTable$current$STEP_RETURN_MSG = message
-	} else {
-		msg = ""
-		for (id in 1:params$numDataPartners) {
-			if (!is.na(params$readPathDP[id]) &&
-					file.exists(file.path(params$readPathDP[id], "errorMessage.rdata"))) {
-				load(file.path(params$readPathDP[id], "errorMessage.rdata"))
-				msg = paste0(msg, message)
-			}
-		}
-		if (!is.na(params$readPathAC) &&
-				file.exists(file.path(params$readPathAC, "errorMessage.rdata"))) {
-			load(file.path(params$readPathAC, "errorMessage.rdata"))
-			msg = paste0(msg, message)
-		}
-		params$trackingTable$current$STEP_RETURN_MSG = msg
-	}
-	params$trackingTable$current$REG_CONV_IN = ifelse(params$completed, 1, 0)
-	if (params$completed) {
-		params$trackingTable$current$REG_CONV_MSG = ifelse(params$converged, "Success", "Failed")
-	}
-	params$trackingTable$current$LAST_ITER_IN = ifelse(params$lastIteration, 1, 0)
-	if (params$pmnStepCounter == 0) {
-		params$trackingTable$history = params$trackingTable$current
-	} else {
-		params$trackingTable$history = rbind(params$trackingTable$history,
-																				 params$trackingTable$current)
-	}
+  params$trackingTable$current$ITER_NB = params$pmnStepCounter
+  params$trackingTable$current$START_DTM = params$log$current$Start.Time
+  params$trackingTable$current$END_DTM = params$log$current$End.Time
+  if (file.exists(file.path(params$writePath, "errorMessage.rdata"))) {
+    load(file.path(params$writePath, "errorMessage.rdata"))
+    params$trackingTable$current$STEP_RETURN_MSG = message
+  } else {
+    msg = ""
+    for (id in 1:params$numDataPartners) {
+      if (!is.na(params$readPathDP[id]) &&
+          file.exists(file.path(params$readPathDP[id], "errorMessage.rdata"))) {
+        load(file.path(params$readPathDP[id], "errorMessage.rdata"))
+        msg = paste0(msg, message)
+      }
+    }
+    if (!is.na(params$readPathAC) &&
+        file.exists(file.path(params$readPathAC, "errorMessage.rdata"))) {
+      load(file.path(params$readPathAC, "errorMessage.rdata"))
+      msg = paste0(msg, message)
+    }
+    params$trackingTable$current$STEP_RETURN_MSG = msg
+  }
+  params$trackingTable$current$REG_CONV_IN = ifelse(params$completed, 1, 0)
+  if (params$completed) {
+    params$trackingTable$current$REG_CONV_MSG = ifelse(params$converged, "Success", "Failed")
+  }
+  params$trackingTable$current$LAST_ITER_IN = ifelse(params$lastIteration, 1, 0)
+  if (params$pmnStepCounter == 0) {
+    params$trackingTable$history = params$trackingTable$current
+  } else {
+    params$trackingTable$history = rbind(params$trackingTable$history,
+                                         params$trackingTable$current)
+  }
 
-	return(params)
+  return(params)
 }
 
 
 MergeTrackingTableRAW.kp = function(params, from) {
-	if (from == "AC") {
-		load(file.path(params$readPathAC, "tr_tb_updt.rdata"))
-		key1 = paste0(params$trackingTable$history$ITER_NB,
-									params$trackingTable$history$DP_CD)
-		key2 = paste0(trackingTable$ITER_NB,
-									trackingTable$DP_CD)
+  trackingTable = NULL
+  if (from == "AC") {
+    load(file.path(params$readPathAC, "tr_tb_updt.rdata"))
+    key1 = paste0(params$trackingTable$history$ITER_NB,
+                  params$trackingTable$history$DP_CD)
+    key2 = paste0(trackingTable$ITER_NB,
+                  trackingTable$DP_CD)
 
-		idx = which(key2 %in% key1)
-		if (length(idx) == 0) {
-			params$trackingTable$history =
-				rbind(params$trackingTable$history, trackingTable)
-		} else if (length(idx) < length(key2)) {
-			params$trackingTable$history =
-				rbind(params$trackingTable$history, trackingTable[-idx, ])
-		}
-	} else if (from == "DP1") {
-		load(file.path(params$readPathDP[1], "tr_tb_updt.rdata"))
-		key1 = paste0(params$trackingTable$history$ITER_NB,
-									params$trackingTable$history$DP_CD)
-		key2 = paste0(trackingTable$ITER_NB,
-									trackingTable$DP_CD)
+    idx = which(key2 %in% key1)
+    if (length(idx) == 0) {
+      params$trackingTable$history =
+        rbind(params$trackingTable$history, trackingTable)
+    } else if (length(idx) < length(key2)) {
+      params$trackingTable$history =
+        rbind(params$trackingTable$history, trackingTable[-idx, ])
+    }
+  } else if (from == "DP1") {
+    load(file.path(params$readPathDP[1], "tr_tb_updt.rdata"))
+    key1 = paste0(params$trackingTable$history$ITER_NB,
+                  params$trackingTable$history$DP_CD)
+    key2 = paste0(trackingTable$ITER_NB,
+                  trackingTable$DP_CD)
 
-		idx = which(key2 %in% key1)
-		if (length(idx) == 0) {
-			params$trackingTable$history =
-				rbind(params$trackingTable$history, trackingTable)
-		} else if (length(idx) < length(key2)) {
-			params$trackingTable$history =
-				rbind(params$trackingTable$history, trackingTable[-idx, ])
-		}
-	} else {
-		for (id in 1:params$numDataPartners) {
-			if (id == params$dataPartnerID) next
-			load(file.path(params$readPathDP[id], "tr_tb_updt.rdata"))
-			key1 = paste0(params$trackingTable$history$ITER_NB,
-										params$trackingTable$history$DP_CD)
-			key2 = paste0(trackingTable$ITER_NB,
-										trackingTable$DP_CD)
+    idx = which(key2 %in% key1)
+    if (length(idx) == 0) {
+      params$trackingTable$history =
+        rbind(params$trackingTable$history, trackingTable)
+    } else if (length(idx) < length(key2)) {
+      params$trackingTable$history =
+        rbind(params$trackingTable$history, trackingTable[-idx, ])
+    }
+  } else {
+    for (id in 1:params$numDataPartners) {
+      if (id == params$dataPartnerID) next
+      load(file.path(params$readPathDP[id], "tr_tb_updt.rdata"))
+      key1 = paste0(params$trackingTable$history$ITER_NB,
+                    params$trackingTable$history$DP_CD)
+      key2 = paste0(trackingTable$ITER_NB,
+                    trackingTable$DP_CD)
 
-			idx = which(key2 %in% key1)
-			if (length(idx) == 0) {
-				params$trackingTable$history =
-					rbind(params$trackingTable$history, trackingTable)
-			} else if (length(idx) < length(key2)) {
-				params$trackingTable$history =
-					rbind(params$trackingTable$history, trackingTable[-idx, ])
-			}
-		}
-	}
-	idx = order(params$trackingTable$history$START_DTM)
-	params$trackingTable$history = params$trackingTable$history[idx, ]
-	params$trackingTable$history$MSREQID = params$msreqid
-	return(params)
+      idx = which(key2 %in% key1)
+      if (length(idx) == 0) {
+        params$trackingTable$history =
+          rbind(params$trackingTable$history, trackingTable)
+      } else if (length(idx) < length(key2)) {
+        params$trackingTable$history =
+          rbind(params$trackingTable$history, trackingTable[-idx, ])
+      }
+    }
+  }
+  idx = order(params$trackingTable$history$START_DTM)
+  params$trackingTable$history = params$trackingTable$history[idx, ]
+  params$trackingTable$history$MSREQID = params$msreqid
+  return(params)
 }
 
 ########################### VALID FORMULA FUNCTIONS ############################
 
 validFormula = function(expression) {
-	# This function takes an expresion and checks that it is of the form var1 ~ var2 + var3 + ... varN
-	# It does not check for constants.  Constants are ignored and treated if the are not there.
-	# Dupliate variables are ignored.  That is, as in lm(), formulas of the form
-	# var1 ~ var2 + var2 are equivalent to var1 ~ var2
+  # This function takes an expresion and checks that it is of the form var1 ~ var2 + var3 + ... varN
+  # It does not check for constants.  Constants are ignored and treated if the are not there.
+  # Dupliate variables are ignored.  That is, as in lm(), formulas of the form
+  # var1 ~ var2 + var2 are equivalent to var1 ~ var2
 
-	# Check to make sure this is a valid expression
-	if (tryCatch({is.expression(expression); FALSE},
-							 error = function(err) { TRUE })) {
-		return(FALSE)
-	}
-	vars = all.vars(expression)
-	names = all.names(expression)
-	#Check to see if expresion only contains variables, ~, and +.  no other symbols allowed.
-	res1 = all(names %in% c("~", "+", vars))
-	#Check to see if expresion contains exactly one ~
-	res2 = (sum(names %in% "~") == 1)
-	#Check to see if expression is of the form "variable ~ ....."
-	res3 = (names[1] == "~") & (names[2] %in% vars)
-	#Check to see if the LHS variable does not occur on the RHS
-	res4 = !(names[2] %in% names[3:length(names)])
-	#check to see if the LHS variable is not .
-	res5 = vars[1] != "."
-	return(res1 & res2 & res3 & res4 & res5)
+  # Check to make sure this is a valid expression
+  if (tryCatch({is.expression(expression); FALSE},
+               error = function(err) { TRUE })) {
+    return(FALSE)
+  }
+  vars = all.vars(expression)
+  names = all.names(expression)
+  #Check to see if expresion only contains variables, ~, and +.  no other symbols allowed.
+  res1 = all(names %in% c("~", "+", vars))
+  #Check to see if expresion contains exactly one ~
+  res2 = (sum(names %in% "~") == 1)
+  #Check to see if expression is of the form "variable ~ ....."
+  res3 = (names[1] == "~") & (names[2] %in% vars)
+  #Check to see if the LHS variable does not occur on the RHS
+  res4 = !(names[2] %in% names[3:length(names)])
+  #check to see if the LHS variable is not .
+  res5 = vars[1] != "."
+  return(res1 & res2 & res3 & res4 & res5)
 }
 
 validFormula2 = function(expression) {
-	# This function takes and expression and checks that it is of the form ~ var1 + var2 + ... + varN
-	# Duplicate variables are ignored.  That is, ~ var1 + var1 is equivalent to ~ var1
-	if (tryCatch({is.expression(expression); FALSE},
-							 error = function(err) { TRUE })) {
-		return(FALSE)
-	}
-	vars = all.vars(expression)
-	names = all.names(expression)
-	# Check to see if expresion only contains variables, ~, and +.  no other symbols allowed.
-	res1 = all(names %in% c("~", "+", vars))
-	# Check to see if expresion contains exactly one ~
-	res2 = (sum(names %in% "~") == 1)
-	# Check to see if expression has no LHS (should not)
-	res3 = length(expression) == 2
-	return(res1 && res2 && res3)
+  # This function takes and expression and checks that it is of the form ~ var1 + var2 + ... + varN
+  # Duplicate variables are ignored.  That is, ~ var1 + var1 is equivalent to ~ var1
+  if (tryCatch({is.expression(expression); FALSE},
+               error = function(err) { TRUE })) {
+    return(FALSE)
+  }
+  vars = all.vars(expression)
+  names = all.names(expression)
+  # Check to see if expresion only contains variables, ~, and +.  no other symbols allowed.
+  res1 = all(names %in% c("~", "+", vars))
+  # Check to see if expresion contains exactly one ~
+  res2 = (sum(names %in% "~") == 1)
+  # Check to see if expression has no LHS (should not)
+  res3 = length(expression) == 2
+  return(res1 && res2 && res3)
 }
 
 ###################### SHARED SUMMARY AND PRINT FUNCTIONS ######################
 
-print.vdralinear = function(x) {
+print.vdralinear = function(x, ...) {
   if (x$failed) {
     cat("Distributed linear regression failed.  No results to print.\n\n")
     return(invisible(NULL))
@@ -2922,30 +3079,32 @@ print.vdralinear = function(x) {
 }
 
 
-summary.vdralinear = function(x) {
+summary.vdralinear = function(object, ...) {
   temp = list()
   class(temp)         = "summary.vdralinear"
-  temp$failed         = x$failed
-  if (x$failed) {
+  temp$failed         = object$failed
+  if (object$failed) {
     return(temp)
   }
-  temp$party          = x$party
-  temp$coefficients   = x$coefficients
-  temp$secoef         = x$secoef
-  temp$tvals          = x$tvals
-  temp$pvals          = x$pvals
-  temp$rstderr        = x$rstderr
-  temp$df2            = x$df2
-  temp$rsquare        = x$rsquare
-  temp$adjrsquare     = x$adjrsquare
-  temp$Fstat          = x$Fstat
-  temp$df1            = x$df1
-  temp$Fpval          = x$Fpval
+  temp$party          = object$party
+  temp$coefficients   = object$coefficients
+  temp$secoef         = object$secoef
+  temp$tvals          = object$tvals
+  temp$pvals          = object$pvals
+  temp$rstderr        = object$rstderr
+  temp$df2            = object$df2
+  temp$rsquare        = object$rsquare
+  temp$adjrsquare     = object$adjrsquare
+  temp$Fstat          = object$Fstat
+  temp$df1            = object$df1
+  temp$Fpval          = object$Fpval
   return(temp)
 }
 
 
-print.summary.vdralinear = function(x, lion = FALSE) {
+print.summary.vdralinear = function(x, lion = FALSE, ...) {
+  arguments = list(...)
+
   if (x$failed) {
     cat("Distributed linear regression failed.  No results to print.\n\n")
     return(invisible(NULL))
@@ -2980,7 +3139,7 @@ print.summary.vdralinear = function(x, lion = FALSE) {
 }
 
 
-print.vdralogistic = function(x) {
+print.vdralogistic = function(x, ...) {
   if (x$failed) {
     cat("Distributed logistic regression failed.  No results to print.\n\n")
     return(invisible(NULL))
@@ -3000,31 +3159,35 @@ print.vdralogistic = function(x) {
 }
 
 
-summary.vdralogistic = function(x, lion = FALSE) {
+summary.vdralogistic = function(object, ...) {
   temp = list()
   class(temp)         = "summary.vdralogistic"
-  temp$failed         = x$failed
-  temp$converged      = x$converged
-  if (x$failed) {
+  temp$failed         = object$failed
+  temp$converged      = object$converged
+  if (object$failed) {
     return(temp)
   }
-  temp$party          = x$party
-  temp$coefficients   = x$coefficients
-  temp$secoef         = x$secoef
-  temp$tvals          = x$tvals
-  temp$pvals          = x$pvals
-  temp$nulldev        = x$nulldev
-  temp$nulldev_df     = x$nulldev_df
-  temp$resdev         = x$resdev
-  temp$resdev_df      = x$resdev_df
-  temp$aic            = x$aic
-  temp$bic            = x$bic
-  temp$iter           = x$iter
+  temp$party          = object$party
+  temp$coefficients   = object$coefficients
+  temp$secoef         = object$secoef
+  temp$tvals          = object$tvals
+  temp$pvals          = object$pvals
+  temp$nulldev        = object$nulldev
+  temp$nulldev_df     = object$nulldev_df
+  temp$resdev         = object$resdev
+  temp$resdev_df      = object$resdev_df
+  temp$aic            = object$aic
+  temp$bic            = object$bic
+  temp$iter           = object$iter
   return(temp)
 }
 
 
-print.summary.vdralogistic = function(x, lion = FALSE) {
+print.summary.vdralogistic = function(x, lion = FALSE, ...) {
+  arguments = list(...)
+
+  if (!is.na(arguments$lion) && is.logical(arguments$lion)) lion = arguments$lion
+
   if (x$failed) {
     cat("Distributed logistic regression failed.  No results to print.\n\n")
     return(invisible(NULL))
@@ -3056,7 +3219,7 @@ print.summary.vdralogistic = function(x, lion = FALSE) {
   }
   print(temp, row.names = FALSE, right = TRUE)
   cat("---", "\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\n")
-  cat("(Dispertion parameter for binomial family taken to be 1)\n\n")
+  cat("(Dispersion parameter for binomial family taken to be 1)\n\n")
   cat("    Null Deviance:", formatStat(x$nulldev), " on ", x$nulldev_df, " degrees of freedom\n")
   cat("Residual deviance:", formatStat(x$resdev), " on ", x$resdev_df, " degrees of freedom\n")
   cat("AIC:", formatStat(x$aic), "\n")
@@ -3066,7 +3229,7 @@ print.summary.vdralogistic = function(x, lion = FALSE) {
 }
 
 
-print.vdracox = function(x) {
+print.vdracox = function(x, ...) {
   if (x$failed) {
     cat("Distributed Cox regression failed.  No results to print.\n\n")
     return(invisible(NULL))
@@ -3087,37 +3250,41 @@ print.vdracox = function(x) {
 }
 
 
-summary.vdracox = function(x) {
+summary.vdracox = function(object, ...) {
   temp = list()
   class(temp)         = "summary.vdracox"
-  temp$failed         = x$failed
-  temp$converged      = x$converged
-  if (x$failed) {
+  temp$failed         = object$failed
+  temp$converged      = object$converged
+  if (object$failed) {
     return(temp)
   }
-  temp$party          = x$party
-  temp$coefficients   = x$coefficients
-  temp$expcoef        = x$expcoef
-  temp$secoef         = x$secoef
-  temp$zval           = x$zval
-  temp$pvals          = x$pvals
-  temp$expncoef       = x$expncoef
-  temp$lower          = x$lower
-  temp$upper          = x$upper
-  temp$n              = x$n
-  temp$nevent         = x$nevent
-  temp$concordance    = x$concordance
-  temp$rsquare        = x$rsquare
-  temp$lrt            = x$lrt
-  temp$df             = x$df
-  temp$wald.test      = x$wald.test
-  temp$score          = x$score
-  temp$iter           = x$iter
+  temp$party          = object$party
+  temp$coefficients   = object$coefficients
+  temp$expcoef        = object$expcoef
+  temp$secoef         = object$secoef
+  temp$zval           = object$zval
+  temp$pvals          = object$pvals
+  temp$expncoef       = object$expncoef
+  temp$lower          = object$lower
+  temp$upper          = object$upper
+  temp$n              = object$n
+  temp$nevent         = object$nevent
+  temp$concordance    = object$concordance
+  temp$rsquare        = object$rsquare
+  temp$lrt            = object$lrt
+  temp$df             = object$df
+  temp$wald.test      = object$wald.test
+  temp$score          = object$score
+  temp$iter           = object$iter
   return(temp)
 }
 
 
-print.summary.vdracox = function(x, lion = FALSE) {
+print.summary.vdracox = function(x, lion = FALSE, ...) {
+  arguments = list(...)
+
+  if (!is.na(arguments$lion) && is.logical(arguments$lion)) lion = arguments$lion
+
   if (x$failed) {
     cat("Distributed Cox regression failed.  No results to print.\n\n")
     return(invisible(NULL))
@@ -3398,7 +3565,7 @@ HoslemInternal = function(x, data = NULL, nGroups = 10){
 }
 
 
-print.hoslemdistributed = function(x) {
+print.hoslemdistributed = function(x, ...) {
   # if (!x$converged) {
   #   cat("Warning: Process did not converge.\n")
   #   cat("         Cannot perform Hosmer and Lemeshow goodness of fit test.\n")
@@ -3475,7 +3642,7 @@ RocInternal = function(x, data = NULL, bins = 500){
 }
 
 
-print.rocdistributed = function(x) {
+print.rocdistributed = function(x, ...) {
   # if (!x$converged) {
   #   cat("Warning: Process did not converge.  Cannot generate ROC.\n")
   #   return(invisible(NULL))
@@ -3548,12 +3715,12 @@ GetColors = function(n) {
 }
 
 
-plot.survfitDistributed = function(surv, merge = TRUE, ...) {
+plot.survfitDistributed = function(x, merge = FALSE, ...) {
   max = 0
-  n = length(surv$strata)
+  n = length(x$strata)
   labels = c()
-  max = max(surv$time)
-  labels = names(surv$strata)
+  max = max(x$time)
+  labels = names(x$strata)
   arguments = list(...)
   arguments$x = 1
   arguments$type = "n"
@@ -3568,8 +3735,8 @@ plot.survfitDistributed = function(surv, merge = TRUE, ...) {
     cols = GetColors(n)
     start = 1
     for (i in 1:n) {
-      end = start + surv$strata[i] - 1
-      lines(c(1, surv$surv[start:end]) ~ c(0, surv$time[start:end]), type = "s", col = cols[i])
+      end = start + x$strata[i] - 1
+      lines(c(1, x$surv[start:end]) ~ c(0, x$time[start:end]), type = "s", col = cols[i])
       start = end + 1
     }
     legend("bottomleft", legend = labels, col = cols, lty = 1)
@@ -3577,9 +3744,9 @@ plot.survfitDistributed = function(surv, merge = TRUE, ...) {
     cols = GetColors(1)
     start = 1
     for (i in 1:n) {
-      end = start + surv$strata[i] - 1
+      end = start + x$strata[i] - 1
       do.call("plot", arguments)
-      lines(c(1, surv$surv[start:end]) ~ c(0, surv$time[start:end]), type = "s", col = cols)
+      lines(c(1, x$surv[start:end]) ~ c(0, x$time[start:end]), type = "s", col = cols)
       legend("bottomleft", legend = labels[i], col = cols, lty = 1)
       start = end + 1
     }
@@ -3587,7 +3754,7 @@ plot.survfitDistributed = function(surv, merge = TRUE, ...) {
 }
 
 
-print.survfitDistributed = function(x) {
+print.survfitDistributed = function(x, ...) {
   start = 1
   events = integer(length(x$strata))
   for (i in 1:length(x$strata)) {
@@ -3741,14 +3908,15 @@ survfitDistributed = function(x = NULL, formula = NULL, data = NULL) {
   if (is.null(data) && is.null(formula)) {
     return(survfitDistributed.stats(x))
   }
-  if (class(data) != "matrix" && class(data) != "data.frame") {
-    cat("Error: the data must either be a data or a data.frame.",
-        "Please use the same data that you used for the distrubuted regression.\n")
+  if (!("matrix" %in% class(data)) && !("data.frame" %in% class(data))) {
+    cat("Error: the data must either be a matrix or a data.frame.",
+        "Please use the same data that you used for the distributed regression.\n")
     return(invisible(NULL))
   }
   if (class(formula) != "formula" || !validFormula2(formula)) {
     cat("The formula must be of the form \"~ var1 + ... + vark\" where the variables",
-        "are found in the data. The formula can also \"~ 1\".\n")
+        "are found in the data. The formula can also be \"~ 1\".\n")
   }
   return(survfitDistributed.formula(x, formula, data))
 }
+

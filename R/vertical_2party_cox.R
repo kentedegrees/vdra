@@ -9,12 +9,12 @@ PrepareFolderCox.A2 = function(params, monitorFolder) {
 	params$readPath      = file.path(monitorFolder, "msoc1")
 
 	if (is.null(monitorFolder)) {
-	  cat("monitorFolder must be specified.  Please use the same monitorFolder as the Datamart Client.\n")
+	  cat("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.\n")
 	  params$failed = TRUE
 	  return(params)
 	}
 	if (class(monitorFolder) != "character") {
-	  cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the Datamart Client.\n")
+	  cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.\n")
 	  params$failed = TRUE
 	  return(params)
 	}
@@ -58,7 +58,7 @@ PrepareFolderCox.A2 = function(params, monitorFolder) {
 																"Check the path and restart the program.\n\n")
 	}
 
-	params = AddToLog(params, "PrepareDataCox.A2, PrepareFolderCox.A2", 0, 0, 0, 0)
+	params = AddToLog(params, "PrepareDataCox.A23, PrepareFolderCox.A2", 0, 0, 0, 0)
 	return(params)
 }
 
@@ -73,12 +73,12 @@ PrepareFolderCox.B2 = function(params, monitorFolder) {
 	params$readPath      = file.path(monitorFolder, "inputfiles")
 
 	if (is.null(monitorFolder)) {
-	  cat("monitorFolder must be specified.  Please use the same monitorFolder as the Datamart Client.\n")
+	  cat("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.\n")
 	  params$failed = TRUE
 	  return(params)
 	}
 	if (class(monitorFolder) != "character") {
-	  cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the Datamart Client.\n")
+	  cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.\n")
 	  params$failed = TRUE
 	  return(params)
 	}
@@ -126,346 +126,117 @@ PrepareFolderCox.B2 = function(params, monitorFolder) {
   Sys.sleep(1)
 	DeleteTrigger("files_done.ok", params$readPath)
 
-	params = AddToLog(params, "PrepareDataCox.B2, PrepareFolderCox.B2", 0, 0, 0, 0)
+	params = AddToLog(params, "PrepareDataCox.B23, PrepareFolderCox.B2", 0, 0, 0, 0)
 
 	return(params)
 }
 
 
-PrepareDataCox.A2 = function(params, data, yname, strata, mask) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareDataCox.A2\n\n")
-  workdata = list()
-  workdata$failed = FALSE
-  if (class(data) %in% c("character", "double", "integer", "logical",
-                         "numeric", "single", "factor")) {
-    data = as.data.frame(data)
-  }
-  if (class(data) != "data.frame" && class(data) != "matrix") {
-    cat("Error: data is not a matrix or a data frame.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  if (nrow(data) < 1 || ncol(data) < 1) {
-    cat("Error: the data is empty.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  badValue = rep(FALSE, nrow(data))
-  for (i in 1:ncol(data)) {
-  	if (class(data[, i]) %in% c("integer", "single", "double", "numeric")) {
-  		badValue = badValue | !is.finite(data[, i])
-  	} else {
-  		badValue = badValue | is.na(data[, i])
-  	}
-  }
-  idx = data.frame(which(badValue))
-  colnames(idx) = "Observations with invalid entries"
-  if (nrow(idx) > 0) {
-  	cat("Error: Some observations contain invalid values: NA, NaN, or InF.",
-  			"A list of all such observations has been outputted to",
-  			file.path(params$writePath, "invalidEntries.csv"),
-  			". Terinating program.\n\n")
-  	write.csv(idx, file.path(params$writePath, "invalidEntries.csv"))
-  	workdata$failed = TRUE
-  	return(workdata)
-  }
-  if (ncol(data) == 1) {
-    cat("Error: There is only one variable.  Need at least two variables for time and censoring.\n ")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  if (!is.null(yname) && class(yname) != "character") {
-    cat("Error: time and censor labels are not strings.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  if (length(yname) == 1) {
-    cat("Error: Only one name for time and censor variables provided.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  if (length(yname) > 2) {
-    cat("Error: More than two names for time and censor variables provided.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  if (is.null(colnames(data))) {
-    cat("Warning: variables are not named. Assuming variable 1 is time and variable 2 is censoring.  Assigning labels to the rest of the columns.\n\n")
-    if (is.null(yname)) {
-      yname = c("time", "censor")
+extractStrata = function(params, data, stratas, mask) {
+  strata = list()
+  strata$failed = FALSE
+  if (!is.null(stratas)) {
+    if (!("character" %in% class(stratas))) {
+      cat("Error: strata is not a valid variable name(s).\n\n")
+      strata$failed = TRUE
+      return(strata)
     }
-    if (ncol(data) == 2) {
-      colnames(data) = yname
-    } else {
-      colnames(data) = c(yname, paste0("dp0:", 1:(ncol(data) - 2)))
-    }
-  } else {
-    if (is.null(yname)) {
-      yname = colnames(data)[1:2]
-    }
-  }
-  if ("(Intercept)" %in% colnames(data)) {
-    cat("Error: \"(Intercept)\" is not a valid covariate name.  Please change it.  Terminiating Program.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  if (max(table(colnames(data))) > 1) {
-    cat("Error: duplicate column names found.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  if (!(yname[1] %in% colnames(data))) {
-    cat("Error: time variable", paste0("'", yname[1], "'"), "not found.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  if (!(yname[2] %in% colnames(data))) {
-    cat("Error: censoring variable", paste0("'", yname[2], "'"), "not found.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  timeColIndex = which(colnames(data) %in% yname[1])
-  if (class(data[1, timeColIndex]) != "numeric" & class(data[1, timeColIndex]) != "integer") {
-    cat("Error: time variable", paste0("'", yname[1], "'"), "is not numeric.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  censorColIndex = which(colnames(data) %in% yname[2])
-  if (class(data[1, censorColIndex]) != "numeric" & class(data[1, censorColIndex]) != "integer") {
-    cat("Error: censoring variable", paste0("'", yname[2], "'"), "is not numeric.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  if (sum(data[, censorColIndex] %in% c(0, 1)) < nrow(data)) {
-    cat("Error: censoring data should be only 0's and 1's.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  workdata$survival        = list()
-  workdata$survival$rank   = data[, timeColIndex]
-  workdata$survival$status = data[, censorColIndex]
-  data = data[, -c(timeColIndex, censorColIndex), drop = FALSE]
-
-  # Extract the strata First
-  workdata$strata = list()
-  if (!is.null(strata)) {
-    if (class(strata) != "character") {
-      cat("Error: strata is not a valid variable name.\n\n")
-      workdata$failed = TRUE
-      return(workdata)
-    }
-    if (length(strata) > 0) {
-      idx = which(strata %in% colnames(data))
-      if (length(idx) > 0) {
-        workdata$strata$strataFromA = strata[idx]
-        workdata$strata$strataFromB = strata[-idx]
+    if (length(stratas) > 0) {
+      idx = stratas %in% colnames(data)
+      if(!is.null(params$partyName) && params$partyName == "A")  {
+        strata$strataFromA = stratas[idx]
+        strata$strataFromB = stratas[!idx]
       } else {
-        workdata$strata$strataFromA = c()
-        workdata$strata$strataFromB = strata
+        strata$strataFromB = stratas[idx]
+        strata$strataFromA = stratas[!idx]
       }
-      idx = which(colnames(data) %in% workdata$strata$strataFromA)
-      if (length(idx) > 0) {
-        workdata$strata$X = as.data.frame(data[, idx, drop = FALSE])
-        colnames(workdata$strata$X) = colnames(data)[idx]
-        workdata$strata$legend = list()
-        data              = data[, -idx, drop = FALSE]
-        #randomize values for levels for each strata
-        for (i in 1:ncol(workdata$strata$X)) {
-          levels = levels(as.factor(workdata$strata$X[, i]))
-          workdata$strata$legend[[colnames(workdata$strata$X)[i]]] = levels
+      if (!is.null(params$dataPartnerID) && params$dataPartnerID == "1") {
+        strata$strataFromMe     = stratas[idx]
+        strata$strataFromOthers = stratas[!idx]
+      } else {
+        strata$strataFromMe     = stratas[idx]
+        strata$strataFromOthers = stratas[!idx]
+      }
+      strata$strataIndex = which(colnames(data) %in% stratas)
+      if (length(strata$strataIndex) > 0) {
+        strata$X = data[, strata$strataIndex, drop = FALSE]
+        strata$legend = list()
+        for (i in 1:ncol(strata$X)) {
+          levels = unique(strata$X[, i])
+          strata$legend[[colnames(strata$X)[i]]] = levels
           if (mask) {
-            levels = sample(levels, length(levels))
-            workdata$strata$legend[[colnames(workdata$strata$X)[i]]] = rep("NA", length(levels))
+            levels = sample(levels)
+            strata$legend[[colnames(strata$X)[i]]] = rep("NA", length(levels))
           }
-          workdata$strata$X[, i] = sapply(workdata$strata$X[, i], function(x) { which(levels %in% x)})
+          strata$X[, i] = sapply(strata$X[, i], function(x) { which(levels %in% x)})
         }
       }
     }
   }
-
-  # Now covert what is left to a matrix and convert all non-numeric data to indicators
-
-  if (class(data) == "matrix") {
-    if (ncol(data) == 0) {
-      workdata$X = data
-    } else {
-      workdata$X = scale(data, center = TRUE, scale = FALSE)
-    }
-  } else if (ncol(data) > 0) { # class(data) == "data.frame"
-    varNames = c()
-    covariateNames = setdiff(colnames(data), yname)
-    for (name in covariateNames) {
-      if (class(data[[name]]) %in% c("integer", "numeric", "single", "double")) {
-        varNames = c(varNames, name)
-      } else {
-        if (class(data[[name]]) %in% c("character", "logical")) {
-          data[[name]] = as.factor(data[[name]])
-        }
-        if (class(data[[name]]) != "factor") {
-          cat("Error: variable", name, "is not numeric and cannot be converted to a factor.\n\n")
-          workdata$failed = TRUE
-          return(workdata)
-        }
-        levelNames = levels(data[[name]])
-        if (length(levelNames) == 1) {
-          data[[name]] = rep(1, nrow(data))
-          varNames = c(varNames, name)
-        } else {
-          for (lname in levelNames[-1]) {
-            newName = paste0(name, ":", lname)
-            if (newName %in% varNames) {
-              cat("Error: variable", newName, "already exists.\n\n")
-              workdata$failed = TRUE
-              return(workdata)
-            }
-            data[[newName]] = ifelse(data[[name]] == lname, 1, 0)
-            varNames = c(varNames, newName)
-          }
-          data[[name]] = NULL
-        }
-      }
-    }
-    index = match(varNames, colnames(data))
-    workdata$X = scale(as.matrix(data[index]), center = TRUE, scale = FALSE)
-  } else {
-    workdata$X = as.matrix(data)
-  }
-  return(workdata)
+  return(strata)
 }
 
 
-PrepareDataCox.B2 = function(params, data, strata, mask) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareDataCox.B2\n\n")
+PrepareDataCox.23 = function(params, data, yname, strata, mask) {
+  if (params$trace) cat(as.character(Sys.time()), "PrepareDataCox.23\n\n")
+
   workdata = list()
-  workdata$failed = FALSE
-  if (class(data) %in% c("character", "double", "integer", "logical",
-                         "numeric", "single", "factor")) {
-    data = as.data.frame(data)
-  }
-  if (class(data) != "data.frame" & class(data) != "matrix") {
-    cat("Error: data is not a matrix or a data frame.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  if (ncol(data) < 1 | nrow(data) < 1) {
-    cat("Error: data is empty.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  badValue = rep(FALSE, nrow(data))
-  for (i in 1:ncol(data)) {
-  	if (class(data[, i]) %in% c("integer", "single", "double", "numeric")) {
-  		badValue = badValue | !is.finite(data[, i])
-  	} else {
-  		badValue = badValue | is.na(data[, i])
-  	}
-  }
-  idx = data.frame(which(badValue))
-  colnames(idx) = "Observations with invalid entries"
-  if (nrow(idx) > 0) {
-  	cat("Error: Some observations contain invalid values: NA, NaN, or InF.",
-  			"A list of all such observations has been outputted to",
-  			file.path(params$writePath, "invalidEntries.csv"),
-  			". Terinating program.\n\n")
-  	write.csv(idx, file.path(params$writePath, "invalidEntries.csv"))
-  	workdata$failed = TRUE
-  	return(workdata)
-  }
-  if (is.null(colnames(data))) {
-    cat("Warning: variables are not named.  Assigning labels.\n\n")
-    colnames(data) = paste0("dp1:", 1:ncol(data))
-  }
-  if (max(table(colnames(data))) > 1) {
-    cat("Error: duplicate variable names found.\n\n")
-    workdata$failed = TRUE
+  workdata$failed = CheckDataFormat(params, data)
+
+  if (workdata$failed) {
     return(workdata)
   }
 
-  # Extract the strata First
-  workdata$strata = list()
-  if (!is.null(strata)) {
-    if (class(strata) != "character") {
-      cat("Error: strata is not a valid variable name.\n\n")
+  data = data.frame(data) # convert to a clean data.frame
+
+  workdata$strata = extractStrata(params, data, strata, mask)
+  if (workdata$strata$failed) {
+    workdata$failed == TRUE
+    return(workdata)
+  }
+  strataIndex = workdata$strata$strataIndex
+  responseIndex = numeric()
+
+  if (params$partyName == "A") {
+    responseIndex = CheckResponse(params, data, yname)
+
+    if (is.null(responseIndex)) {
+      workdata$failed == TRUE
+      return(workdata)
+    }
+
+    workdata$survival        = list()
+    workdata$survival$rank   = data[, responseIndex[1]]
+    workdata$survival$status = data[, responseIndex[2]]
+    if (length(intersect(strataIndex, responseIndex)) > 0) {
+      cat("Error: response and strata share a variable.\n\n")
+      workdata$failed == TRUE
+      return(workdata)
+    }
+  }
+
+  covariateIndex = setdiff(1:ncol(data), union(strataIndex, responseIndex))
+
+  if (length(covariateIndex) == 0) {
+    if (params$partyName == "A") {
+      workdata$X = matrix(0, nrow = nrow(data), ncol = 0)
+    } else {
+      cat("Error: After removing strata, data is empty.  Party B must supply at least one non-strata covariate.\n\n")
       workdata$failed = TRUE
       return(workdata)
     }
-    if (length(strata) > 0) {
-      idx = which(strata %in% colnames(data))
-      if (length(idx) > 0) {
-        workdata$strata$strataFromB = strata[idx]
-        workdata$strata$strataFromA = strata[-idx]
-      } else {
-        workdata$strata$strataFromB = c()
-        workdata$strata$strataFromA = strata
-      }
-      idx = which(colnames(data) %in% workdata$strata$strataFromB)
-      if (length(idx) > 0) {
-        workdata$strata$X = as.data.frame(data[, idx])
-        colnames(workdata$strata$X) = colnames(data)[idx]
-        workdata$strata$legend = list()
-        data              = data[, -idx, drop = FALSE]
-        #randomize values for levels for each strata
-        for (i in 1:ncol(workdata$strata$X)) {
-          levels = levels(as.factor(workdata$strata$X[, i]))
-          workdata$strata$legend[[colnames(workdata$strata$X)[i]]] = levels
-          if (mask) {
-            levels = sample(levels, length(levels))
-            workdata$strata$legend[[colnames(workdata$strata$X)[i]]] = rep("NA", length(levels))
-          }
-          outcome = sapply(workdata$strata$X[, i], function(x) { which(levels %in% x)})
-          workdata$strata$X[, i] = outcome
-        }
-      }
+  } else {
+    workdata$tags = CreateModelMatrixTags(data[, covariateIndex, drop = FALSE])
+    if (params$partyName == "B" & (ncol(data) < 2 | !("numeric" %in% names(workdata$tags)))) {
+      cat("Error: The data partner that does not have the response must have at least 2 covariates at least one of which must be numeric.\n")
+      workdata$failed = TRUE
+      return(workdata)
     }
+    workdata$X = scale(model.matrix(~ ., data[, covariateIndex, drop = FALSE]),
+                       center = TRUE, scale = FALSE)
+    workdata$X = workdata$X[, -1, drop = FALSE]
   }
-  if (ncol(data) < 1) {
-    cat("Error: After removing strata, data is empty.  Party B must supply at least one non-strata covariate.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  # Now covert what is left to a matrix and convert all non-numeric data to indicators
-  if (class(data) == "matrix") {
-    if (class(data[1, 1]) != "numeric" && class(data[1, 1]) != "integer") {
-      data = as.data.frame(data)
-    } else {
-      workdata$X = scale(data, center = TRUE, scale = FALSE)
-    }
-  }
-  if (class(data) == "data.frame") {
-    varNames = c()
-    for (name in colnames(data)) {
-      if (class(data[[name]]) %in% c("integer", "numeric", "single", "double")) {
-        varNames = c(varNames, name)
-      } else {
-        if (class(data[[name]]) %in% c("character", "logical")) {
-          data[[name]] = as.factor(data[[name]])
-        }
-        if (class(data[[name]]) != "factor") {
-          cat("Error: variable", name, "is not numeric and cannot be converted to a factor.\n\n")
-          workdata$failed = TRUE
-          return(workdata)
-        }
-        levelNames = levels(data[[name]])
-        if (length(levelNames) == 1) {
-          data[[name]] = rep(1, nrow(data))
-          varNames = c(varNames, name)
-        } else {
-          for (lname in levelNames[-1]) {
-            newName = paste0(name, ":", lname)
-            if (newName %in% varNames) {
-              cat("Error: variable", newName, "already exists.\n\n")
-              return(invisible(NULL))
-            }
-            data[[newName]] = ifelse(data[[name]] == lname, 1, 0)
-            varNames = c(varNames, newName)
-          }
-          data[[name]] = NULL
-        }
-      }
-    }
-    index = match(varNames, colnames(data))
-    workdata$X = scale(as.matrix(data[index]), center = TRUE, scale = FALSE)
-  }
+
   return(workdata)
 }
 
@@ -491,11 +262,9 @@ PrepareParamsCox.B2 = function(params, data) {
   params$cutoff        = 1
   params$maxIterations = 1
 
-  if (requireNamespace("survival", quietly = TRUE)) {
-    library(survival)
-    params$survivalInstalled = TRUE
-  } else {
-    params$survivalInstalled = FALSE
+  params$survivalInstalled = requireNamespace("survival", quietly = TRUE)
+  if (params$survivalInstalled & !("package:survival" %in% search())) {
+    attachNamespace("survival")
   }
 
   pb           = list()
@@ -506,6 +275,7 @@ PrepareParamsCox.B2 = function(params, data) {
   pb$strataB   = list()
   pb$strataB$strataFromA = data$strata$strataFromA
   pb$strataB$strataFromB = data$strata$strataFromB
+  pb$tags      = data$tags
 
   writeTime = proc.time()[3]
   save(pb, file = file.path(params$writePath, "pb.rdata"))
@@ -515,10 +285,8 @@ PrepareParamsCox.B2 = function(params, data) {
   return(params)
 }
 
-
 CheckStrataCox.A2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "CheckStrataCox.A2\n\n")
-  readTime = proc.time()[3]
   pb = NULL
   readTime = proc.time()[3]
   load(file.path(params$readPath, "pb.rdata")) # load pb
@@ -549,7 +317,7 @@ CheckStrataCox.A2 = function(params, data) {
               "Check the spelling of the variables names and / or remove them from the strata.")
     } else {
       params$errorMessage =
-        paste("Party A and Party B have specified different stata.",
+        paste("Party A and Party B have specified different strata.",
               "Verify that both parties specify the same strata.")
     }
     cat("Error:", params$errorMessage, "\n\n")
@@ -580,6 +348,7 @@ PrepareStrataCox.A2 = function(params, data) {
   writeTime = 0
   writeSize = 0
   strataTemp = NULL
+
   if (params$getStrataFromB) {
     readTime = proc.time()[3]
     load(file = file.path(params$readPath, "strata.rdata"))
@@ -723,6 +492,9 @@ PrepareParamsCox.A2 = function(params, data, cutoff = 0.01, maxIterations = 25) 
   params$Acolnames.old = c("")
   params$Bcolnames.old = c("")
 
+  params$Atags         = data$tags
+  params$Btags         = pb$tags
+
   if (cutoff <= 0) cutoff = 0.01
   if (cutoff >= 1) cutoff = 0.05
   params$cutoff        = cutoff
@@ -730,18 +502,24 @@ PrepareParamsCox.A2 = function(params, data, cutoff = 0.01, maxIterations = 25) 
   if (maxIterations < 1) maxIterations = 1
   params$maxIterations = maxIterations
 
-  if (requireNamespace("survival", quietly = TRUE)) {
-    library(survival)
-    params$survivalInstalled = TRUE
-  } else {
-    params$survivalInstalled = FALSE
+  params$survivalInstalled = requireNamespace("survival", quietly = TRUE)
+  if (params$survivalInstalled & !("package:survival" %in% search())) {
+    attachNamespace("survival")
   }
+
+  # if (requireNamespace("survival", quietly = TRUE)) {
+  #   params$survivalInstalled = TRUE
+  # } else {
+  #   params$survivalInstalled = FALSE
+  # }
 
   pa = list()
   pa$p1 = params$p1
   pa$cutoff = params$cutoff
   pa$maxIterations = params$maxIterations
   pa$Acolnames = params$Acolnames
+  pa$tags = data$tags
+
   writeTime = proc.time()[3]
   save(pa, file = file.path(params$writePath, "pa.rdata"))
   writeSize = sum(file.size(file.path(params$writePath, "pa.rdata")))
@@ -846,6 +624,7 @@ GetZCox.A2 = function(params, data) {
 
 SortDataCox.B2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "SortDataCox.B2\n\n")
+  survival = NULL
   readTime = proc.time()[3]
   load(file.path(params$readPath, "survival.rdata"))
   readSize = file.size(file.path(params$readPath, "survival.rdata"))
@@ -860,6 +639,7 @@ SortDataCox.B2 = function(params, data) {
 
 FinalizeParamsCox.B2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "FinalizeParamsCox.B2\n\n")
+  pa = NULL
   readTime = proc.time()[3]
   load(file.path(params$readPath, "pa.rdata")) # read pa
   readSize = sum(file.size(file.path(params$readPath, "pa.rdata")))
@@ -877,6 +657,7 @@ FinalizeParamsCox.B2 = function(params, data) {
 
 PrepareBlocksCox.B2 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareBlocksCox.B2\n\n")
+  blocksize = NULL
   # For now, assuming that p1 > 0 and p2 > 0
   readTime = proc.time()[3]
   load(file.path(params$readPath, "blocksize.rdata")) # load blocksize
@@ -960,6 +741,7 @@ CheckColinearityCox.A2 = function(params, data) {
   readSize  = 0
   writeTime = 0
   writeSize = 0
+  XBTXB = NULL
 
   readTime = readTime - proc.time()[3]
   load(file.path(params$readPath, "xbtxb.rdata")) # load XBTXB
@@ -1009,11 +791,11 @@ CheckColinearityCox.A2 = function(params, data) {
   numStrata = length(data$survival$strata)
   Anames = params$Acolnames
   Bnames = params$Bcolnames
-  indicies = indicies[-(1:length(data$survival$strata))] # Get rid of the strata indicators
-  Aindex = which(indicies <= numStrata + length(Anames))
-  Bindex = which(indicies > numStrata + length(Anames))
-  params$AIndiciesKeep = indicies[Aindex] - numStrata
-  params$BIndiciesKeep = indicies[Bindex] - numStrata - length(Anames)
+  indicies = indicies[-(1:length(data$survival$strata))] - numStrata # Get rid of the strata indicators
+  Aindex = which(indicies <= length(Anames))
+  Bindex = which(indicies > length(Anames))
+  params$AIndiciesKeep = indicies[Aindex]
+  params$BIndiciesKeep = indicies[Bindex] - length(Anames)
   AnamesKeep = Anames[params$AIndiciesKeep]
   BnamesKeep = Bnames[params$BIndiciesKeep]
   params$Acolnames.old = params$Acolnames
@@ -1027,21 +809,38 @@ CheckColinearityCox.A2 = function(params, data) {
   params$p.old         = params$p1.old + params$p2.old
   params$p             = params$p1 + params$p2
 
-  Aindicies = params$AIndiciesKeep - numStrata
+  Aindicies = params$AIndiciesKeep
   Bindicies = params$BIndiciesKeep
+
 
   writeTime = writeTime - proc.time()[3]
   save(Aindicies, Bindicies, file = file.path(params$writePath, "indicies.rdata"))
   writeSize = sum(file.size(file.path(params$writePath, "indicies.rdata")))
   writeTime = writeTime + proc.time()[3]
+  tags = params$Btags[Bindicies]
 
-  if (params$p2 == 0) {
+  if (length(unique(tags)) == 0) {
     params$failed = TRUE
-    params$errorMessage = "All of party B's covariates are either linear or are colienar with Party A's covariates."
-    cat("Error:  All of Party B's covariates are either linear or are colinear with ")
-    cat("Party A's covariates.\n\n")
+    params$errorMessage = "After removing colinear covariates, Party B has no covariates.\n\n"
   }
+  cat(params$failed,"\n")
+  # if (length(unique(tags)) < 2) {
+  #   params$failed = TRUE
+  #   params$errorMessage = "After removing colinear covariates, Party B has 1 or fewer covariates.\n\n"
+  # } else if (!("numeric" %in% names(tags))) {
+  #   params$failed = TRUE
+  #   params$errorMessage = "After removing colinear covariates, Party B has no continuous covariates.\n\n"
+  # }
+
+#
+#   if (params$p2 == 0) {
+#     params$failed = TRUE
+#     params$errorMessage = "All of party B's covariates are either linear or are colinear with Party A's covariates."
+#     cat("Error:  All of Party B's covariates are either linear or are colinear with ")
+#     cat("Party A's covariates.\n\n")
+#   }
   params = AddToLog(params, "CheckColinearityCox.A2", readTime, readSize, writeTime, writeSize)
+  cat(params$failed,"\n")
   return(params)
 }
 
@@ -1071,6 +870,7 @@ ComputeLogLikelihoodCox.A2 = function(params, data) {
   p1 = params$p1
   readTime = 0
   readSize = 0
+  XB.betasB = NULL
 
   if (params$algIterationCounter == 1) {
     params$X.betas.old = matrix(0, n, 1)
@@ -1164,6 +964,9 @@ ComputeLogLikelihoodCox.A2 = function(params, data) {
 
 UpdateParamsCox.B2 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateParamsCox.B2\n\n")
+  Aindicies = NULL
+  Bindicies = NULL
+
   readTime = proc.time()[3]
   load(file.path(params$readPath, "indicies.rdata")) # load Aindicies, Bindicies
   readSize = sum(file.size(file.path(params$readPath, "indicies.rdata")))
@@ -1186,10 +989,11 @@ UpdateParamsCox.B2 = function(params) {
   return(params)
 }
 
-
 UpdateDataCox.B2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateDataCox.B2\n\n")
+  cat("T")
   data$X = as.matrix(data$X[, params$BIndiciesKeep, drop = FALSE])
+  cat("U")
   return(data)
 }
 
@@ -1198,6 +1002,9 @@ ComputeLogLikelihoodCox.B2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeLogLikelihoodCox.B2\n\n")
   n   = params$n
   p2  = params$p2
+  stepSize = NULL
+  X.betas  = NULL
+
   readTime  = 0
   readSize  = 0
   writeTime = 0
@@ -1287,8 +1094,9 @@ ComputeInverseCox.A2 = function(params, data) {
   readSize  = 0
   writeTime = 0
   writeSize = 0
-
+  tXB.W.XB = 0
   tXA.W.XB = 0
+
   readTime = readTime - proc.time()[3]
   load(file.path(params$readPath, "tXB_W_XB.rdata")) # load tXB.W.XB
   readSize = readSize + file.size(file.path(params$readPath, "tXB_W_XB.rdata"))
@@ -1363,6 +1171,8 @@ ComputeBetaCox.B2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeBetaCox.B2\n\n")
   p1 = params$p1
   p2 = params$p2
+  M  = 0
+  M3.tXA.deltal = 0
 
   readTime = proc.time()[3]
   load(file.path(params$readPath, "M.rdata")) # load M, M3.tXA.deltal
@@ -1399,6 +1209,7 @@ ComputeBetaCox.B2 = function(params, data) {
 ComputeBetaCox.A2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeBetaCox.A2\n\n")
   p1 = params$p1
+  M2.tXB.deltal = 0
 
   readTime = proc.time()[3]
   load(file.path(params$readPath, "M2_tXB_deltal.rdata")) # load M2.tXB.deltal
@@ -1435,6 +1246,8 @@ ComputeBetaCox.A2 = function(params, data) {
 
 GetConvergedStatusCox.B2 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetConvergedStatusCox.B2\n\n")
+  converged = NULL
+
   readTime = proc.time()[3]
   load(file.path(params$readPath, "converged.rdata")) # load deltabeta
   readSize = file.size(file.path(params$readPath, "converged.rdata"))
@@ -1505,6 +1318,10 @@ ComputeResultsCox.A2 = function(params, data) {
   stats$failed    = FALSE
   readTime = 0
   readSize = 0
+  betasB     = NULL
+  nullScoreB = NULL
+  XB.betasB  = NULL
+
   readTime = proc.time()[3]
   load(file.path(params$readPath, "B_betas_ns.rdata")) # load betasB, nullscoreB
   load(file.path(params$readPath, "XB_betasB.rdata")) # load XB.betasB
@@ -1561,12 +1378,12 @@ ComputeResultsCox.A2 = function(params, data) {
                          1 - pchisq(stats$wald.test, stats$df))
   pred = -params$XA.betasA - XB.betasB
   if (params$survivalInstalled) {
-    surv = Surv(data$survival$rank, data$survival$status)
+    surv = survival::Surv(data$survival$rank, data$survival$status)
     strat = rep(0, length(surv))
     for (i in 1:length(data$survival$strata)) {
       strat[data$survival$strata[[i]]$start:data$survival$strata[[i]]$end] = i
     }
-    results = concordance(surv~pred + strata(strat))
+    results = survival::concordance(surv~pred + strata(strat))
     if (class(results$stats) == "matrix") {  # more than one strata
       stats$concordance = c(apply(results$count, 2, sum)[1:4], results$concordance, sqrt(results$var))
     } else {                                 # only one strata, so a numeric vector
@@ -1626,6 +1443,7 @@ ComputeResultsCox.A2 = function(params, data) {
 
 
 GetResultsCox.B2 = function(params) {
+  stats = NULL
   if (params$trace) cat(as.character(Sys.time()), "GetResultsCox.B2\n\n")
   readTime = proc.time()[3]
   load(file.path(params$readPath, "stats.rdata"))
@@ -1640,6 +1458,7 @@ GetResultsCox.B2 = function(params) {
 ####################### REGRESSION BY B ONLY FUNCTIONS #######################
 
 FinalizeParams2Cox.B2 = function(params, data) {
+  pa = NULL
   if (params$trace) cat(as.character(Sys.time()), "FinalizeParams2Cox.B2\n\n")
   readTime = proc.time()[3]
   load(file.path(params$readPath, "pa.rdata")) # read pa
@@ -1714,7 +1533,7 @@ ComputeCoxFromSurvival.B2 = function(params, data) {
   f = paste(c("Surv(rank, status) ~ strata(strata)", paste0("V", 1:ncol(data$X))), collapse = " + ")
 
   error = tryCatch(
-    {fit = coxph(as.formula(f),
+    {fit = survival::coxph(as.formula(f),
                  data = data.frame(rank = data$survival$rank,
                                    status = data$survival$status,
                                    strata = strata,
@@ -1732,7 +1551,7 @@ ComputeCoxFromSurvival.B2 = function(params, data) {
   } else {
   	params$converged = TRUE
   	if (class(error) == "logical") {
-  		fit = suppressWarnings(coxph(as.formula(f),
+  		fit = suppressWarnings(survival::coxph(as.formula(f),
   								data = data.frame(rank = data$survival$rank,
   																	status = data$survival$status,
   																	strata = strata,
@@ -2035,7 +1854,7 @@ PartyAProcess2Cox = function(data,
   	cat(params$errorMessage)
   	return(invisible(NULL))
   }
-  data = PrepareDataCox.A2(params, data, yname, strata, mask)
+  data = PrepareDataCox.23(params, data, yname, strata, mask)
 
   params = PauseContinue.2p(params, maxWaitingTime)
   if (file.exists(file.path(params$readPath, "errorMessage.rdata"))) {
@@ -2120,9 +1939,13 @@ PartyAProcess2Cox = function(data,
   params = SendPauseContinue.2p(params, files, sleepTime, maxWaitingTime)
 
   params = CheckColinearityCox.A2(params, data)
+  cat(params$failed,"\n")
+
+
 
   if (params$failed) { # Check for CheckColinearityCox.A2() failed
     params$complete = TRUE
+    cat("Error:", params$errorMessage, "\n")
     MakeErrorMessage(params$writePath, params$errorMessage)
     files = c("errorMessage.rdata")
     params = SendPauseContinue.2p(params, files, sleepTime = sleepTime)
@@ -2218,7 +2041,7 @@ PartyBProcess2Cox = function(data,
   	cat(params$errorMessage)
   	return(invisible(NULL))
   }
-  data = PrepareDataCox.B2(params, data, strata, mask)
+  data = PrepareDataCox.23(params, data, NULL, strata, mask)
 
   if (data$failed) { # Check for Error from PrepareDataCox.B2()
     params$complete = TRUE
@@ -2244,6 +2067,13 @@ PartyBProcess2Cox = function(data,
     params = SendStrataCox.B2(params, data)
     files = c("strata.rdata")
     params = SendPauseContinue.2p(params, files, sleepTime, maxWaitingTime)
+
+    if (file.exists(file.path(params$readPath, "errorMessage.rdata"))) {
+      params$complete = TRUE
+      cat("Error:", ReadErrorMessage(params$readPath), "\n\n")
+      params = SendPauseQuit.2p(params, sleepTime = sleepTime, job_failed = TRUE)
+      return(params$stats)
+    }
   }
 
   data = SortDataCox.B2(params, data)

@@ -9,11 +9,12 @@
   Produces a summary of a fitted vdra logistic regression model.
 }
 \usage{
-## S3 method for class 'vdralogistic'
-summary(x)
+  ## S3 method for class 'vdralogistic'
+  \method{summary}{vdralogistic}(object, ...)
 }
 \arguments{
-	\item{x}{a \code{vdralogistic} object.}
+	\item{object}{a \code{vdralogistic} object.}
+  \item{...}{futher argumetns passed to or from other methods.}
 }
 \value{
   Returns an object of class \code{summary.vdralogistic}. Objects of this class have a method for the function \code{print}.  The following components must be included in \code{summary.vdralogistic} object.
@@ -37,6 +38,4 @@ summary(x)
 }
 \examples{
   summary(vdra_fit_logistic_A)
-
-  print(summary(vdra_fit_logistic_A), lion = TRUE) # prints the PSU Nittany lion to the right of the summary statistics
 }

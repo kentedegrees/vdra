@@ -1,266 +1,5 @@
 ################### DISTRIBUTED LOGISTIC REGRESSION FUNCTIONS ##################
 
-PrepareDataLogistic.A3 = function(params, data, yname = NULL) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareDataLogistic.A3\n\n")
-  workdata = list()
-  workdata$failed = FALSE
-  if (class(data) %in% c("character", "double", "integer", "logical",
-                         "numeric", "single", "factor")) {
-    data = as.data.frame(data)
-  }
-  if (class(data) != "data.frame" && class(data) != "matrix") {
-    cat("Error: data is not a matrix or a data frame.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  if (nrow(data) < 1 || ncol(data) < 1) {
-    cat("Error: the data is empty.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  badValue = rep(FALSE, nrow(data))
-  for (i in 1:ncol(data)) {
-  	if (class(data[, i]) %in% c("integer", "single", "double", "numeric")) {
-  		badValue = badValue | !is.finite(data[, i])
-  	} else {
-  		badValue = badValue | is.na(data[, i])
-  	}
-  }
-  idx = data.frame(which(badValue))
-  colnames(idx) = "Observations with invalid entries"
-  if (nrow(idx) > 0) {
-  	cat("Error: Some observations contain invalid values: NA, NaN, or InF.",
-  			"A list of all such observations has been outputted to",
-  			file.path(params$writePath, "invalidEntries.csv"),
-  			". Terinating program.\n\n")
-  	write.csv(idx, file.path(params$writePath, "invalidEntries.csv"))
-  	workdata$failed = TRUE
-  	return(workdata)
-  }
-  if (!is.null(yname) && class(yname) != "character") {
-    cat("Error: response label is not a string.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  if (length(yname) > 1) {
-    cat("Error: More than one name for response variable provided.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  if (is.null(colnames(data))) {
-    cat("Warning: variables are not named. Assuming variable 1 is response.  Assigning labels to the rest of the columns.\n\n")
-    if (is.null(yname)) {
-      yname = c("y")
-    }
-    if (ncol(data) == 1) {
-      colnames(data) = yname
-    } else {
-      colnames(data) = c(yname, paste0("dp1:", 1:(ncol(data) - 1)))
-    }
-  } else {
-    if (is.null(yname)) {
-      yname = colnames(data)[1]
-    }
-  }
-  if ("(Intercept)" %in% colnames(data)) {
-    cat("Error: \"(Intercept)\" is not a valid covariate name.  Please change it.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  if (max(table(colnames(data))) > 1) {
-    cat("Error: duplicate column names found.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  if (!(yname %in% colnames(data))) {
-    cat("Error: response variable", paste0("'", yname, "'"), "not found.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  responseColIndex = which(colnames(data) %in% yname)
-  if (class(data[1, responseColIndex]) != "numeric" & class(data[1, responseColIndex]) != "integer") {
-    cat("Error: response variable", paste0("'", yname, "'"), "is not numeric.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  workdata$Y = matrix(data[, responseColIndex], ncol = 1)
-  if (sum(!(workdata$Y %in% c(0, 1))) > 0) {
-    cat("Error: response variable is not binary.  It should only be 0's and 1's.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  if (class(data) == "matrix") {
-    workdata$X = cbind(1, data[, -responseColIndex, drop = FALSE])
-  } else if (ncol(data) > 1) { # class(data) == "data.frame"
-    varNames = c()
-    covariateNames = setdiff(colnames(data), yname)
-    for (name in covariateNames) {
-      if (class(data[[name]]) %in% c("integer", "numeric", "single", "double")) {
-        varNames = c(varNames, name)
-      } else {
-        if (class(data[[name]]) %in% c("character", "logical")) {
-          data[[name]] = as.factor(data[[name]])
-        }
-        if (class(data[[name]]) != "factor") {
-          cat("Error: variable", name, "is not numeric and cannot be converted to a factor.\n\n")
-          workdata$failed = TRUE
-          return(workdata)
-        }
-        levelNames = levels(data[[name]])
-        if (length(levelNames) == 1) {
-          data[[name]] = rep(1, nrow(data))
-          varNames = c(varNames, name)
-        } else {
-          for (lname in levelNames[-1]) {
-            newName = paste0(name, ":", lname)
-            if (newName %in% varNames) {
-              cat("Error: variable", newName, "already exists.\n\n")
-              workdata$failed = TRUE
-              return(workdata)
-            }
-            data[[newName]] = ifelse(data[[name]] == lname, 1, 0)
-            varNames = c(varNames, newName)
-          }
-          data[[name]] = NULL
-        }
-      }
-    }
-    index = match(varNames, colnames(data))
-    workdata$X = cbind(1, as.matrix(data[index]))
-  } else {
-    workdata$X = matrix(1, nrow = nrow(data), ncol = 1)
-  }
-  colnames(workdata$X)[1] = "(Intercept)"
-
-  workdata$yty    = t(workdata$Y) %*% workdata$Y
-  colnames(workdata$Y) = yname
-
-  if (ncol(workdata$X) == 1) { # Only the constant column 1
-    workdata$means = 1         # Should I set this to 0 since I don't actually transform it?
-    workdata$sd    = 1         # Should be 0, but this makes future computations easier
-  } else {
-    workdata$means = apply(workdata$X, 2, mean)
-    workdata$sd    = apply(workdata$X, 2, sd)
-    workdata$sd       = sapply(workdata$sd, function(x) { if (x > 0) x else 1})
-    for (i in 2:ncol(workdata$X)) {
-      workdata$X[, i] = matrix((workdata$X[, i] - workdata$means[i]) / workdata$sd[i], ncol = 1)
-    }
-  }
-
-  return(workdata)
-}
-
-PrepareDataLogistic.B3 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareDataLogistic.B3\n\n")
-  workdata = list()
-  workdata$failed = FALSE
-  if (class(data) %in% c("character", "double", "integer", "logical",
-                         "numeric", "single", "factor")) {
-    data = as.data.frame(data)
-  }
-  if (class(data) != "data.frame" & class(data) != "matrix") {
-    cat("Error: data is not a matrix or a data frame.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  if (ncol(data) < 1 | nrow(data) < 1) {
-    cat("Error: data is empty.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  badValue = rep(FALSE, nrow(data))
-  for (i in 1:ncol(data)) {
-  	if (class(data[, i]) %in% c("integer", "single", "double", "numeric")) {
-  		badValue = badValue | !is.finite(data[, i])
-  	} else {
-  		badValue = badValue | is.na(data[, i])
-  	}
-  }
-  idx = data.frame(which(badValue))
-  colnames(idx) = "Observations with invalid entries"
-  if (nrow(idx) > 0) {
-  	cat("Error: Some observations contain invalid values: NA, NaN, or InF.",
-  			"A list of all such observations has been outputted to",
-  			file.path(params$writePath, "invalidEntries.csv"),
-  			". Terinating program.\n\n")
-  	write.csv(idx, file.path(params$writePath, "invalidEntries.csv"))
-  	workdata$failed = TRUE
-  	return(workdata)
-  }
-  if (is.null(colnames(data))) {
-    cat("Warning: variables are not named.  Assigning labels.\n\n")
-    colnames(data) = paste0("dp2:", 1:ncol(data))
-  }
-  if (max(table(colnames(data))) > 1) {
-    cat("Error: duplicate variable names found.\n\n")
-    workdata$failed = TRUE
-    return(workdata)
-  }
-  if (class(data) == "matrix") {
-    if (class(data[1, 1]) != "numeric" && class(data[1, 1]) != "integer") {
-      data = as.data.frame(data)
-    } else {
-      workdata$X = data
-    }
-  }
-  if (class(data) == "data.frame") {
-    varNames = c()
-    for (name in colnames(data)) {
-      if (class(data[[name]]) %in% c("integer", "numeric", "single", "double")) {
-        varNames = c(varNames, name)
-      } else {
-        if (class(data[[name]]) %in% c("character", "logical")) {
-          data[[name]] = as.factor(data[[name]])
-        }
-        if (class(data[[name]]) != "factor") {
-          cat("Error: variable", name, "is not numeric and cannot be converted to a factor.\n\n")
-          workdata$failed = TRUE
-          return(workdata)
-        }
-        levelNames = levels(data[[name]])
-        if (length(levelNames) == 1) {
-          data[[name]] = rep(1, nrow(data))
-          varNames = c(varNames, name)
-        } else {
-          for (lname in levelNames[-1]) {
-            newName = paste0(name, ":", lname)
-            if (newName %in% varNames) {
-              cat("Error: variable", newName, "already exists.\n\n")
-              return(invisible(NULL))
-            }
-            data[[newName]] = ifelse(data[[name]] == lname, 1, 0)
-            varNames = c(varNames, newName)
-          }
-          data[[name]] = NULL
-        }
-      }
-    }
-    index = match(varNames, colnames(data))
-    workdata$X = as.matrix(data[index])
-  }
-
-  cnames = colnames(workdata$X)
-
-  if (ncol(workdata$X) == 1) {
-    workdata$means = mean(workdata$X)
-    workdata$sd    = sd(workdata$X)
-    if (workdata$sd == 0) workdata$sd = 1
-    workdata$X = matrix((workdata$X - workdata$means) / workdata$sd, ncol = 1)
-  } else {
-    workdata$means = apply(workdata$X, 2, mean)
-    workdata$sd    = apply(workdata$X, 2, sd)
-    workdata$sd    = sapply(workdata$sd, function(x) { if (x > 0) x else 1})
-    for (i in 1:ncol(workdata$X)) {
-      workdata$X[, i] = matrix((workdata$X[, i] - workdata$means[i]) / workdata$sd[i], ncol = 1)
-    }
-  }
-
-  colnames(workdata$X) = cnames
-
-  return(workdata)
-}
-
-
 CheckColinearityLogistic.T3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "CheckColinearityLogistic.T3\n\n")
   xtx = params$xtx
@@ -313,10 +52,24 @@ CheckColinearityLogistic.T3 = function(params) {
 																													"Bindicies.rdata"))))
 	writeTime = proc.time()[3] - writeTime
 
-	if (params$p2 == 0) {
-		params$failed = TRUE
-		params$errorMessage = "All of party B's covariates are either linear or are colienar with Party A's covariates."
+	Btags = params$Btags[params$BIndiciesKeep]
+  Atags = params$Atags[params$AIndiciesKeep][-1]
+
+  if ((length(unique(Atags)) == 1) | (length(unique(Atags)) >= 2 & !("numeric" %in% names(Atags)))) {
+	  params$failed = TRUE
+	  params$errorMessage = "A must have no covariates or at least 2 covariates at least one of which is continuous."
+	} else if (length(unique(Btags)) < 2) {
+	  params$failed = TRUE
+	  params$errorMessage = "After removing colinear covariates, Party B has 1 or fewer covariates."
+	} else if (!("numeric" %in% names(Btags))) {
+	  params$failed = TRUE
+	  params$errorMessage = "After removing colinear covariates, Party B has no continuous covariates."
 	}
+
+	# if (params$p2 == 0) {
+	# 	params$failed = TRUE
+	# 	params$errorMessage = "All of party B's covariates are either linear or are colinear with Party A's covariates."
+	# }
 	params = AddToLog(params, "CheckColinearityLogistic.T3", 0, 0, writeTime, writeSize)
 	return(params)
 }
@@ -371,6 +124,9 @@ ComputeInitialBetasLogistic.T3 = function(params) {
 
 UpdateParamsLogistic.A3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateParamsLogistic.A3\n\n")
+  Aindicies = NULL
+  Axty      = NULL
+  p2        = NULL
   readTime = proc.time()[3]
 	load(file.path(params$readPath[["T"]], "Aindicies.rdata"))
 	load(file.path(params$readPath[["T"]], "Axty.rdata"))
@@ -394,6 +150,8 @@ UpdateParamsLogistic.A3 = function(params) {
 
 UpdateParamsLogistic.B3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateParamsLogistic.B3\n\n")
+  Bindicies = NULL
+  Bxty      = NULL
   readTime = proc.time()[3]
 	load(file.path(params$readPath[["T"]], "Bindicies.rdata"))
 	load(file.path(params$readPath[["T"]], "Bxty.rdata"))
@@ -430,6 +188,9 @@ UpdateDataLogistic.B3 = function(params, data) {
 
 GetBetaALogistic.A3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetBetaLogistic.A3\n\n")
+  converged       = NULL
+  maxIterExceeded = NULL
+  Abetas          = NULL
   readTime = proc.time()[3]
 	load(file.path(params$readPath[["T"]], "converged.rdata"))
 	load(file.path(params$readPath[["T"]], "betasA.rdata"))
@@ -444,8 +205,11 @@ GetBetaALogistic.A3 = function(params) {
 }
 
 
-GetBetaBLogistic.B3 = function(params, data) {
+GetBetaBLogistic.B3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetBetaLogistic.B3\n\n")
+  converged       = NULL
+  maxIterExceeded = NULL
+  Bbetas          = NULL
   readTime = proc.time()[3]
 	load(file.path(params$readPath[["T"]], "converged.rdata"))
 	load(file.path(params$readPath[["T"]], "betasB.rdata"))
@@ -490,6 +254,8 @@ GetXBbetaBLogistic.B3 = function(params, data) {
 
 GetWeightsLogistic.T3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetWeightsLogistic.T3\n\n")
+  XAbeta = NULL
+  XBbeta = NULL
   readTime = proc.time()[3]
 	load(file.path(params$readPath[["A"]], "xabeta.rdata"))  # Load XbetaB
 	load(file.path(params$readPath[["B"]], "xbbeta.rdata"))  # Load XbetaB
@@ -512,6 +278,7 @@ GetWeightsLogistic.T3 = function(params) {
 
 GetRVLogistic.B3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetRVLogistic.B3\n\n")
+  pi_ = NULL
   writeTime = 0
 	writeSize = 0
 	readTime  = proc.time()[3]
@@ -580,6 +347,7 @@ GetRVLogistic.B3 = function(params, data) {
 
 ProcessVLogistic.T3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ProcessVLogistic.T3\n\n")
+  XBTWXB = NULL
   writeTime = 0
 	writeSize = 0
 	p2 = params$p2
@@ -653,6 +421,7 @@ ProcessVLogistic.T3 = function(params) {
 
 GetXRLogistic.A3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetXRLogistic.A3\n\n")
+  pi_ = NULL
   p2 = params$p2
 	writeTime = 0
 	writeSize = 0
@@ -724,6 +493,7 @@ GetXRLogistic.A3 = function(params, data) {
 
 ProcessXtWXLogistic.T3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ProcessXtWXLogistic.T3\n\n")
+  XATWXA = NULL
   p1 = params$p1
 	p2 = params$p2
 
@@ -778,10 +548,10 @@ ProcessXtWXLogistic.T3 = function(params) {
 		params$errorMessage =
 			paste0("ERROR: The matrix t(X)*W*X is not invertible.\n",
 				 		 "       This may be due to one of two possible problems.\n",
-				     "       1. Poor random initilization of the security vector.\n",
-				     "       2. Near multicolinearity in the data\n",
+				     "       1. Poor random initialization of the security vector.\n",
+				     "       2. Near multicollinearity in the data\n",
 				     "SOLUTIONS: \n",
-				     "       1. Rerun the data analaysis.\n",
+				     "       1. Rerun the data analysis.\n",
 				     "       2. If the problem persists, check the variables for\n",
 				     "          duplicates for both parties and / or reduce the\n",
 				     "          number of variables used. Once this is done,\n",
@@ -804,6 +574,7 @@ ProcessXtWXLogistic.T3 = function(params) {
 
 UpdateBetaLogistic.A3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateBetaLogistic.A3\n\n")
+  IIA = NULL
   readTime = proc.time()[3]
 	load(file.path(params$readPath[["T"]], "IIA.rdata"))
 	readSize = file.size(file.path(params$readPath[["T"]], "IIA.rdata"))
@@ -824,6 +595,7 @@ UpdateBetaLogistic.A3 = function(params, data) {
 
 UpdateBetaLogistic.B3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateBetaLogistic.B3\n\n")
+  IIB = NULL
   readTime = proc.time()[3]
 	load(file.path(params$readPath[["T"]], "IIB.rdata"))
 	readSize = file.size(file.path(params$readPath[["T"]], "IIB.rdata"))
@@ -843,6 +615,8 @@ UpdateBetaLogistic.B3 = function(params, data) {
 
 UpdateBetaLogistic.T3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateBetaLogistic.T3\n\n")
+  AI = NULL
+  BI = NULL
   readTime = proc.time()[3]
 	load(file.path(params$readPath[["A"]], "AI.rdata"))
 	load(file.path(params$readPath[["B"]], "BI.rdata"))
@@ -907,6 +681,10 @@ GetFinalBetaLogistic.B3 = function(params, data) {
 
 GetFinalFittedLogistic.T3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetFinalFittedLogistic.T3\n\n")
+  offsetA = NULL
+  offsetB = NULL
+  AFinalFitted = NULL
+  BFinalFitted = NULL
   readTime = proc.time()[3]
 	load(file.path(params$readPath[["A"]], "Afinalfitted.rdata"))
 	load(file.path(params$readPath[["B"]], "Bfinalfitted.rdata"))
@@ -933,6 +711,8 @@ GetFinalFittedLogistic.T3 = function(params) {
 
 ComputeResultsLogistic.A3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLogistic.A3\n\n")
+  finalFitted = NULL
+
   readTime = proc.time()[3]
 	load(file.path(params$readPath[["T"]], "finalFitted.rdata"))
 	readSize = file.size(file.path(params$readPath[["T"]], "finalFitted.rdata"))
@@ -958,6 +738,10 @@ ComputeResultsLogistic.A3 = function(params, data) {
 
 ComputeResultsLogistic.T3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLogistic.T3\n\n")
+  nulldev = NULL
+  resdev  = NULL
+  hoslem  = NULL
+  ROC     = NULL
   readTime = proc.time()[3]
 	load(file.path(params$readPath[["A"]], "logisticstats.rdata"))
 	readSize = file.size(file.path(params$readPath[["A"]], "logisticstats.rdata"))
@@ -1030,6 +814,7 @@ ComputeResultsLogistic.T3 = function(params) {
 
 GetResultsLogistic.A3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetResultsLogistic.A3\n\n")
+  stats = NULL
   readTime = proc.time()[3]
 	load(file.path(params$readPath[["T"]], "stats.rdata"))
 	readSize = file.size(file.path(params$readPath[["T"]], "stats.rdata"))
@@ -1044,6 +829,7 @@ GetResultsLogistic.A3 = function(params, data) {
 
 GetResultsLogistic.B3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetResultsLogistic.B3\n\n")
+  stats = NULL
   readTime = proc.time()[3]
 	load(file.path(params$readPath[["T"]], "stats.rdata"))
 	readSize = file.size(file.path(params$readPath[["T"]], "stats.rdata"))
@@ -1077,8 +863,8 @@ PartyAProcess3Logistic = function(data,
 		cat(params$errorMessage)
 		return(invisible(NULL))
 	}
-	data = PrepareDataLogistic.A3(params, data, yname)
-	params = AddToLog(params, "PrepareDataLogistic.A3", 0, 0, 0, 0)
+	data = PrepareDataLogistic.A23(params, data, yname)
+	params = AddToLog(params, "PrepareDataLogistic.A23", 0, 0, 0, 0)
 
 	if (data$failed) {
 		message = "Error in processing the data for Party A."
@@ -1187,8 +973,8 @@ PartyBProcess3Logistic = function(data,
 		return(invisible(NULL))
 	}
 
-	data = PrepareDataLogistic.B3(params, data)
-	params = AddToLog(params, "PrepareDataLogistic.B3", 0, 0, 0, 0)
+	data = PrepareDataLogistic.B23(params, data)
+	params = AddToLog(params, "PrepareDataLogistic.B23", 0, 0, 0, 0)
 
 	if (data$failed) {
 		message = "Error in processing the data for Party B."
@@ -1225,7 +1011,7 @@ PartyBProcess3Logistic = function(data,
 
 	params = UpdateParamsLogistic.B3(params)
 	data = UpdateDataLogistic.B3(params, data)
-	params = GetBetaBLogistic.B3(params, data)
+	params = GetBetaBLogistic.B3(params)
 
 	params$algIterationCounter = 1
 	while (!params$converged && !params$maxIterExceeded) {

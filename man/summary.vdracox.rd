@@ -3,16 +3,18 @@
 \alias{summary.vdracox.object}
 \alias{print.summary.vdracox}
 \title{
-	Summary Method for Vertical Distributed COX Models}
+	Summary Method for Vertical Distributed COX Models
+}
 \description{
   Produces a summary of a fitted vdra cox model.
 }
 \usage{
-## S3 method for class 'vdracox'
-summary(x)
+  ## S3 method for class 'vdracox'
+  \method{summary}{vdracox}(object, ...)
 }
 \arguments{
-	\item{x}{a \code{vdracox} object.}
+	\item{object}{a \code{vdracox} object.}
+  \item{...}{futher argumetns passed to or from other methods.}
 }
 \value{
   Returns an object of class \code{summary.vdracox}. Objects of this class have a method for the function \code{print}.  The following components must be included in \code{summary.vdracox} object.

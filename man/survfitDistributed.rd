@@ -44,5 +44,5 @@
     # From Data Partner 2
     sfit = survfitDistributed(vdra_fit_cox_B, ~Race + Sex, data = vdra_data[, 8:11])
     print(sfit)
-    plot(sfit)
+    plot(sfit, merge = TRUE)
 }

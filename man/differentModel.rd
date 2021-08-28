@@ -10,7 +10,7 @@
 differentModel(formula, x)
 }
 \arguments{
-    \item{formuala}{an object of class \code{"\link{formula}"}: a symbolic description of the model to be fitted. The model must be additive with no interactions.}
+    \item{formula}{an object of class \code{"\link{formula}"}: a symbolic description of the model to be fitted. The model must be additive with no interactions.}
     \item{x}{an object of class \code{\link{vdralinear}}.}
 }
 \value{

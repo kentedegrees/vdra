@@ -9,11 +9,12 @@
   Produces a summary of a fitted vdra linear regression model.
 }
 \usage{
-## S3 method for class 'vdralinear'
-summary(x)
+  ## S3 method for class 'vdralinear'
+  \method{summary}{vdralinear}(object, ...)
 }
 \arguments{
-	\item{x}{a \code{vdralinear} object.}
+	\item{object}{a \code{vdralinear} object.}
+  \item{...}{futher argumetns passed to or from other methods.}
 }
 \value{
   Returns an object of class \code{summary.vdralinear}. Objects of this class have a method for the function \code{print}.  The following components must be included in \code{summary.vdralinear} object.
@@ -36,6 +37,4 @@ summary(x)
 }
 \examples{
   summary(vdra_fit_linear_A)
-
-  print(summary(vdra_fit_linear_A), lion = TRUE) # prints the PSU Nittany lion to the right of the summary statistics
 }
