@@ -26,7 +26,7 @@ PrepareDataCox.DP = function(params, data, yname, strata, mask) {
     workdata$survival$rank   = data[, responseIndex[1]]
     workdata$survival$status = data[, responseIndex[2]]
     if (length(intersect(strataIndex, responseIndex)) > 0) {
-      cat("Error: response and strata share a variable.\n\n")
+      warning("Response and strata share a variable.")
       workdata$failed == TRUE
       return(workdata)
     }
@@ -37,14 +37,14 @@ PrepareDataCox.DP = function(params, data, yname, strata, mask) {
     if (params$dataPartnerID == 1) {
       workdata$X = matrix(0, nrow = nrow(data), ncol = 0)
     } else {
-      cat("Error: After removing strata, data is empty.  Party B must supply at least one non-strata covariate.\n\n")
+      warning("After removing strata, data is empty.  Party B must supply at least one non-strata covariate.")
       workdata$failed = TRUE
       return(workdata)
     }
   } else {
     workdata$tags = CreateModelMatrixTags(data[, covariateIndex, drop = FALSE])
     # if (params$dataPartnerID != 1 & (ncol(data) < 2 | !("numeric" %in% names(workdata$tags)))) {
-    #   cat("Error: A data partner that does not have the response must have at least 2 covariates at least one of which must be numeric.\n")
+    #   warning("A data partner that does not have the response must have at least 2 covariates at least one of which must be numeric.")
     #   workdata$failed = TRUE
     #   return(workdata)
     # }
@@ -139,7 +139,7 @@ CheckStrataNamesCox.DP = function(params, data) {
 
 	if (!passed) {
 		params$failed = TRUE
-		params$errorMessage = "Error: Data partners specified different strata:\n"
+		params$errorMessage = "Data partners specified different strata:\n"
 		for (i in 1:params$numDataPartners) {
 			temp = NULL
 			if (length(specified[[i]] > 0)) {
@@ -159,9 +159,9 @@ CheckStrataNamesCox.DP = function(params, data) {
 
 	if (!passed) {
 		params$failed = TRUE
-		params$errorMessage = "Error: The following strata are claimed by two or more data partners: "
+		params$errorMessage = "The following strata are claimed by two or more data partners: "
 		params$errorMessage = paste0(params$errorMessage, paste0(names(tab[which(tab > 1)]), collapse = ", "), "\n")
-		params$errorMessage = paste0(params$errorMessage, "Make Sure that strata covariate names are unique to each data partner.\n")
+		params$errorMessage = paste0(params$errorMessage, "Make Sure that strata covariate names are unique to each data partner.")
 		params = AddToLog(params, "CheckStrataNamesCox.DP", readTime, readSize, 0, 0)
 		return(params)
 	}
@@ -172,8 +172,8 @@ CheckStrataNamesCox.DP = function(params, data) {
 
 	if (!passed) {
 		params$failed = TRUE
-		params$errorMessage = "Error: No data partner has the following specified strata: "
-		params$errorMessage = paste0(params$errorMessage, paste0(unclaimed[which(!(unclaimed %in% claimed1))], collapse = ", "), ".\n")
+		params$errorMessage = "No data partner has the following specified strata: "
+		params$errorMessage = paste0(params$errorMessage, paste0(unclaimed[which(!(unclaimed %in% claimed1))], collapse = ", "), ".")
 		params = AddToLog(params, "CheckStrataNamesCox.DP", readTime, readSize, 0, 0)
 		return(params)
 	}
@@ -611,7 +611,7 @@ CheckColinearityCox.AC = function(params) {
     if (length(unique(tags[[id]])) == 0) {
       params$failed = TRUE
       params$errorMessage = paste0(params$errorMessage,
-                                   paste("After removing colinear covariates, Data Partner", id, "has no covariates.\n"))
+                                   paste("After removing colinear covariates, Data Partner", id, "has no covariates."))
     }
   # else {
   #     numeric_found = numeric_found | "numeric" %in% names(tags[[id]])
@@ -846,7 +846,7 @@ ComputeLogLikelihoodCox.DP = function(params, data) {
 		if (loglikelihood < loglikelihood.old && scale > 0.5^6) {
 			sBeta = 0.5 * (sBeta + params$sBeta)
 			scale = scale / 2
-			cat("Step Halving\n\n")
+			if (params$verbose) cat("Step Halving\n\n")
 		} else {
 			stephalving = FALSE
 		}
@@ -1150,7 +1150,7 @@ ComputeStWSCox.AC = function(params) {
 		params$failed = TRUE
 		params$singularMatrix = TRUE
 		params$errorMessage =
-			paste0("ERROR: The matrix t(S)*W*S is not invertible.\n",
+			paste0("The matrix t(S)*W*S is not invertible.\n",
 						 "       This may be due to one of two possible problems.\n",
 						 "       1. Poor random initialization of the security halfshares.\n",
 						 "       2. Near multicollinearity in the data\n",
@@ -1159,7 +1159,7 @@ ComputeStWSCox.AC = function(params) {
 						 "       2. If the problem persists, check the variables for\n",
 						 "          duplicates for both parties and / or reduce the\n",
 						 "          number of variables used. Once this is done,\n",
-						 "          rerun the data analysis.\n\n")
+						 "          rerun the data analysis.")
 		params = AddToLog(params, "computeStWSCox.AC", readTime, readSize, 0, 0)
 		return(params)
 	}
@@ -1480,16 +1480,17 @@ DataPartnerKCox = function(data,
 													 mask            = TRUE,
 													 numDataPartners = NULL,
 													 dataPartnerID   = NULL,
-													 monitorFolder   = getwd(),
+													 monitorFolder   = NULL,
 													 sleepTime       = 10,
 													 maxWaitingTime  = 24 * 60 * 60,
 													 popmednet       = TRUE,
-													 trace           = FALSE) {
+													 trace           = FALSE,
+													 verbose         = TRUE) {
 
 	params = PrepareParams.kp("cox", dataPartnerID, numDataPartners, ac = FALSE,
-	                          popmednet = popmednet, trace = trace)
+	                          popmednet = popmednet, trace = trace, verbose = verbose)
 	if (params$failed) {
-	  cat(params$errorMessage)
+	  warning(params$errorMessage)
 	  return(invisible(NULL))
 	}
 	params = InitializeLog.kp(params)
@@ -1500,7 +1501,7 @@ DataPartnerKCox = function(data,
 	params   = PrepareFolder.ACDP(params, monitorFolder)
 
 	if (params$failed) {
-		cat(params$errorMessage)
+		warning(params$errorMessage)
 		return(invisible(NULL))
 	}
 
@@ -1508,13 +1509,13 @@ DataPartnerKCox = function(data,
 	params = AddToLog(params, "PrepareDataCox.DP", 0, 0, 0, 0)
 
 	if (data$failed) {
-		params$errorMessage = paste("Error processing data for data partner", params$dataPartnerID, "\n")
+		params$errorMessage = paste("Error processing data for data partner", params$dataPartnerID)
 		MakeErrorMessage(params$writePath, params$errorMessage)
 		files = "errorMessage.rdata"
 		params = SendPauseContinue.kp(params, filesAC = files, from = "AC",
 															 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
 		params$errorMessage = ReadErrorMessage(params$readPathAC)
-		cat(params$errorMessage, "\n")
+		warning(params$errorMessage)
 		params = SendPauseQuit.kp(params, sleepTime = sleepTime, waitForTurn = TRUE)
 		return(params$stats)
 	}
@@ -1527,7 +1528,7 @@ DataPartnerKCox = function(data,
 	possibleError = ReceivedError.kp(params, from = "AC")
 	if (possibleError$error) {
 		params$errorMessage = possibleError$message
-		cat(possibleError$message, "\n")
+		warning(possibleError$message)
 		params = SendPauseQuit.kp(params, sleepTime = sleepTime, waitForTurn = TRUE)
 		return(params$stats)
 	}
@@ -1551,7 +1552,7 @@ DataPartnerKCox = function(data,
 		params = DoNothing.ACDP(params)
 
 		if (params$failed) {
-			cat(params$errorMessage, "\n")
+			warning(params$errorMessage)
 			SendPauseQuit.kp(params, filesAC = "errorMessage.rdata", sleepTime = sleepTime)
 			return(params$stats)
 		} else {
@@ -1572,7 +1573,7 @@ DataPartnerKCox = function(data,
 		possibleError = ReceivedError.kp(params, from = "DP1")
 		if (possibleError$error) {
 			params$errorMessage = possibleError$message
-			cat(possibleError$message, "\n")
+			warning(possibleError$message)
 			params = SendPauseQuit.kp(params, sleepTime = sleepTime, waitForTurn = TRUE)
 			return(params$stats)
 		}
@@ -1599,7 +1600,7 @@ DataPartnerKCox = function(data,
 	possibleError = ReceivedError.kp(params, from = "AC")
 	if (possibleError$error) {
 		params$errorMessage = possibleError$message
-		cat(possibleError$message, "\n")
+		warning(possibleError$message)
 		params = SendPauseQuit.kp(params, sleepTime = sleepTime, waitForTurn = TRUE)
 		return(params$stats)
 	}
@@ -1658,7 +1659,7 @@ DataPartnerKCox = function(data,
 		possibleError = ReceivedError.kp(params, from = "AC")
 		if (possibleError$error) {
 			params$errorMessage = possibleError$message
-			cat(possibleError$message, "\n")
+			warning(possibleError$message)
 			params = SendPauseQuit.kp(params, sleepTime = sleepTime, waitForTurn = TRUE)
 			return(params$stats)
 		}
@@ -1686,21 +1687,22 @@ DataPartnerKCox = function(data,
 
 
 AnalysisCenterKCox = function(numDataPartners = NULL,
-															monitorFolder   = getwd(),
+															monitorFolder   = NULL,
 															msreqid         = "v_default_0_000",
 															cutoff          = 1E-8,
 															maxIterations   = 25,
 															sleepTime       = 10,
 															maxWaitingTime  = 24 * 60 * 60,
 															popmednet       = TRUE,
-															trace           = FALSE) {
+															trace           = FALSE,
+															verbose         = TRUE) {
 
 	filesList = rep(list(list()), numDataPartners)
 
 	params = PrepareParams.kp("cox", 0, numDataPartners, msreqid, cutoff, maxIterations, ac = TRUE,
-	                          popmednet = popmednet, trace = trace)
+	                          popmednet = popmednet, trace = trace, verbose = verbose)
 	if (params$failed) {
-	  cat(params$errorMessage)
+	  warning(params$errorMessage)
 	  return(invisible(NULL))
 	}
 	params = InitializeLog.kp(params)
@@ -1711,7 +1713,7 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
 	params   = PrepareFolder.ACDP(params, monitorFolder)
 
 	if (params$failed) {
-		cat(params$errorMessage)
+		warning(params$errorMessage)
 		return(invisible(NULL))
 	}
 
@@ -1720,7 +1722,7 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
 	possibleError = ReceivedError.kp(params, from = "DP")
 	if (possibleError$error) {
 		params$errorMessage = possibleError$message
-		cat(possibleError$message, "\n")
+		warning(possibleError$message)
 		MakeErrorMessage(params$writePath, possibleError$message)
 		files = "errorMessage.rdata"
 		params = SendPauseContinue.kp(params, filesDP = files, from = "DP",
@@ -1735,7 +1737,7 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
 	if (params$failed) {
 		MakeErrorMessage(params$writePath, params$errorMessage)
 		files = "errorMessage.rdata"
-		cat(params$errorMessage, "\n")
+		warning(params$errorMessage)
 		params = SendPauseContinue.kp(params, filesDP = files, from = "DP",
 															 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
 		params = SendPauseQuit.kp(params, sleepTime = sleepTime, job_failed = TRUE)
@@ -1757,7 +1759,7 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
 	possibleError = ReceivedError.kp(params, from = "DP")
 	if (possibleError$error) {
 		params$errorMessage = possibleError$message
-		cat(possibleError$message, "\n")
+		warning(possibleError$message)
 		params = SendPauseQuit.kp(params, sleepTime = sleepTime, job_failed = TRUE)
 		SummarizeLog.kp(params)
 		return(params$stats)
@@ -1770,7 +1772,7 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
 	if (params$failed) {
 		MakeErrorMessage(params$writePath, params$errorMessage)
 		files = "errorMessage.rdata"
-		cat(params$errorMessage, "\n")
+		warning(params$errorMessage)
 		params = SendPauseContinue.kp(params, filesDP = files, from = "DP",
 															 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
 		params = SendPauseQuit.kp(params, sleepTime = sleepTime, job_failed = TRUE)
@@ -1810,7 +1812,7 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
 		if (params$failed) {
 			MakeErrorMessage(params$writePath, params$errorMessage)
 			files = "errorMessage.rdata"
-			cat(params$errorMessage, "\n")
+			warning(params$errorMessage)
 			params = SendPauseContinue.kp(params, filesDP = files, from = "DP",
 																 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
 			params = SendPauseQuit.kp(params, sleepTime = sleepTime, job_failed = TRUE)

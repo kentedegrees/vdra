@@ -546,7 +546,7 @@ ProcessXtWXLogistic.T3 = function(params) {
 		params$failed = TRUE
 		params$singularMatrix = TRUE
 		params$errorMessage =
-			paste0("ERROR: The matrix t(X)*W*X is not invertible.\n",
+			paste0("The matrix t(X)*W*X is not invertible.\n",
 				 		 "       This may be due to one of two possible problems.\n",
 				     "       1. Poor random initialization of the security vector.\n",
 				     "       2. Near multicollinearity in the data\n",
@@ -555,7 +555,7 @@ ProcessXtWXLogistic.T3 = function(params) {
 				     "       2. If the problem persists, check the variables for\n",
 				     "          duplicates for both parties and / or reduce the\n",
 				     "          number of variables used. Once this is done,\n",
-				     "          rerun the data analysis.\n\n")
+				     "          rerun the data analysis.")
 		return(params)
 	}
 	params$II = II
@@ -849,10 +849,11 @@ PartyAProcess3Logistic = function(data,
 																	sleepTime      = 10,
 																	maxWaitingTime = 24 * 60 * 60,
 																	popmednet      = TRUE,
-																	trace          = FALSE) {
+																	trace          = FALSE,
+																	verbose        = TRUE) {
 
 	params = PrepareParams.3p("logistic", "A",
-	                          popmednet = popmednet, trace = trace)
+	                          popmednet = popmednet, trace = trace, verbose = verbose)
 	params = InitializeLog.3p(params)
 	params = InitializeStamps.3p(params)
 	params = InitializeTrackingTable.3p(params)
@@ -860,7 +861,7 @@ PartyAProcess3Logistic = function(data,
 
 	params   = PrepareFolderLinear.A3(params, monitorFolder)
 	if (params$failed) {
-		cat(params$errorMessage)
+		warning(params$errorMessage)
 		return(invisible(NULL))
 	}
 	data = PrepareDataLogistic.A23(params, data, yname)
@@ -880,7 +881,7 @@ PartyAProcess3Logistic = function(data,
 														 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
 
 	if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
-		cat("Error:", ReadErrorMessage(params$readPath[["T"]]), "\n\n")
+		warning(ReadErrorMessage(params$readPath[["T"]]))
 		params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
 		return(params$stats)
 	}
@@ -899,7 +900,7 @@ PartyAProcess3Logistic = function(data,
 														 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
 
 	if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
-		cat("Error:", ReadErrorMessage(params$readPath[["T"]]), "\n\n")
+		warning(ReadErrorMessage(params$readPath[["T"]]))
 		params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
 		return(params$stats)
 	}
@@ -922,7 +923,7 @@ PartyAProcess3Logistic = function(data,
 															 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
 
 		if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
-			cat("Error:", ReadErrorMessage(params$readPath[["T"]]), "\n\n")
+			warning(ReadErrorMessage(params$readPath[["T"]]))
 			params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
 			return(params$stats)
 		}
@@ -959,9 +960,10 @@ PartyBProcess3Logistic = function(data,
 																	sleepTime      = 10,
 																	maxWaitingTime = 24 * 60 * 60,
 																	popmednet      = TRUE,
-																	trace          = FALSE) {
+																	trace          = FALSE,
+																	verbose        = TRUE) {
 	params = PrepareParams.3p("logistic", "B",
-	                          popmednet = popmednet, trace = trace)
+	                          popmednet = popmednet, trace = trace, verbose = verbose)
 	params = InitializeLog.3p(params)
 	params = InitializeStamps.3p(params)
 	params = InitializeTrackingTable.3p(params)
@@ -969,7 +971,7 @@ PartyBProcess3Logistic = function(data,
 	Header(params)
 	params   = PrepareFolderLinear.B3(params, monitorFolder)
 	if (params$failed) {
-		cat(params$errorMessage)
+		warning(params$errorMessage)
 		return(invisible(NULL))
 	}
 
@@ -990,7 +992,7 @@ PartyBProcess3Logistic = function(data,
 														 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
 
 	if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
-		cat("Error:", ReadErrorMessage(params$readPath[["T"]]), "\n\n")
+		warning(ReadErrorMessage(params$readPath[["T"]]))
 		params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
 		return(params$stats)
 	}
@@ -1004,7 +1006,7 @@ PartyBProcess3Logistic = function(data,
 														 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
 
 	if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
-		cat("Error:", ReadErrorMessage(params$readPath[["T"]]), "\n\n")
+		warning(ReadErrorMessage(params$readPath[["T"]]))
 		params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
 		return(params$stats)
 	}
@@ -1027,7 +1029,7 @@ PartyBProcess3Logistic = function(data,
 															 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
 
 		if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
-			cat("Error:", ReadErrorMessage(params$readPath[["T"]]), "\n\n")
+			warning(ReadErrorMessage(params$readPath[["T"]]))
 			params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
 			return(params$stats)
 		}
@@ -1062,9 +1064,10 @@ PartyTProcess3Logistic = function(monitorFolder         = NULL,
 																	sleepTime             = 10,
 																	maxWaitingTime        = 24 * 60 * 60,
 																	popmednet             = TRUE,
-																	trace                 = FALSE) {
+																	trace                 = FALSE,
+																	verbose               = TRUE) {
 	params = PrepareParams.3p("logistic", "T", msreqid = msreqid,
-	                          popmednet = popmednet, trace = trace)
+	                          popmednet = popmednet, trace = trace, verbose = verbose)
 	params = InitializeLog.3p(params)
 	params = InitializeStamps.3p(params)
 	params = InitializeTrackingTable.3p(params)
@@ -1072,7 +1075,7 @@ PartyTProcess3Logistic = function(monitorFolder         = NULL,
 	Header(params)
 	params   = PrepareFolderLinear.T3(params, monitorFolder)
 	if (params$failed) {
-		cat(params$errorMessage)
+		warning(params$errorMessage)
 		return(invisible(NULL))
 	}
 
@@ -1080,14 +1083,14 @@ PartyTProcess3Logistic = function(monitorFolder         = NULL,
 
 	if (file.exists(file.path(params$readPath[["A"]], "errorMessage.rdata")) &&
 			file.exists(file.path(params$readPath[["B"]], "errorMessage.rdata"))) {
-		cat("Error:", ReadErrorMessage(params$readPath[["A"]]), "\n\n")
-		cat("Error:", ReadErrorMessage(params$readPath[["B"]]), "\n\n")
+		warning(ReadErrorMessage(params$readPath[["A"]]))
+		warning(ReadErrorMessage(params$readPath[["B"]]))
 		params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE)
 		SummarizeLog.3p(params)
 		return(params$stats)
 	}
 	if (file.exists(file.path(params$readPath[["A"]], "errorMessage.rdata"))) {
-		cat("Error:", ReadErrorMessage(params$readPath[["A"]]), "\n\n")
+		warning(ReadErrorMessage(params$readPath[["A"]]))
 		file.copy(file.path(params$readPath[["A"]], "errorMessage.rdata"),
 							file.path(params$writePath, "errorMessage.rdata"))
 		files = "errorMessage.rdata"
@@ -1098,7 +1101,7 @@ PartyTProcess3Logistic = function(monitorFolder         = NULL,
 		return(params$stats)
 	}
 	if (file.exists(file.path(params$readPath[["B"]], "errorMessage.rdata"))) {
-		cat("Error:", ReadErrorMessage(params$readPath[["B"]]), "\n\n")
+		warning(ReadErrorMessage(params$readPath[["B"]]))
 		file.copy(file.path(params$readPath[["B"]], "errorMessage.rdata"),
 							file.path(params$writePath, "errorMessage.rdata"))
 		files = "errorMessage.rdata"
@@ -1114,7 +1117,7 @@ PartyTProcess3Logistic = function(monitorFolder         = NULL,
 	if (!params$failed) params = PrepareBlocksLinear.T3(params, blocksize)
 
 	if (params$failed) {
-		cat("Error:", params$errorMessage, "\n\n")
+		warning(params$errorMessage)
 		MakeErrorMessage(params$writePath, params$errorMessage)
 		files = "errorMessage.rdata"
 		params = SendPauseContinue.3p(params, filesA = files, filesB = files,
@@ -1145,7 +1148,7 @@ PartyTProcess3Logistic = function(monitorFolder         = NULL,
 	params = CheckColinearityLogistic.T3(params)
 
 	if (params$failed) {
-		cat("Error:", params$errorMessage, "\n\n")
+		warning(params$errorMessage)
 		MakeErrorMessage(params$writePath, params$errorMessage)
 		files = "errorMessage.rdata"
 		params = SendPauseContinue.3p(params, filesA = files, filesB = files,
@@ -1178,7 +1181,7 @@ PartyTProcess3Logistic = function(monitorFolder         = NULL,
 		params = ProcessXtWXLogistic.T3(params)
 
 		if (params$failed) {
-			cat("Error:", params$errorMessage, "\n\n")
+			warning(params$errorMessage)
 			MakeErrorMessage(params$writePath, params$errorMessage)
 			files = "errorMessage.rdata"
 			params = SendPauseContinue.3p(params, filesA = files, filesB = files,

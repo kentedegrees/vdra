@@ -562,7 +562,7 @@ CheckColinearityCox.T3 = function(params) {
 
 	if (length(unique(tags)) == 0) {
 	  params$failed = TRUE
-	  params$errorMessage = "After removing colinear covariates, Party B has no covariates.\n\n"
+	  params$errorMessage = "After removing colinear covariates, Party B has no covariates."
 	  # params$errorMessage = "Party A has no covariates and all of Party B's covariates are linear."
 	}
 
@@ -779,7 +779,7 @@ ComputeLogLikelihoodCox.T3 = function(params) {
 		if (loglikelihood > params$loglikelihood.old || stepSize < 0.5^6) {
 			computeLoglikelihood = FALSE
 		} else {
-			cat("Step Halving\n\n")
+			if (params$verbose) cat("Step Halving\n\n")
 			Xbeta = (Xbeta + params$Xbeta.old) * 0.5
 			stepSize = stepSize * 0.5
 			w = exp(Xbeta)
@@ -1092,7 +1092,7 @@ ProcessXtWXCox.T3 = function(params) {
 		params$failed = TRUE
 		params$singularMatrix = TRUE
 		params$errorMessage =
-			paste0("ERROR: The matrix t(X)*W*X is not invertible.\n",
+			paste0("The matrix t(X)*W*X is not invertible.\n",
 						 "       This may be due to one of two possible problems.\n",
 						 "       1. Poor random initialization of the security vector.\n",
 						 "       2. Near multicollinearity in the data\n",
@@ -1101,7 +1101,7 @@ ProcessXtWXCox.T3 = function(params) {
 						 "       2. If the problem persists, check the variables for\n",
 						 "          duplicates for both parties and / or reduce the\n",
 						 "          number of variables used. Once this is done,\n",
-						 "          rerun the data analysis.\n\n")
+						 "          rerun the data analysis.")
 		params = AddToLog(params, "ProcessXtWXCox.T3", readTime, readSize, 0, 0)
 		return(params)
 	}
@@ -1358,7 +1358,7 @@ CheckColinearityCox.B3 = function(params, data) {
 
 	if (params$p2 == 0) {
 		params$failed = TRUE
-		params$errorMessage = "After removing colinear covariates, Party B has no covariates.\n\n"
+		params$errorMessage = "After removing colinear covariates, Party B has no covariates."
 		# params$errorMessage = "Party A has no covariates and all of Party B's covariates are linear."
 	}
 	params = AddToLog(params, "CheckColinearityCox.B3", 0, 0, 0, 0)
@@ -1450,7 +1450,7 @@ ComputeCox.B3 = function(params, data) {
 		stepSize = 1
 		w = exp(X.betas)
 		while (max(w) == Inf) {
-			cat("Step Halving\n\n")
+			if (params$verbose) cat("Step Halving\n\n")
 			X.betas = (X.betas + X.betas.old) * 0.5
 			stepSize = stepSize * 0.5
 			w = exp(X.betas)
@@ -1482,7 +1482,7 @@ ComputeCox.B3 = function(params, data) {
 		  if (loglikelihood > loglikelihood.old || stepSize < 0.5^6) {
 		    computeLoglikelihood = FALSE
 		  } else {
-		    cat("Step Halving\n\n")
+		    if (params$verbose) cat("Step Halving\n\n")
 		    X.betas = (X.betas + X.betas.old) * 0.5
 		    stepSize = stepSize * 0.5
 		    w = exp(X.betas)
@@ -1516,9 +1516,9 @@ ComputeCox.B3 = function(params, data) {
 			betas[params$BIndiciesKeep] = betasB
 			betas = data.frame(betas)
 			rownames(betas) = params$Bcolnames.old
-			cat("Current Parameters:\n")
-			print(betas)
-			cat("\n")
+			# if (params$verbose) cat("Current Parameters:\n")
+			# if (params$verbose) print(betas)
+			# if (params$verbose) cat("\n")
 			params = AddToLog(params, "ComputeCox.B3", readTime, readSize, 0, 0)
 			return(params)
 		}
@@ -1694,16 +1694,17 @@ PartyAProcess3Cox = function(data,
                              sleepTime             = 10,
                              maxWaitingTime        = 24 * 60 * 60,
 														 popmednet             = TRUE,
-														 trace                 = FALSE) {
+														 trace                 = FALSE,
+														 verbose               = TRUE) {
   params = PrepareParams.3p("cox", "A",
-                            popmednet = popmednet, trace = trace)
+                            popmednet = popmednet, trace = trace, verbose = verbose)
   params = InitializeLog.3p(params)
   params = InitializeStamps.3p(params)
   params = InitializeTrackingTable.3p(params)
   Header(params)
   params   = PrepareFolderLinear.A3(params, monitorFolder)
   if (params$failed) {
-  	cat(params$errorMessage)
+  	warning(params$errorMessage)
   	return(invisible(NULL))
   }
   data = PrepareDataCox.23(params, data, yname, strata, mask)
@@ -1713,26 +1714,30 @@ PartyAProcess3Cox = function(data,
   	message = "Error in processing the data for Party A."
   	MakeErrorMessage(params$writePath, message)
   	files = c("errorMessage.rdata")
-  	params = SendPauseQuit.3p(params, filesT = files, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
+  	params = SendPauseQuit.3p(params, filesT = files, sleepTime = sleepTime,
+  	                          job_failed = TRUE, waitForTurn = TRUE)
   	return(params$stats)
   }
 
   params = PrepareParamsCox.A3(params, data)
   files = "pa.rdata"
   params = SendPauseContinue.3p(params, filesT = files, from = "T",
-  													 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  													 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime,
+  													 waitForTurn = TRUE)
 
   if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
   	params$complete = TRUE
-  	cat("Error:", ReadErrorMessage(params$readPath[["T"]]), "\n\n")
-  	params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
+  	warning(ReadErrorMessage(params$readPath[["T"]]))
+  	params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE,
+  	                          waitForTurn = TRUE)
   	return(params$stats)
   }
 
   params = SendStrataCox.A3(params, data)
   files = "Astrata.rdata"
   params = SendPauseContinue.3p(params, filesT = files, from = "T",
-  													 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  													 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime,
+  													 waitForTurn = TRUE)
 
   if (file.exists(file.path(params$readPath[["T"]], "stats.rdata"))) {
   	params$algIterationCounter = 1
@@ -1744,8 +1749,9 @@ PartyAProcess3Cox = function(data,
 
   if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
   	params$complete = TRUE
-  	cat("Error:", ReadErrorMessage(params$readPath[["T"]]), "\n\n")
-  	params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
+  	warning(ReadErrorMessage(params$readPath[["T"]]))
+  	params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE,
+  	                          waitForTurn = TRUE)
   	return(params$stats)
   }
 
@@ -1773,8 +1779,9 @@ PartyAProcess3Cox = function(data,
 
 	if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
 		params$complete = TRUE
-		cat("Error:", ReadErrorMessage(params$readPath[["T"]]), "\n\n")
-		params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
+		warning(ReadErrorMessage(params$readPath[["T"]]))
+		params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE,
+		                          waitForTurn = TRUE)
 		return(params$stats)
 	}
 
@@ -1791,12 +1798,14 @@ PartyAProcess3Cox = function(data,
 
 		files = c("xabetaa.rdata")
 		params = SendPauseContinue.3p(params, filesT = files, from = "T",
-															 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+															 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime,
+															 waitForTurn = TRUE)
 
 		params = ComputeXADeltaLCox.A3(params, data)
 		files = "tXA_W_XA.rdata"
 		params = SendPauseContinue.3p(params, filesT = files, from = "T",
-															 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+															 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime,
+															 waitForTurn = TRUE)
 
 		params = GetXRCox.A3(params, data)
 		files = SeqZW("cxr_", length(params$container$filebreak.XR))
@@ -1804,8 +1813,9 @@ PartyAProcess3Cox = function(data,
 															 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
 
 		if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
-			cat("Error:", ReadErrorMessage(params$readPath[["T"]]), "\n\n")
-			params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
+			warning(ReadErrorMessage(params$readPath[["T"]]))
+			params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE,
+			                          waitForTurn = TRUE)
 			return(params$stats)
 		}
 		EndingIteration(params)
@@ -1824,16 +1834,17 @@ PartyBProcess3Cox = function(data,
 														 sleepTime           = 10,
 														 maxWaitingTime      = 24 * 60 * 60,
 														 popmednet           = TRUE,
-														 trace               = FALSE) {
+														 trace               = FALSE,
+														 verbose             = TRUE) {
 	params = PrepareParams.3p("cox", "B",
-	                          popmednet = popmednet, trace = trace)
+	                          popmednet = popmednet, trace = trace, verbose = verbose)
 	params = InitializeLog.3p(params)
 	params = InitializeStamps.3p(params)
 	params = InitializeTrackingTable.3p(params)
 	Header(params)
 	params = PrepareFolderLinear.B3(params, monitorFolder)
 	if (params$failed) {
-		cat(params$errorMessage)
+		warning(params$errorMessage)
 		return(invisible(NULL))
 	}
 	data = PrepareDataCox.23(params, data, NULL, strata, mask)
@@ -1843,19 +1854,22 @@ PartyBProcess3Cox = function(data,
 		message = "Error in processing the data for Party B."
 		MakeErrorMessage(params$writePath, message)
 		files = c("errorMessage.rdata")
-		params = SendPauseQuit.3p(params, filesT = files, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
+		params = SendPauseQuit.3p(params, filesT = files, sleepTime = sleepTime,
+		                          job_failed = TRUE, waitForTurn = TRUE)
 		return(params$stats)
 	}
 
 	params = PrepareParamsCox.B3(params, data)
 	files = "pb.rdata"
 	params = SendPauseContinue.3p(params, filesT = files, from = "T",
-														 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+														 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime,
+														 waitForTurn = TRUE)
 
 	if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
 		params$complete = TRUE
-		cat("Error:", ReadErrorMessage(params$readPath[["T"]]), "\n\n")
-		params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
+		warning(ReadErrorMessage(params$readPath[["T"]]))
+		params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE,
+		                          waitForTurn = TRUE)
 		return(params$stats)
 	}
 
@@ -1863,7 +1877,8 @@ PartyBProcess3Cox = function(data,
 
 	files = "Bstrata.rdata"
 	params = SendPauseContinue.3p(params, filesT = files, from = "T",
-														 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+														 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime,
+														 waitForTurn = TRUE)
 
 	if (file.exists(file.path(params$readPath[["T"]], "transferControl.rdata"))) {
 		params$algIterationCounter = 1
@@ -1873,10 +1888,11 @@ PartyBProcess3Cox = function(data,
 
 		if (params$failed) {  # Happens if pB.new == 0
 			params$complete = TRUE
-			cat("Error:", params$errorMessage, "\n\n")
+		  warning(params$errorMessage)
 			MakeErrorMessage(params$writePath, params$errorMessage)
 			files = c("errorMessage.rdata")
-			params = SendPauseQuit.3p(params, filesT = files, sleepTime = sleepTime, job_failed = TRUE)
+			params = SendPauseQuit.3p(params, filesT = files, sleepTime = sleepTime,
+			                          job_failed = TRUE)
 			return(params$stats)
 		}
 		data = UpdateDataCox.B3(params, data)
@@ -1889,10 +1905,11 @@ PartyBProcess3Cox = function(data,
 
 		if (params$failed) {      # We could get a job_failed here from coefficient explosion
 			params$complete = TRUE
-			cat("Error:", params$errorMessage, "\n\n")
+			warning(params$errorMessage)
 			MakeErrorMessage(params$writePath, params$errorMessage)
 			files = c("errorMessage.rdata")
-			params = SendPauseQuit.3p(params, filesT = files, sleepTime = sleepTime, job_failed = TRUE)
+			params = SendPauseQuit.3p(params, filesT = files, sleepTime = sleepTime,
+			                          job_failed = TRUE)
 			return(params$stats)
 		}
 		params = ComputeResultsCox.B3(params, data)
@@ -1906,8 +1923,9 @@ PartyBProcess3Cox = function(data,
 
 	if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
 		params$complete = TRUE
-		cat("Error:", ReadErrorMessage(params$readPath[["T"]]), "\n\n")
-		params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
+		warning(ReadErrorMessage(params$readPath[["T"]]))
+		params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE,
+		                          waitForTurn = TRUE)
 		return(params$stats)
 	}
 
@@ -1923,8 +1941,9 @@ PartyBProcess3Cox = function(data,
 
 	if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
 		params$complete = TRUE
-		cat("Error:", ReadErrorMessage(params$readPath[["T"]]), "\n\n")
-		params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
+		warning(ReadErrorMessage(params$readPath[["T"]]))
+		params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE,
+		                          waitForTurn = TRUE)
 		return(params$stats)
 	}
 
@@ -1941,10 +1960,11 @@ PartyBProcess3Cox = function(data,
 
 		if (params$failed) {      # We could get a job_failed here from coefficient explosion
 			params$complete = TRUE
-			cat("Error:", params$errorMessage, "\n\n")
+			warning(params$errorMessage)
 			MakeErrorMessage(params$writePath, params$errorMessage)
 			files = c("errorMessage.rdata")
-			params = SendPauseQuit.3p(params, filesT = files, sleepTime = sleepTime, job_failed = TRUE)
+			params = SendPauseQuit.3p(params, filesT = files, sleepTime = sleepTime,
+			                          job_failed = TRUE)
 			return(params$stats)
 		}
 		params = ComputeResultsCox.B3(params, data)
@@ -1966,16 +1986,19 @@ PartyBProcess3Cox = function(data,
 
 		files = "xbbetab.rdata"
 		params = SendPauseContinue.3p(params, filesT = files, from = "T",
-															 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+															 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime,
+															 waitForTurn = TRUE)
 
 		params = ComputeXBDeltaLCox.B3(params, data)
 		files = c("tXB_W_XB.rdata", SeqZW("cCox_", length(params$container$filebreak.Cox)))
 		params = SendPauseContinue.3p(params, filesT = files, from = "T",
-															 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+															 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime,
+															 waitForTurn = TRUE)
 
 		if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
-			cat("Error:", ReadErrorMessage(params$readPath[["T"]]), "\n\n")
-			params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
+			warning(ReadErrorMessage(params$readPath[["T"]]))
+			params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE,
+			                          waitForTurn = TRUE)
 			return(params$stats)
 		}
 		EndingIteration(params)
@@ -1996,9 +2019,10 @@ PartyTProcess3Cox = function(monitorFolder         = NULL,
 														 sleepTime             = 10,
 														 maxWaitingTime        = 24 * 60 * 60,
 														 popmednet             = TRUE,
-														 trace                 = FALSE) {
+														 trace                 = FALSE,
+														 verbose               = TRUE) {
 	Tparams = PrepareParams.3p("cox", "T", msreqid = msreqid,
-	                           popmednet = popmednet, trace = trace)
+	                           popmednet = popmednet, trace = trace, verbose = verbose)
 	Tparams = InitializeLog.3p(Tparams)
 	Tparams = InitializeStamps.3p(Tparams)
 	Tparams = InitializeTrackingTable.3p(Tparams)
@@ -2006,7 +2030,7 @@ PartyTProcess3Cox = function(monitorFolder         = NULL,
 	Header(Tparams)
 	params   = PrepareFolderLinear.T3(Tparams, monitorFolder)
 	if (params$failed) {
-		cat(params$errorMessage)
+		warning(params$errorMessage)
 		return(invisible(NULL))
 	}
 
@@ -2014,14 +2038,14 @@ PartyTProcess3Cox = function(monitorFolder         = NULL,
 
 	if (file.exists(file.path(params$readPath[["A"]], "errorMessage.rdata")) &&
 			file.exists(file.path(params$readPath[["B"]], "errorMessage.rdata"))) {
-		cat("Error:", ReadErrorMessage(params$readPath[["A"]]), "\n\n")
-		cat("Error:", ReadErrorMessage(params$readPath[["B"]]), "\n\n")
+		warning(paste0(ReadErrorMessage(params$readPath[["A"]]), "\n",
+		              ReadErrorMessage(params$readPath[["B"]])))
 		params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE)
 		SummarizeLog.3p(params)
 		return(params$stats)
 	}
 	if (file.exists(file.path(params$readPath[["A"]], "errorMessage.rdata"))) {
-		cat("Error:", ReadErrorMessage(params$readPath[["A"]]), "\n\n")
+		warning(ReadErrorMessage(params$readPath[["A"]]))
 		file.copy(file.path(params$readPath[["A"]], "errorMessage.rdata"),
 							file.path(params$writePath, "errorMessage.rdata"))
 		files = "errorMessage.rdata"
@@ -2032,7 +2056,7 @@ PartyTProcess3Cox = function(monitorFolder         = NULL,
 		return(params$stats)
 	}
 	if (file.exists(file.path(params$readPath[["B"]], "errorMessage.rdata"))) {
-		cat("Error:", ReadErrorMessage(params$readPath[["B"]]), "\n\n")
+		warning(ReadErrorMessage(params$readPath[["B"]]))
 		file.copy(file.path(params$readPath[["B"]], "errorMessage.rdata"),
 							file.path(params$writePath, "errorMessage.rdata"))
 		files = "errorMessage.rdata"
@@ -2048,7 +2072,7 @@ PartyTProcess3Cox = function(monitorFolder         = NULL,
 	if (!params$failed) params = CheckStrataCox.T3(params)
 
 	if (params$failed) {
-		cat("Error:", params$errorMessage, "\n\n")
+		warning(params$errorMessage)
 		MakeErrorMessage(params$writePath, params$errorMessage)
 		files = "errorMessage.rdata"
 		params = SendPauseContinue.3p(params, filesA = files, filesB = files,
@@ -2072,7 +2096,7 @@ PartyTProcess3Cox = function(monitorFolder         = NULL,
 		params = SendPauseContinue.3p(params, filesB = files, from = "B",
 															 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
 		if (file.exists(file.path(params$readPath[["B"]], "errorMessage.rdata"))) {
-			cat("Error:", ReadErrorMessage(params$readPath[["B"]]), "\n\n")
+			warning(ReadErrorMessage(params$readPath[["B"]]))
 			file.copy(file.path(params$readPath[["B"]], "errorMessage.rdata"),
 								file.path(params$writePath, "errorMessage.rdata"))
 			files = "errorMessage.rdata"
@@ -2095,7 +2119,7 @@ PartyTProcess3Cox = function(monitorFolder         = NULL,
 	params = PrepareBlocksLinear.T3(params, blocksize)
 
 	if (params$failed) {
-		cat("Error:", params$errorMessage, "\n\n")
+		warning(params$errorMessage)
 		MakeErrorMessage(params$writePath, params$errorMessage)
 		files = "errorMessage.rdata"
 		params = SendPauseContinue.3p(params, filesA = files, filesB = files,
@@ -2124,7 +2148,7 @@ PartyTProcess3Cox = function(monitorFolder         = NULL,
 	params = CheckColinearityCox.T3(params)
 
 	if (params$failed) {
-		cat("Error:", params$errorMessage, "\n\n")
+		warning(params$errorMessage)
 		MakeErrorMessage(params$writePath, params$errorMessage)
 		files = "errorMessage.rdata"
 		params = SendPauseContinue.3p(params, filesA = files, filesB = files,
@@ -2142,7 +2166,7 @@ PartyTProcess3Cox = function(monitorFolder         = NULL,
 		params = SendPauseContinue.3p(params, filesB = files, from = "B",
 															 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
 		if (file.exists(file.path(params$readPath[["B"]], "errorMessage.rdata"))) {
-			cat("Error:", ReadErrorMessage(params$readPath[["B"]]), "\n\n")
+			warning(ReadErrorMessage(params$readPath[["B"]]))
 			file.copy(file.path(params$readPath[["B"]], "errorMessage.rdata"),
 								file.path(params$writePath, "errorMessage.rdata"))
 			files = "errorMessage.rdata"
@@ -2194,7 +2218,7 @@ PartyTProcess3Cox = function(monitorFolder         = NULL,
 		params = ProcessXtWXCox.T3(params)
 
 		if (params$failed) {
-			cat("Error:", params$errorMessage, "\n\n")
+			warning(params$errorMessage)
 			MakeErrorMessage(params$writePath, params$errorMessage)
 			files = "errorMessage.rdata"
 			params = SendPauseContinue.3p(params, filesA = files, filesB = files,

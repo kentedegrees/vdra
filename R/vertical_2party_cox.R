@@ -9,12 +9,12 @@ PrepareFolderCox.A2 = function(params, monitorFolder) {
 	params$readPath      = file.path(monitorFolder, "msoc1")
 
 	if (is.null(monitorFolder)) {
-	  cat("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.\n")
+	  warning("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.")
 	  params$failed = TRUE
 	  return(params)
 	}
 	if (class(monitorFolder) != "character") {
-	  cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.\n")
+	  warning("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.")
 	  params$failed = TRUE
 	  return(params)
 	}
@@ -25,37 +25,37 @@ PrepareFolderCox.A2 = function(params, monitorFolder) {
 	if (!CreateIOLocation(monitorFolder, "dplocal")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$dplocalPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "rprograms")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$rprogramsPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "macros")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$macrosPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "inputfiles")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$writePath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "msoc1")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$readPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 
 	params = AddToLog(params, "PrepareDataCox.A23, PrepareFolderCox.A2", 0, 0, 0, 0)
@@ -73,12 +73,12 @@ PrepareFolderCox.B2 = function(params, monitorFolder) {
 	params$readPath      = file.path(monitorFolder, "inputfiles")
 
 	if (is.null(monitorFolder)) {
-	  cat("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.\n")
+	  warning("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.")
 	  params$failed = TRUE
 	  return(params)
 	}
 	if (class(monitorFolder) != "character") {
-	  cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.\n")
+	  warning("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.")
 	  params$failed = TRUE
 	  return(params)
 	}
@@ -90,37 +90,37 @@ PrepareFolderCox.B2 = function(params, monitorFolder) {
 	if (!CreateIOLocation(monitorFolder, "dplocal")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$dplocalPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "rprograms")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$rprogramsPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "macros")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$macrosPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "msoc")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$writePath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "inputfiles")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$readPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 
   Sys.sleep(1)
@@ -137,7 +137,7 @@ extractStrata = function(params, data, stratas, mask) {
   strata$failed = FALSE
   if (!is.null(stratas)) {
     if (!("character" %in% class(stratas))) {
-      cat("Error: strata is not a valid variable name(s).\n\n")
+      warning("Strata is not a valid variable name(s).")
       strata$failed = TRUE
       return(strata)
     }
@@ -209,7 +209,7 @@ PrepareDataCox.23 = function(params, data, yname, strata, mask) {
     workdata$survival$rank   = data[, responseIndex[1]]
     workdata$survival$status = data[, responseIndex[2]]
     if (length(intersect(strataIndex, responseIndex)) > 0) {
-      cat("Error: response and strata share a variable.\n\n")
+      warning("Response and strata share a variable.")
       workdata$failed == TRUE
       return(workdata)
     }
@@ -221,14 +221,14 @@ PrepareDataCox.23 = function(params, data, yname, strata, mask) {
     if (params$partyName == "A") {
       workdata$X = matrix(0, nrow = nrow(data), ncol = 0)
     } else {
-      cat("Error: After removing strata, data is empty.  Party B must supply at least one non-strata covariate.\n\n")
+      warning("After removing strata, data is empty.  Party B must supply at least one non-strata covariate.")
       workdata$failed = TRUE
       return(workdata)
     }
   } else {
     workdata$tags = CreateModelMatrixTags(data[, covariateIndex, drop = FALSE])
     if (params$partyName == "B" & (ncol(data) < 2 | !("numeric" %in% names(workdata$tags)))) {
-      cat("Error: The data partner that does not have the response must have at least 2 covariates at least one of which must be numeric.\n")
+      warning("The data partner that does not have the response must have at least 2 covariates at least one of which must be numeric.")
       workdata$failed = TRUE
       return(workdata)
     }
@@ -320,7 +320,7 @@ CheckStrataCox.A2 = function(params, data) {
         paste("Party A and Party B have specified different strata.",
               "Verify that both parties specify the same strata.")
     }
-    cat("Error:", params$errorMessage, "\n\n")
+    warning(params$errorMessage)
     params$failed = TRUE
   }
   params = AddToLog(params, "CheckStrata.A2", readTime, readSize, 0, 0)
@@ -466,7 +466,7 @@ PrepareParamsCox.A2 = function(params, data, cutoff = 0.01, maxIterations = 25) 
   if (params$analysis != pb$analysis) {
     params$errorMessage =
       paste("Party A is running", params$analysis, "regression and Party B is running", pb$analysis, "regression.")
-    cat("Error:", params$errorMessage, "\n\n")
+    warning(params$errorMessage)
     params$failed = TRUE
     return(params)
   }
@@ -476,7 +476,7 @@ PrepareParamsCox.A2 = function(params, data, cutoff = 0.01, maxIterations = 25) 
   if (pb$n != params$n) {
     params$errorMessage =
       paste("Party A has", params$n, "observations and Party B has", pb$n, "observations.")
-    cat("Error:", params$errorMessage, "\n\n")
+    warning(params$errorMessage)
     params$failed = TRUE
     return(params)
   }
@@ -543,23 +543,24 @@ PrepareBlocksCox.A2 = function(params, blocksize) {
     maxACovariates = trunc(sqrt(p2 * n) - p2 - 1)
 
     params$errorMessage =
-      paste("Warning, the minimum secure blocksize of", minimumBlocksize,
-            "is larger than the number of observations", paste0(n, "."))
-    cat("Error: The minimum secure blocksize of", minimumBlocksize,
-        "is larger than the number of observations", paste0(n, ".\n"))
-    cat("Your options are:\n")
-    cat("Increase the number of observations to at least",
-        paste0(minimumBlocksize, ".\n"))
-    cat("Decrease the number of A covariates to", maxACovariates, "or less.\n")
+      paste("The minimum secure blocksize of", minimumBlocksize,
+            "is larger than the number of observations", paste0(n, ".\n"),
+            "Your options are:\n",
+            "Increase the number of observations to at least",
+            paste0(minimumBlocksize, ".\n"),
+            "Decrease the number of A covariates to", maxACovariates, "or less.")
+
     b = n - 2 * p1 - 2
     discrim = b^2 - 4 * (p1 + 1)^2
     if (discrim >= 0) {
       minBCovariates = trunc(1 + (b - sqrt(discrim)) / 2)
       maxBCovariates = trunc((b + sqrt(discrim)) / 2)
-      cat("Set the number of B covariates to be between", minBCovariates, "and",
-          paste0(maxBCovariates, ".\n"))
+      params$errorMessage =
+        paste0(params$errorMessage,
+               "\nSet the number of B covariates to be between ", minBCovariates, "and",
+               paste0(maxBCovariates, "."))
     }
-    cat("Terminating the program.\n\n")
+    warning(params$errorMessage)
     params$failed = TRUE
     params = AddToLog(params, "PrepareBlocksCox.A2", 0, 0, 0, 0)
     return(params)
@@ -569,14 +570,14 @@ PrepareBlocksCox.A2 = function(params, blocksize) {
     blocksize = minimumBlocksize
   }
   if (blocksize < minimumBlocksize) {
-    cat("Warning:  Block size of", blocksize,
-        "is too small. Proceeding with minimum blocksize of",
-        paste0(minimumBlocksize, ".\n\n"))
+    message(paste("Block size of", blocksize,
+                  "is too small. Proceeding with minimum blocksize of",
+                  paste0(minimumBlocksize, ".")))
     blocksize = minimumBlocksize
   } else if (n < blocksize) {
-    cat("Warning: Block size of", blocksize,
-        "is larger than size of data.  Proceeding with blocksize of",
-        paste0(n, ".\n\n"))
+    message(paste("Block size of", blocksize,
+                  "is larger than size of data.  Proceeding with blocksize of",
+                  paste0(n, ".")))
   }
 
   params$blocks    = CreateBlocks(p1, p2, n, blocksize)
@@ -821,9 +822,8 @@ CheckColinearityCox.A2 = function(params, data) {
 
   if (length(unique(tags)) == 0) {
     params$failed = TRUE
-    params$errorMessage = "After removing colinear covariates, Party B has no covariates.\n\n"
+    params$errorMessage = "After removing colinear covariates, Party B has no covariates."
   }
-  cat(params$failed,"\n")
   # if (length(unique(tags)) < 2) {
   #   params$failed = TRUE
   #   params$errorMessage = "After removing colinear covariates, Party B has 1 or fewer covariates.\n\n"
@@ -836,11 +836,9 @@ CheckColinearityCox.A2 = function(params, data) {
 #   if (params$p2 == 0) {
 #     params$failed = TRUE
 #     params$errorMessage = "All of party B's covariates are either linear or are colinear with Party A's covariates."
-#     cat("Error:  All of Party B's covariates are either linear or are colinear with ")
-#     cat("Party A's covariates.\n\n")
+#     warning("All of Party B's covariates are either linear or are colinear with Party A's covariates.")
 #   }
   params = AddToLog(params, "CheckColinearityCox.A2", readTime, readSize, writeTime, writeSize)
-  cat(params$failed,"\n")
   return(params)
 }
 
@@ -924,7 +922,7 @@ ComputeLogLikelihoodCox.A2 = function(params, data) {
     if (loglikelihood > params$loglikelihood.old || stepSize < 0.5^6) {
       computeLoglikelihood = FALSE
     } else {
-      cat("Step Halving\n\n")
+      if (params$verbose) cat("Step Halving\n\n")
       X.betas = (X.betas + params$X.betas.old) * 0.5
       stepSize = stepSize * 0.5
       w = exp(X.betas)
@@ -991,9 +989,7 @@ UpdateParamsCox.B2 = function(params) {
 
 UpdateDataCox.B2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateDataCox.B2\n\n")
-  cat("T")
   data$X = as.matrix(data$X[, params$BIndiciesKeep, drop = FALSE])
-  cat("U")
   return(data)
 }
 
@@ -1142,9 +1138,7 @@ ComputeInverseCox.A2 = function(params, data) {
 	if (is.null(M)) {
 		params$failed = TRUE
     params$errorMessage = "The matrix XWX is singular.  This is probably due to divergence of the coefficients."
-    cat("Error:  The matrix XWX is singular. ")
-    cat("This is probably due to divergence of the coefficients. ")
-    cat("Please try again on a different set of covariates.\n\n")
+    warning(params$errorMessage)
 
     betas = rep(NA, length(params$Acolnames.old))
     betas[params$AIndiciesKeep] = params$betasA
@@ -1231,7 +1225,7 @@ ComputeBetaCox.A2 = function(params, data) {
 
   if (params$algIterationCounter >= params$maxIterations) {
     params$halted = TRUE
-    cat("Error: Failed to converged in", params$maxIterations, "iterations.\n\n")
+    warning(paste("Failed to converged in", params$maxIterations, "iterations."))
   }
 
   writeTime = proc.time()[3]
@@ -1255,7 +1249,7 @@ GetConvergedStatusCox.B2 = function(params) {
   params$converged = converged
   if (params$algIterationCounter > params$maxIterations) {
     params$halted = TRUE
-    cat("Error: Failed to converged in", params$maxIterations, "iterations.\n\n")
+    warning(paste("Failed to converged in", params$maxIterations, "iterations."))
   }
   writeTime = 0
   writeSize = 0
@@ -1512,7 +1506,7 @@ CheckColinearityCox.B2 = function(params, data) {
   if (params$p2 == 0) {
     params$failed = TRUE
     params$errorMessage = "Party A has no covariates and all of Party B's covariates are linear."
-    cat("Error:  Part A has no covariates and all of Party B's covariates are linear.\n\n")
+    warning(params$errorMessage)
   }
   params = AddToLog(params, "CheckColinearityCox.B2", 0, 0, 0, 0)
 
@@ -1547,7 +1541,7 @@ ComputeCoxFromSurvival.B2 = function(params, data) {
     params$converged = FALSE
     params$failed    = TRUE
     params$errorMessage = "Coxph in the survival package failed to converge."
-    cat("Error: Coxph in the survival package failed to converge.\n\n")
+    warning(params$errorMessage)
   } else {
   	params$converged = TRUE
   	if (class(error) == "logical") {
@@ -1592,7 +1586,7 @@ ComputeCox.B2 = function(params, data) {
   	stepSize = 1
   	w = exp(X.betas)
   	while (max(w) == Inf) {
-  		cat("Step Halving\n\n")
+  		if (params$verbose) cat("Step Halving\n\n")
   		X.betas = (X.betas + X.betas.old) * 0.5
   		stepSize = stepSize * 0.5
   		w = exp(X.betas)
@@ -1624,7 +1618,7 @@ ComputeCox.B2 = function(params, data) {
   		if (loglikelihood > loglikelihood.old || stepSize < 0.5^6) {
   			computeLoglikelihood = FALSE
   		} else {
-  			cat("Step Halving\n\n")
+  			if (params$verbose) cat("Step Halving\n\n")
   			X.betas = (X.betas + X.betas.old) * 0.5
   			stepSize = stepSize * 0.5
   			w = exp(X.betas)
@@ -1653,17 +1647,15 @@ ComputeCox.B2 = function(params, data) {
 		if (is.null(M)) {
       params$failed = TRUE
       params$errorMessage = "The matrix t(X)WX is singular.  This is probably due to divergence of the coefficients."
-      cat("Error:  The matrix XWX is singular. ")
-      cat("This is probably due to divergence of the coefficients. ")
-      cat("Please try again on a different set of covariates.\n\n")
+      warning(params$errorMessage)
 
       betas = rep(NA, length(params$Bcolnames.old))
       betas[params$BIndiciesKeep] = betasB
       betas = data.frame(betas)
       rownames(betas) = params$Bcolnames.old
-      cat("Current Parameters:\n")
-      print(betas)
-      cat("\n")
+      # if (params$verbose) cat("Current Parameters:\n")
+      # if (params$verbose) print(betas)
+      # if (params$verbose) cat("\n")
       params = AddToLog(params, "ComputeCox.B2", 0, 0, 0, 0)
       return(params)
     }
@@ -1691,7 +1683,7 @@ ComputeCox.B2 = function(params, data) {
   if (!params$converged) {
     params$failed = TRUE
     params$errorMessage = "Cox failed to converge in the specified number of iterations."
-    cat("Error: Cox failed to converge in the specified number of iterations.\n\n")
+    warning(params$errorMessage)
   }
   params = AddToLog(params, "ComputeCox.B2", 0, 0, 0, 0)
   return(params)
@@ -1842,16 +1834,17 @@ PartyAProcess2Cox = function(data,
 														 sleepTime      = 10,
 														 maxWaitingTime = 24 * 60 * 60,
 														 popmednet      = TRUE,
-														 trace          = FALSE) {
+														 trace          = FALSE,
+														 verbose        = TRUE) {
   params = PrepareParams.2p("cox", "A", msreqid = msreqid,
-                            popmednet = popmednet, trace = trace)
+                            popmednet = popmednet, trace = trace, verbose = verbose)
   params = InitializeLog.2p(params)
   params = InitializeStamps.2p(params)
   params = InitializeTrackingTable.2p(params)
   Header(params)
   params   = PrepareFolderCox.A2(params, monitorFolder)
   if (params$failed) {
-  	cat(params$errorMessage)
+  	warning(params$errorMessage)
   	return(invisible(NULL))
   }
   data = PrepareDataCox.23(params, data, yname, strata, mask)
@@ -1859,7 +1852,7 @@ PartyAProcess2Cox = function(data,
   params = PauseContinue.2p(params, maxWaitingTime)
   if (file.exists(file.path(params$readPath, "errorMessage.rdata"))) {
     params$complete = TRUE
-    cat("Error:", ReadErrorMessage(params$readPath), "\n\n")
+    warning(ReadErrorMessage(params$readPath))
     params$pmnStepCounter = 1
     params = SendPauseQuit.2p(params, sleepTime = sleepTime, job_failed = TRUE)
     SummarizeLog.2p(params)
@@ -1907,7 +1900,7 @@ PartyAProcess2Cox = function(data,
     params = SendPauseContinue.2p(params, files, sleepTime, maxWaitingTime)
     if (file.exists(file.path(params$readPath, "errorMessage.rdata"))) {
       params$complete = TRUE
-      cat("Error:", ReadErrorMessage(params$readPath), "\n\n")
+      warning(ReadErrorMessage(params$readPath))
       params = SendPauseQuit.2p(params, sleepTime = sleepTime, job_failed = TRUE)
       SummarizeLog.2p(params)
       return(params$stats)
@@ -1939,13 +1932,13 @@ PartyAProcess2Cox = function(data,
   params = SendPauseContinue.2p(params, files, sleepTime, maxWaitingTime)
 
   params = CheckColinearityCox.A2(params, data)
-  cat(params$failed,"\n")
+  # if (params$verbose) cat(params$failed,"\n")
 
 
 
   if (params$failed) { # Check for CheckColinearityCox.A2() failed
     params$complete = TRUE
-    cat("Error:", params$errorMessage, "\n")
+    warning(params$errorMessage)
     MakeErrorMessage(params$writePath, params$errorMessage)
     files = c("errorMessage.rdata")
     params = SendPauseContinue.2p(params, files, sleepTime = sleepTime)
@@ -1960,7 +1953,7 @@ PartyAProcess2Cox = function(data,
     params = SendPauseContinue.2p(params, files, sleepTime = sleepTime)
     if (file.exists(file.path(params$readPath, "errorMessage.rdata"))) {
       params$complete = TRUE
-      cat("Error:", ReadErrorMessage(params$readPath), "\n\n")
+      warning(ReadErrorMessage(params$readPath))
       params = SendPauseQuit.2p(params, sleepTime = sleepTime, job_failed = TRUE)
       SummarizeLog.2p(params)
       return(params$stats)
@@ -2030,15 +2023,17 @@ PartyBProcess2Cox = function(data,
 														 sleepTime           = 10,
                              maxWaitingTime      = 24 * 60 * 60,
 														 popmednet           = TRUE,
-														 trace               = FALSE) {
-  params = PrepareParams.2p("cox", "B", popmednet = popmednet, trace = trace)
+														 trace               = FALSE,
+														 verbose             = TRUE) {
+  params = PrepareParams.2p("cox", "B", popmednet = popmednet, trace = trace,
+                            verbose = verbose)
   params = InitializeLog.2p(params)
   params = InitializeStamps.2p(params)
   params = InitializeTrackingTable.2p(params)
   Header(params)
   params = PrepareFolderCox.B2(params, monitorFolder)
   if (params$failed) {
-  	cat(params$errorMessage)
+  	warning(params$errorMessage)
   	return(invisible(NULL))
   }
   data = PrepareDataCox.23(params, data, NULL, strata, mask)
@@ -2058,7 +2053,7 @@ PartyBProcess2Cox = function(data,
 
   if (file.exists(file.path(params$readPath, "errorMessage.rdata"))) {
     params$complete = TRUE
-    cat("Error:", ReadErrorMessage(params$readPath), "\n\n")
+    warning(ReadErrorMessage(params$readPath))
     params = SendPauseQuit.2p(params, sleepTime = sleepTime, job_failed = TRUE)
     return(params$stats)
   }
@@ -2070,7 +2065,7 @@ PartyBProcess2Cox = function(data,
 
     if (file.exists(file.path(params$readPath, "errorMessage.rdata"))) {
       params$complete = TRUE
-      cat("Error:", ReadErrorMessage(params$readPath), "\n\n")
+      warning(ReadErrorMessage(params$readPath))
       params = SendPauseQuit.2p(params, sleepTime = sleepTime, job_failed = TRUE)
       return(params$stats)
     }
@@ -2151,7 +2146,7 @@ PartyBProcess2Cox = function(data,
     if (params$algIterationCounter == 1) {
       if (file.exists(file.path(params$readPath, "errorMessage.rdata"))) {
         params$complete = TRUE
-        cat("Error:", ReadErrorMessage(params$readPath), "\n\n")
+        warning(ReadErrorMessage(params$readPath))
         params = SendPauseQuit.2p(params, sleepTime = sleepTime, job_failed = TRUE)
         return(params$stats)
       }
@@ -2174,7 +2169,7 @@ PartyBProcess2Cox = function(data,
 
     if (file.exists(file.path(params$readPath, "errorMessage.rdata"))) {
       params$complete = TRUE
-      cat("Error:", ReadErrorMessage(params$readPath), "\n\n")
+      warning(ReadErrorMessage(params$readPath))
       params = SendPauseQuit.2p(params, sleepTime = sleepTime, job_failed = TRUE)
       return(params$stats)
     }

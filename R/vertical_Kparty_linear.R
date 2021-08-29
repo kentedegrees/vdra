@@ -3,12 +3,12 @@
 PrepareFolder.ACDP = function(params, monitorFolder) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareFolder.ACDP\n\n")
   if (is.null(monitorFolder)) {
-		cat("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.\n")
+		warning("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.")
 		params$failed = TRUE
 		return(params)
 	}
 	if (class(monitorFolder) != "character") {
-		cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.\n")
+		warning("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.")
 		params$failed = TRUE
 		return(params)
 	}
@@ -31,45 +31,45 @@ PrepareFolder.ACDP = function(params, monitorFolder) {
 	if (!CreateIOLocation(monitorFolder, "dplocal")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$dplocalPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "rprograms")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$rprogramsPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "macros")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$macrosPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "inputfiles")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$readPathAC, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "msoc")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$writePath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	for (id in 1:params$numDataPartners) {
 		if (!CreateIOLocation(monitorFolder, paste0("msoc", id))) {
 			params$failed = TRUE
 			params$errorMessage = paste(params$errorMessage,
-																	"Error: Could not create directory",
+																	"Could not create directory",
 																	paste0(params$readPathDP[id], "."),
-																	"Check the path and restart the program.\n\n")
+																	"Check the path and restart the program.")
 		}
 	}
 
@@ -153,7 +153,7 @@ PrepareDataLinLog.DPk = function(params, data) {
 
   workdata$tags = CreateModelMatrixTags(data)
   # if (ncol(data) < 2 | !("numeric" %in% names(workdata$tags))) {
-  #   cat("Error: The data partner that does not have the response must have at least 2 covariates at least one of which must be numeric.\n")
+  #   warning("The data partner that does not have the response must have at least 2 covariates at least one of which must be numeric.")
   #   workdata$failed = TRUE
   #   return(workdata)
   # }
@@ -452,7 +452,6 @@ ComputeResultsLinear.AC = function(params) {
 	    max = max - 1
 	  }
 	  idx = indicies[which(min <= indicies & indicies <= max)] - min + 1
-	  print(idx)
 	  temp = tags[[id]]
 	  temp = temp[idx]
 	  tags[[id]] = temp
@@ -465,7 +464,8 @@ ComputeResultsLinear.AC = function(params) {
 	  if (length(unique(tags[[id]])) == 0) {
 	    params$failed = TRUE
 	    params$errorMessage = paste0(params$errorMessage,
-	                                 paste("After removing colinear covariates, Data Partner", id, "has no covariates.\n"))
+	                                 paste("After removing colinear covariates, Data Partner",
+	                                       id, "has no covariates."))
 	  } else {
 	    numeric_found = numeric_found | "numeric" %in% names(tags[[id]])
 	  }
@@ -473,7 +473,7 @@ ComputeResultsLinear.AC = function(params) {
 	if (!numeric_found) {
 	  params$failed = TRUE
 	  params$errorMessage = paste0(params$errorMessage,
-	                               paste("After removing colinear covariates, no Data Partner > DP1 has a numeric covariate.\n"))
+	                               paste("After removing colinear covariates, no Data Partner > DP1 has a numeric covariate."))
 	}
 
 	stats$failed    = params$failed
@@ -594,12 +594,13 @@ DataPartnerKLinear = function(data,
 															sleepTime       = 10,
 															maxWaitingTime  = 24 * 60 * 60,
 															popmednet      = TRUE,
-															trace          = FALSE) {
+															trace          = FALSE,
+															verbose        = TRUE) {
 
 	params = PrepareParams.kp("linear", dataPartnerID, numDataPartners, ac = FALSE,
-	                          popmednet = popmednet, trace = trace)
+	                          popmednet = popmednet, trace = trace, verbose = verbose)
 	if (params$failed) {
-	  cat(params$errorMessage)
+	  warning(params$errorMessage)
 	  return(invisible(NULL))
 	}
 	params = InitializeLog.kp(params)
@@ -610,12 +611,11 @@ DataPartnerKLinear = function(data,
 	params   = PrepareFolder.ACDP(params, monitorFolder)
 
 	if (params$failed) {
-		cat(params$errorMessage)
+		warning(params$errorMessage)
 		return(invisible(NULL))
 	}
 
 	if (dataPartnerID == 1) {
-	  # data = PrepareDataLinear.DP(params, data, yname)
 	  data = PrepareDataLinLog.DP1(params, data, yname)
 	  params = AddToLog(params, "PrepareDataLinLog.DP1", 0, 0, 0, 0)
 	} else {
@@ -631,7 +631,7 @@ DataPartnerKLinear = function(data,
 		params = SendPauseContinue.kp(params, filesAC = files, from = "AC",
 															 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
 		params$errorMessage = ReadErrorMessage(params$readPathAC)
-		cat(params$errorMessage, "\n")
+		warning(params$errorMessage)
 		params = SendPauseQuit.kp(params, sleepTime = sleepTime, waitForTurn = TRUE)
 		return(params$stats)
 	}
@@ -644,7 +644,7 @@ DataPartnerKLinear = function(data,
 	possibleError = ReceivedError.kp(params, from = "AC")
 	if (possibleError$error) {
 		params$errorMessage = possibleError$message
-		cat(possibleError$message, "\n")
+		warning(possibleError$message)
 		params = SendPauseQuit.kp(params, sleepTime = sleepTime, waitForTurn = TRUE)
 		return(params$stats)
 	}
@@ -662,7 +662,7 @@ DataPartnerKLinear = function(data,
 	possibleError = ReceivedError.kp(params, from = "AC")
 	if (possibleError$error) {
 	  params$errorMessage = possibleError$message
-	  cat(possibleError$message, "\n")
+	  warning(possibleError$message)
 	  params = SendPauseQuit.kp(params, sleepTime = sleepTime, waitForTurn = TRUE)
 	  return(params$stats)
 	} else {
@@ -679,11 +679,12 @@ AnalysisCenterKLinear = function(numDataPartners = NULL,
 																 sleepTime       = 10,
 																 maxWaitingTime  = 24 * 60 * 60,
 																 popmednet       = TRUE,
-																 trace           = FALSE) {
+																 trace           = FALSE,
+																 verbose         = TRUE) {
 	params = PrepareParams.kp("linear", 0, numDataPartners, msreqid, ac = TRUE,
-	                          popmednet = popmednet, trace = trace)
+	                          popmednet = popmednet, trace = trace, verbose = verbose)
 	if (params$failed) {
-	  cat(params$errorMessage)
+	  warning(params$errorMessage)
 	  return(invisible(NULL))
 	}
 	params = InitializeLog.kp(params)
@@ -694,7 +695,7 @@ AnalysisCenterKLinear = function(numDataPartners = NULL,
 	params   = PrepareFolder.ACDP(params, monitorFolder)
 
 	if (params$failed) {
-		cat(params$errorMessage)
+		warning(params$errorMessage)
 		return(invisible(NULL))
 	}
 
@@ -703,7 +704,7 @@ AnalysisCenterKLinear = function(numDataPartners = NULL,
 	possibleError = ReceivedError.kp(params, from = "DP")
 	if (possibleError$error) {
 		params$errorMessage = possibleError$message
-		cat(possibleError$message, "\n")
+		warning(possibleError$message)
 		MakeErrorMessage(params$writePath, possibleError$message)
 		files = "errorMessage.rdata"
 		params = SendPauseContinue.kp(params, filesDP = files, from = "DP",
@@ -718,7 +719,7 @@ AnalysisCenterKLinear = function(numDataPartners = NULL,
 	if (params$failed) {
 		MakeErrorMessage(params$writePath, params$errorMessage)
 		files = "errorMessage.rdata"
-		cat(params$errorMessage, "\n")
+		warning(params$errorMessage)
 		params = SendPauseContinue.kp(params, filesDP = files, from = "DP",
 															 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
 		params = SendPauseQuit.kp(params, sleepTime = sleepTime, job_failed = TRUE)
@@ -736,7 +737,7 @@ AnalysisCenterKLinear = function(numDataPartners = NULL,
 	if (params$failed) {
 	  MakeErrorMessage(params$writePath, params$errorMessage)
 	  files = "errorMessage.rdata"
-	  cat(params$errorMessage, "\n")
+	  warning(params$errorMessage)
 	  params = SendPauseContinue.kp(params, filesDP = files, from = "DP",
 	                                sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
 	  params = SendPauseQuit.kp(params, sleepTime = sleepTime, job_failed = TRUE)

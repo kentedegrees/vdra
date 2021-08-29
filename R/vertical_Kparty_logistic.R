@@ -379,7 +379,7 @@ ComputeStWSLogistic.AC = function(params) {
 		params$failed = TRUE
 		params$singularMatrix = TRUE
 		params$errorMessage =
-			paste0("ERROR: The matrix t(X)*W*X is not invertible.\n",
+			paste0("The matrix t(X)*W*X is not invertible.\n",
 						 "       This may be due to one of two possible problems.\n",
 						 "       1. Poor random initialization of the security matrices.\n",
 						 "       2. Near multicollinearity in the data\n",
@@ -388,7 +388,7 @@ ComputeStWSLogistic.AC = function(params) {
 						 "       2. If the problem persists, check the variables for\n",
 						 "          duplicates for both parties and / or reduce the\n",
 						 "          number of variables used. Once this is done,\n",
-						 "          rerun the data analysis.\n\n")
+						 "          rerun the data analysis.")
 		params = AddToLog(params, "ComputeStWSLogistic.AC", readTime, readSize, 0, 0)
 		return(params)
 	}
@@ -666,12 +666,13 @@ DataPartnerKLogistic = function(data,
 																sleepTime       = 10,
 																maxWaitingTime  = 24 * 60 * 60,
 																popmednet       = TRUE,
-																trace           = FALSE) {
+																trace           = FALSE,
+																verbose         = TRUE) {
 
 	params = PrepareParams.kp("logistic", dataPartnerID, numDataPartners, ac = FALSE,
-	                          popmednet = popmednet, trace = trace)
+	                          popmednet = popmednet, trace = trace, verbose = verbose)
 	if (params$failed) {
-	  cat(params$errorMessage)
+	  warning(params$errorMessage)
 	  return(invisible(NULL))
 	}
 	params = InitializeLog.kp(params)
@@ -682,7 +683,7 @@ DataPartnerKLogistic = function(data,
 	params   = PrepareFolder.ACDP(params, monitorFolder)
 
 	if (params$failed) {
-		cat(params$errorMessage)
+		warning(params$errorMessage)
 		return(invisible(NULL))
 	}
 
@@ -704,7 +705,7 @@ DataPartnerKLogistic = function(data,
 		params = SendPauseContinue.kp(params, filesAC = files, from = "AC",
 															 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
 		params$errorMessage = ReadErrorMessage(params$readPathAC)
-		cat(params$errorMessage, "\n")
+		warning(params$errorMessage)
 		params = SendPauseQuit.kp(params, sleepTime = sleepTime, waitForTurn = TRUE)
 		return(params$stats)
 	}
@@ -717,7 +718,7 @@ DataPartnerKLogistic = function(data,
 	possibleError = ReceivedError.kp(params, from = "AC")
 	if (possibleError$error) {
 		params$errorMessage = possibleError$message
-		cat(possibleError$message, "\n")
+		warning(possibleError$message)
 		params = SendPauseQuit.kp(params, sleepTime = sleepTime, waitForTurn = TRUE)
 		return(params$stats)
 	}
@@ -735,7 +736,7 @@ DataPartnerKLogistic = function(data,
 	possibleError = ReceivedError.kp(params, from = "AC")
 	if (possibleError$error) {
 	  params$errorMessage = possibleError$message
-		cat(possibleError$message, "\n")
+		warning(possibleError$message)
 		params = SendPauseQuit.kp(params, sleepTime = sleepTime, waitForTurn = TRUE)
 		return(params$stats)
 	}
@@ -762,7 +763,7 @@ DataPartnerKLogistic = function(data,
 		possibleError = ReceivedError.kp(params, from = "AC")
 		if (possibleError$error) {
 		  params$errorMessage = possibleError$message
-			cat(possibleError$message, "\n")
+			warning(possibleError$message)
 			params = SendPauseQuit.kp(params, sleepTime = sleepTime, waitForTurn = TRUE)
 			return(params$stats)
 		}
@@ -808,14 +809,15 @@ AnalysisCenterKLogistic = function(numDataPartners = NULL,
 																	 sleepTime       = 10,
 																	 maxWaitingTime  = 24 * 60 * 60,
 																	 popmednet       = TRUE,
-																	 trace           = FALSE) {
+																	 trace           = FALSE,
+																	 verbose         = TRUE) {
 
 	filesList = rep(list(list()), numDataPartners)
 
 	params = PrepareParams.kp("logistic", 0, numDataPartners, msreqid, cutoff, maxIterations, ac = TRUE,
-	                          popmednet = popmednet, trace = trace)
+	                          popmednet = popmednet, trace = trace, verbose = verbose)
 	if (params$failed) {
-	  cat(params$errorMessage)
+	  warning(params$errorMessage)
 	  return(invisible(NULL))
 	}
 	params = InitializeLog.kp(params)
@@ -826,7 +828,7 @@ AnalysisCenterKLogistic = function(numDataPartners = NULL,
 	params   = PrepareFolder.ACDP(params, monitorFolder)
 
 	if (params$failed) {
-		cat(params$errorMessage)
+		warning(params$errorMessage)
 		return(invisible(NULL))
 	}
 
@@ -835,7 +837,7 @@ AnalysisCenterKLogistic = function(numDataPartners = NULL,
 	possibleError = ReceivedError.kp(params, from = "DP")
 	if (possibleError$error) {
 		params$errorMessage = possibleError$message
-		cat(possibleError$message, "\n")
+		warning(possibleError$message)
 		MakeErrorMessage(params$writePath, possibleError$message)
 		files = "errorMessage.rdata"
 		params = SendPauseContinue.kp(params, filesDP = files, from = "DP",
@@ -850,7 +852,7 @@ AnalysisCenterKLogistic = function(numDataPartners = NULL,
 	if (params$failed) {
 		MakeErrorMessage(params$writePath, params$errorMessage)
 		files = "errorMessage.rdata"
-		cat(params$errorMessage, "\n")
+		warning(params$errorMessage)
 		params = SendPauseContinue.kp(params, filesDP = files, from = "DP",
 															 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
 		params = SendPauseQuit.kp(params, sleepTime = sleepTime, job_failed = TRUE)
@@ -870,7 +872,7 @@ AnalysisCenterKLogistic = function(numDataPartners = NULL,
 	if (params$failed) {
 		MakeErrorMessage(params$writePath, params$errorMessage)
 		files = "errorMessage.rdata"
-		cat(params$errorMessage, "\n")
+		warning(params$errorMessage)
 		params = SendPauseContinue.kp(params, filesDP = files, from = "DP",
 															 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
 		params = SendPauseQuit.kp(params, sleepTime = sleepTime, job_failed = TRUE)
@@ -900,7 +902,7 @@ AnalysisCenterKLogistic = function(numDataPartners = NULL,
 		if (params$failed) {
 			MakeErrorMessage(params$writePath, params$errorMessage)
 			files = "errorMessage.rdata"
-			cat(params$errorMessage, "\n")
+			warning(params$errorMessage)
 			params = SendPauseContinue.kp(params, filesDP = files, from = "DP",
 																 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
 			params = SendPauseQuit.kp(params, sleepTime = sleepTime, job_failed = TRUE)

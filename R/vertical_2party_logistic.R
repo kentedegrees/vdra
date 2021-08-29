@@ -9,12 +9,12 @@ PrepareFolderLogistic.A2 = function(params, monitorFolder) {
 	params$readPath      = file.path(monitorFolder, "msoc1")
 
 	if (is.null(monitorFolder)) {
-	  cat("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.\n")
+	  warning("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.")
 	  params$failed = TRUE
 	  return(params)
 	}
 	if (class(monitorFolder) != "character") {
-	  cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.\n")
+	  warning("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.")
 	  params$failed = TRUE
 	  return(params)
 	}
@@ -25,37 +25,37 @@ PrepareFolderLogistic.A2 = function(params, monitorFolder) {
 	if (!CreateIOLocation(monitorFolder, "dplocal")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$dplocalPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "rprograms")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$rprogramsPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "macros")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$macrosPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "inputfiles")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$writePath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "msoc1")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$readPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 
 	params = AddToLog(params, "PrepareDataLogistic.A23, PrepareFolderLogistic.A2", 0, 0, 0, 0)
@@ -73,12 +73,12 @@ PrepareFolderLogistic.B2 = function(params, monitorFolder) {
 	params$readPath      = file.path(monitorFolder, "inputfiles")
 
 	if (is.null(monitorFolder)) {
-	  cat("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.\n")
+	  warning("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.")
 	  params$failed = TRUE
 	  return(params)
 	}
 	if (class(monitorFolder) != "character") {
-	  cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.\n")
+	  warning("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.")
 	  params$failed = TRUE
 	  return(params)
 	}
@@ -89,37 +89,37 @@ PrepareFolderLogistic.B2 = function(params, monitorFolder) {
 	if (!CreateIOLocation(monitorFolder, "dplocal")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$dplocalPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "rprograms")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$rprogramsPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "macros")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$macrosPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "msoc")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$writePath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "inputfiles")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"ould not create directory",
 																paste0(params$readPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 
 	Sys.sleep(1)
@@ -198,7 +198,7 @@ PrepareDataLogistic.B23 = function(params, data) {
 
   workdata$tags = CreateModelMatrixTags(data)
   if (ncol(data) < 2 | !("numeric" %in% names(workdata$tags))) {
-    cat("Error: The data partner that does not have the response must have at least 2 covariates at least one of which must be numeric.\n")
+    warning("The data partner that does not have the response must have at least 2 covariates at least one of which must be numeric.")
     workdata$failed = TRUE
     return(workdata)
   }
@@ -278,7 +278,7 @@ PrepareParamsLogistic.A2 = function(params, data, cutoff = 0.01, maxIterations =
   if (params$analysis != pb$analysis) {
     params$errorMessage =
       paste("Party A is running", params$analysis, "regression and Party B is running", pb$analysis, "regression.")
-    cat("Error:", params$errorMessage, "\n\n")
+    warning(params$errorMessage)
     params$failed = TRUE
     return(params)
   }
@@ -287,7 +287,7 @@ PrepareParamsLogistic.A2 = function(params, data, cutoff = 0.01, maxIterations =
   if (pb$n != params$n) {
     params$errorMessage =
       paste("Party A has", params$n, "observations and Party B has", pb$n, "observations.")
-    cat("Error:", params$errorMessage, "\n\n")
+    warning(params$errorMessage)
     params$failed = TRUE
   }
 
@@ -352,23 +352,24 @@ PrepareBlocksLogistic.A2 = function(params, blocksize) {
     maxACovariates = trunc(sqrt(p2 * n) - p2 - 1)
 
     params$errorMessage =
-      paste("Warning, the minimum secure blocksize of", minimumBlocksize,
-            "is larger than the number of observations", paste0(n, "."))
-    cat("Error: The minimum secure blocksize of", minimumBlocksize,
-        "is larger than the number of observations", paste0(n, ".\n"))
-    cat("Your options are:\n")
-    cat("Increase the number of observations to at least",
-        paste0(minimumBlocksize, ".\n"))
-    cat("Decrease the number of A covariates to", maxACovariates, "or less.\n")
+      paste("The minimum secure blocksize of", minimumBlocksize,
+            "is larger than the number of observations", paste0(n, ".\n"),
+            "Your options are:\n",
+            "Increase the number of observations to at least",
+            paste0(minimumBlocksize, ".\n"),
+            "Decrease the number of A covariates to", maxACovariates, "or less.")
+
     b = n - 2 * p1 - 2
     discrim = b^2 - 4 * (p1 + 1)^2
     if (discrim >= 0) {
       minBCovariates = trunc(1 + (b - sqrt(discrim)) / 2)
       maxBCovariates = trunc((b + sqrt(discrim)) / 2)
-      cat("Set the number of B covariates to be between", minBCovariates, "and",
-          paste0(maxBCovariates, ".\n"))
+      params$errorMessage =
+        paste0(params$errorMessage,
+               "\nSet the number of B covariates to be between ", minBCovariates, "and",
+               paste0(maxBCovariates, "."))
     }
-    cat("Terminating the program.\n\n")
+    warning(params$errorMessage)
     params$failed = TRUE
     params = AddToLog(params, "PrepareBlocksLogistic.A2", 0, 0, 0, 0)
     return(params)
@@ -378,14 +379,14 @@ PrepareBlocksLogistic.A2 = function(params, blocksize) {
     blocksize = minimumBlocksize
   }
   if (blocksize < minimumBlocksize) {
-    cat("Warning:  Block size of", blocksize,
-        "is too small. Proceeding with minimum blocksize of",
-        paste0(minimumBlocksize, ".\n\n"))
+    message(paste("Block size of", blocksize,
+                  "is too small. Proceeding with minimum blocksize of",
+                  paste0(minimumBlocksize, ".")))
     blocksize = minimumBlocksize
   } else if (n < blocksize) {
-    cat("Warning: Block size of", blocksize,
-        "is larger than size of data.  Proceeding with blocksize of",
-        paste0(n, ".\n\n"))
+    message(paste("Block size of", blocksize,
+                  "is larger than size of data.  Proceeding with blocksize of",
+                  paste0(n, ".")))
   }
 
   params$blocks    = CreateBlocks(p1, p2, n, blocksize)
@@ -905,17 +906,18 @@ GetIILogistic.A2 = function(params, data) {
   if (is.null(II)) {
     params$singularMatrix = TRUE
     params$failed = TRUE
-    params$errorMessage = "The matrix t(X)WX is singular.  This is probably due to divergence of the coefficients."
-    cat("ERROR: The matrix t(X)*W*X is not invertible.\n")
-    cat("       This may be due to one of two possible problems.\n")
-    cat("       1. Poor random initialization of the security vector.\n")
-    cat("       2. Near multicollinearity in the data\n")
-    cat("SOLUTIONS: \n")
-    cat("       1. Rerun the data analysis.\n")
-    cat("       2. If the problem persists, check the variables for\n")
-    cat("          duplicates for both parties and / or reduce the\n")
-    cat("          number of variables used. Once this is done,\n")
-    cat("          rerun the data analysis.\n\n")
+    params$errorMessage =
+      paste0("The matrix t(X)*W*X is not invertible.\n",
+             "       This may be due to one of two possible problems.\n",
+             "       1. Poor random initialization of the security vector.\n",
+             "       2. Near multicollinearity in the data\n",
+             "SOLUTIONS: \n",
+             "       1. Rerun the data analysis.\n",
+             "       2. If the problem persists, check the variables for\n",
+             "          duplicates for both parties and / or reduce the\n",
+             "          number of variables used. Once this is done,\n",
+             "          rerun the data analysis.")
+    warning(params$errorMessage)
   } else {
     params$II = II
     params$IA = IA
@@ -1163,16 +1165,17 @@ PartyAProcess2Logistic = function(data,
                                   sleepTime             = 10,
                                   maxWaitingTime        = 24 * 60 * 60,
 																	popmednet             = TRUE,
-																	trace                 = FALSE) {
+																	trace                 = FALSE,
+																	verbose               = TRUE) {
   params = PrepareParams.2p("logistic", "A", msreqid = msreqid,
-                            popmednet = popmednet, trace = trace)
+                            popmednet = popmednet, trace = trace, verbose = verbose)
   params = InitializeLog.2p(params)
   params = InitializeStamps.2p(params)
   params = InitializeTrackingTable.2p(params)
   Header(params)
   params   = PrepareFolderLogistic.A2(params, monitorFolder)
   if (params$failed) {
-  	cat(params$errorMessage)
+  	warning(params$errorMessage)
   	return(invisible(NULL))
   }
   data = PrepareDataLogistic.A23(params, data, yname)
@@ -1180,7 +1183,7 @@ PartyAProcess2Logistic = function(data,
   params = PauseContinue.2p(params,  maxWaitingTime)
   if (file.exists(file.path(params$readPath, "errorMessage.rdata"))) {
     params$completed = TRUE
-    cat("Error:", ReadErrorMessage(params$readPath), "\n\n")
+    warning(ReadErrorMessage(params$readPath))
     params$pmnStepCounter = 1
     params = SendPauseQuit.2p(params, sleepTime = sleepTime, job_failed = TRUE)
     SummarizeLog.2p(params)
@@ -1233,7 +1236,7 @@ PartyAProcess2Logistic = function(data,
 
   if (params$failed) { # Check for CheckColinearityLogistic.A2() failed
     params$completed = TRUE
-    cat("Error:", params$errorMessage, "\n")
+    warning(params$errorMessage)
     MakeErrorMessage(params$writePath, params$errorMessage)
     files = c("errorMessage.rdata")
     params = SendPauseContinue.2p(params, files, sleepTime = sleepTime)
@@ -1290,16 +1293,17 @@ PartyBProcess2Logistic = function(data,
                                   sleepTime           = 10,
                                   maxWaitingTime      = 24 * 60 * 60,
 																	popmednet           = TRUE,
-																	trace               = FALSE) {
+																	trace               = FALSE,
+																	verbose             = TRUE) {
   params = PrepareParams.2p("logistic", "B",
-                            popmednet = popmednet, trace = trace)
+                            popmednet = popmednet, trace = trace, verbose = verbose)
   params = InitializeLog.2p(params)
   params = InitializeStamps.2p(params)
   params = InitializeTrackingTable.2p(params)
   Header(params)
   params   = PrepareFolderLogistic.B2(params, monitorFolder)
   if (params$failed) {
-  	cat(params$errorMessage)
+  	warning(params$errorMessage)
   	return(invisible(NULL))
   }
   data = PrepareDataLogistic.B23(params, data)
@@ -1320,7 +1324,7 @@ PartyBProcess2Logistic = function(data,
 
   if (file.exists(file.path(params$readPath, "errorMessage.rdata"))) {
     params$completed = TRUE
-    cat("Error:", ReadErrorMessage(params$readPath), "\n\n")
+    warning(ReadErrorMessage(params$readPath))
     params = SendPauseQuit.2p(params, sleepTime = sleepTime, job_failed = TRUE)
     return(params$stats)
   }
@@ -1334,7 +1338,7 @@ PartyBProcess2Logistic = function(data,
 
   if (file.exists(file.path(params$readPath, "errorMessage.rdata"))) {
     params$completed = TRUE
-    cat("Error:", ReadErrorMessage(params$readPath), "\n\n")
+    warning(ReadErrorMessage(params$readPath))
     params = SendPauseQuit.2p(params, sleepTime = sleepTime, job_failed = TRUE)
     return(params$stats)
   }
@@ -1358,7 +1362,7 @@ PartyBProcess2Logistic = function(data,
 
     if (file.exists(file.path(params$readPath, "errorMessage.rdata"))) {
       params$completed = TRUE
-      cat("Error:", ReadErrorMessage(params$readPath), "\n\n")
+      warning(ReadErrorMessage(params$readPath))
       params = SendPauseQuit.2p(params, sleepTime = sleepTime, job_failed = TRUE)
       return(params$stats)
     }

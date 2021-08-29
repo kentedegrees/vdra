@@ -21,11 +21,13 @@ AnalysisCenter.2Party(regression = "linear", data = NULL, response = NULL,
                       strata = NULL, mask = TRUE, monitorFolder = NULL,
                       msreqid = "v_default_00_000", blocksize = 500,
                       tol = 1e-8, maxIterations = 25, sleepTime = 10,
-                      maxWaitingTime = 86400, popmednet = TRUE, trace = FALSE)
+                      maxWaitingTime = 86400, popmednet = TRUE,
+                      trace = FALSE, verbose = TRUE)
 
 DataPartner.2Party(regression = "linear", data = NULL, strata = NULL,
                    mask = TRUE, monitorFolder = NULL, sleepTime = 10,
-                   maxWaitingTime = 86400, popmednet = TRUE, trace = FALSE)
+                   maxWaitingTime = 86400, popmednet = TRUE,
+                   trace = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{regression}{the model to be used to fit the data.  The default regression
@@ -77,6 +79,8 @@ DataPartner.2Party(regression = "linear", data = NULL, strata = NULL,
     particular, a 15 second offset terminiation of routines that execute in
     parallel is implemented.}
 \item{trace}{logical value: if code{TRUE}, prints every function called during execution. Used for debugging.}
+\item{verbose}{logical value.  If code{TRUE}, prints out information to document the progression of the computation.}
+
 }
 \value{
 Returns an object of \code{\link{class}} \code{\link{vdralinear}} for linear

@@ -3,13 +3,13 @@
 PrepareFolderLinear.A3 = function(params, monitorFolder = NULL) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareFolderLinear.A3\n\n")
   if (is.null(monitorFolder)) {
-		cat("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.\n")
+		warning("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.")
 		params$failed = TRUE
 		params = AddToLog(params, "PrepareFolderLinear.A3", 0, 0, 0, 0)
 		return(params)
   }
 	if (class(monitorFolder) != "character") {
-		cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.\n")
+		warning("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.")
 		params$failed = TRUE
 		params = AddToLog(params, "PrepareFolderLinear.A3", 0, 0, 0, 0)
 		return(params)
@@ -30,44 +30,44 @@ PrepareFolderLinear.A3 = function(params, monitorFolder = NULL) {
 	if (!CreateIOLocation(monitorFolder, "dplocal")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$dplocalPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "rprograms")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$rprogramsPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "macros")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$macrosPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "inputfiles")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$readPath[["T"]], "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "msoc2")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$readPath[["B"]], "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "msoc")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$writePath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 
 	Sys.sleep(1)
@@ -83,13 +83,13 @@ PrepareFolderLinear.A3 = function(params, monitorFolder = NULL) {
 PrepareFolderLinear.B3 = function(params, monitorFolder = NULL) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareFolderLinear.B3\n\n")
   if (is.null(monitorFolder)) {
-		cat("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.\n")
+		warning("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.")
 		params$failed = TRUE
 		params = AddToLog(params, "PrepareFolderLinear.A3", 0, 0, 0, 0)
 		return(params)
 	}
 	if (class(monitorFolder) != "character") {
-		cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.\n")
+		warning("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.")
 		params$failed = TRUE
 		params = AddToLog(params, "PrepareFolderLinear.A3", 0, 0, 0, 0)
 		return(params)
@@ -110,44 +110,44 @@ PrepareFolderLinear.B3 = function(params, monitorFolder = NULL) {
 	if (!CreateIOLocation(monitorFolder, "dplocal")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$dplocalPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "rprograms")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$rprogramsPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "macros")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$macrosPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "inputfiles")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$readPath[["T"]], "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "msoc1")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$readPath[["A"]], "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "msoc")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$writePath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 
 	Sys.sleep(1)
@@ -163,13 +163,13 @@ PrepareFolderLinear.B3 = function(params, monitorFolder = NULL) {
 PrepareFolderLinear.T3 = function(params, monitorFolder = NULL) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareFolderLinear.T3\n\n")
   if (is.null(monitorFolder)) {
-		cat("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.\n")
+		warning("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.")
 		params$failed = TRUE
 		params = AddToLog(params, "PrepareFolderLinear.A3", 0, 0, 0, 0)
 		return(params)
 	}
 	if (class(monitorFolder) != "character") {
-		cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.\n")
+		warning("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.")
 		params$failed = TRUE
 		params = AddToLog(params, "PrepareFolderLinear.A3", 0, 0, 0, 0)
 		return(params)
@@ -190,44 +190,44 @@ PrepareFolderLinear.T3 = function(params, monitorFolder = NULL) {
 	if (!CreateIOLocation(monitorFolder, "dplocal")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$dplocalPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "rprograms")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$rprogramsPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "macros")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$macrosPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "msoc1")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$readPath[["A"]], "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "msoc2")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$readPath[["B"]], "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "msoc")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: Could not create directory",
+																"Could not create directory",
 																paste0(params$writePath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 
 	params = AddToLog(params, "PrepareFolderLinear.T3", 0, 0, 0, 0)
@@ -359,15 +359,18 @@ PrepareBlocksLinear.T3 = function(params, blocksize) {
           "Increase the number of observations to at least",
            paste0(minimumBlocksize, ".\n"),
           "Decrease the number of A covariates to", maxACovariates, "or less.")
+
     b = n - 2 * p1 - 2
     discrim = b^2 - 4 * (p1 + 1)^2
     if (discrim >= 0) {
       minBCovariates = trunc(1 + (b - sqrt(discrim)) / 2)
       maxBCovariates = trunc((b + sqrt(discrim)) / 2)
-      params$errorMessage = paste0(params$errorMessage,
-      														 "\nSet the number of B covariates to be between ", minBCovariates, "and",
-          paste0(maxBCovariates, "."))
+      params$errorMessage =
+        paste0(params$errorMessage,
+               "\nSet the number of B covariates to be between ", minBCovariates, "and",
+               paste0(maxBCovariates, "."))
     }
+    warning(params$errorMessage)
     params$failed = TRUE
     params = AddToLog(params, "PrepareBlocksLinear.T3", 0, 0, 0, 0)
     return(params)
@@ -377,14 +380,14 @@ PrepareBlocksLinear.T3 = function(params, blocksize) {
     blocksize = minimumBlocksize
   }
   if (blocksize < minimumBlocksize) {
-    cat("Warning:  Block size of", blocksize,
+    message(paste("Block size of", blocksize,
         "is too small. Proceeding with minimum blocksize of",
-        paste0(minimumBlocksize, ".\n\n"))
+        paste0(minimumBlocksize, ".")))
     blocksize = minimumBlocksize
   } else if (n < blocksize) {
-    cat("Warning: Block size of", blocksize,
+    message(paste("Block size of", blocksize,
         "is larger than size of data.  Proceeding with blocksize of",
-        paste0(n, ".\n\n"))
+        paste0(n, ".")))
   }
 
   params$blocks    = CreateBlocks(p1, p2, n, blocksize)
@@ -422,7 +425,7 @@ GetZLinear.A3 = function(params, data) {
 	writeSize = 0
 
 	numBlocks = params$blocks$numBlocks
-	pbar = MakeProgressBar1(numBlocks, "Z")
+	pbar = MakeProgressBar1(numBlocks, "Z", params$verbose)
 	containerCt.Z = 0
 	for (i in 1:numBlocks) {
 		if (i %in% params$container$filebreak.Z) {
@@ -443,7 +446,7 @@ GetZLinear.A3 = function(params, data) {
 			close(toWrite)
 			writeSize = writeSize + file.size(file.path(params$writePath, filename))
 		}
-		pbar = MakeProgressBar2(i, pbar)
+		pbar = MakeProgressBar2(i, pbar, params$verbose)
 	}
 	params = AddToLog(params, "GetZLinear.A3", 0, 0, writeTime, writeSize)
 	return(params)
@@ -457,7 +460,7 @@ ProcessZLinear.T3 = function(params) {
 	writeTime = 0
 	writeSize = 0
 	numBlocks = params$blocks$numBlocks
-	pbar = MakeProgressBar1(numBlocks, "R(I-Z*Z')")
+	pbar = MakeProgressBar1(numBlocks, "R(I-Z*Z')", params$verbose)
 	containerCt.Z = 0
 	containerCt.RZ = 0
 	for (i in 1:numBlocks) {
@@ -502,7 +505,7 @@ ProcessZLinear.T3 = function(params) {
 			writeSize = writeSize + file.size(file.path(params$writePath, filename2))
 		}
 
-		pbar = MakeProgressBar2(i, pbar)
+		pbar = MakeProgressBar2(i, pbar, params$verbose)
 	}
 
 	params = AddToLog(params, "ProcessZLinear.T3", readTime, readSize, writeTime, writeSize)
@@ -540,7 +543,7 @@ GetRWLinear.B3 = function(params, data) {
 	writeSize = file.size(file.path(params$writePath, "xbtxb.rdata"))
 	writeTime = proc.time()[3] - writeTime
 
-	pbar = MakeProgressBar1(numBlocks, "R(I-Z*Z')XB")
+	pbar = MakeProgressBar1(numBlocks, "R(I-Z*Z')XB", params$verbose)
 	containerCt.RZ = 0
 	containerCt.RW = 0
 	for (i in 1:numBlocks) {
@@ -579,7 +582,7 @@ GetRWLinear.B3 = function(params, data) {
 			writeSize = writeSize + file.size(file.path(params$writePath, filename2))
 		}
 
-		pbar = MakeProgressBar2(i, pbar)
+		pbar = MakeProgressBar2(i, pbar, params$verbose)
 	}
 
 	params = AddToLog(params, "GetRWLinear.B3", readTime, readSize, writeTime, writeSize)
@@ -602,7 +605,7 @@ ProcessWLinear.T3 = function(params) {
 	writeTime = proc.time()[3] - writeTime
 
 	numBlocks = params$blocks$numBlocks
-	pbar = MakeProgressBar1(numBlocks, "(I-Z*Z')XB*R")
+	pbar = MakeProgressBar1(numBlocks, "(I-Z*Z')XB*R", params$verbose)
 
 	containerCt.RW = 0
 	containerCt.WR = 0
@@ -655,7 +658,7 @@ ProcessWLinear.T3 = function(params) {
 			writeSize = writeSize + file.size(file.path(params$writePath, filename3))
 		}
 
-		pbar = MakeProgressBar2(i, pbar)
+		pbar = MakeProgressBar2(i, pbar, params$verbose)
 	}
 
 	params = AddToLog(params, "ProcessWLinear.T3", readTime, readSize, writeTime, writeSize)
@@ -679,7 +682,7 @@ GetWRLinear.A3 = function(params, data) {
 	readTime = proc.time()[3] - readTime
 
 	numBlocks = params$blocks$numBlocks
-	pbar = MakeProgressBar1(numBlocks, "XA'(I-Z*Z')XB*R")
+	pbar = MakeProgressBar1(numBlocks, "XA'(I-Z*Z')XB*R", params$verbose)
 
 	containerCt.WR = 0
 	containerCt.PR = 0
@@ -719,7 +722,7 @@ GetWRLinear.A3 = function(params, data) {
 			writeSize = writeSize + file.size(file.path(params$writePath, filename2))
 		}
 
-		pbar = MakeProgressBar2(i, pbar)
+		pbar = MakeProgressBar2(i, pbar, params$verbose)
 	}
 	params = AddToLog(params, "GetWRLinear.A3", readTime, readSize, writeTime, writeSize)
 	return(params)
@@ -744,7 +747,7 @@ GetProductsLinear.T3 = function(params) {
 								 file.size(file.path(params$readPath[["A"]], "xatxa.rdata")))
 	readTime = proc.time()[3] - readTime
 
-	pbar = MakeProgressBar1(numBlocks, "X'X")
+	pbar = MakeProgressBar1(numBlocks, "X'X", params$verbose)
 
 	containerCt.PR = 0
 	for (i in 1:numBlocks) {
@@ -773,7 +776,7 @@ GetProductsLinear.T3 = function(params) {
 			close(toRead)
 		}
 
-		pbar = MakeProgressBar2(i, pbar)
+		pbar = MakeProgressBar2(i, pbar, params$verbose)
 	}
 
 	YTXB = YXATXB[1, , drop = FALSE]
@@ -924,10 +927,10 @@ ComputeResultsLinear.T3 = function(params) {
 
 	if (length(unique(tags)) < 2) {
 	  params$failed = TRUE
-	  params$errorMessage = "After removing colinear covariates, Party B has 1 or fewer covariates.\n\n"
+	  params$errorMessage = "After removing colinear covariates, Party B has 1 or fewer covariates."
 	} else if (!("numeric" %in% names(tags))) {
 	  params$failed = TRUE
-	  params$errorMessage = "After removing colinear covariates, Party B has no continuous covariates.\n\n"
+	  params$errorMessage = "After removing colinear covariates, Party B has no continuous covariates."
 	}
 
 	stats$failed = params$failed
@@ -981,10 +984,11 @@ PartyAProcess3Linear = function(data,
                                 sleepTime      = 10,
                                 maxWaitingTime = 24 * 60 * 60,
 																popmednet      = TRUE,
-																trace          = FALSE) {
+																trace          = FALSE,
+																verbose        = TRUE) {
 
   params = PrepareParams.3p("linear", "A",
-                            popmednet = popmednet, trace = trace)
+                            popmednet = popmednet, trace = trace, verbose = verbose)
   params = InitializeLog.3p(params)
   params = InitializeStamps.3p(params)
   params = InitializeTrackingTable.3p(params)
@@ -992,7 +996,7 @@ PartyAProcess3Linear = function(data,
 
   params   = PrepareFolderLinear.A3(params, monitorFolder)
   if (params$failed) {
-  	cat(params$errorMessage)
+  	warning(params$errorMessage)
   	return(invisible(NULL))
   }
   data = PrepareDataLinear.A23(params, data, yname)
@@ -1012,7 +1016,7 @@ PartyAProcess3Linear = function(data,
 														 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
 
 	if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
-		cat("Error:", ReadErrorMessage(params$readPath[["T"]]), "\n\n")
+		warning(ReadErrorMessage(params$readPath[["T"]]))
 		params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
 		return(params$stats)
 	}
@@ -1029,7 +1033,7 @@ PartyAProcess3Linear = function(data,
   													 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
 
   if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
-    cat("Error:", ReadErrorMessage(params$readPath[["T"]]), "\n\n")
+    warning(ReadErrorMessage(params$readPath[["T"]]))
     params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
@@ -1045,9 +1049,10 @@ PartyBProcess3Linear = function(data,
 																sleepTime      = 10,
 																maxWaitingTime = 24 * 60 * 60,
 																popmednet      = TRUE,
-																trace          = FALSE) {
+																trace          = FALSE,
+																verbose        = TRUE) {
   params = PrepareParams.3p("linear", "B",
-                            popmednet = popmednet, trace = trace)
+                            popmednet = popmednet, trace = trace, verbose = verbose)
   params = InitializeLog.3p(params)
   params = InitializeStamps.3p(params)
   params = InitializeTrackingTable.3p(params)
@@ -1057,7 +1062,7 @@ PartyBProcess3Linear = function(data,
 
 
   if (params$failed) {
-  	cat(params$errorMessage)
+  	warning(params$errorMessage)
   	return(invisible(NULL))
   }
 
@@ -1079,7 +1084,7 @@ PartyBProcess3Linear = function(data,
 
 
   if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
-  	cat("Error:", ReadErrorMessage(params$readPath[["T"]]), "\n\n")
+  	warning(ReadErrorMessage(params$readPath[["T"]]))
   	params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
   	return(params$stats)
   }
@@ -1091,7 +1096,7 @@ PartyBProcess3Linear = function(data,
   													 sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
 
   if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
-    cat("Error:", ReadErrorMessage(params$readPath[["T"]]), "\n\n")
+    warning(ReadErrorMessage(params$readPath[["T"]]))
     params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
@@ -1108,9 +1113,10 @@ PartyTProcess3Linear = function(monitorFolder         = NULL,
 																sleepTime             = 10,
 																maxWaitingTime        = 24 * 60 * 60,
 																popmednet             = TRUE,
-																trace                 = FALSE) {
+																trace                 = FALSE,
+																verbose               = TRUE) {
 	params = PrepareParams.3p("linear", "T", msreqid = msreqid,
-	                          popmednet = popmednet, trace = trace)
+	                          popmednet = popmednet, trace = trace, verbose = verbose)
 	params = InitializeLog.3p(params)
 	params = InitializeStamps.3p(params)
 	params = InitializeTrackingTable.3p(params)
@@ -1118,22 +1124,22 @@ PartyTProcess3Linear = function(monitorFolder         = NULL,
 	Header(params)
 	params   = PrepareFolderLinear.T3(params, monitorFolder)
 	if (params$failed) {
-		cat(params$errorMessage)
+		warning(params$errorMessage)
 		return(invisible(NULL))
 	}
 
 	params = PauseContinue.3p(params, from = c("A", "B"), maxWaitingTime = maxWaitingTime)
 
 	if (file.exists(file.path(params$readPath[["A"]], "errorMessage.rdata")) &&
-			file.exists(file.path(params$readPath[["B"]], "errorMessage.rdata"))) {
-		cat("Error:", ReadErrorMessage(params$readPath[["A"]]), "\n\n")
-		cat("Error:", ReadErrorMessage(params$readPath[["B"]]), "\n\n")
-		params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE)
-		SummarizeLog.3p(params)
-		return(params$stats)
+	    file.exists(file.path(params$readPath[["B"]], "errorMessage.rdata"))) {
+	  warning(paste(ReadErrorMessage(params$readPath[["A"]]), "\n",
+	                ReadErrorMessage(params$readPath[["B"]])))
+	  params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE)
+	  SummarizeLog.3p(params)
+	  return(params$stats)
 	}
 	if (file.exists(file.path(params$readPath[["A"]], "errorMessage.rdata"))) {
-		cat("Error:", ReadErrorMessage(params$readPath[["A"]]), "\n\n")
+		warning(ReadErrorMessage(params$readPath[["A"]]))
 		file.copy(file.path(params$readPath[["A"]], "errorMessage.rdata"),
 							file.path(params$writePath, "errorMessage.rdata"))
 		files = "errorMessage.rdata"
@@ -1144,7 +1150,7 @@ PartyTProcess3Linear = function(monitorFolder         = NULL,
 		return(params$stats)
 	}
 	if (file.exists(file.path(params$readPath[["B"]], "errorMessage.rdata"))) {
-		cat("Error:", ReadErrorMessage(params$readPath[["B"]]), "\n\n")
+		warning(ReadErrorMessage(params$readPath[["B"]]))
 		file.copy(file.path(params$readPath[["B"]], "errorMessage.rdata"),
 							file.path(params$writePath, "errorMessage.rdata"))
 		files = "errorMessage.rdata"
@@ -1159,7 +1165,7 @@ PartyTProcess3Linear = function(monitorFolder         = NULL,
 	if (!params$failed) params = PrepareBlocksLinear.T3(params, blocksize)
 
 	if (params$failed) {
-		cat("Error:", params$errorMessage, "\n\n")
+		warning(params$errorMessage)
 		MakeErrorMessage(params$writePath, params$errorMessage)
 		files = "errorMessage.rdata"
 		params = SendPauseContinue.3p(params, filesA = files, filesB = files,
@@ -1188,7 +1194,7 @@ PartyTProcess3Linear = function(monitorFolder         = NULL,
 	params = ComputeResultsLinear.T3(params)
 
 	if (params$failed) {
-	  cat("Error:", params$errorMessage, "\n\n")
+	  warning(params$errorMessage)
 	  MakeErrorMessage(params$writePath, params$errorMessage)
 	  files = "errorMessage.rdata"
 	  params = SendPauseContinue.3p(params, filesA = files, filesB = files,

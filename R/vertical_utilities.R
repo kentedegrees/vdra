@@ -13,34 +13,35 @@ AnalysisCenter.2Party = function(regression            = "linear",
                                  sleepTime             = 10,
                                  maxWaitingTime        = 86400,
                                  popmednet             = TRUE,
-                                 trace                 = FALSE) {
+                                 trace                 = FALSE,
+                                 verbose               = TRUE) {
   # digits.secs = getOption("digits.secs")
   # options(digits.secs = 2)
   startTime = proc.time()
-  cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
-  if (is.null(monitorFolder)) {
-    stop("monitorFolder must be specified.\n\n")
-  }
   stats = list()
-  if (regression == "cox") {
+  if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
+  if (is.null(monitorFolder)) {
+    warning("monitorFolder must be specified.")
+  } else if (regression == "cox") {
     stats = PartyAProcess2Cox(data, response, strata, mask, monitorFolder,
                               msreqid, blocksize, tol, maxIterations,
-                              sleepTime, maxWaitingTime, popmednet, trace)
+                              sleepTime, maxWaitingTime, popmednet, trace,
+                              verbose)
   } else if (regression == "linear") {
     stats = PartyAProcess2Linear(data, response, monitorFolder, msreqid,
                                  blocksize, sleepTime, maxWaitingTime,
-                                 popmednet, trace)
+                                 popmednet, trace, verbose)
   } else if (regression == "logistic") {
     stats = PartyAProcess2Logistic(data, response, monitorFolder, msreqid,
                                    blocksize, tol, maxIterations, sleepTime,
-                                   maxWaitingTime, popmednet, trace)
+                                   maxWaitingTime, popmednet, trace, verbose)
   } else {
-    cat("Regression type must be \"cox\", \"linear\" or \"logistic\"\n\n")
+    warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
   elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
-  cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
-  cat(elp, "\n")
+  if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
+  if (verbose) cat(elp, "\n")
   # options(digits.secs = digits.secs)
   return(stats)
 }
@@ -54,32 +55,32 @@ DataPartner.2Party = function(regression          = "linear",
                               sleepTime           = 10,
                               maxWaitingTime      = 86400,
                               popmednet           = TRUE,
-                              trace               = FALSE) {
+                              trace               = FALSE,
+                              verbose             = TRUE) {
   # digits.secs = getOption("digits.secs")
   # options(digits.secs = 2)
   startTime = proc.time()
-  cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
-  if (is.null(monitorFolder)) {
-    stop("monitorFolder must be specified.\n\n")
-  }
   stats = list()
-  if (regression == "cox") {
+  if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
+  if (is.null(monitorFolder)) {
+    warning("monitorFolder must be specified.")
+  } else if (regression == "cox") {
     stats = PartyBProcess2Cox(data, strata, mask,
                               monitorFolder, sleepTime, maxWaitingTime,
-                              popmednet, trace)
+                              popmednet, trace, verbose)
   } else if (regression == "linear") {
     stats = PartyBProcess2Linear(data, monitorFolder, sleepTime, maxWaitingTime,
-                                 popmednet, trace)
+                                 popmednet, trace, verbose)
   } else if (regression == "logistic") {
     stats = PartyBProcess2Logistic(data, monitorFolder, sleepTime, maxWaitingTime,
-                                   popmednet, trace)
+                                   popmednet, trace, verbose)
   } else {
-    cat("Regression type must be \"cox\", \"linear\" or \"logistic\"\n\n")
+    warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
   elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
-  cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
-  cat(elp, "\n")
+  if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
+  if (verbose) cat(elp, "\n")
   # options(digits.secs = digits.secs)
   return(stats)
 }
@@ -95,32 +96,35 @@ DataPartner1.3Party = function(regression            = "linear",
                                sleepTime             = 10,
                                maxWaitingTime        = 86400,
                                popmednet             = TRUE,
-                               trace                 = FALSE) {
+                               trace                 = FALSE,
+                               verbose               = TRUE) {
 
   # digits.secs = getOption("digits.secs")
   # options(digits.secs = 2)
   startTime = proc.time()
-  cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
-  if (is.null(monitorFolder)) {
-    stop("monitorFolder must be specified.\n\n")
-  }
   stats = list()
-  if (regression == "cox") {
+  if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
+  if (is.null(monitorFolder)) {
+    warning("monitorFolder must be specified.")
+  } else if (regression == "cox") {
     stats = PartyAProcess3Cox(data, response, strata, mask, monitorFolder,
-                              sleepTime, maxWaitingTime, popmednet, trace)
+                              sleepTime, maxWaitingTime, popmednet, trace,
+                              verbose)
   } else if (regression == "linear") {
     stats = PartyAProcess3Linear(data, response, monitorFolder,
-                                 sleepTime, maxWaitingTime, popmednet, trace)
+                                 sleepTime, maxWaitingTime, popmednet, trace,
+                                 verbose)
   } else  if (regression == "logistic") {
     stats = PartyAProcess3Logistic(data, response, monitorFolder,
-                                   sleepTime, maxWaitingTime, popmednet, trace)
+                                   sleepTime, maxWaitingTime, popmednet, trace,
+                                   verbose)
   } else {
-    cat("Regression type must be \"cox\", \"linear\" or \"logistic\"\n\n")
+    warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
   elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
-  cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
-  cat(elp, "\n")
+  if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
+  if (verbose) cat(elp, "\n")
   # options(digits.secs = digits.secs)
   return(stats)
 }
@@ -134,31 +138,34 @@ DataPartner2.3Party = function(regression          = "linear",
                                sleepTime           = 10,
                                maxWaitingTime      = 86400,
                                popmednet           = TRUE,
-                               trace               = FALSE) {
+                               trace               = FALSE,
+                               verbose             = TRUE) {
   # digits.secs = getOption("digits.secs")
   # options(digits.secs = 2)
   startTime = proc.time()
-  cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
-  if (is.null(monitorFolder)) {
-    stop("monitorFolder must be specified.\n\n")
-  }
   stats = list()
-  if (regression == "cox") {
+  if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
+  if (is.null(monitorFolder)) {
+    warning("monitorFolder must be specified.")
+  } else if (regression == "cox") {
     stats = PartyBProcess3Cox(data, strata, mask, monitorFolder,
-                              sleepTime, maxWaitingTime, popmednet, trace)
+                              sleepTime, maxWaitingTime, popmednet, trace,
+                              verbose)
   } else if (regression == "linear") {
     stats = PartyBProcess3Linear(data, monitorFolder,
-                                 sleepTime, maxWaitingTime, popmednet, trace)
+                                 sleepTime, maxWaitingTime, popmednet, trace,
+                                 verbose)
   } else if (regression == "logistic") {
     stats = PartyBProcess3Logistic(data, monitorFolder,
-                                   sleepTime, maxWaitingTime, popmednet, trace)
+                                   sleepTime, maxWaitingTime, popmednet, trace,
+                                   verbose)
   } else {
-    cat("Regression type must be \"cox\", \"linear\" or \"logistic\"\n\n")
+    warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
   elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
-  cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
-  cat(elp, "\n")
+  if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
+  if (verbose) cat(elp, "\n")
   # options(digits.secs = digits.secs)
   return(stats)
 }
@@ -173,33 +180,34 @@ AnalysisCenter.3Party = function(regression            = "linear",
                                  sleepTime             = 10,
                                  maxWaitingTime        = 86400,
                                  popmednet             = TRUE,
-                                 trace                 = FALSE) {
+                                 trace                 = FALSE,
+                                 verbose               = TRUE) {
   # digits.secs = getOption("digits.secs")
   # options(digits.secs = 2)
   startTime = proc.time()
-  cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
-  if (is.null(monitorFolder)) {
-    stop("monitorFolder must be specified.\n\n")
-  }
   stats = list()
-  if (regression == "cox") {
+  if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
+  if (is.null(monitorFolder)) {
+    warning("monitorFolder must be specified.")
+  } else if (regression == "cox") {
     stats = PartyTProcess3Cox(monitorFolder, msreqid, blocksize, tol,
                               maxIterations, sleepTime, maxWaitingTime,
-                              popmednet, trace)
+                              popmednet, trace, verbose)
   } else if (regression == "linear") {
     stats = PartyTProcess3Linear(monitorFolder, msreqid, blocksize,
-                                 sleepTime, maxWaitingTime, popmednet, trace)
+                                 sleepTime, maxWaitingTime, popmednet, trace,
+                                 verbose)
   } else if (regression == "logistic") {
     stats = PartyTProcess3Logistic(monitorFolder, msreqid, blocksize, tol,
                                    maxIterations, sleepTime, maxWaitingTime,
-                                   popmednet, trace)
+                                   popmednet, trace, verbose)
   } else {
-    cat("Regression type must be \"cox\", \"linear\" or \"logistic\"\n\n")
+    warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
   elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
-  cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
-  cat(elp, "\n")
+  if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
+  if (verbose) cat(elp, "\n")
   # options(digits.secs = digits.secs)
   return(stats)
 }
@@ -217,41 +225,41 @@ DataPartner.KParty = function(regression            = "linear",
                               sleepTime             = 10,
                               maxWaitingTime        = 86400,
                               popmednet             = TRUE,
-                              trace                 = FALSE) {
+                              trace                 = FALSE,
+                              verbose               = TRUE) {
   # digits.secs = getOption("digits.secs")
   # options(digits.secs = 2)
   startTime = proc.time()
-  cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
-  if (is.null(monitorFolder)) {
-    stop("monitorFolder must be specified.\n\n")
-  }
   stats = list()
-  if (is.null(numDataPartners)) {
-    stop("numDataPartners must be specified\n")
-  }
-  if (is.null(dataPartnerID)) {
-    stop("dataPartnerID must be specified")
-  }
-
-  if (regression == "cox") {
+  if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
+  if (is.null(monitorFolder)) {
+    warning("monitorFolder must be specified.")
+  } else if (is.null(numDataPartners)) {
+    warning("numDataPartners must be specified")
+  } else if (is.null(dataPartnerID)) {
+    warning("dataPartnerID must be specified")
+  } else if (regression == "cox") {
     stats = DataPartnerKCox(data, response, strata, mask, numDataPartners,
                             dataPartnerID, monitorFolder,
-                            sleepTime, maxWaitingTime, popmednet, trace)
+                            sleepTime, maxWaitingTime, popmednet, trace,
+                            verbose)
   } else if (regression == "linear") {
     stats = DataPartnerKLinear(data, response, numDataPartners,
                                dataPartnerID, monitorFolder,
-                               sleepTime, maxWaitingTime, popmednet, trace)
+                               sleepTime, maxWaitingTime, popmednet, trace,
+                               verbose)
   } else  if (regression == "logistic") {
     stats = DataPartnerKLogistic(data, response, numDataPartners,
                                  dataPartnerID, monitorFolder,
-                                 sleepTime, maxWaitingTime, popmednet, trace)
+                                 sleepTime, maxWaitingTime, popmednet, trace,
+                                 verbose)
   } else {
-    stop("Regression type must be \"cox\", \"linear\" or \"logistic\"")
+    warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
   elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
-  cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
-  cat(elp, "\n\n")
+  if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
+  if (verbose) cat(elp, "\n")
   # options(digits.secs = digits.secs)
   return(stats)
 }
@@ -266,38 +274,36 @@ AnalysisCenter.KParty = function(regression            = "linear",
                                  sleepTime             = 10,
                                  maxWaitingTime        = 86400,
                                  popmednet             = TRUE,
-                                 trace                 = FALSE) {
+                                 trace                 = FALSE,
+                                 verbose               = TRUE) {
   # digits.secs = getOption("digits.secs")
   # options(digits.secs = 2)
   startTime = proc.time()
-  cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
-  if (is.null(monitorFolder)) {
-    stop("monitorFolder must be specified.\n\n")
-  }
   stats = list()
-  if (is.null(numDataPartners)) {
-    stop("numDataPartners must be specified.")
-    return(NULL)
-  }
-
-  if (regression == "cox") {
+  if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
+  if (is.null(monitorFolder)) {
+    warning("monitorFolder must be specified.")
+  } else if (is.null(numDataPartners)) {
+    warning("numDataPartners must be specified.")
+  } else if (regression == "cox") {
     stats = AnalysisCenterKCox(numDataPartners, monitorFolder, msreqid, tol,
                                maxIterations, sleepTime, maxWaitingTime,
-                               popmednet, trace)
+                               popmednet, trace, verbose)
   } else if (regression == "linear") {
     stats = AnalysisCenterKLinear(numDataPartners, monitorFolder, msreqid,
-                                  sleepTime, maxWaitingTime, popmednet, trace)
+                                  sleepTime, maxWaitingTime, popmednet, trace,
+                                  verbose)
   } else if (regression == "logistic") {
     stats = AnalysisCenterKLogistic(numDataPartners, monitorFolder, msreqid, tol,
                                     maxIterations, sleepTime, maxWaitingTime,
-                                    popmednet, trace)
+                                    popmednet, trace, verbose)
   } else {
-    stop("Regression type must be \"cox\", \"linear\" or \"logistic\"")
+    warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
   elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
-  cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
-  cat(elp, "\n\n")
+  if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
+  if (verbose) cat(elp, "\n")
   # options(digits.secs = digits.secs)
   return(stats)
 }
@@ -326,12 +332,12 @@ CheckDataFormat = function(params, data) {
   } else if ("matrix" %in% class(data)) {
     data = matrix(data)
   } else {
-    cat("Error: data is not a matrix or a data frame.\n\n")
+    warning("Data is not a matrix or a data frame.")
     return(TRUE)
   }
 
   if (nrow(data) == 0 || ncol(data) == 0) {
-    cat("Error: the data is empty.\n\n")
+    warning("The data is empty.")
     return(TRUE)
   }
   badValue = rep(FALSE, nrow(data))
@@ -345,15 +351,15 @@ CheckDataFormat = function(params, data) {
   idx = data.frame(which(badValue))
   colnames(idx) = "Observations with invalid entries"
   if (nrow(idx) > 0) {
-    cat("Error: Some observations contain invalid values: NA, NaN, or Inf.",
-        "A list of all such observations has been outputted to",
-        file.path(params$writePath, "invalidEntries.csv"),
-        ". Terminating program.\n\n")
+    warning(paste0("Some observations contain invalid values: NA, NaN, or Inf. ",
+                   "A list of all such observations has been outputted to",
+                   file.path(params$writePath, "invalidEntries.csv"),
+                   ". Terminating program."))
     write.csv(idx, file.path(params$writePath, "invalidEntries.csv"))
     return(TRUE)
   }
   if (is.null(colnames(data))) {
-    cat("Error: variables are not named.\n\n")
+    warning("Variables are not named.")
     return(TRUE)
   }
   return(FALSE)
@@ -361,50 +367,50 @@ CheckDataFormat = function(params, data) {
 
 CheckResponse = function(params, data, yname) {
   if (is.null(yname)) {
-    cat("Error: Response is not specified.\n\n")
+    warning("Response is not specified.")
     return(NULL)
   }
   if (class(yname) != "character") {
-    cat("Error: response label is not a character string.\n\n")
+    warning("response label is not a character string.")
     return(NULL)
   }
   yname = unique(yname)
   if (params$analysis == "linear" || params$analysis == "logistic") {
     if (length(yname) != 1) {
-      cat("Error: Specify only one reponse for", params$analysis, "regression.\n\n")
+      warning(paste("Specify only one reponse for", params$analysis, "regression."))
       return(NULL)
     }
     responseColIndex = which(colnames(data) %in% yname)
     if (length(responseColIndex) == 0) {
-      cat("Error: response variable not found.\n\n")
+      warning("Response variable not found.")
       return(NULL)
     }
     if (length(responseColIndex) > 1) {
-      cat("Error: response variable appears more than once.\n\n")
+      warning("Response variable appears more than once.")
       return(NULL)
     }
   }
   if (params$analysis == "cox") {
     if (length(yname) != 2) {
-      cat("Error: Specify exactly two variables (time and censor) for Cox regression.\n\n")
+      warning("Specify exactly two variables (time and censor) for Cox regression.")
       return(NULL)
     }
     responseColIndexTime   = c(which(colnames(data) %in% yname[1]))
     responseColIndexCensor = c(which(colnames(data) %in% yname[2]))
     if (length(responseColIndexTime) == 0) {
-      cat("Error: Time variable not found.\n\n")
+      warning("Time variable not found.")
       return(NULL)
     }
     if (length(responseColIndexTime) > 1) {
-      cat("Error: Time variable appears more than once.\n\n")
+      warning("Time variable appears more than once.")
       return(NULL)
     }
     if (length(responseColIndexCensor) == 0) {
-      cat("Error: Censor variable not found.\n\n")
+      warning("Censor variable not found.")
       return(NULL)
     }
     if (length(responseColIndexCensor) > 1) {
-      cat("Error: Censor variable appears more than once.\n\n")
+      warning("Censor variable appears more than once.")
       return(NULL)
     }
     responseColIndex = c(responseColIndexTime, responseColIndexCensor)
@@ -412,19 +418,19 @@ CheckResponse = function(params, data, yname) {
   for (i in 1:length(yname)) {
     if (!("numeric" %in% class(data[, responseColIndex[i]])) &&
         !("integer" %in% class(data[, responseColIndex[i]]))) {
-      cat("Error:",  yname[i], "is not numeric.\n\n")
+      warning(paste(yname[i], "is not numeric."))
       return(NULL)
     }
   }
   if (params$analysis == "logistic") {
     if (sum(!(data[, responseColIndex] %in% c(0, 1))) > 0) {
-      cat("Error: response variable is not binary.  It should only be 0's and  1's.\n\n")
+      warning("Response variable is not binary.  It should only be 0's and  1's.")
       return(NULL)
     }
   }
   if (params$analysis == "cox") {
     if (sum(!(data[, responseColIndex[2]] %in% c(0, 1))) > 0) {
-      cat("Error: censoring variable is not binary.  It should only be 0's and  1's.\n\n")
+      warning("Censoring variable is not binary.  It should only be 0's and  1's.")
       return(NULL)
     }
   }
@@ -454,13 +460,14 @@ CreateModelMatrixTags = function(data) {
 ########################### 2 PARTY SETUP FUNCTIONS ############################
 
 PrepareParams.2p = function(analysis, party, msreqid = "v_default_00_000",
-                            popmednet = TRUE, trace = FALSE) {
+                            popmednet = TRUE, trace = FALSE, verbose = TRUE) {
   params                     = list()
   params$partyName           = party
   params$analysis            = analysis
   params$msreqid             = msreqid
   params$popmednet           = popmednet
-  params$trace               = trace
+  params$trace               = trace & verbose
+  params$verbose             = verbose
   params$failed              = FALSE
   params$errorMessage        = ""
   params$pmnStepCounter      = 0
@@ -483,13 +490,14 @@ PrepareParams.2p = function(analysis, party, msreqid = "v_default_00_000",
 ########################### 3 PARTY SETUP FUNCTIONS ############################
 
 PrepareParams.3p = function(analysis, party, msreqid = "v_default_00_000",
-                            popmednet = TRUE, trace = FALSE) {
+                            popmednet = TRUE, trace = FALSE, verbose = TRUE) {
   params                     = list()
   params$partyName           = party
   params$analysis            = analysis
   params$msreqid             = msreqid
-  params$trace               = trace
   params$popmednet           = popmednet
+  params$trace               = trace & verbose
+  params$verbose             = verbose
   params$failed              = FALSE
   params$errorMessage        = ""
   params$pmnStepCounter      = 0
@@ -514,14 +522,15 @@ PrepareParams.3p = function(analysis, party, msreqid = "v_default_00_000",
 PrepareParams.kp = function(analysis, dataPartnerID, numDataPartners,
                             msreqid = "v_default_00_000", cutoff = NULL,
                             maxIterations = NULL, ac = FALSE, popmednet = TRUE,
-                            trace = FALSE) {
+                            trace = FALSE, verbose = TRUE) {
   params                     = list()
   params$dataPartnerID       = dataPartnerID
   params$numDataPartners     = numDataPartners
   params$analysis            = analysis
   params$msreqid             = msreqid
-  params$trace               = trace
   params$popmednet           = popmednet
+  params$trace               = trace & verbose
+  params$verbose             = verbose
   params$failed              = FALSE
   params$errorMessage        = ""
   params$pmnStepCounter      = 0
@@ -542,18 +551,18 @@ PrepareParams.kp = function(analysis, dataPartnerID, numDataPartners,
       is.infinite(numDataPartners) ||
       round(numDataPartners) != numDataPartners) {
     params$failed = TRUE
-    params$errorMessage = "Error: numDataPartners must be a positive integer, and must equal the number of data partners providing data.\n\n"
+    params$errorMessage = "numDataPartners must be a positive integer, and must equal the number of data partners providing data."
   }
   if (!params$failed) {
     if (ac) {
       if (dataPartnerID != 0) {
         params$failed = TRUE
-        params$errorMessage = "Error: dataPartnerID for Analysis Center must be 0.\n\n"
+        params$errorMessage = "dataPartnerID for Analysis Center must be 0.\n\n"
       }
     } else {
       if (dataPartnerID <= 0 || dataPartnerID > numDataPartners) {
         params$failed = TRUE
-        params$errorMessage = paste0("Error: dataPartnerID must be between 1 and ", numDataPartners, " inclusive.\n\n")
+        params$errorMessage = paste0("dataPartnerID must be between 1 and ", numDataPartners, " inclusive.\n\n")
       }
     }
   }
@@ -638,18 +647,18 @@ Header = function(params) {
   space.regression = paste(rep(" ", offset.regression), collapse = "")
 
   if (params$analysis == "linear") {
-    cat(paste0("\r", space.linear, linear, "\n"))
-    cat(paste0("\r", space.regression, regression, "\n"))
+    if (params$verbose) cat(paste0("\r", space.linear, linear, "\n"))
+    if (params$verbose) cat(paste0("\r", space.regression, regression, "\n"))
   }
   if (params$analysis == "logistic") {
-    cat(paste0("\r", space.logistic, logistic, "\n"))
-    cat(paste0("\r", space.regression, regression, "\n"))
+    if (params$verbose) cat(paste0("\r", space.logistic, logistic, "\n"))
+    if (params$verbose) cat(paste0("\r", space.regression, regression, "\n"))
   }
   if (params$analysis == "cox") {
-    cat(paste0("\r", space.cox, cox, "\n"))
-    cat(paste0("\r", space.regression, regression, "\n"))
+    if (params$verbose) cat(paste0("\r", space.cox, cox, "\n"))
+    if (params$verbose) cat(paste0("\r", space.regression, regression, "\n"))
   }
-  cat("\n")
+  if (params$verbose) cat("\n")
 }
 
 
@@ -658,7 +667,7 @@ BeginningIteration = function(params) {
   msg    = paste("*** Beginning Iteration", params$algIterationCounter, "***")
   offset = max(floor((width - nchar(msg)) / 2) - 1, 0)
   space  = paste(rep(" ", offset), collapse = "")
-  cat(space, msg, "\n\n")
+  if (params$verbose) cat(space, msg, "\n\n")
 }
 
 
@@ -667,7 +676,7 @@ EndingIteration = function(params) {
   msg    = paste("*** Ending Iteration", params$algIterationCounter, "***")
   offset = floor((width - nchar(msg)) / 2) - 1
   space  = paste(rep(" ", offset), collapse = "")
-  cat(space, msg, "\n\n")
+  if (params$verbose) cat(space, msg, "\n\n")
 }
 
 
@@ -718,7 +727,7 @@ GetLion = function(p) {
 }
 
 
-MakeProgressBar1 = function(steps, message) {
+MakeProgressBar1 = function(steps, message, verbose) {
   pb = list()
   messageLength    = 18
   pb$numSteps      = steps
@@ -736,13 +745,13 @@ MakeProgressBar1 = function(steps, message) {
   pb$header = paste0("Processing ", message, ": ")
   toPrint = paste0(pb$header, pb$percentstr, pb$delimeter,
                    paste(rep(pb$blank, pb$numBlanks), collapse = ""), pb$delimeter)
-  cat(toPrint, "\r")
-  flush.console()
+  if (verbose) cat(toPrint, "\r")
+  if (verbose) flush.console()
   return(pb)
 }
 
 
-MakeProgressBar2 = function(i, pb) {
+MakeProgressBar2 = function(i, pb, verbose) {
   percent = floor(100 * i / pb$numSteps)
   if (percent == pb$percent) {
     return(pb)
@@ -756,11 +765,11 @@ MakeProgressBar2 = function(i, pb) {
                    pb$delimeter)
 
   if (i == pb$numSteps) {
-    cat(toPrint, "\n\n")
+    if (verbose) cat(toPrint, "\n\n")
   } else {
-    cat(toPrint, "\r")
+    if (verbose) cat(toPrint, "\r")
   }
-  flush.console()
+  if (verbose) flush.console()
   return(pb)
 }
 
@@ -817,7 +826,8 @@ SeqZW = function(letter = "Z_", nblocks = 1) {
 
 
 Standby = function(triggerName, triggerLocation,
-                   sleepTime = 1, maxWaitingTime = NULL, remove = FALSE) {
+                   sleepTime = 1, maxWaitingTime = NULL, remove = FALSE,
+                   verbose = TRUE) {
 
   found = FALSE
 
@@ -839,11 +849,11 @@ Standby = function(triggerName, triggerLocation,
       elapsedTime = round(proc.time()[3] - startTime, 0)
     }
 
-    cat("Elapsed Time:", HMS(elapsedTime), "\r")
+    if (verbose) cat("Elapsed Time:", HMS(elapsedTime), "\r")
   }
-  cat("\n")
+  if (verbose) cat("\n")
   if (!found) {
-    stop("Exceeded maximum time waiting for files to be dropped.")
+    warning("Exceeded maximum time waiting for files to be dropped.")
     return("exmwt")
   }
 
@@ -859,7 +869,8 @@ CopyFile = function(readDirectory, writeDirectory, filename) {
   if (all(file.exists(source))) {
     file.copy(source, destination, overwrite = TRUE)
   } else {
-    cat("These files do not exist:\n", source[!file.exists(source)], "\n")
+    warning(paste0("These files do not exist:\n",
+                   paste0(source[!file.exists(source)], collapse = ", "), "\n"))
   }
 }
 
@@ -886,7 +897,7 @@ DeleteTrigger = function(triggerName, triggerPath) {
         if (result) break
         Sys.sleep(1)
         if (proc.time()[3] - startTime > 60) {
-          stop(paste("Error: Could not delete the file", target, "after 60 seconds."))
+          warning(paste("Could not delete the file", target, "after 60 seconds."))
           return(FALSE)
         }
       }
@@ -996,12 +1007,14 @@ SendPauseContinue.2p = function(params,
     MakeTrigger("files_done.ok", params$writePath)
   }
   if (params$partyName == "A") {
-    cat("Waiting for data partner\n")
+    if (params$verbose) cat("Waiting for data partner\n")
   } else {
-    cat("Waiting for analysis center\n")
+    if (params$verbose) cat("Waiting for analysis center\n")
   }
-  tryCatch(Standby("files_done.ok", params$readPath, maxWaitingTime = maxWaitingTime))
-  cat("Resuming local processing\n\n")
+  tryCatch(Standby("files_done.ok", params$readPath,
+                   maxWaitingTime = maxWaitingTime,
+                   verbose = params$verbose))
+  if (params$verbose) cat("Resuming local processing\n\n")
   DeleteTrigger("files_done.ok", params$readPath)
   params = ReadLogRaw.2p(params)
   params = NewLogEntry.2p(params)
@@ -1018,12 +1031,14 @@ PauseContinue.2p = function(params, maxWaitingTime) {
   params = StoreLogEntry.2p(params, "")
   WriteLogCSV(params)
   if (params$partyName == "A") {
-    cat("Waiting for data partner\n")
+    if (params$verbose) cat("Waiting for data partner\n")
   } else {
-    cat("Waiting for analysis center\n")
+    if (params$verbose) cat("Waiting for analysis center\n")
   }
-  tryCatch(Standby("files_done.ok", params$readPath, maxWaitingTime = maxWaitingTime))
-  cat("Resuming local processing\n\n")
+  tryCatch(Standby("files_done.ok", params$readPath,
+                   maxWaitingTime = maxWaitingTime,
+                   verbose = params$verbose))
+  if (params$verbose) cat("Resuming local processing\n\n")
   DeleteTrigger("files_done.ok", params$readPath)
   params = MergeLogRaw.2p(params)
   params = NewLogEntry.2p(params)
@@ -1039,12 +1054,12 @@ WaitForTurn.3p = function(params, sleepTime) {
   Sys.sleep(sleepTime)
   if ((params$partyName == "T") || (!params$popmednet)) return(NULL)
 
-  cat("Waiting For Turn\n")
+  if (params$verbose) cat("Waiting For Turn\n")
   startTime = proc.time()[3]
-  cat("Elapsed Time:", HMS(0), "\r")
+  if (params$verbose) cat("Elapsed Time:", HMS(0), "\r")
 
   if (exists("partyOffset")) {
-    cat("\n\n")
+    if (params$verbose) cat("\n\n")
     return()
   }
 
@@ -1057,10 +1072,10 @@ WaitForTurn.3p = function(params, sleepTime) {
 
   while (as.integer(Sys.time()) %% modulus != targetTime) {
     elapsedTime = round(proc.time()[3] - startTime, 0)
-    cat("Elapsed Time:", HMS(elapsedTime), "\r")
+    if (params$verbose) cat("Elapsed Time:", HMS(elapsedTime), "\r")
     Sys.sleep(0.1)
   }
-  cat("\n\n")
+  if (params$verbose) cat("\n\n")
 }
 
 
@@ -1193,17 +1208,19 @@ SendPauseContinue.3p = function(params,
   }
   if (length(from) == 1) {
     if (from == "T") {
-      cat("Waiting for analysis center\n")
+      if (params$verbose) cat("Waiting for analysis center\n")
     } else if (from == "A") {
-      cat("Waiting for data partner 1\n")
+      if (params$verbose) cat("Waiting for data partner 1\n")
     } else {
-      cat("Waiting for data partner 2\n")
+      if (params$verbose) cat("Waiting for data partner 2\n")
     }
   } else if (length(from) == 2) {
-    cat("Waiting for data partners\n")
+    if (params$verbose) cat("Waiting for data partners\n")
   }
-  tryCatch(Standby("files_done.ok", params$readPath[from], maxWaitingTime = maxWaitingTime))
-  cat("Resuming local processing\n\n")
+  tryCatch(Standby("files_done.ok", params$readPath[from],
+                   maxWaitingTime = maxWaitingTime,
+                   verbose = params$verbose))
+  if (params$verbose) cat("Resuming local processing\n\n")
   DeleteTrigger("files_done.ok", params$readPath[from])
   params = MergeLogRaw.3p(params, from)
   params = UpdateCounters.3p(params)
@@ -1221,17 +1238,19 @@ PauseContinue.3p = function(params, from = NULL, maxWaitingTime = 24 * 60 * 60) 
   WriteLogCSV(params)
   if (length(from) == 1) {
     if (from == "T") {
-      cat("Waiting for analysis center\n")
+      if (params$verbose) cat("Waiting for analysis center\n")
     } else if (from == "A") {
-      cat("Waiting for data partner 1\n")
+      if (params$verbose) cat("Waiting for data partner 1\n")
     } else {
-      cat("Waiting for data partner 2\n")
+      if (params$verbose) cat("Waiting for data partner 2\n")
     }
   } else if (length(from) == 2) {
-    cat("Waiting for data partners\n")
+    if (params$verbose) cat("Waiting for data partners\n")
   }
-  tryCatch(Standby("files_done.ok", params$readPath[from], maxWaitingTime = maxWaitingTime))
-  cat("Resuming local processing\n\n")
+  tryCatch(Standby("files_done.ok", params$readPath[from],
+                   maxWaitingTime = maxWaitingTime,
+                   verbose = params$verbose))
+  if (params$verbose) cat("Resuming local processing\n\n")
   DeleteTrigger("files_done.ok", params$readPath[from])
   params = MergeLogRaw.3p(params, from)
   params = UpdateCounters.3p(params)
@@ -1255,12 +1274,12 @@ WaitForTurn.kp = function(params, sleepTime) {
 
   if (!params$popmednet) return(NULL)
 
-  cat("Waiting For Turn\n")
+  if (params$verbose) cat("Waiting For Turn\n")
   startTime = proc.time()[3]
-  cat("Elapsed Time:", HMS(0), "\r")
+  if (params$verbose) cat("Elapsed Time:", HMS(0), "\r")
 
   if (exists("partyOffset")) {
-    cat("\n\n")
+    if (params$verbose) cat("\n\n")
     return()
   }
 
@@ -1269,13 +1288,13 @@ WaitForTurn.kp = function(params, sleepTime) {
   modulus   = (params$numDataPartners + 1) * partyOffset
   targetTime = params$dataPartnerID * partyOffset
 
-  cat("Elapsed Time:", HMS(0), "\r")
+  if (params$verbose) cat("Elapsed Time:", HMS(0), "\r")
   while (as.integer(Sys.time()) %% modulus != targetTime) {
     elapsedTime = round(proc.time()[3] - startTime, 0)
-    cat("Elapsed Time:", HMS(elapsedTime), "\r")
+    if (params$verbose) cat("Elapsed Time:", HMS(elapsedTime), "\r")
     Sys.sleep(0.1)
   }
-  cat("\n\n")
+  if (params$verbose) cat("\n\n")
 }
 
 
@@ -1432,28 +1451,41 @@ SendPauseContinue.kp = function(params,
     MakeTrigger("files_done.ok", params$writePath)
   }
   if (from == "AC") {
-    cat("Waiting for analysis center\n")
-    tryCatch(Standby("files_done.ok", params$readPathAC, maxWaitingTime = maxWaitingTime))
+    if (params$verbose) cat("Waiting for analysis center\n")
+    tryCatch(Standby("files_done.ok", params$readPathAC,
+                     maxWaitingTime = maxWaitingTime,
+                     verbose = params$verbose))
     DeleteTrigger("files_done.ok", params$readPathAC)
   } else if (from == "DP") {
-    cat("Waiting for data partners\n")
+    if (params$verbose) cat("Waiting for data partners\n")
     if (params$dataPartnerID == 0) {
-      tryCatch(Standby("files_done.ok", params$readPathDP, maxWaitingTime = maxWaitingTime))
+      tryCatch(Standby("files_done.ok", params$readPathDP,
+                       maxWaitingTime = maxWaitingTime,
+                       verbose = params$verbose))
       DeleteTrigger("files_done.ok", params$readPathDP)
     } else {
-      tryCatch(Standby("files_done.ok", params$readPathDP[-params$dataPartnerID], maxWaitingTime = maxWaitingTime))
+      tryCatch(Standby("files_done.ok",
+                       params$readPathDP[-params$dataPartnerID],
+                       maxWaitingTime = maxWaitingTime,
+                       verbose = params$verbose))
       DeleteTrigger("files_done.ok", params$readPathDP[-params$dataPartnerID])
     }
   } else if (from == "DP1") {
-    cat("Waiting for data partner 1\n")
-    tryCatch(Standby("files_done.ok", params$readPathDP[1], maxWaitingTime = maxWaitingTime))
+    if (params$verbose) cat("Waiting for data partner 1\n")
+    tryCatch(Standby("files_done.ok",
+                     params$readPathDP[1],
+                     maxWaitingTime = maxWaitingTime,
+                     verbose = params$verbose))
     DeleteTrigger("files_done.ok", params$readPathDP[1])
   } else if (from == "DP2") {
-    cat("Waiting for data partner 2\n")
-    tryCatch(Standby("files_done.ok", params$readPathDP[2], maxWaitingTime = maxWaitingTime))
+    if (params$verbose) cat("Waiting for data partner 2\n")
+    tryCatch(Standby("files_done.ok",
+                     params$readPathDP[2],
+                     maxWaitingTime = maxWaitingTime,
+                     verbose = params$verbose))
     DeleteTrigger("files_done.ok", params$readPathDP[2])
   }
-  cat("Resuming local processing\n\n")
+  if (params$verbose) cat("Resuming local processing\n\n")
   params = MergeLogRaw.kp(params, from)
   params = UpdateCounters.kp(params)
   params = NewLogEntry.kp(params)
@@ -1470,20 +1502,29 @@ PauseContinue.kp = function(params, from = NULL, maxWaitingTime = 24 * 60 * 60) 
   WriteLogCSV(params)
   params = StoreStampsEntry(params, "R program execution paused", "Tracking Table")
   if (from == "AC") {
-    cat("Waiting for analysis center\n")
-    tryCatch(Standby("files_done.ok", params$readPathAC, maxWaitingTime = maxWaitingTime))
+    if (params$verbose) cat("Waiting for analysis center\n")
+    tryCatch(Standby("files_done.ok",
+                     params$readPathAC,
+                     maxWaitingTime = maxWaitingTime,
+                     verbose = params$verbose))
     DeleteTrigger("files_done.ok", params$readPathAC)
   } else {
-    cat("Waiting for data partners\n")
+    if (params$verbose) cat("Waiting for data partners\n")
     if (params$dataPartnerID == 0) {
-      tryCatch(Standby("files_done.ok", params$readPathDP, maxWaitingTime = maxWaitingTime))
+      tryCatch(Standby("files_done.ok",
+                       params$readPathDP,
+                       maxWaitingTime = maxWaitingTime,
+                       verbose = params$verbose))
       DeleteTrigger("files_done.ok", params$readPathDP)
     } else {
-      tryCatch(Standby("files_done.ok", params$readPathDP[-params$dataPartnerID], maxWaitingTime = maxWaitingTime))
+      tryCatch(Standby("files_done.ok",
+                       params$readPathDP[-params$dataPartnerID],
+                       maxWaitingTime = maxWaitingTime,
+                       verbose = params$verbose))
       DeleteTrigger("files_done.ok", params$readPathDP[-params$dataPartnerID])
     }
   }
-  cat("Resuming local processing\n\n")
+  if (params$verbose) cat("Resuming local processing\n\n")
   params = MergeLogRaw.kp(params, from)
   params = UpdateCounters.kp(params)
   params = NewLogEntry.kp(params)
@@ -2068,7 +2109,7 @@ WriteLogCSV = function(params) {
 
 
 WriteToLogSummary = function(c1 = "", c2 = "", c3 = "",
-                             writePath = getwd(), append = TRUE) {
+                             writePath = NULL, append = TRUE) {
   if (is.numeric(c2)) {
     c2 = round(c2, 2)
   }
@@ -3070,7 +3111,7 @@ validFormula2 = function(expression) {
 
 print.vdralinear = function(x, ...) {
   if (x$failed) {
-    cat("Distributed linear regression failed.  No results to print.\n\n")
+    warning("Distributed linear regression failed.  No results to print.")
     return(invisible(NULL))
   }
   cat("Coefficients:\n")
@@ -3106,7 +3147,7 @@ print.summary.vdralinear = function(x, lion = FALSE, ...) {
   arguments = list(...)
 
   if (x$failed) {
-    cat("Distributed linear regression failed.  No results to print.\n\n")
+    warning("Distributed linear regression failed.  No results to print.")
     return(invisible(NULL))
   }
 
@@ -3141,12 +3182,12 @@ print.summary.vdralinear = function(x, lion = FALSE, ...) {
 
 print.vdralogistic = function(x, ...) {
   if (x$failed) {
-    cat("Distributed logistic regression failed.  No results to print.\n\n")
+    warning("Distributed logistic regression failed.  No results to print.")
     return(invisible(NULL))
   }
   if (!x$converged) {
-    cat("Warning: Distributed logistic regression did not converge in",
-        x$iter, "iterations. Reported statistics are approximate.\n\n")
+    warning(paste("Warning: Distributed logistic regression did not converge in",
+        x$iter, "iterations. Reported statistics are approximate."))
   }
 
   cat("Coefficients:\n")
@@ -3189,12 +3230,12 @@ print.summary.vdralogistic = function(x, lion = FALSE, ...) {
   if (!is.na(arguments$lion) && is.logical(arguments$lion)) lion = arguments$lion
 
   if (x$failed) {
-    cat("Distributed logistic regression failed.  No results to print.\n\n")
+    warning("Distributed logistic regression failed.  No results to print.")
     return(invisible(NULL))
   }
   if (!x$converged) {
-    cat("Warning: Distributed logistic regression did not converge in",
-        x$iter, "iterations. Reported statistics are approximate.\n\n")
+    warning(paste("Warning: Distributed logistic regression did not converge in",
+        x$iter, "iterations. Reported statistics are approximate."))
   }
   x$stars = sapply(x$pvals, function(x) {
     if (is.na(x)) ''
@@ -3231,12 +3272,12 @@ print.summary.vdralogistic = function(x, lion = FALSE, ...) {
 
 print.vdracox = function(x, ...) {
   if (x$failed) {
-    cat("Distributed Cox regression failed.  No results to print.\n\n")
+    warning("Distributed Cox regression failed.  No results to print.")
     return(invisible(NULL))
   }
   if (!x$converged) {
-    cat("Warning: Distributed Cox regression did not converge in",
-        x$iter, "iterations. Reported statistics are approximate.\n\n")
+    warning(paste("Warning: Distributed Cox regression did not converge in",
+                  x$iter, "iterations. Reported statistics are approximate."))
   }
 
   coeftab = data.frame(x$coefficients, x$expcoef, x$secoef, x$zvals, x$pvals)
@@ -3286,12 +3327,12 @@ print.summary.vdracox = function(x, lion = FALSE, ...) {
   if (!is.na(arguments$lion) && is.logical(arguments$lion)) lion = arguments$lion
 
   if (x$failed) {
-    cat("Distributed Cox regression failed.  No results to print.\n\n")
+    warning("Distributed Cox regression failed.  No results to print.")
     return(invisible(NULL))
   }
   if (!x$converged) {
-    cat("Warning: Distributed Cox regression did not converge in",
-        x$iter, "iterations. Reported statistics are approximate.\n\n")
+    warning(paste("Warning: Distributed Cox regression did not converge in",
+                  x$iter, "iterations. Reported statistics are approximate."))
   }
 
   x$stars = sapply(x$pvals, function(x) {
@@ -3346,19 +3387,19 @@ print.summary.vdracox = function(x, lion = FALSE, ...) {
 
 differentModel = function(formula = NULL, x = NULL) {
   if (class(x) != "vdralinear") {
-    cat("Error: This function can only be on objects of class vdralinear. Returning original model.\n\n")
+    warning("This function can only be on objects of class vdralinear. Returning original model.")
     return(invisible(x))
   }
   if (x$failed) {
-    cat("Error: Distributed linear regression failed.  Cannot compute a different model.\n\n")
+    warning("Distributed linear regression failed.  Cannot compute a different model.")
     return(invisible(x))
   }
   if (max(table(names(x$party))) > 1) {
-    cat("Error: Duplicate variable names exist.  All variable names must be unique. Returning original model.\n\n")
+    warning("Duplicate variable names exist.  All variable names must be unique. Returning original model.")
     return(invisible(x))
   }
   if (!validFormula(formula)) {
-    cat("Invalid formula, returning original model.\n\n")
+    warning("Invalid formula, returning original model.")
     return(x)
   }
 
@@ -3371,10 +3412,10 @@ differentModel = function(formula = NULL, x = NULL) {
   if (!all(variableNames %in% valid_names)) {
     vars = variableNames[which(variableNames %in% valid_names == FALSE)]
     if (length(vars) == 1) {
-      cat("Variable", vars, "not found. Returning original model.\n\n")
+      warning("Variable", vars, "not found. Returning original model.")
     } else {
       temp = c(paste0(vars[-length(vars)], ","), vars[length(vars)])
-      cat("Variables", temp, "not found. Returning original model.\n\n")
+      warning(paste("Variables", temp, "not found. Returning original model."))
     }
     return(invisible(x))
   }
@@ -3579,16 +3620,15 @@ print.hoslemdistributed = function(x, ...) {
 
 HoslemTest = function(x = NULL, nGroups = 10) {
   if (class(x) != "vdralogistic") {
-    cat("Warning: Cannot perform test on non vdralogistic object.\n")
+    warning("Cannot perform test on non vdralogistic object.")
     return(invisible(NULL))
   }
   if (!(x$converged)) {
-    cat("Warning: Process did not converge.\n")
-    cat("         Cannot perform Hosmer and Lemeshow goodness of fit test.\n")
+    warning("Process did not converge. Cannot perform Hosmer and Lemeshow goodness of fit test.")
     return(invisible(NULL))
   }
   if (is.null(x$Y) || is.null(x$FinalFitted)) {
-    cat("HoslemTest can only be invoked by the party which holds the response.\n")
+    warning("HoslemTest can only be invoked by the party which holds the response.")
     return(invisible(NULL))
   } else if (is.numeric(nGroups)) {
     temp = list()
@@ -3662,15 +3702,15 @@ print.rocdistributed = function(x, ...) {
 
 RocTest = function(x = NULL, bins = 10) {
   if (class(x) != "vdralogistic") {
-    cat("Warning: Cannot create ROC on non vdralogistic object.\n")
+    warning("Cannot create ROC on non vdralogistic object.")
     return(invisible(NULL))
   }
   if (!x$converged) {
-    cat("Warning: Process did not converge.  Cannot generate ROC.\n")
+    warning("Process did not converge.  Cannot generate ROC.")
     return(invisible(NULL))
   }
   if (is.null(x$Y) || is.null(x$FinalFitted)) {
-    cat("RocTest can only be invoked by the party which holds the response.\n")
+    warning("RocTest can only be invoked by the party which holds the response.")
     return(invisible(NULL))
   } else if (is.numeric(bins)) {
     temp = list()
@@ -3807,11 +3847,11 @@ survfitDistributed.formula = function(x, formula, data) {
   surv = list()
   vars = all.vars(formula)
   if ("." %in% vars) {
-    cat("This function does not allow the . symbol in formulas.\n")
+    warning("This function does not allow the . symbol in formulas.")
     return(invisible(NULL))
   }
   if (!all(vars %in% colnames(data))) {
-    cat("Not all strata are found in the data.\n")
+    warning("Not all strata are found in the data.")
     return(invisible(NULL))
   }
   if (length(vars) == 0) {
@@ -3902,20 +3942,20 @@ survfitDistributed.formula = function(x, formula, data) {
 
 survfitDistributed = function(x = NULL, formula = NULL, data = NULL) {
   if (class(x) != "vdracox") {
-    cat("Error: the first parameter must be a vdracox object.\n")
+    warning("The first parameter must be a vdracox object.")
     return(invisible(NULL))
   }
   if (is.null(data) && is.null(formula)) {
     return(survfitDistributed.stats(x))
   }
   if (!("matrix" %in% class(data)) && !("data.frame" %in% class(data))) {
-    cat("Error: the data must either be a matrix or a data.frame.",
-        "Please use the same data that you used for the distributed regression.\n")
+    warning(paste("the data must either be a matrix or a data.frame.",
+        "Please use the same data that you used for the distributed regression."))
     return(invisible(NULL))
   }
   if (class(formula) != "formula" || !validFormula2(formula)) {
-    cat("The formula must be of the form \"~ var1 + ... + vark\" where the variables",
-        "are found in the data. The formula can also be \"~ 1\".\n")
+    warning(paste("The formula must be of the form \"~ var1 + ... + vark\" where the variables",
+        "are found in the data. The formula can also be \"~ 1\"."))
   }
   return(survfitDistributed.formula(x, formula, data))
 }

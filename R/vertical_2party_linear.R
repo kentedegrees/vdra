@@ -9,12 +9,12 @@ PrepareFolderLinear.A2 = function(params, monitorFolder) {
 	params$readPath      = file.path(monitorFolder, "msoc1")
 
 	if (is.null(monitorFolder)) {
-	  cat("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.\n")
+	  warning("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.")
 	  params$failed = TRUE
 	  return(params)
 	}
 	if (class(monitorFolder) != "character") {
-	  cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.\n")
+	  warning("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.")
 	  params$failed = TRUE
 	  return(params)
 	}
@@ -28,37 +28,37 @@ PrepareFolderLinear.A2 = function(params, monitorFolder) {
 	if (!CreateIOLocation(monitorFolder, "dplocal")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$dplocalPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "rprograms")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$rprogramsPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "macros")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$macrosPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "inputfiles")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$writePath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "msoc1")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$readPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 
 	params = AddToLog(params, "PrepareDataLinear.A23, PrepareFolderLinear.A2", 0, 0, 0, 0)
@@ -76,12 +76,12 @@ PrepareFolderLinear.B2 = function(params, monitorFolder) {
 	params$readPath      = file.path(monitorFolder, "inputfiles")
 
 	if (is.null(monitorFolder)) {
-	  cat("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.\n")
+	  warning("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.")
 	  params$failed = TRUE
 	  return(params)
 	}
 	if (class(monitorFolder) != "character") {
-	  cat("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.\n")
+	  warning("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.")
 	  params$failed = TRUE
 	  return(params)
 	}
@@ -92,37 +92,37 @@ PrepareFolderLinear.B2 = function(params, monitorFolder) {
 	if (!CreateIOLocation(monitorFolder, "dplocal")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$dplocalPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "rprograms")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$rprogramsPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "macros")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$macrosPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "msoc")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$writePath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 	if (!CreateIOLocation(monitorFolder, "inputfiles")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
-																"Error: could not create directory",
+																"Could not create directory",
 																paste0(params$readPath, "."),
-																"Check the path and restart the program.\n\n")
+																"Check the path and restart the program.")
 	}
 
 	Sys.sleep(1)
@@ -199,7 +199,7 @@ PrepareDataLinear.B23 = function(params, data) {
   workdata$tags = CreateModelMatrixTags(data)
 
   if (ncol(data) < 2 | !("numeric" %in% names(workdata$tags))) {
-    cat("Error: The data partner that does not have the response must have at least 2 covariates at least one of which must be numeric.\n")
+    warning("The data partner that does not have the response must have at least 2 covariates at least one of which must be numeric.")
     workdata$failed = TRUE
     return(workdata)
   }
@@ -277,7 +277,7 @@ PrepareParamsLinear.A2 = function(params, data) {
   if (params$analysis != pb$analysis) {
     params$errorMessage =
       paste("Party A is running", params$analysis, "regression and Party B is running", pb$analysis, "regression.")
-    cat("Error:", params$errorMessage, "\n\n")
+    warning(params$errorMessage)
     params$failed = TRUE
     return(params)
   }
@@ -286,7 +286,7 @@ PrepareParamsLinear.A2 = function(params, data) {
   if (pb$n != params$n) {
     params$errorMessage =
       paste("Party A has", params$n, "observations and Party B has", pb$n, "observations.")
-    cat("Error:", params$errorMessage, "\n\n")
+    warning(params$errorMessage)
     params$failed = TRUE
   }
 
@@ -342,22 +342,24 @@ PrepareBlocksLinear.A2 = function(params, blocksize) {
     maxACovariates = trunc(sqrt(p2 * n) - p2 - 1)
 
     params$errorMessage =
-      paste("Warning, the minimum secure blocksize of", minimumBlocksize,
-            "is larger than the number of observations", paste0(n, "."))
-    cat("Error: The minimum secure blocksize of", minimumBlocksize,
-        "is larger than the number of observations", paste0(n, ".\n"))
-    cat("Your options are:\n")
-    cat("Increase the number of observations to at least",
-        paste0(minimumBlocksize, ".\n"))
-    cat("Decrease the number of A covariates to", maxACovariates, "or less.\n")
+      paste("The minimum secure blocksize of", minimumBlocksize,
+            "is larger than the number of observations", paste0(n, ".\n"),
+            "Your options are:\n",
+            "Increase the number of observations to at least",
+            paste0(minimumBlocksize, ".\n"),
+            "Decrease the number of A covariates to", maxACovariates, "or less.")
+
     b = n - 2 * p1 - 2
     discrim = b^2 - 4 * (p1 + 1)^2
     if (discrim >= 0) {
       minBCovariates = trunc(1 + (b - sqrt(discrim)) / 2)
       maxBCovariates = trunc((b + sqrt(discrim)) / 2)
-      cat("Set the number of B covariates to be between", minBCovariates, "and",
-          paste0(maxBCovariates, ".\n\n"))
+      params$errorMessage =
+        paste0(params$errorMessage,
+               "\nSet the number of B covariates to be between ", minBCovariates, "and",
+               paste0(maxBCovariates, "."))
     }
+    warning(params$errorMessage)
     params$failed = TRUE
     params = AddToLog(params, "PrepareBlocksCox.A2", 0, 0, 0, 0)
     return(params)
@@ -367,14 +369,14 @@ PrepareBlocksLinear.A2 = function(params, blocksize) {
     blocksize = minimumBlocksize
   }
   if (blocksize < minimumBlocksize) {
-    cat("Warning:  Block size of", blocksize,
-        "is too small. Proceeding with minimum blocksize of",
-        paste0(minimumBlocksize, ".\n\n"))
+    message(paste("Block size of", blocksize,
+                  "is too small. Proceeding with minimum blocksize of",
+                  paste0(minimumBlocksize, ".")))
     blocksize = minimumBlocksize
   } else if (n < blocksize) {
-    cat("Warning: Block size of", blocksize,
-        "is larger than size of data.  Proceeding with blocksize of",
-        paste0(n, ".\n\n"))
+    message(paste("Block size of", blocksize,
+                  "is larger than size of data.  Proceeding with blocksize of",
+                  paste0(n, ".")))
   }
 
   params$blocks    = CreateBlocks(p1, p2, n, blocksize)
@@ -394,7 +396,7 @@ GetZLinear.A2 = function(params, data) {
   writeSize = 0
 
   numBlocks = params$blocks$numBlocks
-  pbar = MakeProgressBar1(numBlocks, "Z")
+  pbar = MakeProgressBar1(numBlocks, "Z", params$verbose)
   containerCt.Z = 0
   for (i in 1:numBlocks) {
     if (i %in% params$container$filebreak.Z) {
@@ -415,7 +417,7 @@ GetZLinear.A2 = function(params, data) {
       close(toWrite)
       writeSize = writeSize + file.size(file.path(params$writePath, filename))
     }
-    pbar = MakeProgressBar2(i, pbar)
+    pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
   params = AddToLog(params, "GetZLinear.A2", 0, 0, writeTime, writeSize)
   return(params)
@@ -465,7 +467,7 @@ GetWLinear.B2 = function(params, data) {
   writeTime = 0
   writeSize = 0
 
-  pbar = MakeProgressBar1(params$blocks$numBlocks, "(I-Z*Z')X")
+  pbar = MakeProgressBar1(params$blocks$numBlocks, "(I-Z*Z')X", params$verbose)
 
   XBTXB = t(data$X) %*% data$X
 
@@ -508,7 +510,7 @@ GetWLinear.B2 = function(params, data) {
       writeSize = writeSize + file.size(file.path(params$writePath, filename2))
     }
 
-    pbar = MakeProgressBar2(i, pbar)
+    pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
 
   writeTime = writeTime - proc.time()[3]
@@ -539,7 +541,7 @@ GetProductsLinear.A2 = function(params, data) {
   YTXB  = 0
   XATXB = 0
 
-  pbar = MakeProgressBar1(params$blocks$numBlocks, "X'X")
+  pbar = MakeProgressBar1(params$blocks$numBlocks, "X'X", params$verbose)
 
   containerCt.W = 0
   for (i in 1:params$blocks$numBlocks) {
@@ -564,7 +566,7 @@ GetProductsLinear.A2 = function(params, data) {
       close(toRead)
       readSize = readSize + file.size(file.path(params$readPath, filename))
     }
-    pbar = MakeProgressBar2(i, pbar)
+    pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
 
   XTX = rbind(cbind(XATXA, XATXB), cbind(t(XATXB), XBTXB))
@@ -746,10 +748,11 @@ PartyAProcess2Linear = function(data,
 																sleepTime             = 10,
                                 maxWaitingTime        = 24 * 60 * 60,
 																popmednet             = TRUE,
-																trace                 = FALSE) {
+																trace                 = FALSE,
+																verbose               = TRUE) {
 
   params = PrepareParams.2p("linear", "A", msreqid = msreqid,
-                            popmednet = popmednet, trace = trace)
+                            popmednet = popmednet, trace = trace, verbose = verbose)
   params = InitializeLog.2p(params)
   params = InitializeStamps.2p(params)
   params = InitializeTrackingTable.2p(params)
@@ -757,7 +760,7 @@ PartyAProcess2Linear = function(data,
 
   params   = PrepareFolderLinear.A2(params, monitorFolder)
   if (params$failed) {
-  	cat(params$errorMessage)
+  	warning(params$errorMessage)
   	return(invisible(NULL))
   }
   data = PrepareDataLinear.A23(params, data, yname)
@@ -765,7 +768,7 @@ PartyAProcess2Linear = function(data,
   params = PauseContinue.2p(params,  maxWaitingTime)
   if (file.exists(file.path(params$readPath, "errorMessage.rdata"))) {
     params$completed = TRUE
-    cat("Error:", ReadErrorMessage(params$readPath), "\n\n")
+    warning(ReadErrorMessage(params$readPath))
     params$pmnStepCounter = 1
     params = SendPauseQuit.2p(params, sleepTime = sleepTime, job_failed = TRUE)
     SummarizeLog.2p(params)
@@ -829,9 +832,11 @@ PartyBProcess2Linear = function(data,
 																sleepTime           = 10,
 																maxWaitingTime      = 24 * 60 * 60,
 																popmednet           = TRUE,
-																trace               = FALSE) {
+																trace               = FALSE,
+																verbose             = TRUE) {
   params = PrepareParams.2p("linear", "B",
-                            popmednet = popmednet, trace = trace)
+                            popmednet = popmednet, trace = trace,
+                            verbose = verbose)
   params = InitializeLog.2p(params)
   params = InitializeStamps.2p(params)
   params = InitializeTrackingTable.2p(params)
@@ -839,7 +844,7 @@ PartyBProcess2Linear = function(data,
   Header(params)
   params   = PrepareFolderLinear.B2(params, monitorFolder)
   if (params$failed) {
-  	cat(params$errorMessage)
+  	warning(params$errorMessage)
   	return(invisible(NULL))
   }
   data = PrepareDataLinear.B23(params, data)
@@ -860,7 +865,7 @@ PartyBProcess2Linear = function(data,
 
   if (file.exists(file.path(params$readPath, "errorMessage.rdata"))) {
     params$completed = TRUE
-    cat("Error:", ReadErrorMessage(params$readPath), "\n\n")
+    warning(ReadErrorMessage(params$readPath))
     params = SendPauseQuit.2p(params, sleepTime = sleepTime, job_failed = TRUE)
     return(params$stats)
   }
