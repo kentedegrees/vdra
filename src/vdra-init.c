@@ -3,7 +3,7 @@
 
 
 static const R_CallMethodDef Callentries[] = {
-  {"ComputeCox",       (DL_FUNC) &ComputeCox,      8},
+  {"ComputeCox",       (DL_FUNC) &ComputeCox,      9},
   {NULL, NULL, 0}
 };
 

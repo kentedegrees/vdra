@@ -11,7 +11,7 @@ PrepareDataCox.DP = function(params, data, yname, strata, mask) {
   data = data.frame(data) # convert to a clean data.frame
   workdata$strata = extractStrata(params, data, strata, mask)
   if (workdata$strata$failed) {
-    workdata$failed == TRUE
+    workdata$failed = TRUE
     return(workdata)
   }
   strataIndex = workdata$strata$strataIndex
@@ -19,7 +19,7 @@ PrepareDataCox.DP = function(params, data, yname, strata, mask) {
   if (params$dataPartnerID == 1) {
     responseIndex = CheckResponse(params, data, yname)
     if (is.null(responseIndex)) {
-      workdata$failed == TRUE
+      workdata$failed = TRUE
       return(workdata)
     }
     workdata$survival        = list()
@@ -27,7 +27,7 @@ PrepareDataCox.DP = function(params, data, yname, strata, mask) {
     workdata$survival$status = data[, responseIndex[2]]
     if (length(intersect(strataIndex, responseIndex)) > 0) {
       warning("Response and strata share a variable.")
-      workdata$failed == TRUE
+      workdata$failed = TRUE
       return(workdata)
     }
   }
@@ -81,8 +81,8 @@ SendStrataNamesCox.DP = function(params, data) {
 }
 
 
-CheckStrataNamesCox.DP = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "CheckStratanamesCox.DP\n\n")
+CheckStrataCox.DP = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "CheckStrataCox.DP\n\n")
   readTime = 0
 	readSize = 0
 	strataNames          = NULL
@@ -148,7 +148,7 @@ CheckStrataNamesCox.DP = function(params, data) {
 			params$errorMessage = paste0(params$errorMessage,
 																	 paste("Data Partner", i, "specified strata:", temp, "\n"))
 		}
-		params = AddToLog(params, "CheckStrataNamesCox.DP", readTime, readSize, 0, 0)
+		params = AddToLog(params, "CheckStrataCox.DP", readTime, readSize, 0, 0)
 		return(params)
 	}
 	passed = TRUE
@@ -162,7 +162,7 @@ CheckStrataNamesCox.DP = function(params, data) {
 		params$errorMessage = "The following strata are claimed by two or more data partners: "
 		params$errorMessage = paste0(params$errorMessage, paste0(names(tab[which(tab > 1)]), collapse = ", "), "\n")
 		params$errorMessage = paste0(params$errorMessage, "Make Sure that strata covariate names are unique to each data partner.")
-		params = AddToLog(params, "CheckStrataNamesCox.DP", readTime, readSize, 0, 0)
+		params = AddToLog(params, "CheckStrataCox.DP", readTime, readSize, 0, 0)
 		return(params)
 	}
 
@@ -174,11 +174,11 @@ CheckStrataNamesCox.DP = function(params, data) {
 		params$failed = TRUE
 		params$errorMessage = "No data partner has the following specified strata: "
 		params$errorMessage = paste0(params$errorMessage, paste0(unclaimed[which(!(unclaimed %in% claimed1))], collapse = ", "), ".")
-		params = AddToLog(params, "CheckStrataNamesCox.DP", readTime, readSize, 0, 0)
+		params = AddToLog(params, "CheckStrataCox.DP", readTime, readSize, 0, 0)
 		return(params)
 	}
 
-	params = AddToLog(params, "CheckStrataNamesCox.DP", readTime, readSize, 0, 0)
+	params = AddToLog(params, "CheckStrataCox.DP", readTime, readSize, 0, 0)
 	return(params)
 }
 
@@ -824,7 +824,7 @@ ComputeLogLikelihoodCox.DP = function(params, data) {
 		w = exp(sBeta)
 		loglikelihood = 0
 		stepCounter = 0
-		pbar = MakeProgressBar1(params$survival$numEvents, "loglikelihood")
+		pbar = MakeProgressBar1(params$survival$numEvents, "loglikelihood", params$verbose)
 		for (i in 1:length(params$survival$strata)) {
 			if (params$survival$strata[[i]]$J > 0) {
 				for (j in 1:params$survival$strata[[i]]$J) {
@@ -839,7 +839,7 @@ ComputeLogLikelihoodCox.DP = function(params, data) {
 						loglikelihood = loglikelihood - log(Ajr)
 					}
 					stepCounter = stepCounter + nj
-					pbar = MakeProgressBar2(stepCounter, pbar)
+					pbar = MakeProgressBar2(stepCounter, pbar, params$verbose)
 				}
 			}
 		}
@@ -893,7 +893,8 @@ ComputeSDelLCox.AC = function(params) {
 	numEvents = params$survival$numEvents
 
 	.Call("ComputeCox", params$survival$strata, halfshare, w, deltal, W.S.R,
-				as.integer(n), as.integer(p), as.integer(numEvents))
+				as.integer(n), as.integer(p), as.integer(numEvents),
+				as.integer(params$verbose))
 
 	W.S.R = W.S.R[params$survival$unsortIdx, , drop = FALSE]
 	tS.deltal.R = t(halfshare) %*% deltal
@@ -924,7 +925,8 @@ ComputeSDelLCox.DP = function(params, data) {
 	numEvents = params$survival$numEvents
 
 	.Call("ComputeCox", params$survival$strata, halfshare, w, deltal, W.S.L,
-				as.integer(n), as.integer(p), as.integer(numEvents))
+				as.integer(n), as.integer(p), as.integer(numEvents),
+				as.integer(params$verbose))
 
 	W.S.L = W.S.L[params$survival$unsortIdx, , drop = FALSE]
 	tS.deltal.L = t(halfshare) %*% deltal
@@ -1538,7 +1540,7 @@ DataPartnerKCox = function(data,
 		params = SendPauseContinue.kp(params, filesAC = "empty.rdata", from = "DP",
 											sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
 
-		params = CheckStrataNamesCox.DP(params, data)
+		params = CheckStrataCox.DP(params, data)
 
 		if (params$failed) {
 			MakeErrorMessage(params$writePath, params$errorMessage)

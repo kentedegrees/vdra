@@ -85,8 +85,8 @@ DataPartner.KParty(regression = "linear", data = NULL, response = NULL,
     used to transfer the files and implements PopMedNet specific routines. In
     particular, a 15 second offset between terminiation of routines that execute in
     parallel is implemented.}
-\item{trace}{logical value: if code{TRUE}, prints every function call. Used for debugging.}
-\item{verbose}{logical value.  If code{TRUE}, prints out information to document the progression of the computation.}
+\item{trace}{logical value: if \code{TRUE} and \code{verbose == TRUE}, prints every function call. Used for debugging.}
+\item{verbose}{logical value.  If \code{TRUE}, prints out information to document the progression of the computation.}
 }
 \value{
 Returns an object of \code{\link{class}} \code{\link{vdralinear}} for linear
@@ -104,20 +104,20 @@ Returns an object of \code{\link{class}} \code{\link{vdralinear}} for linear
 # The working directory should be the same as specified in the PopMedNet
 # requset for the analysis center.
 fit = AnalysisCenter.KParty(regression = "linear", numDataPartners = 2,
-              monitorFolder = getwd())
+              monitorFolder = tempdir())
 
 # Data Partner 1 -- To be run in second instand of R, on perhaps a different machine.
 # The working directory should be the same as specified in the PopMedNet
 # request for the data partner.
 fit = DataPartner.KParty(regression = "linear", data = vdra_data[, c(1, 5:7)],
           response = "Change_BMI", numDataPartners = 2, dataPartnerID = 1,
-          monitorFolder = getwd())
+          monitorFolder = tempdir())
 
 # Data Partner 2 -- To be run in third instand of R, on perhaps a different machine.
 # The working directory should be the same as specified in the PopMedNet
 # request for the data partner.
 fit = DataPartner.KParty(regression = "linear", data = vdra_data[, 8:11],
-          numDataPartners = 2, dataPartnerID = 2, monitorFolder = getwd())
+          numDataPartners = 2, dataPartnerID = 2, monitorFolder = tempdir())
 
 ## 3 party logistic regression
 
@@ -125,20 +125,20 @@ fit = DataPartner.KParty(regression = "linear", data = vdra_data[, 8:11],
 # The working directory should be the same as specified in the PopMedNet
 # requset for the analysis center.
 fit = AnalysisCenter.KParty(regression = "logistic", numDataPartners = 2,
-              monitorFolder = getwd())
+              monitorFolder = tempdir())
 
 # Data Partner 1 -- To be run in second instand of R, on perhaps a different machine.
 # The working directory should be the same as specified in the PopMedNet
 # request for the data partner.
 fit = DataPartner.KParty(regression = "logistic", data = vdra_data[, c(2, 5:7)],
           response = "WtLost", numDataPartners = 2, dataPartnerID = 1,
-          monitorFolder = getwd())
+          monitorFolder = tempdir())
 
 # Data Partner 2 -- To be run in third instand of R, on perhaps a different machine.
 # The working directory should be the same as specified in the PopMedNet
 # request for the data partner.
 fit = DataPartner.KParty(regression = "logistic", data = vdra_data[, 8:11],
-          numDataPartners = 2, dataPartnerID = 2, monitorFolder = getwd())
+          numDataPartners = 2, dataPartnerID = 2, monitorFolder = tempdir())
 
 ## 3 party cox regression
 
@@ -146,20 +146,20 @@ fit = DataPartner.KParty(regression = "logistic", data = vdra_data[, 8:11],
 # The working directory should be the same as specified in the PopMedNet
 # requset for the analysis center.
 fit = AnalysisCenter.KParty(regression = "cox", numDataPartners = 2,
-              monitorFolder = getwd())
+              monitorFolder = tempdir())
 
 # Data Partner 1 -- To be run in second instand of R, on perhaps a different machine.
 # The working directory should be the same as specified in the PopMedNet
 # request for the data partner.
 fit = DataPartner.KParty(regression = "cox", data = vdra_data[, c(3:4, 5:7)],
         response = c("Time", "Status"), strata = c("Exposure", "Sex"),
-        numDataPartners = 2, dataPartnerID = 1, monitorFolder = getwd())
+        numDataPartners = 2, dataPartnerID = 1, monitorFolder = tempdir())
 
 # Data Partner 2 -- To be run in third instand of R, on perhaps a different machine.
 # The working directory should be the same as specified in the PopMedNet
 # request for the data partner.
 fit = DataPartner.KParty(regression = "cox", data = vdra_data[, 8:11],
          strata = c("Exposure", "Sex"), numDataPartners = 2, dataPartnerID = 2,
-         monitorFolder = getwd())
+         monitorFolder = tempdir())
 }
 }

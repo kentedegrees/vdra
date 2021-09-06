@@ -78,8 +78,8 @@ DataPartner.2Party(regression = "linear", data = NULL, strata = NULL,
     used to transfer the files and implements PopMedNet specific routines. In
     particular, a 15 second offset terminiation of routines that execute in
     parallel is implemented.}
-\item{trace}{logical value: if code{TRUE}, prints every function called during execution. Used for debugging.}
-\item{verbose}{logical value.  If code{TRUE}, prints out information to document the progression of the computation.}
+\item{trace}{logical value: if \code{TRUE} and \code{verbose == TRUE}, prints every function called during execution. Used for debugging.}
+\item{verbose}{logical value.  If \code{TRUE}, prints out information to document the progression of the computation.}
 
 }
 \value{
@@ -99,14 +99,14 @@ Returns an object of \code{\link{class}} \code{\link{vdralinear}} for linear
 # requset for the analysis center.
 
 fit = AnalysisCenter.2Party(regression = "linear", data = vdra_data[, c(1, 5:7)],
-        response = "Change_BMI", monitorFolder = getwd())
+        response = "Change_BMI", monitorFolder = tempdir())
 
 # Data Partner -- To be run in second instand of R, on perhaps a different machine.
 # The working directory should be the same as specified in the PopMedNet
 # request for the data partner.
 
 fit = DataPartner.2Party(regression = "linear", data = vdra_data[, 8:11],
-        monitorFolder = getwd())
+        monitorFolder = tempdir())
 
 ## 2 party logistic regression
 
@@ -115,14 +115,14 @@ fit = DataPartner.2Party(regression = "linear", data = vdra_data[, 8:11],
 # requset for the analysis center.
 
 fit = AnalysisCenter.2Party(regression = "logistic", data = vdra_data[, c(2, 5:7)],
-        response = "WtLost", monitorFolder = getwd())
+        response = "WtLost", monitorFolder = tempdir())
 
 # Data Partner -- To be run in second instand of R, on perhaps a different machine.
 # The working directory should be the same as specified in the PopMedNet
 # request for the data partner.
 
 fit = DataPartner.2Party(regression = "logistic", data = vdra_data[, 8:11],
-        monitorFolder = getwd())
+        monitorFolder = tempdir())
 
 ## 2 party cox regression
 
@@ -132,13 +132,13 @@ fit = DataPartner.2Party(regression = "logistic", data = vdra_data[, 8:11],
 
 fit = AnalysisCenter.2Party(regression = "cox", data = vdra_data[, c(3:4, 5:7)],
         response = c("Time", "Status"), strata = c("Exposure", "Sex"),
-        monitorFolder = getwd())
+        monitorFolder = tempdir())
 
 # Data Partner -- To be run in second instand of R, on perhaps a different machine.
 # The working directory should be the same as specified in the PopMedNet
 # request for the data partner.
 
 fit = DataPartner.2Party(regression = "cox", data = vdra_data[, 8:11],
-        strata = c("Exposure", "Sex"), monitorFolder = getwd())
+        strata = c("Exposure", "Sex"), monitorFolder = tempdir())
 }
 }

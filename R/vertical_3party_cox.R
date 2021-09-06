@@ -308,7 +308,7 @@ GetZCox.A3 = function(params, data) {
 	writeSize = 0
 
 	numBlocks = params$blocks$numBlocks
-	pbar = MakeProgressBar1(numBlocks, "Z")
+	pbar = MakeProgressBar1(numBlocks, "Z", params$verbose)
 	containerCt.Z = 0
 	for (i in 1:numBlocks) {
 		if (i %in% params$container$filebreak.Z) {
@@ -329,7 +329,7 @@ GetZCox.A3 = function(params, data) {
 			close(toWrite)
 			writeSize = writeSize + file.size(file.path(params$writePath, filename))
 		}
-		pbar = MakeProgressBar2(i, pbar)
+		pbar = MakeProgressBar2(i, pbar, params$verbose)
 	}
 	params = AddToLog(params, "GetZCox.A3", 0, 0, writeTime, writeSize)
 	return(params)
@@ -383,7 +383,7 @@ GetWRCox.A3 = function(params, data) {
 	params$p2 = p2
 
 	numBlocks = params$blocks$numBlocks
-	pbar = MakeProgressBar1(numBlocks, "XA'(I - Z*Z')XB*R")
+	pbar = MakeProgressBar1(numBlocks, "XA'(I - Z*Z')XB*R", params$verbose)
 
 	containerCt.WR = 0
 	containerCt.PR = 0
@@ -422,7 +422,7 @@ GetWRCox.A3 = function(params, data) {
 			writeSize = writeSize + file.size(file.path(params$writePath, filename2))
 		}
 
-		pbar = MakeProgressBar2(i, pbar)
+		pbar = MakeProgressBar2(i, pbar, params$verbose)
 	}
 	params = AddToLog(params, "GetWRCox.A3", readTime, readSize, writeTime, writeSize)
 	return(params)
@@ -467,7 +467,7 @@ GetProductsCox.T3 = function(params) {
 								 file.size(file.path(params$readPath[["A"]], "sxa.rdata")))
 	readTime = proc.time()[3] - readTime
 
-	pbar = MakeProgressBar1(numBlocks, "X'X")
+	pbar = MakeProgressBar1(numBlocks, "X'X", params$verbose)
 
 	containerCt.PR = 0
 	for (i in 1:numBlocks) {
@@ -492,7 +492,7 @@ GetProductsCox.T3 = function(params) {
 		if ((i + 1) %in% params$container$filebreak.PR || i == numBlocks) {
 			close(toRead)
 		}
-		pbar = MakeProgressBar2(i, pbar)
+		pbar = MakeProgressBar2(i, pbar, params$verbose)
 	}
 
 	num = length(params$survival$strata)
@@ -756,7 +756,7 @@ ComputeLogLikelihoodCox.T3 = function(params) {
 	while (computeLoglikelihood) {
 		numEvents = sum(params$survival$status)
 		stepCounter = 0
-		pbar = MakeProgressBar1(numEvents, "Loglikelihood")
+		pbar = MakeProgressBar1(numEvents, "Loglikelihood", params$verbose)
 		loglikelihood = 0
 		for (i in 1:length(params$survival$strata)) {                    ##!
 			if (params$survival$strata[[i]]$J > 0) {                       ##!
@@ -772,7 +772,7 @@ ComputeLogLikelihoodCox.T3 = function(params) {
 						loglikelihood = loglikelihood - log(Ajr)
 					}
 					stepCounter = stepCounter + nj
-					pbar = MakeProgressBar2(stepCounter, pbar)
+					pbar = MakeProgressBar2(stepCounter, pbar, params$verbose)
 				}
 			}
 		}
@@ -821,14 +821,15 @@ ComputeXBDeltaLCox.B3 = function(params, data) {
 	W.XB = matrix(0, n, p2)
 
 	.Call("ComputeCox", data$survival$strata, data$X, w, deltal, W.XB,
-				as.integer(n), as.integer(p2), as.integer(numEvents))
+				as.integer(n), as.integer(p2), as.integer(numEvents),
+				as.integer(params$verbose))
 
   containerCt.RZ = 0
 	containerCt.Cox = 0
 	writeSize = 0
 	writeTime = 0
 
-	pbar = MakeProgressBar1(params$blocks$numBlocks, "R*(I-Z*Z')W*XB")
+	pbar = MakeProgressBar1(params$blocks$numBlocks, "R*(I-Z*Z')W*XB", params$verbose)
 	for (i in 1:params$blocks$numBlocks) {
 		if (i %in% params$container$filebreak.RZ) {
 			containerCt.RZ = containerCt.RZ + 1
@@ -864,7 +865,7 @@ ComputeXBDeltaLCox.B3 = function(params, data) {
 			close(toWrite)
 			writeSize = writeSize = file.size(file.path(params$writePath, filename2))
 		}
-		pbar = MakeProgressBar2(i, pbar)
+		pbar = MakeProgressBar2(i, pbar, params$verbose)
 	}
 
 	tXB.W.XB = t(data$X) %*% W.XB
@@ -900,7 +901,8 @@ ComputeXADeltaLCox.A3 = function(params, data) {
 	W.XA = matrix(0, n, p1)
 
 	.Call("ComputeCox", data$survival$strata, data$X, w, deltal, W.XA,
-				as.integer(n), as.integer(p1), as.integer(numEvents))
+				as.integer(n), as.integer(p1), as.integer(numEvents),
+				as.integer(params$verbose))
 
 	tXA.W.XA = t(data$X) %*% W.XA
 	tXA.deltal = t(data$X) %*% deltal
@@ -923,7 +925,7 @@ ProcessVCox.T3 = function(params) {
 	p2 = params$p2
 
 	numBlocks = params$blocks$numBlocks
-	pbar = MakeProgressBar1(numBlocks, "(I-Z*Z')W*XB*R")
+	pbar = MakeProgressBar1(numBlocks, "(I-Z*Z')W*XB*R", params$verbose)
 
 	containerCt.RV = 0
 	containerCt.VR = 0
@@ -976,7 +978,7 @@ ProcessVCox.T3 = function(params) {
 			writeSize = writeSize + file.size(file.path(params$writePath, filename3))
 		}
 
-		pbar = MakeProgressBar2(i, pbar)
+		pbar = MakeProgressBar2(i, pbar, params$verbose)
 	}
 	params = AddToLog(params, "ProcessVCox.T3", readTime, readSize, writeTime, writeSize)
 	return(params)
@@ -992,7 +994,7 @@ GetXRCox.A3 = function(params, data) {
 	p2 = params$p2
 	containerCt.VR = 0
 	containerCt.XR = 0
-	pbar = MakeProgressBar1(params$blocks$numBlocks, "XA'(I-Z*Z')W*XB*R")
+	pbar = MakeProgressBar1(params$blocks$numBlocks, "XA'(I-Z*Z')W*XB*R", params$verbose)
 	for (i in 1:params$blocks$numBlocks) {
 		if (i %in% params$container$filebreak.RV) {
 			containerCt.VR = containerCt.VR + 1
@@ -1026,7 +1028,7 @@ GetXRCox.A3 = function(params, data) {
 			close(toWrite)
 			writeSize = writeSize + file.size(file.path(params$writePath, filename2))
 		}
-		pbar = MakeProgressBar2(i, pbar)
+		pbar = MakeProgressBar2(i, pbar, params$verbose)
 	}
 
 	params = AddToLog(params, "GetXRCox.A3", readTime, readSize, writeTime, writeSize)
@@ -1050,7 +1052,7 @@ ProcessXtWXCox.T3 = function(params) {
 		file.size(file.path(params$readPath[["B"]], "tXB_W_XB.rdata"))
 	readTime = proc.time()[3] - readTime
 
-	pbar = MakeProgressBar1(params$blocks$numBlocks, "X'W*X")
+	pbar = MakeProgressBar1(params$blocks$numBlocks, "X'W*X", params$verbose)
 	containerCt.XR = 0
 	XATWXB = 0
 
@@ -1079,7 +1081,7 @@ ProcessXtWXCox.T3 = function(params) {
 			close(toRead)
 			readSize = readSize + file.size(file.path(params$readPath[["A"]], filename1))
 		}
-		pbar = MakeProgressBar2(i, pbar)
+		pbar = MakeProgressBar2(i, pbar, params$verbose)
 	}
 
 
@@ -1459,7 +1461,7 @@ ComputeCox.B3 = function(params, data) {
 		while (computeLoglikelihood) {
 		  numEvents = sum(data$survival$status)
 		  stepCounter = 0
-		  pbar = MakeProgressBar1(numEvents, "Loglikelihood")
+		  pbar = MakeProgressBar1(numEvents, "Loglikelihood", params$verbose)
 		  loglikelihood = 0
 		  for (i in 1:length(data$survival$strata)) {                    ##!
 		    if (data$survival$strata[[i]]$J > 0) {                       ##!
@@ -1475,7 +1477,7 @@ ComputeCox.B3 = function(params, data) {
 		          loglikelihood = loglikelihood - log(Ajr)
 		        }
 		        stepCounter = stepCounter + nj
-		        pbar = MakeProgressBar2(stepCounter, pbar)
+		        pbar = MakeProgressBar2(stepCounter, pbar, params$verbose)
 		      }
 		    }
 		  }
@@ -1495,7 +1497,8 @@ ComputeCox.B3 = function(params, data) {
 		W.XB = matrix(0, n, p2)
 
 		.Call("ComputeCox", data$survival$strata, data$X, w, deltal, W.XB,
-					as.integer(n), as.integer(p2), as.integer(numEvents))
+					as.integer(n), as.integer(p2), as.integer(numEvents),
+					as.integer(params$verbose))
 
 		M = t(data$X) %*% W.XB
 

@@ -289,7 +289,7 @@ GetRVLogistic.B3 = function(params, data) {
 	params$pi_ = pi_
 	W = pi_ * (1 - params$pi_)
 	XBTWXB = 0
-	pbar = MakeProgressBar1(params$blocks$numBlocks, "R(I-Z*Z')W*XB")
+	pbar = MakeProgressBar1(params$blocks$numBlocks, "R(I-Z*Z')W*XB", params$verbose)
 	containerCt.RZ = 0
 	containerCt.RV = 0
 	for (i in 1:params$blocks$numBlocks) {
@@ -332,7 +332,7 @@ GetRVLogistic.B3 = function(params, data) {
 			close(toWrite)
 			writeSize = writeSize + file.size(file.path(params$writePath, filename2))
 		}
-		pbar = MakeProgressBar2(i, pbar)
+		pbar = MakeProgressBar2(i, pbar, params$verbose)
 	}
 
 	writeTime = writeTime - proc.time()[3]
@@ -359,7 +359,7 @@ ProcessVLogistic.T3 = function(params) {
 	params$xbtwxb = XBTWXB
 
 	numBlocks = params$blocks$numBlocks
-	pbar = MakeProgressBar1(numBlocks, "(I-Z*Z')W*XB*R")
+	pbar = MakeProgressBar1(numBlocks, "(I-Z*Z')W*XB*R", params$verbose)
 
 	containerCt.RV = 0
 	containerCt.VR = 0
@@ -412,7 +412,7 @@ ProcessVLogistic.T3 = function(params) {
 			writeSize = writeSize + file.size(file.path(params$writePath, filename3))
 		}
 
-		pbar = MakeProgressBar2(i, pbar)
+		pbar = MakeProgressBar2(i, pbar, params$verbose)
 	}
 	params = AddToLog(params, "ProcessVLogistic.T3", readTime, readSize, writeTime, writeSize)
 	return(params)
@@ -434,7 +434,7 @@ GetXRLogistic.A3 = function(params, data) {
 	W = pi_ * (1 - params$pi_)
 	XATWXA = 0
 
-	pbar = MakeProgressBar1(params$blocks$numBlocks, "XA'(I-Z*Z')W*XB*R")
+	pbar = MakeProgressBar1(params$blocks$numBlocks, "XA'(I-Z*Z')W*XB*R", params$verbose)
 
 	containerCt.VR = 0
 	containerCt.XR = 0
@@ -478,7 +478,7 @@ GetXRLogistic.A3 = function(params, data) {
 			close(toWrite)
 			writeSize = writeSize + file.size(file.path(params$writePath, filename2))
 		}
-		pbar = MakeProgressBar2(i, pbar)
+		pbar = MakeProgressBar2(i, pbar, params$verbose)
 	}
 
 	writeTime = writeTime - proc.time()[3]
@@ -504,7 +504,7 @@ ProcessXtWXLogistic.T3 = function(params) {
 
 	params$xatwxa = XATWXA
 
-	pbar = MakeProgressBar1(params$blocks$numBlocks, "X'W*X")
+	pbar = MakeProgressBar1(params$blocks$numBlocks, "X'W*X", params$verbose)
 	containerCt.XR = 0
 	XATWXB = 0
 
@@ -532,7 +532,7 @@ ProcessXtWXLogistic.T3 = function(params) {
 			close(toRead)
 			readSize = readSize + file.size(file.path(params$readPath[["A"]], filename1))
 		}
-		pbar = MakeProgressBar2(i, pbar)
+		pbar = MakeProgressBar2(i, pbar, params$verbose)
 	}
 
 	xtwx = rbind(cbind(params$xatwxa, XATWXB), cbind(t(XATWXB), params$xbtwxb))

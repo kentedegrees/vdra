@@ -18,13 +18,11 @@ PrepareFolderLinear.A2 = function(params, monitorFolder) {
 	  params$failed = TRUE
 	  return(params)
 	}
-	params$errorMessage = NULL
-
 	while (!dir.exists(monitorFolder)) {
 	  Sys.sleep(1)
 	}
-	Sys.sleep(5)
 
+	params$errorMessage = NULL
 	if (!CreateIOLocation(monitorFolder, "dplocal")) {
 		params$failed = TRUE
 		params$errorMessage = paste(params$errorMessage,
@@ -88,6 +86,7 @@ PrepareFolderLinear.B2 = function(params, monitorFolder) {
 	while (!dir.exists(monitorFolder)) {
 	  Sys.sleep(1)
 	}
+
 	params$errorMessage = NULL
 	if (!CreateIOLocation(monitorFolder, "dplocal")) {
 		params$failed = TRUE
@@ -149,7 +148,7 @@ PrepareDataLinear.A23 = function(params, data, yname = NULL) {
   responseIndex = CheckResponse(params, data, yname)
 
   if (is.null(responseIndex)) {
-    workdata$failed == TRUE
+    workdata$failed = TRUE
     return(workdata)
   }
   covariateIndex = setdiff(1:ncol(data), responseIndex)

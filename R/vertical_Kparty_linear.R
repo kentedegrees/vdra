@@ -15,7 +15,6 @@ PrepareFolder.ACDP = function(params, monitorFolder) {
   while (!dir.exists(monitorFolder)) {
     Sys.sleep(1)
   }
-  Sys.sleep(5)
 
 	params$dplocalPath   = file.path(monitorFolder, "dplocal")
 	params$rprogramsPath = file.path(monitorFolder, "rprograms")
@@ -109,7 +108,7 @@ PrepareDataLinLog.DP1 = function(params, data, yname = NULL) {
   responseIndex = CheckResponse(params, data, yname)
 
   if (is.null(responseIndex)) {
-    workdata$failed == TRUE
+    workdata$failed = TRUE
     return(workdata)
   }
   covariateIndex = setdiff(1:ncol(data), responseIndex)

@@ -148,7 +148,7 @@ PrepareDataLogistic.A23 = function(params, data, yname = NULL) {
   responseIndex = CheckResponse(params, data, yname)
 
   if (is.null(responseIndex)) {
-    workdata$failed == TRUE
+    workdata$failed = TRUE
     return(workdata)
   }
   covariateIndex = setdiff(1:ncol(data), responseIndex)
@@ -406,7 +406,7 @@ GetZLogistic.A2 = function(params, data) {
   writeSize = 0
 
   numBlocks = params$blocks$numBlocks
-  pbar = MakeProgressBar1(numBlocks, "Z")
+  pbar = MakeProgressBar1(numBlocks, "Z", params$verbose)
   containerCt.Z = 0
   for (i in 1:numBlocks) {
     if (i %in% params$container$filebreak.Z) {
@@ -427,7 +427,7 @@ GetZLogistic.A2 = function(params, data) {
       close(toWrite)
       writeSize = writeSize + file.size(file.path(params$writePath, filename))
     }
-    pbar = MakeProgressBar2(i, pbar)
+    pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
   params = AddToLog(params, "GetZLogistic.A2", 0, 0, writeTime, writeSize)
   return(params)
@@ -480,7 +480,7 @@ GetWLogistic.B2 = function(params, data) {
   writeTime = 0
   writeSize = 0
 
-  pbar = MakeProgressBar1(params$blocks$numBlocks, "(I-Z*Z')XB")
+  pbar = MakeProgressBar1(params$blocks$numBlocks, "(I-Z*Z')XB", params$verbose)
 
   XBTXB = t(data$X) %*% data$X
 
@@ -523,7 +523,7 @@ GetWLogistic.B2 = function(params, data) {
       writeSize = writeSize + file.size(file.path(params$writePath, filename2))
     }
 
-    pbar = MakeProgressBar2(i, pbar)
+    pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
 
   writeTime = writeTime - proc.time()[3]
@@ -555,7 +555,7 @@ CheckColinearityLogistic.A2 = function(params, data) {
   XATY  = t(data$X) %*% data$Y
   YTXB  = 0
 
-  pbar = MakeProgressBar1(params$blocks$numBlocks, "X'X")
+  pbar = MakeProgressBar1(params$blocks$numBlocks, "X'X", params$verbose)
 
   containerCt.W = 0
   for (i in 1:params$blocks$numBlocks) {
@@ -580,7 +580,7 @@ CheckColinearityLogistic.A2 = function(params, data) {
       close(toRead)
       readSize = readSize + file.size(file.path(params$readPath, filename))
     }
-    pbar = MakeProgressBar2(i, pbar)
+    pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
 
   XTX = rbind(cbind(XATXA, XATXB), cbind(t(XATXB), XBTXB))
@@ -785,7 +785,7 @@ GetVLogistic.B2 = function(params, data) {
 
   XBTWXB = 0
 
-  pbar = MakeProgressBar1(params$blocks$numBlocks, "(I - Z*Z')W*XB")
+  pbar = MakeProgressBar1(params$blocks$numBlocks, "(I - Z*Z')W*XB", params$verbose)
 
   containerCt.Z = 0
   containerCt.V = 0
@@ -829,7 +829,7 @@ GetVLogistic.B2 = function(params, data) {
       close(toWrite)
       writeSize = writeSize + file.size(file.path(params$writePath, filename2))
     }
-    pbar = MakeProgressBar2(i, pbar)
+    pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
   # sums of each column in WX_B
   sumsWXB = apply(MultiplyDiagonalWTimesX(W, data$X), 2, sum)
@@ -868,7 +868,7 @@ GetIILogistic.A2 = function(params, data) {
 
   XATWXA = t(data$X) %*% MultiplyDiagonalWTimesX(W, data$X)
 
-  pbar = MakeProgressBar1(params$blocks$numBlocks, "X'W*X")
+  pbar = MakeProgressBar1(params$blocks$numBlocks, "X'W*X", params$verbose)
 
   XATWXB = 0
   containerCt.V = 0
@@ -889,7 +889,7 @@ GetIILogistic.A2 = function(params, data) {
     readTime = readTime + proc.time()[3]
     XATWXB = XATWXB + t(data$X[strt:stp, ]) %*% V
 
-    pbar = MakeProgressBar2(i, pbar)
+    pbar = MakeProgressBar2(i, pbar, params$verbose)
     if ((i + 1) %in% params$container$filebreak.V || i == params$blocks$numBlocks) {
       close(toRead)
     }
@@ -993,6 +993,7 @@ GetCoefLogistic.A2 = function(params, data) {
     params$converged = TRUE
   } else if (params$algIterationCounter >= params$maxIterations) {
     params$maxIterExceeded = TRUE
+    warning(paste("Failed to converged in", params$maxIterations, "iterations."))
   }
 
   writeTime = proc.time()[3]
@@ -1020,6 +1021,7 @@ GetConvergedStatusLogistic.B2 = function(params) {
     params$converged = TRUE
   } else if (params$algIterationCounter >= params$maxIterations) {
     params$maxIterExceeded = TRUE
+    warning(paste("Failed to converged in", params$maxIterations, "iterations."))
   }
 
   params = AddToLog(params, "GetConvergedStatusLogistic.B2", readTime, readSize, 0, 0)

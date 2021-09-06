@@ -85,13 +85,13 @@ PrepareFolderLinear.B3 = function(params, monitorFolder = NULL) {
   if (is.null(monitorFolder)) {
 		warning("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.")
 		params$failed = TRUE
-		params = AddToLog(params, "PrepareFolderLinear.A3", 0, 0, 0, 0)
+		params = AddToLog(params, "PrepareFolderLinear.B3", 0, 0, 0, 0)
 		return(params)
 	}
 	if (class(monitorFolder) != "character") {
 		warning("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.")
 		params$failed = TRUE
-		params = AddToLog(params, "PrepareFolderLinear.A3", 0, 0, 0, 0)
+		params = AddToLog(params, "PrepareFolderLinear.B3", 0, 0, 0, 0)
 		return(params)
 	}
   while (!dir.exists(monitorFolder)) {
@@ -1059,8 +1059,6 @@ PartyBProcess3Linear = function(data,
 
   Header(params)
   params   = PrepareFolderLinear.B3(params, monitorFolder)
-
-
   if (params$failed) {
   	warning(params$errorMessage)
   	return(invisible(NULL))

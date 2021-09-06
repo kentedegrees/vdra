@@ -545,11 +545,11 @@ PrepareParams.kp = function(analysis, dataPartnerID, numDataPartners,
   class(params$stats)        = paste0("vdra", analysis)
   params$stats$failed        = TRUE
   params$stats$converged     = FALSE
-  if ((class(numDataPartners) != "integer" &&
+  if (((class(numDataPartners) != "integer" &&
        class(numDataPartners) != "numeric") ||
       numDataPartners <= 0 ||
       is.infinite(numDataPartners) ||
-      round(numDataPartners) != numDataPartners) {
+      round(numDataPartners) != numDataPartners)) {
     params$failed = TRUE
     params$errorMessage = "numDataPartners must be a positive integer, and must equal the number of data partners providing data."
   }
@@ -853,8 +853,7 @@ Standby = function(triggerName, triggerLocation,
   }
   if (verbose) cat("\n")
   if (!found) {
-    warning("Exceeded maximum time waiting for files to be dropped.")
-    return("exmwt")
+    stop("Exceeded maximum time waiting for files to be dropped.")
   }
 
   Sys.sleep(sleepTime)
@@ -863,13 +862,14 @@ Standby = function(triggerName, triggerLocation,
 
 }
 
+# This function is never called!  (?)
 CopyFile = function(readDirectory, writeDirectory, filename) {
   source      = file.path(readDirectory, filename)
   destination = file.path(writeDirectory, filename)
   if (all(file.exists(source))) {
     file.copy(source, destination, overwrite = TRUE)
   } else {
-    warning(paste0("These files do not exist:\n",
+    stop(paste0("These files do not exist:\n",
                    paste0(source[!file.exists(source)], collapse = ", "), "\n"))
   }
 }
@@ -897,8 +897,7 @@ DeleteTrigger = function(triggerName, triggerPath) {
         if (result) break
         Sys.sleep(1)
         if (proc.time()[3] - startTime > 60) {
-          warning(paste("Could not delete the file", target, "after 60 seconds."))
-          return(FALSE)
+          stop(paste("Could not delete the file", target, "after 60 seconds."))
         }
       }
     }
@@ -1011,9 +1010,9 @@ SendPauseContinue.2p = function(params,
   } else {
     if (params$verbose) cat("Waiting for analysis center\n")
   }
-  tryCatch(Standby("files_done.ok", params$readPath,
-                   maxWaitingTime = maxWaitingTime,
-                   verbose = params$verbose))
+  Standby("files_done.ok", params$readPath,
+          maxWaitingTime = maxWaitingTime,
+          verbose = params$verbose)
   if (params$verbose) cat("Resuming local processing\n\n")
   DeleteTrigger("files_done.ok", params$readPath)
   params = ReadLogRaw.2p(params)
@@ -1035,9 +1034,9 @@ PauseContinue.2p = function(params, maxWaitingTime) {
   } else {
     if (params$verbose) cat("Waiting for analysis center\n")
   }
-  tryCatch(Standby("files_done.ok", params$readPath,
-                   maxWaitingTime = maxWaitingTime,
-                   verbose = params$verbose))
+  Standby("files_done.ok", params$readPath,
+          maxWaitingTime = maxWaitingTime,
+          verbose = params$verbose)
   if (params$verbose) cat("Resuming local processing\n\n")
   DeleteTrigger("files_done.ok", params$readPath)
   params = MergeLogRaw.2p(params)
@@ -1217,9 +1216,9 @@ SendPauseContinue.3p = function(params,
   } else if (length(from) == 2) {
     if (params$verbose) cat("Waiting for data partners\n")
   }
-  tryCatch(Standby("files_done.ok", params$readPath[from],
-                   maxWaitingTime = maxWaitingTime,
-                   verbose = params$verbose))
+  Standby("files_done.ok", params$readPath[from],
+          maxWaitingTime = maxWaitingTime,
+          verbose = params$verbose)
   if (params$verbose) cat("Resuming local processing\n\n")
   DeleteTrigger("files_done.ok", params$readPath[from])
   params = MergeLogRaw.3p(params, from)
@@ -1247,9 +1246,9 @@ PauseContinue.3p = function(params, from = NULL, maxWaitingTime = 24 * 60 * 60) 
   } else if (length(from) == 2) {
     if (params$verbose) cat("Waiting for data partners\n")
   }
-  tryCatch(Standby("files_done.ok", params$readPath[from],
-                   maxWaitingTime = maxWaitingTime,
-                   verbose = params$verbose))
+  Standby("files_done.ok", params$readPath[from],
+          maxWaitingTime = maxWaitingTime,
+          verbose = params$verbose)
   if (params$verbose) cat("Resuming local processing\n\n")
   DeleteTrigger("files_done.ok", params$readPath[from])
   params = MergeLogRaw.3p(params, from)
@@ -1452,37 +1451,37 @@ SendPauseContinue.kp = function(params,
   }
   if (from == "AC") {
     if (params$verbose) cat("Waiting for analysis center\n")
-    tryCatch(Standby("files_done.ok", params$readPathAC,
-                     maxWaitingTime = maxWaitingTime,
-                     verbose = params$verbose))
+    Standby("files_done.ok", params$readPathAC,
+            maxWaitingTime = maxWaitingTime,
+            verbose = params$verbose)
     DeleteTrigger("files_done.ok", params$readPathAC)
   } else if (from == "DP") {
     if (params$verbose) cat("Waiting for data partners\n")
     if (params$dataPartnerID == 0) {
-      tryCatch(Standby("files_done.ok", params$readPathDP,
-                       maxWaitingTime = maxWaitingTime,
-                       verbose = params$verbose))
+      Standby("files_done.ok", params$readPathDP,
+              maxWaitingTime = maxWaitingTime,
+              verbose = params$verbose)
       DeleteTrigger("files_done.ok", params$readPathDP)
     } else {
-      tryCatch(Standby("files_done.ok",
-                       params$readPathDP[-params$dataPartnerID],
-                       maxWaitingTime = maxWaitingTime,
-                       verbose = params$verbose))
+      Standby("files_done.ok",
+              params$readPathDP[-params$dataPartnerID],
+              maxWaitingTime = maxWaitingTime,
+              verbose = params$verbose)
       DeleteTrigger("files_done.ok", params$readPathDP[-params$dataPartnerID])
     }
   } else if (from == "DP1") {
     if (params$verbose) cat("Waiting for data partner 1\n")
-    tryCatch(Standby("files_done.ok",
-                     params$readPathDP[1],
-                     maxWaitingTime = maxWaitingTime,
-                     verbose = params$verbose))
+    Standby("files_done.ok",
+            params$readPathDP[1],
+            maxWaitingTime = maxWaitingTime,
+            verbose = params$verbose)
     DeleteTrigger("files_done.ok", params$readPathDP[1])
   } else if (from == "DP2") {
     if (params$verbose) cat("Waiting for data partner 2\n")
-    tryCatch(Standby("files_done.ok",
-                     params$readPathDP[2],
-                     maxWaitingTime = maxWaitingTime,
-                     verbose = params$verbose))
+    Standby("files_done.ok",
+            params$readPathDP[2],
+            maxWaitingTime = maxWaitingTime,
+            verbose = params$verbose)
     DeleteTrigger("files_done.ok", params$readPathDP[2])
   }
   if (params$verbose) cat("Resuming local processing\n\n")
@@ -1503,24 +1502,24 @@ PauseContinue.kp = function(params, from = NULL, maxWaitingTime = 24 * 60 * 60) 
   params = StoreStampsEntry(params, "R program execution paused", "Tracking Table")
   if (from == "AC") {
     if (params$verbose) cat("Waiting for analysis center\n")
-    tryCatch(Standby("files_done.ok",
-                     params$readPathAC,
-                     maxWaitingTime = maxWaitingTime,
-                     verbose = params$verbose))
+    Standby("files_done.ok",
+            params$readPathAC,
+            maxWaitingTime = maxWaitingTime,
+            verbose = params$verbose)
     DeleteTrigger("files_done.ok", params$readPathAC)
   } else {
     if (params$verbose) cat("Waiting for data partners\n")
     if (params$dataPartnerID == 0) {
-      tryCatch(Standby("files_done.ok",
-                       params$readPathDP,
-                       maxWaitingTime = maxWaitingTime,
-                       verbose = params$verbose))
+      Standby("files_done.ok",
+              params$readPathDP,
+              maxWaitingTime = maxWaitingTime,
+              verbose = params$verbose)
       DeleteTrigger("files_done.ok", params$readPathDP)
     } else {
-      tryCatch(Standby("files_done.ok",
-                       params$readPathDP[-params$dataPartnerID],
-                       maxWaitingTime = maxWaitingTime,
-                       verbose = params$verbose))
+      Standby("files_done.ok",
+              params$readPathDP[-params$dataPartnerID],
+              maxWaitingTime = maxWaitingTime,
+              verbose = params$verbose)
       DeleteTrigger("files_done.ok", params$readPathDP[-params$dataPartnerID])
     }
   }

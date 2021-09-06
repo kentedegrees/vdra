@@ -14,7 +14,7 @@
 \arguments{
   \item{numParty}{the number of parties (analysis center + data partners) involved in the multiple regression.  If a data partner is also acting as the analysis center, then that data partner is only counted once.}
 	\item{directory}{the directory where the directories dp0, dp1, ... are located, which are used by the analysis center and data partner(s) to save data and receive data from each other.}
-	\item{verbose}{logical value.  If code{TRUE}, prints out information to document the progression of the computation.}
+	\item{verbose}{logical value.  If \code{TRUE}, prints out information to document the progression of the computation.}
 }
 \value{
     Returns \code{NULL}.

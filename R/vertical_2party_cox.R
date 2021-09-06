@@ -191,7 +191,7 @@ PrepareDataCox.23 = function(params, data, yname, strata, mask) {
 
   workdata$strata = extractStrata(params, data, strata, mask)
   if (workdata$strata$failed) {
-    workdata$failed == TRUE
+    workdata$failed = TRUE
     return(workdata)
   }
   strataIndex = workdata$strata$strataIndex
@@ -201,7 +201,7 @@ PrepareDataCox.23 = function(params, data, yname, strata, mask) {
     responseIndex = CheckResponse(params, data, yname)
 
     if (is.null(responseIndex)) {
-      workdata$failed == TRUE
+      workdata$failed = TRUE
       return(workdata)
     }
 
@@ -210,7 +210,7 @@ PrepareDataCox.23 = function(params, data, yname, strata, mask) {
     workdata$survival$status = data[, responseIndex[2]]
     if (length(intersect(strataIndex, responseIndex)) > 0) {
       warning("Response and strata share a variable.")
-      workdata$failed == TRUE
+      workdata$failed = TRUE
       return(workdata)
     }
   }
@@ -597,7 +597,7 @@ GetZCox.A2 = function(params, data) {
   writeSize = 0
 
   numBlocks = params$blocks$numBlocks
-  pbar = MakeProgressBar1(numBlocks, "Z Files")
+  pbar = MakeProgressBar1(numBlocks, "Z Files", params$verbose)
   containerCt.Z = 0
   for (i in 1:numBlocks) {
     if (i %in% params$container$filebreak.Z) {
@@ -616,7 +616,7 @@ GetZCox.A2 = function(params, data) {
       close(toWrite)
       writeSize = writeSize + file.size(file.path(params$writePath, filename))
     }
-    pbar = MakeProgressBar2(i, pbar)
+    pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
   params = AddToLog(params, "GetZCox.A2", 0, 0, writeTime, writeSize)
   return(params)
@@ -678,7 +678,7 @@ GetWCox.B2 = function(params, data) {
   writeTime = 0
   writeSize = 0
 
-  pbar = MakeProgressBar1(params$blocks$numBlocks, "(I-Z*Z')X")
+  pbar = MakeProgressBar1(params$blocks$numBlocks, "(I-Z*Z')X", params$verbose)
 
   XBTXB = t(data$X) %*% data$X
 
@@ -721,7 +721,7 @@ GetWCox.B2 = function(params, data) {
       writeSize = writeSize + file.size(file.path(params$writePath, filename2))
     }
 
-    pbar = MakeProgressBar2(i, pbar)
+    pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
 
   writeTime = writeTime - proc.time()[3]
@@ -751,7 +751,7 @@ CheckColinearityCox.A2 = function(params, data) {
   XATXA = t(data$X) %*% data$X
   XATXB = 0
 
-  pbar = MakeProgressBar1(params$blocks$numBlocks, "X'X")
+  pbar = MakeProgressBar1(params$blocks$numBlocks, "X'X", params$verbose)
 
   containerCt.W = 0
   for (i in 1:params$blocks$numBlocks) {
@@ -775,7 +775,7 @@ CheckColinearityCox.A2 = function(params, data) {
       close(toRead)
       readSize = readSize + file.size(file.path(params$readPath, filename))
     }
-    pbar = MakeProgressBar2(i, pbar)
+    pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
 
   XTX = rbind(cbind(XATXA, XATXB), cbind(t(XATXB), XBTXB))
@@ -899,7 +899,7 @@ ComputeLogLikelihoodCox.A2 = function(params, data) {
 
   while (computeLoglikelihood) {
     stepCounter = 0
-    pbar = MakeProgressBar1(numEvents, "Loglikelihood")
+    pbar = MakeProgressBar1(numEvents, "Loglikelihood", params$verbose)
     loglikelihood = 0
     for (i in 1:length(data$survival$strata)) {                    ##!
       if (data$survival$strata[[i]]$J > 0) {                       ##!
@@ -915,7 +915,7 @@ ComputeLogLikelihoodCox.A2 = function(params, data) {
             loglikelihood = loglikelihood - log(Ajr)
           }
           stepCounter = stepCounter + nj
-          pbar = MakeProgressBar2(stepCounter, pbar)
+          pbar = MakeProgressBar2(stepCounter, pbar, params$verbose)
         }
       }
     }
@@ -936,7 +936,8 @@ ComputeLogLikelihoodCox.A2 = function(params, data) {
   stepCounter = 0
 
   .Call("ComputeCox", data$survival$strata, data$X, w, deltal, W.XA,
-  			as.integer(n), as.integer(p1), as.integer(numEvents))
+  			as.integer(n), as.integer(p1), as.integer(numEvents),
+  			as.integer(params$verbose))
 
   params$loglikelihood = loglikelihood
   params$deltal = deltal
@@ -1021,9 +1022,10 @@ ComputeLogLikelihoodCox.B2 = function(params, data) {
   W.XB = matrix(0, n, p2)
 
   .Call("ComputeCox", data$survival$strata, data$X, w, deltal, W.XB,
-  			as.integer(n), as.integer(p2), as.integer(numEvents))
+  			as.integer(n), as.integer(p2), as.integer(numEvents),
+  			as.integer(params$verbose))
 
-  pbar = MakeProgressBar1(params$blocks$numBlocks, "(I-Z*Z')WX")
+  pbar = MakeProgressBar1(params$blocks$numBlocks, "(I-Z*Z')WX", params$verbose)
   containerCt.Z = 0
   containerCt.Cox = 0
 
@@ -1063,7 +1065,7 @@ ComputeLogLikelihoodCox.B2 = function(params, data) {
       writeSize = writeSize + file.size(file.path(params$writePath, filename2))
     }
 
-    pbar = MakeProgressBar2(i, pbar)
+    pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
   params$deltal = deltal
   params$tXB.W.XB   = t(data$X) %*% W.XB
@@ -1537,7 +1539,7 @@ ComputeCoxFromSurvival.B2 = function(params, data) {
     warning = function(e) { return(FALSE)}
   )
 
-  if (class(error) == "logical" && error) {
+  if ((class(error) == "logical" && error)) {
     params$converged = FALSE
     params$failed    = TRUE
     params$errorMessage = "Coxph in the survival package failed to converge."
@@ -1595,7 +1597,7 @@ ComputeCox.B2 = function(params, data) {
   	while (computeLoglikelihood) {
   		numEvents = sum(data$survival$status)
   		stepCounter = 0
-  		pbar = MakeProgressBar1(numEvents, "Loglikelihood")
+  		pbar = MakeProgressBar1(numEvents, "Loglikelihood", params$verbose)
   		loglikelihood = 0
   		for (i in 1:length(data$survival$strata)) {                    ##!
   			if (data$survival$strata[[i]]$J > 0) {                       ##!
@@ -1611,7 +1613,7 @@ ComputeCox.B2 = function(params, data) {
   						loglikelihood = loglikelihood - log(Ajr)
   					}
   					stepCounter = stepCounter + nj
-  					pbar = MakeProgressBar2(stepCounter, pbar)
+  					pbar = MakeProgressBar2(stepCounter, pbar, params$verbose)
   				}
   			}
   		}
@@ -1631,7 +1633,8 @@ ComputeCox.B2 = function(params, data) {
   	W.XB = matrix(0, n, p2)
 
   	.Call("ComputeCox", data$survival$strata, data$X, w, deltal, W.XB,
-  				as.integer(n), as.integer(p2), as.integer(numEvents))
+  				as.integer(n), as.integer(p2), as.integer(numEvents),
+  				as.integer(params$verbose))
 
     M = t(data$X) %*% W.XB
 

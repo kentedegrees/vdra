@@ -36,37 +36,42 @@ bool strata_ok(SEXP x)
   return(ok);
 }
 
-int printInitialMessage() {
-  Rprintf("Processing W*X               :   0%%|....................|\r");
+int printInitialMessage(int verbose) {
+  if (verbose) Rprintf("Processing W*X               :   0%%|....................|\r");
   // fflush(stdout);
-  flush_console();
+  if (verbose) flush_console();
   return(0);
 }
 
-int printMessage(int stepCounter, int numEvents, int currentPercent)
+int printMessage(int stepCounter, int numEvents, int currentPercent, int verbose)
 {
   int newPercent = 100 * stepCounter / (float)numEvents;
-   int stars      = 20 * stepCounter  / (float)numEvents;
+  int stars      = 20 * stepCounter  / (float)numEvents;
   if (newPercent > currentPercent) {
-    Rprintf("Processing W*X               : %3d%%|", newPercent);
-    for (int i = 0; i < stars; i++ ) { Rprintf("#"); }
-    for (int i = stars; i < 20; i++) { Rprintf(" "); }
-    Rprintf("|\r");
-    if (stepCounter == numEvents) {
-      Rprintf("\n\n");
+    if (verbose) {
+      Rprintf("Processing W*X               : %3d%%|", newPercent);
+      for (int i = 0; i < stars; i++ ) { Rprintf("#"); }
+      for (int i = stars; i < 20; i++) { Rprintf(" "); }
+      Rprintf("|\r");
+      if (stepCounter == numEvents) {
+        Rprintf("\n\n");
+      }
     }
   }
   // fflush(stdout);
-  flush_console();
+  if (verbose) flush_console();
   return(newPercent);
 }
 
 
-SEXP ComputeCox(SEXP _strata, SEXP _X, SEXP _w, SEXP _deltal, SEXP _WX, SEXP _n, SEXP _p, SEXP _numEvents)
+SEXP ComputeCox(SEXP _strata, SEXP _X, SEXP _w,
+                SEXP _deltal, SEXP _WX, SEXP _n,
+                SEXP _p, SEXP _numEvents, SEXP _verbose)
 {
+  int verbose = INTEGER(_verbose)[0] == 1;
   bool ok = strata_ok(_strata);
   if (!ok) {
-    Rprintf("ERROR IN STRATA\n");
+    if (verbose) { Rprintf("ERROR IN STRATA\n"); }
     SEXP ans;
     ans = allocList(0);
     return(ans);
@@ -84,7 +89,7 @@ SEXP ComputeCox(SEXP _strata, SEXP _X, SEXP _w, SEXP _deltal, SEXP _WX, SEXP _n,
   double *ZWX   = (double*)malloc(sizeof(double) * p);
 
   if (wz == NULL || YWX == NULL || ZWX == NULL) {
-    Rprintf("Error allocating memory\n");
+    if (verbose) Rprintf("Error allocating memory\n");
     free(wz);
     free(YWX);
     free(ZWX);
@@ -93,7 +98,7 @@ SEXP ComputeCox(SEXP _strata, SEXP _X, SEXP _w, SEXP _deltal, SEXP _WX, SEXP _n,
     return(ans);
   }
 
-  int currentPercent = printInitialMessage();
+  int currentPercent = printInitialMessage(verbose);
   int stepCounter = 0;
   //Rprintf("n = %d\np = %d\n", n, p);
   //Rprintf("length(strata) = %d\n", length(_strata));
@@ -162,12 +167,12 @@ SEXP ComputeCox(SEXP _strata, SEXP _X, SEXP _w, SEXP _deltal, SEXP _WX, SEXP _n,
         }
         stepCounter += nj;
         //Rprintf("%d %d %d\n", stepCounter, numEvents, currentPercent);
-        currentPercent = printMessage(stepCounter, numEvents, currentPercent);
+        currentPercent = printMessage(stepCounter, numEvents, currentPercent, verbose);
       }
     }
   }
   // fflush(stdout);
-  flush_console();
+  if (verbose) flush_console();
   free(wz);
   free(YWX);
   free(ZWX);
