@@ -1,6 +1,6 @@
 ---
 title: "An Introduction to the VDRA Package"
-date: "2021-09-03"
+date: "2022-11-19"
 output: 
   rmarkdown::html_vignette:
     keep_md: true
@@ -392,13 +392,6 @@ The output is similar if we had used `coxph()` in the `survival` package:
 
 ```r
 library(survival)
-```
-
-```
-## Warning: package 'survival' was built under R version 4.0.5
-```
-
-```r
 fit = coxph(Surv(Time, Status) ~ ., data = vdra_data[, 3:11])
 summary(fit)            
 ```
@@ -886,13 +879,13 @@ HoslemTest(vdra_fit_logistic_A, 50)
 RocTest(vdra_fit_logistic_A)
 ```
 
-<img src="D:\Dropbox\Tom\PSU\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-46-1.png" width="75%" />
+<img src="D:\Dropbox\Tom\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-46-1.png" width="75%" />
 
 ```r
 RocTest(vdra_fit_logistic_A, 50)
 ```
 
-<img src="D:\Dropbox\Tom\PSU\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-46-2.png" width="75%" />
+<img src="D:\Dropbox\Tom\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-46-2.png" width="75%" />
 
 ## Cox Regression
 
@@ -913,7 +906,7 @@ print(sf)
 plot(sf)
 ```
 
-<img src="D:\Dropbox\Tom\PSU\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-47-1.png" width="75%" />
+<img src="D:\Dropbox\Tom\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-47-1.png" width="75%" />
 
 ```r
 # Calculate the results based on strat that the data partner with the response holds
@@ -934,11 +927,11 @@ plot(sf, xlim = c(0, 400), ylim = c(0, 1),
          main = "BMI Study")
 ```
 
-<img src="D:\Dropbox\Tom\PSU\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-47-2.png" width="75%" /><img src="D:\Dropbox\Tom\PSU\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-47-3.png" width="75%" />
+<img src="D:\Dropbox\Tom\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-47-2.png" width="75%" /><img src="D:\Dropbox\Tom\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-47-3.png" width="75%" />
 
 ```r
 # plot curves in two different plots.
 plot(sf, merge = FALSE)
 ```
 
-<img src="D:\Dropbox\Tom\PSU\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-47-4.png" width="75%" /><img src="D:\Dropbox\Tom\PSU\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-47-5.png" width="75%" />
+<img src="D:\Dropbox\Tom\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-47-4.png" width="75%" /><img src="D:\Dropbox\Tom\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-47-5.png" width="75%" />

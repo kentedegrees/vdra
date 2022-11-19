@@ -91,6 +91,7 @@ PrepareFolder.ACDP = function(params, monitorFolder) {
 }
 
 
+#' @importFrom stats model.matrix
 PrepareDataLinLog.DP1 = function(params, data, yname = NULL) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareDataLinLog.DP1\n\n")
 
@@ -136,6 +137,7 @@ PrepareDataLinLog.DP1 = function(params, data, yname = NULL) {
   return(workdata)
 }
 
+#' @importFrom stats model.matrix
 PrepareDataLinLog.DPk = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareDataLinLog.DPk\n\n")
 
@@ -251,6 +253,7 @@ CheckAgreement.AC = function(params) {
 }
 
 
+#' @importFrom stats runif
 PrepareParamsLinear.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareParamsLinear.DP\n\n")
   params$n          = nrow(data$X)
@@ -274,6 +277,7 @@ PrepareParamsLinear.DP = function(params, data) {
 }
 
 
+#' @importFrom stats rnorm
 PrepareSharesLinear.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareSharesLinear.DP\n\n")
   readTime = 0
@@ -422,6 +426,7 @@ GetProductsLinear.AC = function(params) {
 }
 
 
+#' @importFrom  stats pf pt
 ComputeResultsLinear.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLinear.AC\n\n")
   stats           = params$stats
@@ -476,8 +481,6 @@ ComputeResultsLinear.AC = function(params) {
 	}
 
 	stats$failed    = params$failed
-
-
 
 	p             = length(indicies)
 	p1            = ncol(xtx)

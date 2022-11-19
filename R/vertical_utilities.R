@@ -310,6 +310,7 @@ AnalysisCenter.KParty = function(regression            = "linear",
 
 ############################ SHARED SETUP FUNCTIONS ############################
 
+#' @importFrom utils file_test
 CreateIOLocation = function(monitorFolder, folder) {
   location = file.path(monitorFolder, folder)
   if (!dir.exists(location) && !file.exists(location)) {
@@ -326,6 +327,7 @@ CreateIOLocation = function(monitorFolder, folder) {
 }
 
 
+#' @importFrom utils write.csv
 CheckDataFormat = function(params, data) {
   if ("data.frame" %in% class(data)) {
     data = data.frame(data)
@@ -727,6 +729,7 @@ GetLion = function(p) {
 }
 
 
+#' @importFrom stats flush.console
 MakeProgressBar1 = function(steps, message, verbose) {
   pb = list()
   messageLength    = 18
@@ -751,6 +754,7 @@ MakeProgressBar1 = function(steps, message, verbose) {
 }
 
 
+#' @importFrom stats flush.console
 MakeProgressBar2 = function(i, pb, verbose) {
   percent = floor(100 * i / pb$numSteps)
   if (percent == pb$percent) {
@@ -796,6 +800,7 @@ MultiplyDiagonalWTimesX = function(w, x) {
 }
 
 
+#' @importFrom stats runif
 FindOrthogonalVectors = function(x, g) {
   x = as.matrix(x)
   x = cbind(x, runif(nrow(x)))  # Randomize Z
@@ -807,12 +812,14 @@ FindOrthogonalVectors = function(x, g) {
 }
 
 
+#' @importFrom stats runif
 RandomOrthonomalMatrix = function(size) {
   return(qr.Q(qr(matrix(runif(size * size), size, size)), complete = TRUE))
 }
 
 #################### SHARED PMN COMMUNICATION FUNCTIONS ###################
 
+#' @importFrom utils write.csv
 MakeCSV = function(file_nm, transfer_to_site_in, dp_cd_list, writePath) {
   dframe = data.frame(file_nm, transfer_to_site_in, dp_cd_list)
   fp = file.path(writePath, "file_list.csv")
@@ -1928,6 +1935,7 @@ WriteStampsRaw = function(params) {
 }
 
 
+#' @importFrom utils write.csv
 WriteStampsCSV = function(params) {
   write.csv(params$stamps$history, file.path(params$writePath, "stamps.csv"),
             row.names = FALSE)
@@ -2101,12 +2109,14 @@ WriteLogRaw = function(params) {
 }
 
 
+#' @importFrom utils write.csv
 WriteLogCSV = function(params) {
   write.csv(params$log$history, file.path(params$writePath, "log.csv"),
             row.names = FALSE)
 }
 
 
+#' @importFrom utils write.table
 WriteToLogSummary = function(c1 = "", c2 = "", c3 = "",
                              writePath = NULL, append = TRUE) {
   if (is.numeric(c2)) {
@@ -2773,6 +2783,7 @@ WriteTrackingTableRaw = function(params) {
 }
 
 
+#' @importFrom utils write.csv
 WriteTrackingTableCSV = function(params) {
   write.csv(params$trackingTable$history, file.path(params$writePath, "dl_track_tbl.csv"),
             row.names = FALSE)
@@ -2806,6 +2817,7 @@ InitializeTrackingTable.2p = function(params) {
   return(params)
 }
 
+#' @importFrom utils write.csv
 StoreTrackingTableEntry.2p = function(params) {
   params$trackingTable$current$ITER_NB = params$pmnStepCounter
   params$trackingTable$current$START_DTM = params$log$current$Start.Time
@@ -3118,7 +3130,38 @@ print.vdralinear = function(x, ...) {
   return(invisible(NULL))
 }
 
-
+#' @title Summary Method for Vertical Distributed Linear Regression Models
+#' @aliases summary.vdralinear summary.vdralinear.object
+#'   print.summary.vdralinear
+#' @description Produces a summary of a fitted vdra linear regression model.
+#' @param object a \code{vdralinear} object.
+#' @param ... further arguments passed to or from other methods.
+#' @return Returns an object of class \code{summary.vdralinear}. Objects of this
+#' class have a method for the function \code{print}.  The following components
+#' must be included in \code{summary.vdralinear} object.
+#' \describe{
+#'   \item{failed}{logical value.  If \code{FALSE}, then there was an error
+#'    processing the data.  if \code{TRUE}, there were no errors.}
+#'   \item{party}{a vector which indicates the party from which each covariate
+#'    came.}
+#'   \item{coefficients}{the vector of coefficients.  If the model is
+#'     over-determined, there will be missing values in the vector corresponding
+#'     to the redundant columns model matrix.}
+#'   \item{secoef}{the vector of the standard error of the coefficients.}
+#'   \item{tvals}{the t-values of the coefficietns.}
+#'   \item{pvals}{the p-values of the coefficients.}
+#'   \item{rstderr}{residual standard error.}
+#'   \item{rsquare}{r squared.}
+#'   \item{adjrsquare}{adjusted r squared.}
+#'   \item{Fstat}{the F-statistic for the linear regression.}
+#'   \item{df1}{the numerator degrees of freedom for the F-statistic.}
+#'   \item{df2}{the denominator degrees of freedom for the F-statistic.}
+#'   \item{Fpval}{the p-value of the F-statistic for the linear regression.}
+#' }
+#' @seealso \code{\link{vdralinear}}
+#' @examples
+#' summary(vdra_fit_linear_A)
+#' @export
 summary.vdralinear = function(object, ...) {
   temp = list()
   class(temp)         = "summary.vdralinear"
@@ -3198,6 +3241,35 @@ print.vdralogistic = function(x, ...) {
   return(invisible(NULL))
 }
 
+#' @title Summary Method for Vertical Distributed Logistic Regression Models
+#' @aliases  summary.vdralogistic summary.vdralogistic.object
+#'   print.summary.vdralogistic
+#' @description Produces a summary of a fitted vdra logistic regression model.
+#' @param object a \code{vdralogistic} object.
+#' @param ... futher argumetns passed to or from other methods.
+#' @return Returns an object of class \code{summary.vdralogistic}. Objects of
+#'   this class have a method for the function \code{print}.  The following
+#'   components must be included in \code{summary.vdralogistic} object.
+#' \describe{
+#'   \item{failed}{logical value.  If \code{FALSE}, then there was an error processing the data.  if \code{TRUE}, there were no errors.}
+#'   \item{converged}{logical value.  If \code{TRUE}, the regression converged.  If \code{FALSE}, it did not.}
+#'   \item{party}{a vector which indicates the party from which each covariate came.}
+#'   \item{coefficients}{the vector of coefficients.  If the model is over-determined, there will be missing values in the vector corresponding to the redudant columns model matrix.}
+#'   \item{secoef}{the vector of the standard error of the coefficients.}
+#'   \item{tvals}{the t-values of the coefficietns.}
+#'   \item{pvals}{the p-values of the coefficients.}
+#'   \item{nulldev}{the null deviance of the fit.}
+#'   \item{nulldev_df}{the degrees of freedom for the null deviance.}
+#'   \item{resdev}{the residual deviance of the fit.}
+#'   \item{resdev_df}{the degrees of freedome for the residual deviance.}
+#'   \item{aic}{the AIC of the fit.}
+#'   \item{bic}{the BIC of the fit.}
+#'   \item{iter}{the number of iterations of the cox algorithm before convergence.}
+#' }
+#' @seealso \code{\link{vdralogistic}}
+#' @examples
+#' summary(vdra_fit_logistic_A)
+#' @export
 
 summary.vdralogistic = function(object, ...) {
   temp = list()
@@ -3269,6 +3341,7 @@ print.summary.vdralogistic = function(x, lion = FALSE, ...) {
 }
 
 
+#' @importFrom stats printCoefmat
 print.vdracox = function(x, ...) {
   if (x$failed) {
     warning("Distributed Cox regression failed.  No results to print.")
@@ -3289,7 +3362,55 @@ print.vdracox = function(x, ...) {
   return(invisible(NULL))
 }
 
-
+#' @title Summary Method for Vertical Distributed COX Models
+#' @description Produces a summary of a fitted vdra Cox model.
+#' @aliases summary.vdracox summary.vdracox.object print.summary.vdracox
+#' @param object a \code{vdracox} object.
+#' @param ... further arguments passed to or from other methods.
+#' @return  Returns an object of class \code{summary.vdracox}. Objects of this
+#'  class have a method for the function \code{print}.  The following components
+#'  must be included in \code{summary.vdracox} object.
+#' \describe{
+#'  \item{failed}{logical value.  If \code{FALSE}, then there was an error
+#'     processing the data.  if \code{TRUE}, there were no errors.}
+#'  \item{converged}{logical value.  If \code{TRUE}, the regression converged.
+#'     If \code{FALSE}, it did not.}
+#'  \item{party}{a vector which indicates the party from which each covariate
+#'     came.}
+#'  \item{coefficients}{the vector of coefficients.  If the model is
+#'     over-determined, there will be missing values in the vector corresponding
+#'     to the redudant columns model matrix.}
+#'  \item{expcoef}{a vector which represents exp(coefficients).}
+#'  \item{secoef}{the vector of the standard error of the coefficients.}
+#'  \item{zvals}{the z-values of the coefficients.}
+#'  \item{pvals}{the p-values of the coefficients.}
+#'  \item{expncoef}{a vector which represents exp(-coefficients).}
+#'  \item{lower95}{a vector of the lower bounds of the 95\% confidence interval
+#'     for exp(coefficients).}
+#'  \item{upper95}{a vector of the upper bounds of the 95\% confidence interval
+#'     for exp(coefficients).}
+#'  \item{n}{the number of observations in the data.}
+#'  \item{nevent}{the number of events used in the fit.}
+#'  \item{concordance}{a vector containing the number of events which are
+#'     concordant, discordant, tied.risk, tied.time.  Also contains the
+#'     concordance statistic and its standard error.  Calculated using the
+#'     \code{survival} package, if installed.  If not installed, all values are
+#'     \code{NA}.}
+#'  \item{rsquare}{a vector containing an r-square value for the fit and its
+#'     p-value.}
+#'  \item{lrt}{a vector containing the likelihood ratio test statistic and its
+#'     p-value.}
+#'  \item{df}{the degrees of freedom.}
+#'  \item{wald.test}{a vector containing the Wald test statistic and its
+#'     p-value.}
+#'  \item{score}{a vector containing the score test statistic and its p-value.}
+#'  \item{iter}{the number of iterations of the cox algorithm before
+#'     convergence.}
+#' }
+#' @seealso \code{\link{vdracox}}
+#' @examples
+#' summary(vdra_fit_cox_A)
+#' @export
 summary.vdracox = function(object, ...) {
   temp = list()
   class(temp)         = "summary.vdracox"
@@ -3383,7 +3504,28 @@ print.summary.vdracox = function(x, lion = FALSE, ...) {
 
 ############################ LINEAR DIFFERENT MODEL ############################
 
-
+#' @title Fitting Different Linear Models
+#' @description Models are specified symbolically.  A typical model is of the
+#'   form \code{response ~ term_1 + term_2 + ... + term_k} where \code{response}
+#'   and \code{term_i} are variables names used in the orgional linear model
+#'   which created the object \code{x}.  The \code{response} can be the orginal
+#'   respose or any of the other covariates.  Interactions are not allowed.  Not
+#'   all variables in the original model have to be used.
+#' @param formula an object of class \code{"\link{formula}"}: a symbolic
+#'   description of the model to be fitted. The model must be additive with no
+#'   interactions.
+#' @param x an object of class \code{\link{vdralinear}}.
+#' @return Returns an object of class \code{\link{vdralinear}}.
+#' @seealso \code{\link{AnalysisCenter.2Party}},
+#'   \code{\link{AnalysisCenter.3Party}}, \code{\link{AnalysisCenter.KParty}}
+#' @examples
+#'  fit = differentModel(Change_BMI ~ Exposure + Age + NumRx, vdra_fit_linear_A)
+#'  summary(fit)
+#'
+#'  fit = differentModel(Age ~ Change_BMI + Exposure + NumRx, vdra_fit_linear_A)
+#'  summary(fit)
+#' @importFrom  stats pf pt
+#' @export
 differentModel = function(formula = NULL, x = NULL) {
   if (class(x) != "vdralinear") {
     warning("This function can only be on objects of class vdralinear. Returning original model.")
@@ -3545,6 +3687,7 @@ differentModel = function(formula = NULL, x = NULL) {
 ###################### LOGISTIC ROC AND HOSLEM FUNCTIONS #######################
 
 
+#' @importFrom  stats pchisq quantile
 HoslemInternal = function(x, data = NULL, nGroups = 10){
   #            y:  response (vector, length n)
   #  finalFitted:  finalFitted from getFinalCoefA(...)  (vector, length n)
@@ -3617,6 +3760,29 @@ print.hoslemdistributed = function(x, ...) {
 }
 
 
+#' @title Hosmer-Lemeshow Test for Vertical Distributed Logistic Regression
+#' @description Run the Hosmer-Lemeshow test for an object created by 2-party,
+#'   3-party, or K-party vdra logistic regression.  Only the party that holds
+#'   the response may invoke this function.
+#' @aliases HoslemTest hoslemdistributed.object print.hoslemdistributed
+#' @param x an object of type \code{\link{vdralogistic}}.
+#' @param nGroups the number of groups that the data will be sperated into.
+#' @return  Returns an object of class \code{hoslemdistributed}. Objects of this
+#'   class have a method for the function \code{print}.   The following
+#'   component must be included in a \code{hoslemdistributed} object.
+#'
+#' \describe{
+#'
+#'   \item{hoslem}{a vector containing three numeric quantities: the chi-square
+#'   value of the test, the degrees of freedom of the test, and p-value of the
+#'   test, in that order.}
+#'
+#' }
+#' @examples
+#'  HoslemTest(vdra_fit_logistic_A)
+#'
+#'  HoslemTest(vdra_fit_logistic_A, 20)
+#' @export
 HoslemTest = function(x = NULL, nGroups = 10) {
   if (class(x) != "vdralogistic") {
     warning("Cannot perform test on non vdralogistic object.")
@@ -3680,7 +3846,7 @@ RocInternal = function(x, data = NULL, bins = 500){
   return(temp)
 }
 
-
+#' @importFrom graphics axis lines text plot
 print.rocdistributed = function(x, ...) {
   # if (!x$converged) {
   #   cat("Warning: Process did not converge.  Cannot generate ROC.\n")
@@ -3699,6 +3865,26 @@ print.rocdistributed = function(x, ...) {
 }
 
 
+#' @aliases RocTest rocdistributed.object print.rocdistributed
+#' @title Create the ROC for Vertical Distributed Logistic Regression
+#' @description Generate the receiver operator curve on an object created by
+#'   2-party, 3-party, or K-party vdra logistic regression.  Only the party that
+#'   holds the response may invoke this function.
+#' @param x an object of type \code{\link{vdralogistic}}.
+#' @param bins the number of bins the data will be separated into.
+#' @return Returns an object of class \code{rocdistributed}. Objects of this
+#'   class have a method for the function \code{print}. The following components
+#'   must be included in a \code{rocdistributed} object.
+#' \describe{
+#'  \item{roc}{a two column matrix containing the coordinates of 1 - specificity
+#'  and sensitivity.}
+#'  \item{auc}{numeric value which is area under the curve.}
+#' }
+#' @examples
+#' RocTest(vdra_fit_logistic_A)
+#'
+#' RocTest(vdra_fit_logistic_A, 40)
+#' @export
 RocTest = function(x = NULL, bins = 10) {
   if (class(x) != "vdralogistic") {
     warning("Cannot create ROC on non vdralogistic object.")
@@ -3723,7 +3909,7 @@ RocTest = function(x = NULL, bins = 10) {
 
 ################### COX DISPLAY SURVFIT AND STRATA FUNCTIONS ###################
 
-
+#' @importFrom grDevices rgb
 GetColors = function(n) {
   color = matrix(0, 6, 3)
   color[1, ] = c(0.000, 0.000, 1.000) # blue
@@ -3754,6 +3940,33 @@ GetColors = function(n) {
 }
 
 
+#' @title Plotting Survival Curves for Vertical Distributed Cox Regression
+#' @description Plots a survivial curve as specified by
+#'   \code{survfitDistributed} object.
+#' @param x A \code{survfitDistributed} object.
+#' @param merge Logical.  It \code{TRUE}, plots all strata of the survival curve
+#'   on one plot.  If \code{FALSE}, plots all strata in different plots.
+#' @param ... Common graphical parameters (not fully implemented).
+#' @return No return value.
+#' @seealso \code{\link{survfitDistributed}}
+#' @examples
+#'  sfit = survfitDistributed(vdra_fit_cox_A)
+#'  plot(sfit)
+#'
+#'  # From Data Partner 1
+#'  sfit = survfitDistributed(vdra_fit_cox_A,
+#'                            ~Exposure,
+#'                            data = vdra_data[, c(3:4, 5:7)])
+#'  plot(sfit)
+#'  plot(sfit, merge = FALSE)
+#'
+#'  # From Data Partner 2
+#'  sfit = survfitDistributed(vdra_fit_cox_B,
+#'                            ~Race + Sex,
+#'                            data = vdra_data[, 8:11])
+#'  plot(sfit, merge = FALSE)
+#' @importFrom graphics legend lines
+#' @export
 plot.survfitDistributed = function(x, merge = FALSE, ...) {
   max = 0
   n = length(x$strata)

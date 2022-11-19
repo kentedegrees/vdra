@@ -174,6 +174,7 @@ CheckColinearityLogistic.AC = function(params) {
 }
 
 
+#' @importFrom stats runif
 ComputeInitialBetasLogistic.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeInitialBetasLogistic.AC\n\n")
   writeTime = 0
@@ -234,6 +235,7 @@ UpdateDataLogistic.DP = function(params, data) {
 }
 
 
+#' @importFrom stats rnorm runif
 ComputeSbetaLogistic.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeSbetaLogistic.DP\n\n")
   set.seed(params$seed + params$algIterationCounter, kind = "Mersenne-Twister")
@@ -281,6 +283,7 @@ ComputeWeightsLogistic.AC = function(params) {
 }
 
 
+#' @importFrom stats rnorm
 ComputeStWSLogistic.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeStWSLogistic.DP\n\n")
   pi_ = NULL
@@ -421,6 +424,7 @@ ComputeStWSLogistic.AC = function(params) {
 }
 
 
+#' @importFrom stats rnorm runif
 UpdateBetaLogistic.DP = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateBetaLogistic.DP\n\n")
   I = IDt = NULL
@@ -563,7 +567,7 @@ ComputeResultsLogistic.DP = function(params, data) {
 	return(params)
 }
 
-
+#' @importFrom stats pnorm
 ComputeResultsLogistic.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLogistic.AC\n\n")
   nulldev = NULL

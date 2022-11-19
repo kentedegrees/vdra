@@ -131,6 +131,7 @@ PrepareFolderLogistic.B2 = function(params, monitorFolder) {
 }
 
 
+#' @importFrom stats model.matrix
 PrepareDataLogistic.A23 = function(params, data, yname = NULL) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareDataLogistic.A23\n\n")
 
@@ -182,6 +183,7 @@ PrepareDataLogistic.A23 = function(params, data, yname = NULL) {
   return(workdata)
 }
 
+#' @importFrom stats model.matrix sd
 PrepareDataLogistic.B23 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareDataLogistic.B23\n\n")
 
@@ -1042,7 +1044,7 @@ GetFinalCoefLogistic.B2 = function(params, data) {
   return(params)
 }
 
-
+#' @importFrom stats pnorm
 ComputeResultsLogistic.A2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLogistic.A2\n\n")
   stats = params$stats

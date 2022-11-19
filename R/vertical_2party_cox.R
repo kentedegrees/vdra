@@ -177,6 +177,7 @@ extractStrata = function(params, data, stratas, mask) {
 }
 
 
+#' @importFrom stats model.matrix
 PrepareDataCox.23 = function(params, data, yname, strata, mask) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareDataCox.23\n\n")
 
@@ -1306,7 +1307,7 @@ SurvFitCox.A2 = function(params, survival, pred) {
   return(surv)
 }
 
-
+#' @importFrom  stats pchisq pnorm qnorm
 ComputeResultsCox.A2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsCox.A2\n\n")
   stats = params$stats
@@ -1515,7 +1516,7 @@ CheckColinearityCox.B2 = function(params, data) {
   return(params)
 }
 
-
+#' @importFrom stats as.formula
 ComputeCoxFromSurvival.B2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeCoxFromSurvival.B2\n\n")
   # We have loaded survival previously
@@ -1547,7 +1548,7 @@ ComputeCoxFromSurvival.B2 = function(params, data) {
   } else {
   	params$converged = TRUE
   	if (class(error) == "logical") {
-  		fit = suppressWarnings(survival::coxph(as.formula(f),
+  	  fit = suppressWarnings(survival::coxph(as.formula(f),
   								data = data.frame(rank = data$survival$rank,
   																	status = data$survival$status,
   																	strata = strata,
@@ -1692,7 +1693,7 @@ ComputeCox.B2 = function(params, data) {
   return(params)
 }
 
-
+#' @importFrom  stats pchisq pnorm qnorm
 ComputeResultsCox.B2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsCox.B2\n\n")
   stats = params$stats

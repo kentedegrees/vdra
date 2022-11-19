@@ -799,6 +799,7 @@ GetProductsLinear.T3 = function(params) {
 }
 
 
+#' @importFrom  stats pf pt
 ComputeResultsLinear.T3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLinear.T3\n\n")
   stats    = params$stats

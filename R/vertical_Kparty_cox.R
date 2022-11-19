@@ -1,5 +1,6 @@
 ################### DISTRIBUTED COX REGRESSION FUNCTIONS ##################
 
+#' @importFrom stats model.matrix
 PrepareDataCox.DP = function(params, data, yname, strata, mask) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareDataCox.23\n\n")
 
@@ -359,7 +360,7 @@ AddStrataToDataCox.DP = function(params, data) {
 	return(data)
 }
 
-
+#' @importFrom stats runif
 PrepareParamsCox.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareParamsCox.DP\n\n")
   params$strata     = NULL
@@ -384,6 +385,7 @@ PrepareParamsCox.DP = function(params, data) {
 	return(params)
 }
 
+#' @importFrom stats rnorm
 PrepareSharesCox.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareSharesCox.DP\n\n")
   readTime = 0
@@ -733,6 +735,7 @@ UpdateParamsCox.DP = function(params) {
 	return(params)
 }
 
+#' @importFrom stats rnorm
 UpdateDataCox.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateDataCox.DP\n\n")
   idx = params$indicies[[params$dataPartnerID]]
@@ -755,6 +758,7 @@ UpdateDataCox.DP = function(params, data) {
 	return(data)
 }
 
+#' @importFrom stats rnorm runif
 ComputeSBetaCox.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeSBetaCox.DP\n\n")
   u = NULL
@@ -911,6 +915,7 @@ ComputeSDelLCox.AC = function(params) {
 }
 
 
+#' @importFrom stats rnorm
 ComputeSDelLCox.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeSDelLCox.DP\n\n")
   halfshare = data$halfshare[params$survival$sortedIdx, , drop = FALSE]
@@ -977,6 +982,7 @@ ComputeSDelLCox.DP = function(params, data) {
 }
 
 
+#' @importFrom stats rnorm
 ComputeProductsCox.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeProductsCox.DP\n\n")
   if (params$dataPartnerID == 1) {
@@ -1217,6 +1223,7 @@ UpdateConvergeStatus.DP = function(params) {
 }
 
 
+#' @importFrom stats runif
 UpdateBetasCox.DP = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateBetasCox.DP\n\n")
   I.part = NULL
@@ -1327,6 +1334,7 @@ SurvFitCox.AC = function(params, pred) {
 }
 
 
+#' @importFrom  stats pchisq pnorm qnorm
 ComputeResultsCox.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsCox.AC\n\n")
   readSize          = 0

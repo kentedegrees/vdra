@@ -1185,6 +1185,7 @@ SurvFitCox.BT3 = function(params, pred) {
 }
 
 
+#' @importFrom  stats pchisq pnorm qnorm
 ComputeResultsCox.T3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComptueResultsCvox.T3\n\n")
   stats = params$stats
@@ -1368,7 +1369,7 @@ CheckColinearityCox.B3 = function(params, data) {
 	return(params)
 }
 
-
+#' @importFrom stats as.formula
 ComputeCoxFromSurvival.B3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeCoxFromSurvival.B3\n\n")
   # We have loaded survival previously
@@ -1404,7 +1405,7 @@ ComputeCoxFromSurvival.B3 = function(params, data) {
 	} else {
 		params$converged = TRUE
 		if (class(error) == "logical") {
-			fit = suppressWarnings(survival::coxph(as.formula(f),
+		  fit = suppressWarnings(survival::coxph(as.formula(f),
 									data = data.frame(rank = data$survival$rank,
 																		status = data$survival$status,
 																		strata = strata,
@@ -1552,6 +1553,7 @@ ComputeCox.B3 = function(params, data) {
 }
 
 
+#' @importFrom  stats pchisq pnorm qnorm
 ComputeResultsCox.B3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsCox.B3\n\n")
   stats = params$stats
