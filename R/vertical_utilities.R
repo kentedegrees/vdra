@@ -1,5 +1,137 @@
 ########################### 2 PARTY GLOBAL FUNCTIONS ###########################
 
+#' @name distributed2party
+#' @title Two Party Vertical Distributed Regression Analysis
+#' @description  \code{AnalysisCenter.2Party} and \code{DataPartner.2Party} are
+#'   used in conjuction with PopMedNet to perform linear, logistic, or cox
+#'   regression on data that has been partitioned vertically between two data
+#'   partners.  The data partner which holds the response variable(s) uses
+#'   \code{AnalysisCener.2Party} and the other data partner uses
+#'   \code{DataPartner.2Party}.  While both data partners share information with
+#'   each other in order to perform the regression, data is kept secure and not
+#'   shared, nor is any information shared that would allow one data partner to
+#'   reconstruct part of the other data partners data. Final coefficients and
+#'   other regression statistics are computed by the analysis center and shared
+#'   with the other data partner.
+#' @param regression the model to be used to fit the data.  The default
+#'   regression \code{"linear"} fits a least squares linear model to the data.
+#'   Alternatively, \code{"logistic"} returns a fitted logistic model, and
+#'   \code{"cox"} returns a fitted Cox proportional hazards model.
+#' @param data a data.frame or matrix which contains the data to be used in the
+#'   model.  For \code{DataPartner.2Party()}, all columns will be used as
+#'   covariates in the regression.  For \code{AnalysisCenter.2Party()}, all
+#'   columns, with the expection of the column specified by \code{response},
+#'   will be used as covariates in the regression.
+#' @param response for \code{"linear"} and \code{"logistic"} regression, the
+#'   name of the column in \code{data} which holds the response variable.  If
+#'   \code{reponse = NULL}, then the first column of \code{data} will be used as
+#'   the response variable.  For \code{"cox"} regression response hold the name
+#'   of the column which is time to event and the name of the column which is
+#'   the event type (0 = censored, 1 = event).  If \code{response = NULL}, then
+#'   the first column of \code{data} is assumed to be the time to even and the
+#'   second column is assumed to be the event type.
+#' @param strata for \code{"cox"} regression only.  A \code{\link{vector}} of
+#'   character strings identifying the names of the covariates from either party
+#'   which will be used as strata.  Both \code{AnalysisCenter.2party} and
+#'   \code{DataPartner.2Party} must specify the same vector of strata.
+#' @param mask logical value: If \code{FALSE}, strata levels for the strata
+#'   which belong to the party which specified \code{FALSE} will be identified
+#'   by name. If \code{TRUE}, levels for the strata which belong to the party
+#'   which specified \code{TRUE} will be put in a random order and level names
+#'   will be changed to \code{NA}.
+#' @param monitorFolder the folder where the directories \code{dplocal},
+#'   \code{inputfiles}, \code{macros}, \code{msoc}, and \code{rprograms} are
+#'   located.
+#' @param msreqid a character string specifying the name of the \emph{Request
+#'   ID} as specified when creating the Distributed Regresion request on
+#'   PopMedNet. Used for logging purposes only.
+#' @param blocksize the minimium size used to horizontally partition the data
+#'   for data transfer between the two parties.
+#' @param tol the tolerance used to determine convergence in \code{"logistic"}
+#'   and \code{"cox"} regression.
+#' @param maxIterations the maximum number of iterations to perform
+#'   \code{"logistic"} or \code{"cox"} regression before non-convergence is
+#'   declared.
+#' @param sleepTime the number of seconds to wait after writing the last file to
+#'   disk before signalling the PMN Datamart Client that files are ready to be
+#'   transferred.
+#' @param maxWaitingTime the number of seconds to wait to receive files before a
+#'   transfer error is declared and the program halts execution.
+#' @param popmednet logical value:  if \code{TRUE}, assumes that PopMednet is
+#'   being used to transfer the files and implements PopMedNet specific
+#'   routines. In particular, a 15 second offset terminiation of routines that
+#'   execute in parallel is implemented.
+#' @param trace logical value: if \code{TRUE} and \code{verbose == TRUE}, prints
+#'   every function called during execution. Used for debugging.
+#' @param verbose logical value.  If \code{TRUE}, prints out information to
+#'   document the progression of the computation.
+#' @return Returns an object of \code{\link{class}} \code{\link{vdralinear}} for
+#'   linear regression, \code{\link{vdralogistic}} for logistic regression, or
+#'   \code{\link{vdracox}} for cox regression.
+#'
+#' @seealso \code{\link{AnalysisCenter.3Party}}
+#'   \code{\link{AnalysisCenter.KParty}}
+#' @examples
+#' \dontrun{
+#' ## 2 party linear regression
+#'
+#' # Analysis Center -- To be run in one instance of R.
+#' # The working directory should be the same as specified in the PopMedNet
+#' # requset for the analysis center.
+#'
+#' fit = AnalysisCenter.2Party(regression = "linear",
+#'                             data = vdra_data[, c(1, 5:7)],
+#'                             response = "Change_BMI",
+#'                             monitorFolder = tempdir())
+#'
+#' # Data Partner -- To be run in second instand of R, on perhaps a different
+#' # machine. The working directory should be the same as specified in the
+#' # PopMedNet request for the data partner.
+#'
+#' fit = DataPartner.2Party(regression = "linear", data = vdra_data[, 8:11],
+#'                             monitorFolder = tempdir())
+#'
+#' ## 2 party logistic regression
+#'
+#' # Analysis Center -- To be run in one instance of R.
+#' # The working directory should be the same as specified in the PopMedNet
+#' # requset for the analysis center.
+#'
+#' fit = AnalysisCenter.2Party(regression = "logistic",
+#'                             data = vdra_data[, c(2, 5:7)],
+#'                             response = "WtLost",
+#'                             monitorFolder = tempdir())
+#'
+#' # Data Partner -- To be run in second instand of R, on perhaps a different
+#' # machine. The working directory should be the same as specified in the
+#' # PopMedNet request for the data partner.
+#'
+#' fit = DataPartner.2Party(regression = "logistic",
+#'                          data = vdra_data[, 8:11],
+#'                          monitorFolder = tempdir())
+#'
+#' ## 2 party cox regression
+#'
+#' # Analysis Center -- To be run in one instance of R.
+#' # The working directory should be the same as specified in the PopMedNet
+#' # requset for the analysis center.
+#'
+#' fit = AnalysisCenter.2Party(regression = "cox",
+#'                             data = vdra_data[, c(3:4, 5:7)],
+#'                             response = c("Time", "Status"),
+#'                             strata = c("Exposure", "Sex"),
+#'                             monitorFolder = tempdir())
+#'
+#' # Data Partner -- To be run in second instand of R, on perhaps a different
+#' # machine. The working directory should be the same as specified in the
+#' # PopMedNet request for the data partner.
+#'
+#'    fit = DataPartner.2Party(regression = "cox",
+#'                             data = vdra_data[, 8:11],
+#'                             strata = c("Exposure", "Sex"),
+#'                             monitorFolder = tempdir())
+#' }
+#' @export
 AnalysisCenter.2Party = function(regression            = "linear",
                                  data                  = NULL,
                                  response              = NULL,
@@ -46,7 +178,8 @@ AnalysisCenter.2Party = function(regression            = "linear",
   return(stats)
 }
 
-
+#' @rdname distributed2party
+#' @export
 DataPartner.2Party = function(regression          = "linear",
                               data                = NULL,
                               strata              = NULL,
@@ -87,6 +220,8 @@ DataPartner.2Party = function(regression          = "linear",
 
 ########################### 3 PARTY GLOBAL FUNCTIONS ###########################
 
+#' @rdname distributed3party
+#' @export
 DataPartner1.3Party = function(regression            = "linear",
                                data                  = NULL,
                                response              = NULL,
@@ -130,6 +265,8 @@ DataPartner1.3Party = function(regression            = "linear",
 }
 
 
+#' @rdname distributed3party
+#' @export
 DataPartner2.3Party = function(regression          = "linear",
                                data                = NULL,
                                strata              = NULL,
@@ -171,6 +308,169 @@ DataPartner2.3Party = function(regression          = "linear",
 }
 
 
+#' @name distributed3party
+#' @title Three Party Vertical Distributed Regression Analysis
+#' @description \code{AnalysisCenter.3Party}, \code{DataPartner1.3Party} and
+#'   \code{DataPartner2.3Party} are used in conjunction with PopMedNet to
+#'   perform linear, logistic, or cox regression on data that has been
+#'   partitioned vertically between two data partners.  The data partner which
+#'   holds the response variable(s) uses \code{Datapartner1.3Party} and the
+#'   other data partner uses \code{DataPartner2.3Party}.  Data partners are not
+#'   allowed to communicate with each other, but share information via a trusted
+#'   third party analysis center.  While any information that is shared with the
+#'   analysis center by a data partner, with the exception of some summary
+#'   statistics, is encrypted by the sending data partner, if the information
+#'   needs to be sent on to the other data partner for further analysis, the
+#'   analysis center further encrypts the data.  That way, any information that
+#'   deals directly with the raw data that moves between two data partners is
+#'   doubly encrypted to keep both the analysis center and the other data
+#'   partner from learning it.  Thus, no information is shared between the data
+#'   partners or analysis center that would allow one data partner to
+#'   reconstruct part of the other data partners data.  Final coefficients and
+#'   other regression statistics are computed by the analysis center and shared
+#'   with the data partners.
+#' @param regression the model to be used to fit the data.  The default
+#'   regression \code{"linear"} fits a least squares linear model to the data.
+#'   Alternatively, \code{"logistic"} returns a fitted logistic model, and
+#'   \code{"cox"} returns a fitted Cox proportional hazards model.
+#' @param data a data.frame or matrix which contains the data to be used in the
+#'   model.  For \code{DataPartner2.3Party()}, all columns will be used as
+#'   covariates in the regression.  For \code{DataPartner1.3Party()}, all
+#'   columns, with the exception of the column specified by \code{response},
+#'   will be used as covariates in the regression.
+#' @param response for \code{"linear"} and \code{"logistic"} regression, the
+#'   name of the column in \code{data} which holds the response variable.  If
+#'   \code{reponse = NULL}, then the first column of \code{data} will be used as
+#'   the response variable.  For \code{"cox"} regression response hold the name
+#'   of the column which is time to event and the name of the column which is
+#'   the event type (0 = censored, 1 = event).  If \code{response = NULL}, then
+#'   the first column of \code{data} is assumed to be the time to even and the
+#'   second column is assumed to be the event type.
+#' @param strata for \code{"cox"} regression only.  A \code{\link{vector}} of
+#'   character strings identifying the names of the covariates from either party
+#'   which will be used as strata.  Both \code{DataPartner1.3party} and
+#'   \code{DataPartner2.3Party} must specify the same vector of strata.
+#' @param mask logical value: If \code{FALSE}, strata levels for the strata
+#'   which belong to the party which specified \code{FALSE} will be identified
+#'   by name. If \code{TRUE}, levels for the strata which belong to the party
+#'   which specified \code{TRUE} will be put in a random order and level names
+#'   will be changed to \code{NA}.
+#' @param monitorFolder the folder where the directories \code{dplocal},
+#'   \code{inputfiles}, \code{macros}, \code{msoc}, and \code{rprograms} are
+#'   located.
+#' @param msreqid a character string specifying the name of the \emph{Request
+#'   ID} as specified when creating the Distributed Regression request on
+#'   PopMedNet. Used for logging purposes only.
+#' @param blocksize the minimum size used to horizontally partition the data
+#'   for data transfer between the two parties.
+#' @param tol the tolerance used to determine convergence in \code{"logistic"}
+#'   and \code{"cox"} regression.
+#' @param maxIterations the maximum number of iterations to perform
+#'   \code{"logistic"} or \code{"cox"} regression before non-convergence is
+#'   declared.
+#' @param sleepTime the number of seconds to wait after writing the last file to
+#'   disk before signalling the PMN Datamart Client that files are ready to be
+#'   transferred.
+#' @param maxWaitingTime the number of seconds to wait to receive files before a
+#'   transfer error is declared and the program halts execution. Should be the
+#'   same for both parties when \code{delayOffset = TRUE}.
+#' @param popmednet logical value:  if \code{TRUE}, assumes that PopMedNet is
+#'   being used to transfer the files and implements PopMedNet specific
+#'   routines. In particular, a 15 second offset between termination of
+#'   routines that execute in parallel is implemented.
+#' @param trace logical value: if \code{TRUE} and \code{verbose == TRUE}, prints
+#'   every function call. Used for debugging.
+#' @param verbose logical value.  If \code{TRUE}, prints out information to
+#'   document the progression of the computation.
+#'
+#' @return Returns an object of \code{\link{class}} \code{\link{vdralinear}} for
+#'   linear regression, \code{\link{vdralogistic}} for logistic regression, or
+#'   \code{\link{vdracox}} for cox regression.
+#' @seealso \code{\link{AnalysisCenter.2Party}}
+#' \code{\link{AnalysisCenter.KParty}}
+#'
+#' @examples
+#' \dontrun{
+#' ## 3 party linear regression
+#' # Analysis Center -- To be run in one instance of R.
+#' # The working directory should be the same as specified in the PopMedNet
+#' # requset for the analysis center.
+#'
+#' fit = AnalysisCenter.3Party(regression = "linear",
+#'                             monitorFolder = tempdir())
+#'
+#' # Data Partner 1 -- To be run in second instand of R, on perhaps a different
+#' # machine. The working directory should be the same as specified in the
+#' # PopMedNet request for the data partner.
+#'
+#' fit = DataPartner1.3Party(regression = "linear",
+#'                           data = vdra_data[, c(1, 5:7)],
+#'                           response = "Change_BMI",
+#'                           monitorFolder = tempdir())
+#'
+#' # Data Partner 2 -- To be run in third instand of R, on perhaps a different
+#' # machine. The working directory should be the same as specified in the
+#' # PopMedNet request for the data partner.
+#'
+#' fit = DataPartner2.3Party(regression = "linear",
+#'                           data = vdra_data[, 8:11],
+#'                           monitorFolder = tempdir())
+#'
+#' ## 3 party logistic regression
+#'
+#' # Analysis Center -- To be run in one instance of R.
+#' # The working directory should be the same as specified in the PopMedNet
+#' # requset for the analysis center.
+#'
+#' fit = AnalysisCenter.3Party(regression = "logistic",
+#'                             monitorFolder = tempdir())
+#'
+#' # Data Partner 1 -- To be run in second instand of R, on perhaps a different
+#' # machine. The working directory should be the same as specified in the
+#' # PopMedNet request for the data partner.
+#'
+#' fit = DataPartner1.3Party(regression = "logistic",
+#'                           data = vdra_data[, c(2, 5:7)],
+#'                           response = "WtLost",
+#'                           monitorFolder = tempdir())
+#'
+#' # Data Partner 2 -- To be run in third instand of R, on perhaps a different
+#' # machine. The working directory should be the same as specified in the
+#' # PopMedNet request for the data partner.
+#'
+#' fit = DataPartner2.3Party(regression = "logistic",
+#'                           data = vdra_data[, 8:11],
+#'                           monitorFolder = tempdir())
+#'
+#' ## 3 party cox regression
+#'
+#' # Analysis Center -- To be run in one instance of R.
+#' # The working directory should be the same as specified in the PopMedNet
+#' # requset for the analysis center.
+#'
+#' fit = AnalysisCenter.3Party(regression = "cox",
+#'                             monitorFolder = tempdir())
+#'
+#' # Data Partner 1 -- To be run in second instand of R, on perhaps a different
+#' # machine. The working directory should be the same as specified in the
+#' # PopMedNet request for the data partner.
+#'
+#' fit = DataPartner1.3Party(regression = "cox",
+#'                           data = vdra_data[, c(3:4, 5:7)],
+#'                           response = c("Time", "Status"),
+#'                           strata = c("Exposure", "Sex"),
+#'                           monitorFolder = tempdir())
+#'
+#' # Data Partner 2 -- To be run in third instand of R, on perhaps a different
+#' # machine. The working directory should be the same as specified in the
+#' # PopMedNet request for the data partner.
+#'
+#' fit = DataPartner2.3Party(regression = "cox",
+#'                           data = vdra_data[, 8:11],
+#'                           strata = c("Exposure", "Sex"),
+#'                           monitorFolder = tempdir())
+#' }
+#' @export
 AnalysisCenter.3Party = function(regression            = "linear",
                                  monitorFolder         = NULL,
                                  msreqid               = "v_default_00_000",
@@ -214,6 +514,8 @@ AnalysisCenter.3Party = function(regression            = "linear",
 
 ########################### K PARTY GLOBAL FUNCTIONS ###########################
 
+#' @rdname distributedKparty
+#' @export
 DataPartner.KParty = function(regression            = "linear",
                               data                  = NULL,
                               response              = NULL,
@@ -264,6 +566,179 @@ DataPartner.KParty = function(regression            = "linear",
   return(stats)
 }
 
+
+#' @name distributedKparty
+#' @title -Party Vertical Distributed Regression Analysis
+#' @description \code{AnalysisCenter.KParty} and \code{DataPartner.KParty} are
+#'   used in conjunction with PopMedNet to perform linear, logistic, or cox
+#'   regression on data that has been partitioned vertically between two or more
+#'   data partners.  The data partners which holds the data use
+#'   \code{DataPartner.KParty} while a trusted "third" party uses
+#'   \code{AnalysisCenter.KParty}.  Data partners are allowed to communicate
+#'   with each other and the analysis center, no information is shared between
+#'   the data partners or analysis center that would allow one data partner or
+#'   the analysis center to reconstruct part of the other data partners data.
+#'   Final coefficients and other regression statistics are computed by the
+#'   analysis center and shared with the data partners.
+#' @param regression the model to be used to fit the data.  The default
+#'   regression \code{"linear"} fits a least squares linear model to the data.
+#'   Alternatively, \code{"logistic"} returns a fitted logistic model, and
+#'   \code{"cox"} returns a fitted Cox proportional hazards model.
+#' @param data a data.frame or matrix which contains the data to be used in the
+#'   model.  All columns will be used as covariates in the regression with the
+#'   exception of the data partner which has \code{dataPartnerID = 1}.  For this
+#'   data partner, all columns, with the exception of the column specified by
+#'   \code{response}, will be used as covariates in the regression.
+#' @param response only used for data partner with \code{dataPartnerID = 1}. For
+#'   \code{"linear"} and \code{"logistic"} regression, the name of the column in
+#'   \code{data} which holds the response variable.  If \code{reponse = NULL},
+#'   then the first column of \code{data} will be used as the response variable.
+#'   For \code{"cox"} regression response hold the name of the column which is
+#'   time to event and the name of the column which is the event type (0 =
+#'   censored, 1 = event).  If \code{response = NULL}, then the first column of
+#'   \code{data} is assumed to be the time to even and the second column is
+#'   assumed to be the event type.
+#' @param strata for \code{"cox"} regression only.  A \code{\link{vector}} of
+#'   character strings identifying the names of the covariates from either party
+#'   which will be used as strata.  All data partners must specify the same
+#'   vector of strata.
+#' @param mask logical value: If \code{FALSE}, strata levels for the strata
+#'   which belong to the party which specified \code{FALSE} will be identified
+#'   by name. If \code{TRUE}, levels for the strata which belong to the party
+#'   which specified \code{TRUE} will be put in a random order and level names
+#'   will be changed to \code{NA}.
+#' @param numDataPartners the number of data partners which are supplying data
+#'   for the regression.
+#' @param dataPartnerID a unique identifier for each data partner.  The data
+#'   partner with the response variable(s) must have \code{dataPartnerID = 1}.
+#'   All other data partners must have an integer value from 2 to
+#'   \code{numDataPartners}.
+#' @param monitorFolder the folder where the directories \code{dplocal},
+#'   \code{inputfiles}, \code{macros}, \code{msoc}, and \code{rprograms} are
+#'   located.
+#' @param msreqid a character string specifying the name of the \emph{Request
+#'   ID} as specified when creating the Distributed Regresion request on
+#'   PopMedNet. Used for logging purposes only.
+#' @param tol the tolerance used to determine convergence in \code{"logistic"}
+#'   and \code{"cox"} regression.
+#' @param maxIterations the maximum number of iterations to perform
+#'   \code{"logistic"} or \code{"cox"} regression before non-convergence is
+#'   declared.
+#' @param sleepTime the number of seconds to wait after writing the last file to
+#'   disk before signalling the PMN Datamart Client that files are ready to be
+#'   transferred.
+#' @param maxWaitingTime the number of seconds to wait to receive files before a
+#'   transfer error is declared and the program halts execution. Should be the
+#'   same for all parties when \code{delayOffset = TRUE}.
+#' @param popmednet logical value:  if \code{TRUE}, assumes that PopMednet is
+#'   being used to transfer the files and implements PopMedNet specific
+#'   routines. In particular, a 15 second offset between terminiation of
+#'   routines that execute in parallel is implemented.
+#' @param trace logical value: if \code{TRUE} and \code{verbose == TRUE}, prints
+#'   every function call. Used for debugging.
+#' @param verbose logical value.  If \code{TRUE}, prints out information to
+#'   document the progression of the computation.
+#' @return Returns an object of \code{\link{class}} \code{\link{vdralinear}} for linear
+#'  regression, \code{\link{vdralogistic}} for logistic regression, or
+#'  \code{\link{vdracox}} for cox regression.
+#' @seealso \code{\link{AnalysisCenter.2Party}} \code{\link{AnalysisCenter.KParty}}
+#' @examples
+#' \dontrun{
+#' ## 3 party linear regression
+#'
+#' # Analysis Center -- To be run in one instance of R.
+#' # The working directory should be the same as specified in the PopMedNet
+#' # requset for the analysis center.
+#'
+#' fit = AnalysisCenter.KParty(regression = "linear",
+#'                             numDataPartners = 2,
+#'                             monitorFolder = tempdir())
+#'
+#' # Data Partner 1 -- To be run in second instand of R, on perhaps a different
+#' # machine. The working directory should be the same as specified in the
+#' # PopMedNet request for the data partner.
+#'
+#' fit = DataPartner.KParty(regression = "linear",
+#'                          data = vdra_data[, c(1, 5:7)],
+#'                          response = "Change_BMI",
+#'                          numDataPartners = 2,
+#'                          dataPartnerID = 1,
+#'                          monitorFolder = tempdir())
+#'
+#' # Data Partner 2 -- To be run in third instand of R, on perhaps a different
+#' # machine. The working directory should be the same as specified in the
+#' # PopMedNet request for the data partner.
+#'
+#' fit = DataPartner.KParty(regression = "linear",
+#'                          data = vdra_data[, 8:11],
+#'                          numDataPartners = 2,
+#'                          dataPartnerID = 2,
+#'                          monitorFolder = tempdir())
+#'
+#' ## 3 party logistic regression
+#'
+#' # Analysis Center -- To be run in one instance of R.
+#' # The working directory should be the same as specified in the PopMedNet
+#' # requset for the analysis center.
+#'
+#' fit = AnalysisCenter.KParty(regression = "logistic",
+#'                             numDataPartners = 2,
+#'                             monitorFolder = tempdir())
+#'
+#' # Data Partner 1 -- To be run in second instand of R, on perhaps a different
+#' # machine. The working directory should be the same as specified in the
+#' # PopMedNet request for the data partner.
+#'
+#' fit = DataPartner.KParty(regression = "logistic",
+#'                          data = vdra_data[, c(2, 5:7)],
+#'                          response = "WtLost",
+#'                          numDataPartners = 2,
+#'                          dataPartnerID = 1,
+#'                          monitorFolder = tempdir())
+#'
+#' # Data Partner 2 -- To be run in third instand of R, on perhaps a different
+#' # machine. The working directory should be the same as specified in the
+#' # PopMedNet request for the data partner.
+#'
+#' fit = DataPartner.KParty(regression = "logistic",
+#'                          data = vdra_data[, 8:11],
+#'                          numDataPartners = 2,
+#'                          dataPartnerID = 2,
+#'                          monitorFolder = tempdir())
+#'
+#' ## 3 party cox regression
+#'
+#' # Analysis Center -- To be run in one instance of R.
+#' # The working directory should be the same as specified in the PopMedNet
+#' # requset for the analysis center.
+#'
+#' fit = AnalysisCenter.KParty(regression = "cox",
+#'                             numDataPartners = 2,
+#'                             monitorFolder = tempdir())
+#'
+#' # Data Partner 1 -- To be run in second instand of R, on perhaps a different
+#' # machine. The working directory should be the same as specified in the
+#' # PopMedNet request for the data partner.
+#'
+#' fit = DataPartner.KParty(regression = "cox",
+#'                          data = vdra_data[, c(3:4, 5:7)],
+#'                          response = c("Time", "Status"),
+#'                          strata = c("Exposure", "Sex"),
+#'                          numDataPartners = 2,
+#'                          dataPartnerID = 1,
+#'                          monitorFolder = tempdir())
+#'
+#' # Data Partner 2 -- To be run in third instand of R, on perhaps a different
+#' # machine. The working directory should be the same as specified in the
+#' # PopMedNet request for the data partner.
+#'
+#' fit = DataPartner.KParty(regression = "cox",
+#'                          data = vdra_data[, 8:11],
+#'                          strata = c("Exposure", "Sex"),
+#'                          numDataPartners = 2,
+#'                          dataPartnerID = 2,
+#'                          monitorFolder = tempdir())
+#' }
 
 AnalysisCenter.KParty = function(regression            = "linear",
                                  numDataPartners       = NULL,
@@ -3137,27 +3612,41 @@ print.vdralinear = function(x, ...) {
 #' @param object a \code{vdralinear} object.
 #' @param ... further arguments passed to or from other methods.
 #' @return Returns an object of class \code{summary.vdralinear}. Objects of this
-#' class have a method for the function \code{print}.  The following components
-#' must be included in \code{summary.vdralinear} object.
-#' \describe{
+#'   class have a method for the function \code{print}.  The following
+#'   components must be included in \code{summary.vdralinear} object. \describe{
+#'
 #'   \item{failed}{logical value.  If \code{FALSE}, then there was an error
-#'    processing the data.  if \code{TRUE}, there were no errors.}
+#'   processing the data.  if \code{TRUE}, there were no errors.}
+#'
 #'   \item{party}{a vector which indicates the party from which each covariate
-#'    came.}
+#'   came.}
+#'
 #'   \item{coefficients}{the vector of coefficients.  If the model is
-#'     over-determined, there will be missing values in the vector corresponding
-#'     to the redundant columns model matrix.}
+#'   over-determined, there will be missing values in the vector corresponding
+#'   to the redundant columns model matrix.}
+#'
 #'   \item{secoef}{the vector of the standard error of the coefficients.}
-#'   \item{tvals}{the t-values of the coefficietns.}
+#'
+#'   \item{tvals}{the t-values of the coefficients.}
+#'
 #'   \item{pvals}{the p-values of the coefficients.}
+#'
 #'   \item{rstderr}{residual standard error.}
+#'
 #'   \item{rsquare}{r squared.}
+#'
 #'   \item{adjrsquare}{adjusted r squared.}
+#'
 #'   \item{Fstat}{the F-statistic for the linear regression.}
+#'
 #'   \item{df1}{the numerator degrees of freedom for the F-statistic.}
+#'
 #'   \item{df2}{the denominator degrees of freedom for the F-statistic.}
+#'
 #'   \item{Fpval}{the p-value of the F-statistic for the linear regression.}
-#' }
+#'
+#'   }
+#'
 #' @seealso \code{\link{vdralinear}}
 #' @examples
 #' summary(vdra_fit_linear_A)
@@ -3250,22 +3739,43 @@ print.vdralogistic = function(x, ...) {
 #' @return Returns an object of class \code{summary.vdralogistic}. Objects of
 #'   this class have a method for the function \code{print}.  The following
 #'   components must be included in \code{summary.vdralogistic} object.
-#' \describe{
-#'   \item{failed}{logical value.  If \code{FALSE}, then there was an error processing the data.  if \code{TRUE}, there were no errors.}
-#'   \item{converged}{logical value.  If \code{TRUE}, the regression converged.  If \code{FALSE}, it did not.}
-#'   \item{party}{a vector which indicates the party from which each covariate came.}
-#'   \item{coefficients}{the vector of coefficients.  If the model is over-determined, there will be missing values in the vector corresponding to the redudant columns model matrix.}
-#'   \item{secoef}{the vector of the standard error of the coefficients.}
-#'   \item{tvals}{the t-values of the coefficietns.}
-#'   \item{pvals}{the p-values of the coefficients.}
-#'   \item{nulldev}{the null deviance of the fit.}
-#'   \item{nulldev_df}{the degrees of freedom for the null deviance.}
-#'   \item{resdev}{the residual deviance of the fit.}
-#'   \item{resdev_df}{the degrees of freedome for the residual deviance.}
-#'   \item{aic}{the AIC of the fit.}
-#'   \item{bic}{the BIC of the fit.}
-#'   \item{iter}{the number of iterations of the cox algorithm before convergence.}
-#' }
+#'   \describe{
+#'
+#'   \item{failed}{ogical value.  If \code{FALSE}, then there was an error
+#'   processing the data.  if \code{TRUE}, there were no errors.}
+#'
+#'   \item{converged}{ogical value.  If \code{TRUE}, the regression converged.
+#'   If \code{FALSE}, it did not.}
+#'
+#'   \item{party}{ vector which indicates the party from which each covariate
+#'   came.}
+#'
+#'   \item{coefficients}{he vector of coefficients.  If the model is
+#'   over-determined, there will be missing values in the vector corresponding
+#'   to the redudant columns model matrix.}
+#'
+#'   \item{secoef}{he vector of the standard error of the coefficients.}
+#'
+#'   \item{tvals}{he t-values of the coefficietns.}
+#'
+#'   \item{pvals}{he p-values of the coefficients.}
+#'
+#'   \item{nulldev}{he null deviance of the fit.}
+#'
+#'   \item{nulldev_df}{he degrees of freedom for the null deviance.}
+#'
+#'   \item{resdev}{he residual deviance of the fit.}
+#'
+#'   \item{resdev_df}{he degrees of freedome for the residual deviance.}
+#'
+#'   \item{aic the}{IC of the fit.}
+#'
+#'   \item{bic the}{IC of the fit.}
+#'
+#'   \item{iter }{ number of iterations of the cox algorithm before
+#'   convergence.}
+#'
+#'   }
 #' @seealso \code{\link{vdralogistic}}
 #' @examples
 #' summary(vdra_fit_logistic_A)
@@ -3773,7 +4283,7 @@ print.hoslemdistributed = function(x, ...) {
 #'
 #' \describe{
 #'
-#'   \item{hoslem}{a vector containing three numeric quantities: the chi-square
+#' \item{hoslem}{a vector containing three numeric quantities: the chi-square
 #'   value of the test, the degrees of freedom of the test, and p-value of the
 #'   test, in that order.}
 #'
@@ -4006,6 +4516,8 @@ plot.survfitDistributed = function(x, merge = FALSE, ...) {
 }
 
 
+#' @rdname survfitDistributed
+#' @export
 print.survfitDistributed = function(x, ...) {
   start = 1
   events = integer(length(x$strata))
@@ -4020,6 +4532,8 @@ print.survfitDistributed = function(x, ...) {
 }
 
 
+#' @rdname survfitDistributed
+#' @export
 survfitDistributed.stats = function(x) {
   surv          = list()
   surv$n        = x$strata$end - x$strata$start + 1
@@ -4054,7 +4568,8 @@ survfitDistributed.stats = function(x) {
   return(invisible(surv))
 }
 
-
+#' @rdname survfitDistributed
+#' @export
 survfitDistributed.formula = function(x, formula, data) {
   surv = list()
   vars = all.vars(formula)
@@ -4152,6 +4667,56 @@ survfitDistributed.formula = function(x, formula, data) {
 }
 
 
+#' @title Create Survival Curves for Vertical Distributed Cox Regression
+#' @aliases survfitDistributed survfitDistributed.object
+#'   print.survfitDistributed
+#' @description This function creates survival curves for a previously defined
+#'   \code{\link{vdracox}} object.  The function also accepts a formula and the
+#'   original data supplied by the calling party allowing exploration of other
+#'   potential strata.  Both \code{formula} and \code{data} must be NULL or both
+#'   must be specified.
+#' @param x an object of type \code{\link{vdracox}}.
+#' @param formula a formula which defines alternative strata for the survival
+#'   curve.
+#' @param data if \code{formula} is specified, this should be the data that was
+#'   supplied by the calling party.
+#' @return Returns an object of class \code{survfitDistributed}. Objects of this
+#'   class have methods for the functions \code{print} and \code{plot}. The
+#'   following components must be included in a legitimate
+#'   \code{survfitDistributed} object.
+#' \description{
+#'   \item{n}{the total number of subjects in each curve.}
+#'   \item{time}{the time points at which the curve has a step.}
+#'   \item{n.risk}{the number of subjects at risk at each time point.}
+#'   \item{n.event}{the number of events that occour at each time point.}
+#'   \item{n.censor}{the number of subjects who are censored at each time point.}
+#'   \item{strata}{the number of points in each strata.}
+#'   \item{surv}{the estimate of the survival time at each time step.}
+#'   \item{type}{the type of censoring.  Currently, always "right".}
+#' }
+#' @seealso \code{\link{plot.survfitDistributed}}
+#' @examples
+#'
+#' sfit = survfitDistributed(vdra_fit_cox_A)
+#' print(sfit)
+#' plot(sfit)
+#'
+#' # From Data Partner 1
+#'
+#' sfit = survfitDistributed(vdra_fit_cox_A,
+#'                           ~Exposure,
+#'                           data = vdra_data[, c(3:4, 5:7)])
+#' print(sfit)
+#' plot(sfit)
+#'
+#' # From Data Partner 2
+#'
+#' sfit = survfitDistributed(vdra_fit_cox_B,
+#'                           ~Race + Sex,
+#'                           data = vdra_data[, 8:11])
+#' print(sfit)
+#' plot(sfit, merge = TRUE)
+#' @export
 survfitDistributed = function(x = NULL, formula = NULL, data = NULL) {
   if (class(x) != "vdracox") {
     warning("The first parameter must be a vdracox object.")

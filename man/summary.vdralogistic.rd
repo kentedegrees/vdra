@@ -17,22 +17,43 @@
 Returns an object of class \code{summary.vdralogistic}. Objects of
   this class have a method for the function \code{print}.  The following
   components must be included in \code{summary.vdralogistic} object.
-\describe{
-  \item{failed}{logical value.  If \code{FALSE}, then there was an error processing the data.  if \code{TRUE}, there were no errors.}
-  \item{converged}{logical value.  If \code{TRUE}, the regression converged.  If \code{FALSE}, it did not.}
-  \item{party}{a vector which indicates the party from which each covariate came.}
-  \item{coefficients}{the vector of coefficients.  If the model is over-determined, there will be missing values in the vector corresponding to the redudant columns model matrix.}
-  \item{secoef}{the vector of the standard error of the coefficients.}
-  \item{tvals}{the t-values of the coefficietns.}
-  \item{pvals}{the p-values of the coefficients.}
-  \item{nulldev}{the null deviance of the fit.}
-  \item{nulldev_df}{the degrees of freedom for the null deviance.}
-  \item{resdev}{the residual deviance of the fit.}
-  \item{resdev_df}{the degrees of freedome for the residual deviance.}
-  \item{aic}{the AIC of the fit.}
-  \item{bic}{the BIC of the fit.}
-  \item{iter}{the number of iterations of the cox algorithm before convergence.}
-}
+  \describe{
+
+  \item{failed}{ogical value.  If \code{FALSE}, then there was an error
+  processing the data.  if \code{TRUE}, there were no errors.}
+
+  \item{converged}{ogical value.  If \code{TRUE}, the regression converged.
+  If \code{FALSE}, it did not.}
+
+  \item{party}{ vector which indicates the party from which each covariate
+  came.}
+
+  \item{coefficients}{he vector of coefficients.  If the model is
+  over-determined, there will be missing values in the vector corresponding
+  to the redudant columns model matrix.}
+
+  \item{secoef}{he vector of the standard error of the coefficients.}
+
+  \item{tvals}{he t-values of the coefficietns.}
+
+  \item{pvals}{he p-values of the coefficients.}
+
+  \item{nulldev}{he null deviance of the fit.}
+
+  \item{nulldev_df}{he degrees of freedom for the null deviance.}
+
+  \item{resdev}{he residual deviance of the fit.}
+
+  \item{resdev_df}{he degrees of freedome for the residual deviance.}
+
+  \item{aic the}{IC of the fit.}
+
+  \item{bic the}{IC of the fit.}
+
+  \item{iter }{ number of iterations of the cox algorithm before
+  convergence.}
+
+  }
 }
 \description{
 Produces a summary of a fitted vdra logistic regression model.

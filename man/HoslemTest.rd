@@ -20,7 +20,7 @@ Returns an object of class \code{hoslemdistributed}. Objects of this
 
 \describe{
 
-  \item{hoslem}{a vector containing three numeric quantities: the chi-square
+\item{hoslem}{a vector containing three numeric quantities: the chi-square
   value of the test, the degrees of freedom of the test, and p-value of the
   test, in that order.}
 
