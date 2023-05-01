@@ -24,7 +24,7 @@
 #' @importFrom utils read.csv
 #' @export
 pmn <- function(num_party, directory = NULL, verbose = TRUE) {
-  sleep_time = 0.5
+  sleep_time <- 0.5
 
   hms <- function(time) {
     time <- round(time, 1)
@@ -158,7 +158,7 @@ pmn <- function(num_party, directory = NULL, verbose = TRUE) {
         if (exists) {
           if (verbose) cat("  ")
         } else {
-          if (verbose) cat("X ")
+          if (verbose) cat("x ")
         }
         size  <- format(file.size(file.path(write_directory[origin], fn)), big.mark = ",", scientific = FALSE)
         space <- paste0(rep(" ", 33 - nchar(size) - nchar(as.character(fn))), collapse = "")

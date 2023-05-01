@@ -37,7 +37,7 @@ bool strata_ok(SEXP x)
 }
 
 int printInitialMessage(int verbose) {
-  if (verbose) Rprintf("Processing W*X               :   0%%|....................|\r");
+  if (verbose) Rprintf("Processing w*X               :   0%%|....................|\r");
   // fflush(stdout);
   if (verbose) flush_console();
   return(0);
@@ -49,7 +49,7 @@ int printMessage(int stepCounter, int num_events, int currentPercent, int verbos
   int stars      = 20 * stepCounter  / (float)num_events;
   if (newPercent > currentPercent) {
     if (verbose) {
-      Rprintf("Processing W*X               : %3d%%|", newPercent);
+      Rprintf("Processing w*X               : %3d%%|", newPercent);
       for (int i = 0; i < stars; i++ ) { Rprintf("#"); }
       for (int i = stars; i < 20; i++) { Rprintf(" "); }
       Rprintf("|\r");

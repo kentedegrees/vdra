@@ -223,10 +223,10 @@ UpdateParamsLogistic.DP <- function(params) {
 UpdateDataLogistic.DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateDataLogistic.DP\n\n")
   if (params$data_partner_id == 1) {
-    data$Y = data$X[, 1, drop = FALSE]
+    data$Y = data$x[, 1, drop = FALSE]
   }
   idx <- params$indicies[[params$data_partner_id]]
-  data$X = data$X[, idx, drop = FALSE]
+  data$x = data$x[, idx, drop = FALSE]
   data$colmin = data$colmin[idx]
   data$colmax = data$colmax[idx]
   data$colsum = data$colsum[idx]
@@ -238,15 +238,15 @@ UpdateDataLogistic.DP <- function(params, data) {
 #' @importFrom stats rnorm runif
 ComputeSbetaLogistic.DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeSbetaLogistic.DP\n\n")
-  set.seed(params$seed + params$algIterationCounter, kind = "Mersenne-Twister")
+  set.seed(params$seed + params$alg_iteration_counter, kind = "Mersenne-Twister")
   V = matrix(rnorm(params$n, mean = runif(n = 1, min = -1, max = 1), sd = 10), ncol = 1)
   Vsum = 0
   for (id in 1:params$numDataPartners) {
-    set.seed(params$seeds[id] + params$algIterationCounter, kind = "Mersenne-Twister")
+    set.seed(params$seeds[id] + params$alg_iteration_counter, kind = "Mersenne-Twister")
     Vsum = Vsum + matrix(rnorm(params$n, mean = runif(n = 1, min = -1, max = 1), sd = 10), ncol = 1)
   }
 
-  Sbeta = (data$X %*% params$betas + params$u) / (2 * params$u) + V - params$scaler / sum(params$scalers) * Vsum
+  Sbeta = (data$x %*% params$betas + params$u) / (2 * params$u) + V - params$scaler / sum(params$scalers) * Vsum
 
   write_time <- proc.time()[3]
   save(Sbeta, file = file.path(params$write_path, "sbeta.rdata"))
@@ -293,7 +293,7 @@ ComputeStWSLogistic.DP <- function(params, data) {
   read_time <- proc.time()[3] - read_time
   params$pi_ = pi_
 
-  W = pi_ * (1 - pi_)
+  w = pi_ * (1 - pi_)
   C = rep(list(list()), params$numDataPartners)
 
   idx <- params$indicies[[params$data_partner_id]]
@@ -308,18 +308,18 @@ ComputeStWSLogistic.DP <- function(params, data) {
       halfshareDP = matrix(rnorm(params$n * params$ps[id], sd = 20),
                            nrow = params$n, ncol = params$ps[id])[, idx, drop = FALSE]
       C[[id]] = params$scaler / (params$scaler + params$scalers[id]) *
-        t(halfshareDP) %*% MultiplyDiagonalWTimesX(W, halfshare) +
-        t(halfshareDP) %*% MultiplyDiagonalWTimesX(W, data$X - halfshare)
+        t(halfshareDP) %*% MultiplyDiagonalWTimesX(w, halfshare) +
+        t(halfshareDP) %*% MultiplyDiagonalWTimesX(w, data$x - halfshare)
     } else if (id == params$data_partner_id) {
-      C[[id]] = t(data$X) %*% MultiplyDiagonalWTimesX(W, data$X)
+      C[[id]] = t(data$x) %*% MultiplyDiagonalWTimesX(w, data$x)
     } else {
       set.seed(params$seeds[id], kind = "Mersenne-Twister")
       idx <- params$indicies[[id]]
       halfshareDP = matrix(rnorm(params$n * params$ps[id], sd = 20),
                            nrow = params$n, ncol = params$ps[id])[, idx, drop = FALSE]
       C[[id]] = params$scaler / (params$scaler + params$scalers[id]) *
-        t(halfshare) %*% MultiplyDiagonalWTimesX(W, halfshareDP) +
-        t(data$X - halfshare) %*% MultiplyDiagonalWTimesX(W, halfshareDP)
+        t(halfshare) %*% MultiplyDiagonalWTimesX(w, halfshareDP) +
+        t(data$x - halfshare) %*% MultiplyDiagonalWTimesX(w, halfshareDP)
     }
   }
 
@@ -337,7 +337,7 @@ ComputeStWSLogistic.AC <- function(params) {
   read_time <- 0
   read_size <- 0
   C        = NULL
-  W = params$pi_ * (1 - params$pi_)
+  w = params$pi_ * (1 - params$pi_)
   StWS = matrix(0, sum(params$pReduct), sum(params$pReduct))
 
   for (id1 in 1:params$numDataPartners) {
@@ -367,7 +367,7 @@ ComputeStWSLogistic.AC <- function(params) {
         end = sum(params$pReduct[1:id2])
         start = end - params$pReduct[id2] + 1
         idx2 = start:end
-        temp = t(params$halfshare[[id1]]) %*% MultiplyDiagonalWTimesX(W, params$halfshare[[id2]])
+        temp = t(params$halfshare[[id1]]) %*% MultiplyDiagonalWTimesX(w, params$halfshare[[id2]])
         StWS[idx1, idx2] = StWS[idx1, idx2] + temp
         StWS[idx2, idx1] = StWS[idx2, idx1] + t(temp)
       }
@@ -386,7 +386,7 @@ ComputeStWSLogistic.AC <- function(params) {
     params$failed <- TRUE
     params$singular_matrix = TRUE
     params$error_message =
-      paste0("The matrix t(X)*W*X is not invertible.\n",
+      paste0("The matrix t(x)*w*x is not invertible.\n",
              "       This may be due to one of two possible problems.\n",
              "       1. Poor random initialization of the security matrices.\n",
              "       2. Near multicollinearity in the data\n",
@@ -482,7 +482,7 @@ ComputeConvergeStatusLogistic.AC <- function(params) {
     u = u + utemp
     converged = converged && (maxdifference < params$cutoff)
   }
-  maxIterExceeded = params$algIterationCounter >= params$max_iterations
+  maxIterExceeded = params$alg_iteration_counter >= params$max_iterations
   params$maxIterExceeded = maxIterExceeded
   params$u = u
   params$converged = converged
@@ -610,8 +610,8 @@ ComputeResultsLogistic.AC <- function(params) {
 
   # If xtwx were singular, it would have been caught in GetII.A2(), so we may
   # assume that xtwx is NOT singular and so we do not have to do a check.
-  stats$party = params$party
-  stats$coefficients = rep(NA, params$p)
+  stats$party <- params$party
+  stats$coefficients <- rep(NA, params$p)
   stats$secoef = rep(NA, params$p)
   stats$tvals  = rep(NA, params$p)
   stats$pvals  = rep(NA, params$p)
@@ -630,7 +630,7 @@ ComputeResultsLogistic.AC <- function(params) {
   stats$pvals[params$fullindicies] = pvals
   stats$hoslem  = hoslem
   stats$ROC     = ROC
-  stats$iter    = params$algIterationCounter - 1
+  stats$iter    = params$alg_iteration_counter - 1
   names(stats$coefficients) = params$colnames
   names(stats$party) = params$colnames
   names(stats$secoef) = params$colnames
@@ -754,7 +754,7 @@ DataPartnerKLogistic <- function(data,
   data = UpdateDataLogistic.DP(params, data)
   params <- add_to_log(params, "UpdateDataLogistic.DP", 0, 0, 0, 0)
 
-  params$algIterationCounter = 1
+  params$alg_iteration_counter = 1
   while (!params$converged && !params$maxIterExceeded) {
     BeginningIteration(params)
 
@@ -785,7 +785,7 @@ DataPartnerKLogistic <- function(data,
     params <- GetConvergeStatusLogistic.DP(params)
 
     EndingIteration(params)
-    params$algIterationCounter = params$algIterationCounter + 1
+    params$alg_iteration_counter = params$alg_iteration_counter + 1
   }
 
   params <- ComputeSbetaLogistic.DP(params, data)
@@ -897,7 +897,7 @@ AnalysisCenterKLogistic <- function(numDataPartners = NULL,
   params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
-  params$algIterationCounter = 1
+  params$alg_iteration_counter = 1
   while (!params$converged && !params$maxIterExceeded) {
     BeginningIteration(params)
     params <- ComputeWeightsLogistic.AC(params)
@@ -929,7 +929,7 @@ AnalysisCenterKLogistic <- function(numDataPartners = NULL,
     params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     EndingIteration(params)
-    params$algIterationCounter = params$algIterationCounter + 1
+    params$alg_iteration_counter = params$alg_iteration_counter + 1
   }
 
   params <- ComputeFinalSBetaLogistic.AC(params)

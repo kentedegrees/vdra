@@ -116,22 +116,22 @@ PrepareDataLinLog.DP1 <- function(params, data, y_name = NULL) {
   workdata$tags = CreateModelMatrixTags(data[, covariate_index, drop = FALSE])
   workdata$tags = c("(Intercept)", workdata$tags)
   names(workdata$tags)[1] = "numeric"
-  X = model.matrix(~ ., data[, c(response_index, covariate_index), drop = FALSE])
-  rownames(X) = NULL
-  covariate_index = setdiff(1:ncol(X), 2)
-  workdata$X = X[, c(2, covariate_index), drop = FALSE]
+  x = model.matrix(~ ., data[, c(response_index, covariate_index), drop = FALSE])
+  rownames(x) = NULL
+  covariate_index = setdiff(1:ncol(x), 2)
+  workdata$x = x[, c(2, covariate_index), drop = FALSE]
 
-  workdata$n        = nrow(workdata$X)
-  workdata$colmin   = apply(workdata$X, 2, min)
-  workdata$colmax   = apply(workdata$X, 2, max)
-  workdata$colsum   = apply(workdata$X, 2, sum)
+  workdata$n        = nrow(workdata$x)
+  workdata$colmin   = apply(workdata$x, 2, min)
+  workdata$colmax   = apply(workdata$x, 2, max)
+  workdata$colsum   = apply(workdata$x, 2, sum)
   workdata$colrange = workdata$colmax - workdata$colmin
-  for (i in 1:ncol(workdata$X)) {
+  for (i in 1:ncol(workdata$x)) {
     if (workdata$colmin[i] == workdata$colmax[i]) {
       workdata$colmin[i] = 0
       workdata$colrange[i] = 1
     }
-    workdata$X[, i] = (workdata$X[, i] - workdata$colmin[i]) / workdata$colrange[i]
+    workdata$x[, i] = (workdata$x[, i] - workdata$colmin[i]) / workdata$colrange[i]
   }
 
   return(workdata)
@@ -153,21 +153,21 @@ PrepareDataLinLog.DPk <- function(params, data) {
   data = data.frame(data) # convert to a clean data.frame
 
   workdata$tags = CreateModelMatrixTags(data)
-  workdata$X = model.matrix(~ ., data)
-  rownames(workdata$X) = NULL
-  workdata$X = workdata$X[, -1, drop = FALSE]
+  workdata$x = model.matrix(~ ., data)
+  rownames(workdata$x) = NULL
+  workdata$x = workdata$x[, -1, drop = FALSE]
 
-  workdata$n        = nrow(workdata$X)
-  workdata$colmin   = apply(workdata$X, 2, min)
-  workdata$colmax   = apply(workdata$X, 2, max)
-  workdata$colsum   = apply(workdata$X, 2, sum)
+  workdata$n        = nrow(workdata$x)
+  workdata$colmin   = apply(workdata$x, 2, min)
+  workdata$colmax   = apply(workdata$x, 2, max)
+  workdata$colsum   = apply(workdata$x, 2, sum)
   workdata$colrange = workdata$colmax - workdata$colmin
-  for (i in 1:ncol(workdata$X)) {
+  for (i in 1:ncol(workdata$x)) {
     if (workdata$colmin[i] == workdata$colmax[i]) {
       workdata$colmin[i] = 0
       workdata$colrange[i] = 1
     }
-    workdata$X[, i] = (workdata$X[, i] - workdata$colmin[i]) / workdata$colrange[i]
+    workdata$x[, i] = (workdata$x[, i] - workdata$colmin[i]) / workdata$colrange[i]
   }
 
   return(workdata)
@@ -251,8 +251,8 @@ CheckAgreement.AC <- function(params) {
 #' @importFrom stats runif
 prepare_params_linear_DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_DP\n\n")
-  params$n          = nrow(data$X)
-  params$p          = ncol(data$X)
+  params$n          = nrow(data$x)
+  params$p          = ncol(data$x)
   temp = as.numeric(Sys.time())
   set.seed((temp - trunc(temp)) * .Machine$integer.max)
   params$seed       = floor(runif(1) * .Machine$integer.max)
@@ -290,7 +290,7 @@ PrepareSharesLinear.DP <- function(params, data) {
 
   for (id in 1:params$numDataPartners) {
     if (id == params$data_partner_id) {
-      products[[id]] = t(data$X) %*% data$X
+      products[[id]] = t(data$x) %*% data$x
       params$ps      = c(params$ps, params$p)
       params$scalers = c(params$scalers, params$scaler)
       params$seeds   = c(params$seeds, params$seed)
@@ -308,19 +308,19 @@ PrepareSharesLinear.DP <- function(params, data) {
     halfShare2 = matrix(rnorm(params$n * p, sd = 20), nrow = params$n, ncol = p)
 
     if (id < params$data_partner_id) {
-      products[[id]] = t(halfShare2) %*% (data$X - scaler / (scaler + params$scaler) * halfshare)
+      products[[id]] = t(halfShare2) %*% (data$x - scaler / (scaler + params$scaler) * halfshare)
     }
 
     if (id > params$data_partner_id) {
-      products[[id]] = t(data$X - scaler / (scaler + params$scaler) * halfshare) %*% halfShare2
+      products[[id]] = t(data$x - scaler / (scaler + params$scaler) * halfshare) %*% halfShare2
     }
   }
 
-  halfshare = data$X - halfshare
+  halfshare = data$x - halfshare
   colmin    = data$colmin
   colrange  = data$colrange
   colsum    = data$colsum
-  colnames  = colnames(data$X)
+  colnames  = colnames(data$x)
   tags      = data$tags
 
   write_time <- proc.time()[3]
@@ -337,8 +337,8 @@ PrepareSharesLinear.DP <- function(params, data) {
 }
 
 
-GetProductsLinear.AC <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "GetProductsLinear.AC\n\n")
+get_products_linear_AC <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "get_products_linear_AC\n\n")
   read_time <- 0
   read_size = 0
   p = 0
@@ -416,16 +416,16 @@ GetProductsLinear.AC <- function(params) {
   params$converged    = TRUE
   params$tags         = alltags
 
-  params <- add_to_log(params, "GetProductsLinear.AC", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "get_products_linear_AC", read_time, read_size, 0, 0)
   return(params)
 }
 
 
 #' @importFrom  stats pf pt
-ComputeResultsLinear.AC <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLinear.AC\n\n")
+compute_results_linear_AC <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "compute_results_linear_AC\n\n")
   stats           = params$stats
-  stats$converged = params$converged
+  stats$converged <- params$converged
   n        = params$n
   yty      = params$yty
   xty      = params$xty
@@ -479,8 +479,8 @@ ComputeResultsLinear.AC <- function(params) {
 
   p             = length(indicies)
   p1            = ncol(xtx)
-  xtx.old       = xtx
-  xty.old       = xty
+  xtx_old       = xtx
+  xty_old       = xty
   xtx           = xtx[indicies, indicies, drop = FALSE]
   xty           = xty[indicies, , drop = FALSE]
 
@@ -537,8 +537,8 @@ ComputeResultsLinear.AC <- function(params) {
   stats$df1                    = df1
   stats$df2                    = df2
   stats$n                      = params$n
-  stats$xtx                    = xtx.old
-  stats$xty                    = xty.old
+  stats$xtx                    = xtx_old
+  stats$xty                    = xty_old
   stats$yty                    = yty
   stats$meansy                 = meansy
   stats$means                  = params$means
@@ -560,7 +560,7 @@ ComputeResultsLinear.AC <- function(params) {
   save(stats, file = file.path(params$write_path, "stats.rdata"))
   write_size = file.size(file.path(params$write_path, "stats.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "ComputeResultsLinear.AC", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "compute_results_linear_AC", 0, 0, write_time, write_size)
   return(params)
 }
 
@@ -728,8 +728,8 @@ AnalysisCenterKLinear <- function(numDataPartners = NULL,
   params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
-  params <- GetProductsLinear.AC(params)
-  params <- ComputeResultsLinear.AC(params)
+  params <- get_products_linear_AC(params)
+  params <- compute_results_linear_AC(params)
 
   if (params$failed) {
     make_error_message(params$write_path, params$error_message)

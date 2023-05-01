@@ -157,24 +157,24 @@ PrepareDataLogistic.a23 <- function(params, data, y_name = NULL) {
   workdata$tags = c("(Intercept)", workdata$tags)
   names(workdata$tags)[1] = "numeric"
 
-  X = model.matrix(~ ., data[, c(response_index, covariate_index), drop = FALSE])
-  rownames(X) = NULL
-  covariate_index = setdiff(1:ncol(X), 2)
+  x = model.matrix(~ ., data[, c(response_index, covariate_index), drop = FALSE])
+  rownames(x) = NULL
+  covariate_index = setdiff(1:ncol(x), 2)
 
-  means = apply(X, 2, mean)
-  sd    = apply(X, 2, sd)
+  means = apply(x, 2, mean)
+  sd    = apply(x, 2, sd)
   sd    = sapply(sd, function(x) {
     ifelse(x > 0, x, 1)
   })
-  workdata$Y      = X[, 2, drop = FALSE]
-  workdata$X      = X[, covariate_index, drop = FALSE]
+  workdata$Y      = x[, 2, drop = FALSE]
+  workdata$x      = x[, covariate_index, drop = FALSE]
   workdata$means  = means[covariate_index]
   workdata$sd     = sd[covariate_index]
   workdata$yty    = t(workdata$Y) %*% workdata$Y
 
-  if (ncol(workdata$X) >= 2) {
-    for (i in 2:ncol(workdata$X)) {
-      workdata$X[, i] = (workdata$X[, i] - workdata$means[i]) / workdata$sd[i]
+  if (ncol(workdata$x) >= 2) {
+    for (i in 2:ncol(workdata$x)) {
+      workdata$x[, i] = (workdata$x[, i] - workdata$means[i]) / workdata$sd[i]
     }
   }
 
@@ -202,17 +202,17 @@ PrepareDataLogistic.b23 <- function(params, data) {
     workdata$failed = TRUE
     return(workdata)
   }
-  workdata$X = model.matrix(~ ., data)
-  rownames(workdata$X) = NULL
-  workdata$X = workdata$X[, -1, drop = FALSE]
-  workdata$means = apply(workdata$X, 2, mean)
-  workdata$sd    = apply(workdata$X, 2, sd)
+  workdata$x = model.matrix(~ ., data)
+  rownames(workdata$x) = NULL
+  workdata$x = workdata$x[, -1, drop = FALSE]
+  workdata$means = apply(workdata$x, 2, mean)
+  workdata$sd    = apply(workdata$x, 2, sd)
   workdata$sd    = sapply(workdata$sd, function(x) {
     ifelse(x > 0, x, 1)
   })
 
-  for (i in 1:ncol(workdata$X)) {
-    workdata$X[, i] = (workdata$X[, i] - workdata$means[i]) / workdata$sd[i]
+  for (i in 1:ncol(workdata$x)) {
+    workdata$x[, i] = (workdata$x[, i] - workdata$means[i]) / workdata$sd[i]
   }
 
 
@@ -225,15 +225,15 @@ PrepareParamsLogistic.b2 <- function(params, data) {
   params$converged      = FALSE
   params$halted         = FALSE
 
-  params$n             = nrow(data$X)
+  params$n             = nrow(data$x)
   params$num_events     = 0
   params$p1            = 0
-  params$p2            = ncol(data$X)
+  params$p2            = ncol(data$x)
   params$p             = params$p1 + params$p2
-  params$p1.old        = 0
-  params$p2.old        = params$p2
+  params$p1_old        = 0
+  params$p2_old        = params$p2
   params$a_col_names     = c("")
-  params$b_col_names     = colnames(data$X)
+  params$b_col_names     = colnames(data$x)
   params$y_name         = ""
   params$a_col_names_old = c("")
   params$b_col_names_old = c("")
@@ -285,7 +285,7 @@ PrepareParamsLogistic.a2 <- function(params, data, cutoff = 0.01, max_iterations
     return(params)
   }
 
-  params$n  = nrow(data$X)
+  params$n  = nrow(data$x)
   if (pb$n != params$n) {
     params$error_message <-
       paste("Party A has", params$n, "observations and Party B has", pb$n, "observations.")
@@ -293,13 +293,13 @@ PrepareParamsLogistic.a2 <- function(params, data, cutoff = 0.01, max_iterations
     params$failed <- TRUE
   }
 
-  params$p1 = ncol(data$X)
+  params$p1 = ncol(data$x)
   params$p2 = pb$p2
   params$p  = params$p1 + params$p2
-  params$p1.old = params$p1
-  params$p2.old = params$p2
+  params$p1_old = params$p1
+  params$p2_old = params$p2
 
-  params$a_col_names = colnames(data$X)
+  params$a_col_names = colnames(data$x)
   params$b_col_names = pb$b_col_names
   params$y_name     = colnames(data$Y)
   params$a_col_names_old = c("")
@@ -408,7 +408,7 @@ GetZLogistic.a2 <- function(params, data) {
   write_size <- 0
 
   num_blocks = params$blocks$num_blocks
-  pbar <- MakeProgressBar1(num_blocks, "Z", params$verbose)
+  pbar <- MakeProgressBar1(num_blocks, "z", params$verbose)
   container_ct_z <- 0
   for (i in 1:num_blocks) {
     if (i %in% params$container$file_break_z) {
@@ -420,10 +420,10 @@ GetZLogistic.a2 <- function(params, data) {
     stp <- params$blocks$stops[i]
     n = stp - strt + 1
     g = params$blocks$g[i]
-    Z = FindOrthogonalVectors(cbind(data$Y[strt:stp, ], data$X[strt:stp, ]), g)
+    z <- FindOrthogonalVectors(cbind(data$Y[strt:stp, ], data$x[strt:stp, ]), g)
 
     write_time <- write_time - proc.time()[3]
-    writeBin(as.vector(Z), con = to_write, endian = "little")
+    writeBin(as.vector(z), con = to_write, endian = "little")
     write_time <- write_time + proc.time()[3]
     if ((i + 1) %in% params$container$file_break_z || i == num_blocks) {
       close(to_write)
@@ -482,9 +482,9 @@ GetWLogistic.b2 <- function(params, data) {
   write_time <- 0
   write_size <- 0
 
-  pbar <- MakeProgressBar1(params$blocks$num_blocks, "(I-Z*Z')XB", params$verbose)
+  pbar <- MakeProgressBar1(params$blocks$num_blocks, "(I-z*z')XB", params$verbose)
 
-  xb_t_xb <- t(data$X) %*% data$X
+  xb_t_xb <- t(data$x) %*% data$x
 
   container_ct_z <- 0
   container_ct_w <- 0
@@ -496,7 +496,7 @@ GetWLogistic.b2 <- function(params, data) {
       to_read <- file(file.path(params$read_path, filename1), "rb")
       read_size <- read_size + file.size(file.path(params$read_path, filename1))
     }
-    if (i %in% params$container$filebreak.W) {
+    if (i %in% params$container$filebreak.w) {
       container_ct_w <- container_ct_w + 1
       filename2 <- paste0("cw_", container_ct_w, ".rdata")
       to_write <- file(file.path(params$write_path, filename2), "wb")
@@ -507,20 +507,20 @@ GetWLogistic.b2 <- function(params, data) {
     g1 <- params$blocks$g[i]
 
     read_time <- read_time - proc.time()[3]
-    Z = matrix(readBin(con = to_read, what = numeric(), n = n2 * g1,
+    z <- matrix(readBin(con = to_read, what = numeric(), n = n2 * g1,
                        endian = "little"), nrow = n2, ncol = g1)
     read_time <- read_time + proc.time()[3]
 
-    W = data$X[strt:stp, ] - Z %*% (t(Z) %*% data$X[strt:stp, ])
+    w = data$x[strt:stp, ] - z %*% (t(z) %*% data$x[strt:stp, ])
 
     write_time <- write_time - proc.time()[3]
-    writeBin(as.vector(W), con = to_write, endian = "little")
+    writeBin(as.vector(w), con = to_write, endian = "little")
     write_time <- write_time + proc.time()[3]
 
     if ((i + 1) %in% params$container$file_break_z || i == params$blocks$num_blocks) {
       close(to_read)
     }
-    if ((i + 1) %in% params$container$filebreak.W || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$filebreak.w || i == params$blocks$num_blocks) {
       close(to_write)
       write_size <- write_size + file.size(file.path(params$write_path, filename2))
     }
@@ -552,16 +552,16 @@ CheckColinearityLogistic.a2 <- function(params, data) {
   load(file.path(params$read_path, "xbtxb.rdata")) # load xb_t_xb
   read_size <- file.size(file.path(params$read_path, "xbtxb.rdata"))
   read_time <- read_time + proc.time()[3]
-  XATXA = t(data$X) %*% data$X
+  XATXA = t(data$x) %*% data$x
   XATXB = 0
-  XATY  = t(data$X) %*% data$Y
+  XATY  = t(data$x) %*% data$Y
   YTXB  = 0
 
   pbar <- MakeProgressBar1(params$blocks$num_blocks, "X'X", params$verbose)
 
   container_ct_w <- 0
   for (i in 1:params$blocks$num_blocks) {
-    if (i %in% params$container$filebreak.W) {
+    if (i %in% params$container$filebreak.w) {
       container_ct_w <- container_ct_w + 1
       filename = paste0("cw_", container_ct_w, ".rdata")
       to_read <- file(file.path(params$read_path, filename), "rb")
@@ -571,14 +571,14 @@ CheckColinearityLogistic.a2 <- function(params, data) {
     n2 <- stp - strt + 1
 
     read_time <- read_time - proc.time()[3]
-    W = matrix(readBin(con = to_read, what = numeric(), n = n2 * p2,
+    w = matrix(readBin(con = to_read, what = numeric(), n = n2 * p2,
                        endian = "little"), nrow = n2, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
-    XATXB = XATXB + t(data$X[strt:stp, ]) %*% W
-    YTXB  = YTXB  + t(data$Y[strt:stp, ]) %*% W
+    XATXB = XATXB + t(data$x[strt:stp, ]) %*% w
+    YTXB  = YTXB  + t(data$Y[strt:stp, ]) %*% w
 
-    if ((i + 1) %in% params$container$filebreak.W || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$filebreak.w || i == params$blocks$num_blocks) {
       close(to_read)
       read_size <- read_size + file.size(file.path(params$read_path, filename))
     }
@@ -613,11 +613,11 @@ CheckColinearityLogistic.a2 <- function(params, data) {
   params$b_col_names_old = params$b_col_names
   params$a_col_names     = AnamesKeep
   params$b_col_names     = BnamesKeep
-  params$p1.old        = params$p1
-  params$p2.old        = params$p2
+  params$p1_old        = params$p1
+  params$p2_old        = params$p2
   params$p1            = length(AnamesKeep)
   params$p2            = length(BnamesKeep)
-  params$p.old         = params$p1.old + params$p2.old
+  params$p_old         = params$p1_old + params$p2_old
   params$p             = params$p1 + params$p2
   params$meansA        = params$meansA[params$a_indicies_keep]
   params$meansB        = params$meansB[params$b_indicies_keep]
@@ -626,11 +626,11 @@ CheckColinearityLogistic.a2 <- function(params, data) {
   params$xtx           = xtx
   params$xty           = XTY
 
-  Aindicies = params$a_indicies_keep
-  Bindicies = params$b_indicies_keep
+  a_indicies = params$a_indicies_keep
+  b_indicies = params$b_indicies_keep
 
   write_time <- write_time - proc.time()[3]
-  save(Aindicies, Bindicies, file = file.path(params$write_path, "indicies.rdata"))
+  save(a_indicies, b_indicies, file = file.path(params$write_path, "indicies.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, "indicies.rdata")))
   write_time <- write_time + proc.time()[3]
 
@@ -651,7 +651,7 @@ CheckColinearityLogistic.a2 <- function(params, data) {
 
 UpdateDataLogistic.a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateDataLogistic.a2\n\n")
-  data$X = as.matrix(data$X[, params$a_indicies_keep, drop = FALSE])
+  data$x = as.matrix(data$x[, params$a_indicies_keep, drop = FALSE])
   return(data)
 }
 
@@ -678,7 +678,7 @@ ComputeInitialBetasLogistic.a2 <- function(params, data) {
   params$betasAold = matrix(0, p1, 1)
   params$betasB    = Bbetas
 
-  params$algIterationCounter      = 1
+  params$alg_iteration_counter      = 1
   params$deltabeta = Inf
 
   write_time <- proc.time()[3]
@@ -694,32 +694,32 @@ ComputeInitialBetasLogistic.a2 <- function(params, data) {
 
 UpdateParamsLogistic.b2 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateParamsLogistic.b2\n\n")
-  Aindicies = NULL
-  Bindicies = NULL
+  a_indicies = NULL
+  b_indicies = NULL
   Bbetas    = NULL
   Bxty      = NULL
   read_time <- proc.time()[3]
-  load(file.path(params$read_path, "indicies.rdata")) # load Aindicies, Bindicies
+  load(file.path(params$read_path, "indicies.rdata")) # load a_indicies, b_indicies
   load(file.path(params$read_path, "Bbetas_xty.rdata"))     # Load Bbetas
   read_size <- sum(file.size(file.path(params$read_path, c("indicies.rdata",
                                                         "Bbetas_xty.rdata"))))
   read_time <- proc.time()[3] - read_time
   params$a_col_names_old = params$a_col_names
   params$b_col_names_old = params$b_col_names
-  params$a_col_names     = params$a_col_names_old[Aindicies]
-  params$b_col_names     = params$b_col_names_old[Bindicies]
-  params$p1.old = params$p1
-  params$p2.old = params$p2
-  params$p1     = length(Aindicies)
-  params$p2     = length(Bindicies)
-  params$p.old  = params$p
+  params$a_col_names     = params$a_col_names_old[a_indicies]
+  params$b_col_names     = params$b_col_names_old[b_indicies]
+  params$p1_old = params$p1
+  params$p2_old = params$p2
+  params$p1     = length(a_indicies)
+  params$p2     = length(b_indicies)
+  params$p_old  = params$p
   params$p      = params$p1 + params$p2
-  params$b_indicies_keep = Bindicies
-  params$a_indicies_keep = Aindicies
+  params$b_indicies_keep = b_indicies
+  params$a_indicies_keep = a_indicies
   params$betasB    = Bbetas
   params$betasBold = matrix(0, params$p2, 1)
-  params$meansB = params$meansB[Bindicies]
-  params$sdB    = params$sdB[Bindicies]
+  params$meansB = params$meansB[b_indicies]
+  params$sdB    = params$sdB[b_indicies]
   params$Bxty   = Bxty
   params <- add_to_log(params, "UpdateParamsLogistic.b2", read_time, read_size, 0, 0)
   return(params)
@@ -728,14 +728,14 @@ UpdateParamsLogistic.b2 <- function(params) {
 
 UpdateDataLogistic.b2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateDataLogistic.b2\n\n")
-  data$X = as.matrix(data$X[, params$b_indicies_keep, drop = FALSE])
+  data$x = as.matrix(data$x[, params$b_indicies_keep, drop = FALSE])
   return(data)
 }
 
 
 GetXBetaLogistic.b2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetXBetaLogistic.b2\n\n")
-  XbetaB = data$X %*% params$betasB
+  XbetaB = data$x %*% params$betasB
 
   write_time <- proc.time()[3]
   save(XbetaB, file = file.path(params$write_path, "xbetab.rdata"))
@@ -758,7 +758,7 @@ GetWeightsLogistic.a2 <- function(params, data) {
   read_size <- file.size(file.path(params$read_path, "xbetab.rdata"))
   read_time <- proc.time()[3] - read_time
 
-  XbetaA = data$X %*% params$betasA
+  XbetaA = data$x %*% params$betasA
   Xbeta = XbetaA + XbetaB
   pi_ = (1 + exp(-Xbeta))^(-1)
   params$pi_ = pi_
@@ -783,11 +783,11 @@ GetVLogistic.b2 <- function(params, data) {
   read_time <- proc.time()[3] - read_time
 
   params$pi_ = pi_
-  W = pi_ * (1 - params$pi_)
+  w = pi_ * (1 - params$pi_)
 
   XBTWXB = 0
 
-  pbar <- MakeProgressBar1(params$blocks$num_blocks, "(I - Z*Z')W*XB", params$verbose)
+  pbar <- MakeProgressBar1(params$blocks$num_blocks, "(I - z*z')w*XB", params$verbose)
 
   container_ct_z <- 0
   container_ct_V = 0
@@ -807,16 +807,16 @@ GetVLogistic.b2 <- function(params, data) {
     n = stp - strt + 1
     g = params$blocks$g[i]
 
-    Xblock  = data$X[strt:stp, ]
-    Wblock  = W[strt:stp]
+    Xblock  = data$x[strt:stp, ]
+    Wblock  = w[strt:stp]
     WXblock = MultiplyDiagonalWTimesX(Wblock, Xblock)
 
     read_time <- read_time - proc.time()[3]
-    Z = matrix(readBin(con = to_read, what = numeric(), n = n * g,
+    z <- matrix(readBin(con = to_read, what = numeric(), n = n * g,
                        endian = "little"), nrow = n, ncol = g)
     read_time <- read_time + proc.time()[3]
 
-    V = WXblock - Z %*% (t(Z) %*% WXblock)
+    V = WXblock - z %*% (t(z) %*% WXblock)
 
     write_time <- write_time - proc.time()[3]
     writeBin(as.vector(V), con = to_write, endian = "little")
@@ -834,7 +834,7 @@ GetVLogistic.b2 <- function(params, data) {
     pbar <- MakeProgressBar2(i, pbar, params$verbose)
   }
   # sums of each column in WX_B
-  sumsWXB = apply(MultiplyDiagonalWTimesX(W, data$X), 2, sum)
+  sumsWXB = apply(MultiplyDiagonalWTimesX(w, data$x), 2, sum)
   # This information needs to be shared in order to get the intercept term
 
   write_time <- write_time - proc.time()[3]
@@ -863,12 +863,12 @@ GetIILogistic.a2 <- function(params, data) {
 
   params$sumsWXB = sumsWXB
 
-  IA = params$Axty - t(data$X) %*% params$pi_
-  W = params$pi_ * (1 - params$pi_)
-  sumsWXA = apply(MultiplyDiagonalWTimesX(W, data$X), 2, sum)[-1]
+  IA = params$Axty - t(data$x) %*% params$pi_
+  w = params$pi_ * (1 - params$pi_)
+  sumsWXA = apply(MultiplyDiagonalWTimesX(w, data$x), 2, sum)[-1]
   params$sumsWXA = sumsWXA
 
-  XATWXA = t(data$X) %*% MultiplyDiagonalWTimesX(W, data$X)
+  XATWXA = t(data$x) %*% MultiplyDiagonalWTimesX(w, data$x)
 
   pbar <- MakeProgressBar1(params$blocks$num_blocks, "X'W*X", params$verbose)
 
@@ -889,7 +889,7 @@ GetIILogistic.a2 <- function(params, data) {
     V = matrix(readBin(con = to_read, what = numeric(),
                        n = n * p2, endian = "little"), n, p2)
     read_time <- read_time + proc.time()[3]
-    XATWXB = XATWXB + t(data$X[strt:stp, ]) %*% V
+    XATWXB = XATWXB + t(data$x[strt:stp, ]) %*% V
 
     pbar <- MakeProgressBar2(i, pbar, params$verbose)
     if ((i + 1) %in% params$container$filebreak.V || i == params$blocks$num_blocks) {
@@ -913,7 +913,7 @@ GetIILogistic.a2 <- function(params, data) {
     params$singular_matrix = TRUE
     params$failed <- TRUE
     params$error_message <-
-      paste0("The matrix t(X)*W*X is not invertible.\n",
+      paste0("The matrix t(x)*w*x is not invertible.\n",
              "       This may be due to one of two possible problems.\n",
              "       1. Poor random initialization of the security vector.\n",
              "       2. Near multicollinearity in the data\n",
@@ -955,7 +955,7 @@ GetCoefLogistic.b2 <- function(params, data) {
   read_size <- sum(file.size(file.path(params$read_path, "a21i1_xtwx.rdata")))
   read_time <- proc.time()[3] - read_time
 
-  IB = params$Bxty - t(data$X) %*% params$pi_
+  IB = params$Bxty - t(data$x) %*% params$pi_
 
   II = solve(XTWX)
 
@@ -997,7 +997,7 @@ GetCoefLogistic.a2 <- function(params, data) {
 
   if (deltabeta < params$cutoff)  {
     params$converged = TRUE
-  } else if (params$algIterationCounter >= params$max_iterations) {
+  } else if (params$alg_iteration_counter >= params$max_iterations) {
     params$maxIterExceeded = TRUE
     warning(paste("Failed to converged in", params$max_iterations, "iterations."))
   }
@@ -1025,7 +1025,7 @@ GetConvergedStatusLogistic.b2 <- function(params) {
 
   if (deltabeta < params$cutoff)  {
     params$converged = TRUE
-  } else if (params$algIterationCounter >= params$max_iterations) {
+  } else if (params$alg_iteration_counter >= params$max_iterations) {
     params$maxIterExceeded = TRUE
     warning(paste("Failed to converged in", params$max_iterations, "iterations."))
   }
@@ -1039,7 +1039,7 @@ GetFinalCoefLogistic.b2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetFinalCoefLogistic.b2\n\n")
   betasB = params$betasB / params$sdB
   offsetB = sum(betasB * params$meansB)
-  BFinalFitted = t(params$sdB * t(data$X) + params$meansB) %*% betasB
+  BFinalFitted = t(params$sdB * t(data$x) + params$meansB) %*% betasB
   write_time <- proc.time()[3]
   save(betasB, BFinalFitted, offsetB, file = file.path(params$write_path, "b_final.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, "b_final.rdata")))
@@ -1051,95 +1051,95 @@ GetFinalCoefLogistic.b2 <- function(params, data) {
 #' @importFrom stats pnorm
 ComputeResultsLogistic.a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLogistic.a2\n\n")
-  stats = params$stats
-  stats$failed         = FALSE
-  stats$converged      = params$converged
+  stats <- params$stats
+  stats$failed         <- FALSE
+  stats$converged      <- params$converged
 
-  n      = params$n
-  p1     = params$p1
-  p2     = params$p2
-  sdA    = params$sdA
-  sdB    = params$sdB
-  meansA = params$meansA
-  meansB = params$meansB
-  a_names = params$a_col_names_old
-  b_names = params$b_col_names_old
-  p1.old = params$p1.old
-  p2.old = params$p2.old
-  p.old  = params$p.old
-  indicies = params$IndiciesKeep
+  n      <- params$n
+  p1     <- params$p1
+  p2     <- params$p2
+  sdA    <- params$sdA
+  sdB    <- params$sdB
+  meansA <- params$meansA
+  meansB <- params$meansB
+  a_names <- params$a_col_names_old
+  b_names <- params$b_col_names_old
+  p1_old <- params$p1_old
+  p2_old <- params$p2_old
+  p_old  <- params$p_old
+  indicies <- params$IndiciesKeep
 
 
-  betasB = NULL
-  offsetB = NULL
-  BFinalFitted = NULL
+  betasB <- NULL
+  offsetB <- NULL
+  BFinalFitted <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "b_final.rdata"))  # betasB, offsetB, BFinalFitted
   read_size <- sum(file.size(file.path(params$read_path, "b_final.rdata")))
   read_time <- proc.time()[3] - read_time
-  betasA = params$betasA / sdA
-  offsetA = sum(betasA[-1] * params$meansA[-1])
-  betasA[1] = betasA[1] - offsetA - offsetB
-  betas = c(betasA, betasB)
+  betasA <- params$betasA / sdA
+  offsetA <- sum(betasA[-1] * params$meansA[-1])
+  betasA[1] <- betasA[1] - offsetA - offsetB
+  betas <- c(betasA, betasB)
 
-  AFinalFitted = t(sdA * t(data$X) + meansA) %*% betasA -
-    t(sdA[1] * t(data$X[, 1]) + meansA[1]) %*% betasA[1]
-  FinalFitted = AFinalFitted + BFinalFitted + betas[1]
-  params$FinalFitted = FinalFitted
+  AFinalFitted <- t(sdA * t(data$x) + meansA) %*% betasA -
+    t(sdA[1] * t(data$x[, 1]) + meansA[1]) %*% betasA[1]
+  FinalFitted <- AFinalFitted + BFinalFitted + betas[1]
+  params$FinalFitted <- FinalFitted
 
-  n = params$n
-  ct      = sum(data$Y)
-  resdev  = -2 * (sum(data$Y * FinalFitted) - sum(log(1 + exp(FinalFitted))))
-  nulldev = -2 * (ct * log(ct / n) + (n - ct) * log(1 - ct / n))
+  n <- params$n
+  ct      <- sum(data$Y)
+  resdev  <- -2 * (sum(data$Y * FinalFitted) - sum(log(1 + exp(FinalFitted))))
+  nulldev <- -2 * (ct * log(ct / n) + (n - ct) * log(1 - ct / n))
 
   # If xtwx were singular, it would have been caught in GetII.a2(), so we may
   # assume that xtwx is NOT singular and so we do not have to do a check.
-  cov1 = solve(params$xtwx)
-  secoef = sqrt(diag(cov1)) / c(sdA, sdB)
-  tmp = matrix(c(1, (-meansA / sdA)[-1], -meansB / sdB), ncol = 1)
-  secoef[1] = sqrt(t(tmp) %*% cov1 %*% tmp)
+  cov1 <- solve(params$xtwx)
+  secoef <- sqrt(diag(cov1)) / c(sdA, sdB)
+  tmp <- matrix(c(1, (-meansA / sdA)[-1], -meansB / sdB), ncol = 1)
+  secoef[1] <- sqrt(t(tmp) %*% cov1 %*% tmp)
 
 
-  stats$party = c(rep("dp0", p1.old), rep("dp1", p2.old))
-  stats$coefficients = rep(NA, p.old)
-  stats$secoef = rep(NA, p.old)
-  stats$tvals  = rep(NA, p.old)
-  stats$pvals  = rep(NA, p.old)
-  stats$n  = n
-  stats$nulldev = nulldev
-  stats$resdev = resdev
-  stats$aic = resdev + 2 * (p1 + p2)
-  stats$bic = resdev + (p1 + p2) * log(n)
-  stats$nulldev_df = n - 1
-  stats$resdev_df = n - (p1 + p2)
-  stats$coefficients[indicies] = betas
-  stats$secoef[indicies] = secoef
-  tvals = betas / secoef
-  pvals = 2 * pnorm(abs(tvals), lower.tail = FALSE)
-  stats$tvals[indicies] = tvals
-  stats$pvals[indicies] = pvals
+  stats$party <- c(rep("dp0", p1_old), rep("dp1", p2_old))
+  stats$coefficients <- rep(NA, p_old)
+  stats$secoef <- rep(NA, p_old)
+  stats$tvals  <- rep(NA, p_old)
+  stats$pvals  <- rep(NA, p_old)
+  stats$n  <- n
+  stats$nulldev <- nulldev
+  stats$resdev <- resdev
+  stats$aic <- resdev + 2 * (p1 + p2)
+  stats$bic <- resdev + (p1 + p2) * log(n)
+  stats$nulldev_df <- n - 1
+  stats$resdev_df <- n - (p1 + p2)
+  stats$coefficients[indicies] <- betas
+  stats$secoef[indicies] <- secoef
+  tvals <- betas / secoef
+  pvals <- 2 * pnorm(abs(tvals), lower.tail = FALSE)
+  stats$tvals[indicies] <- tvals
+  stats$pvals[indicies] <- pvals
 
-  stats$nulldev = nulldev
-  stats$resdev  = resdev
-  stats$hoslem  = HoslemInternal(params, data)
-  stats$ROC     = RocInternal(params, data)
-  stats$iter    = params$algIterationCounter - 1
+  stats$nulldev <- nulldev
+  stats$resdev  <- resdev
+  stats$hoslem  <- HoslemInternal(params, data)
+  stats$ROC     <- RocInternal(params, data)
+  stats$iter    <- params$alg_iteration_counter - 1
 
-  names_old = c(a_names, b_names)
-  names(stats$coefficients) = names_old
-  names(stats$party) = names_old
-  names(stats$secoef) = names_old
-  names(stats$tvals) = names_old
-  names(stats$pvals) = names_old
+  names_old <- c(a_names, b_names)
+  names(stats$coefficients) <- names_old
+  names(stats$party) <- names_old
+  names(stats$secoef) <- names_old
+  names(stats$tvals) <- names_old
+  names(stats$pvals) <- names_old
 
   write_time <- proc.time()[3]
-  save(stats, file = file.path(params$write_path, "stats.rdata"))
+  save(stats, file <- file.path(params$write_path, "stats.rdata"))
   write_size <- file.size(file.path(params$write_path, "stats.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  stats$Y           = data$Y # For Hoslem and ROC
-  stats$FinalFitted = FinalFitted
-  params$stats      = stats
+  stats$Y           <- data$Y # For Hoslem and ROC
+  stats$FinalFitted <- FinalFitted
+  params$stats      <- stats
 
   params <- add_to_log(params, "ComputeResultsLogistic.b2", read_time, read_size, write_time, write_size)
   return(params)
@@ -1283,7 +1283,7 @@ PartyAProcess2Logistic <- function(data,
     params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
     EndingIteration(params)
-    params$algIterationCounter = params$algIterationCounter + 1
+    params$alg_iteration_counter = params$alg_iteration_counter + 1
   }
   params$completed = TRUE
 
@@ -1341,7 +1341,7 @@ PartyBProcess2Logistic <- function(data,
   params <- PrepareBlocksLogistic.b2(params)
   params <- GetWLogistic.b2(params, data)
 
-  files <- c("xbtxb.rdata", seq_zw("cw_", length(params$container$filebreak.W)))
+  files <- c("xbtxb.rdata", seq_zw("cw_", length(params$container$filebreak.w)))
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
@@ -1355,7 +1355,7 @@ PartyBProcess2Logistic <- function(data,
   data = UpdateDataLogistic.b2(params, data)
   params <- add_to_log(params, "UpdateDataLogistic.b2", 0, 0, 0, 0)
 
-  params$algIterationCounter = 1
+  params$alg_iteration_counter = 1
   while (!params$converged && !params$maxIterExceeded) {
     BeginningIteration(params)
     params <- GetXBetaLogistic.b2(params, data)
@@ -1382,7 +1382,7 @@ PartyBProcess2Logistic <- function(data,
     params <- GetConvergedStatusLogistic.b2(params)
 
     EndingIteration(params)
-    params$algIterationCounter = params$algIterationCounter + 1
+    params$alg_iteration_counter = params$alg_iteration_counter + 1
   }
   params$completed = TRUE
 

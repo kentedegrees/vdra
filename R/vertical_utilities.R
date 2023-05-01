@@ -133,20 +133,20 @@
 #' }
 #' @export
 AnalysisCenter.2Party <- function(regression            = "linear",
-                                 data                  = NULL,
-                                 response              = NULL,
-                                 strata                = NULL,
-                                 mask                  = TRUE,
-                                 monitor_folder         = NULL,
-                                 msreqid               = "v_default_00_000",
-                                 blocksize             = 500,
-                                 tol                   = 1e-8,
-                                 max_iterations         = 25,
-                                 sleep_time             = 10,
-                                 max_waiting_time        = 86400,
-                                 popmednet             = TRUE,
-                                 trace                 = FALSE,
-                                 verbose               = TRUE) {
+                                  data                  = NULL,
+                                  response              = NULL,
+                                  strata                = NULL,
+                                  mask                  = TRUE,
+                                  monitor_folder         = NULL,
+                                  msreqid               = "v_default_00_000",
+                                  blocksize             = 500,
+                                  tol                   = 1e-8,
+                                  max_iterations         = 25,
+                                  sleep_time             = 10,
+                                  max_waiting_time        = 86400,
+                                  popmednet             = TRUE,
+                                  trace                 = FALSE,
+                                  verbose               = TRUE) {
   start_time <- proc.time()
   stats = list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
@@ -158,7 +158,7 @@ AnalysisCenter.2Party <- function(regression            = "linear",
                               sleep_time, max_waiting_time, popmednet, trace,
                               verbose)
   } else if (regression == "linear") {
-    stats = PartyAProcess2Linear(data, response, monitor_folder, msreqid,
+    stats = party_a_process_2_linear(data, response, monitor_folder, msreqid,
                                  blocksize, sleep_time, max_waiting_time,
                                  popmednet, trace, verbose)
   } else if (regression == "logistic") {
@@ -178,26 +178,26 @@ AnalysisCenter.2Party <- function(regression            = "linear",
 #' @rdname distributed2party
 #' @export
 DataPartner.2Party <- function(regression          = "linear",
-                              data                = NULL,
-                              strata              = NULL,
-                              mask                = TRUE,
-                              monitor_folder       = NULL,
-                              sleep_time           = 10,
-                              max_waiting_time      = 86400,
-                              popmednet           = TRUE,
-                              trace               = FALSE,
-                              verbose             = TRUE) {
+                               data                = NULL,
+                               strata              = NULL,
+                               mask                = TRUE,
+                               monitor_folder       = NULL,
+                               sleep_time           = 10,
+                               max_waiting_time      = 86400,
+                               popmednet           = TRUE,
+                               trace               = FALSE,
+                               verbose             = TRUE) {
   start_time <- proc.time()
   stats = list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.")
   } else if (regression == "cox") {
-    stats = PartyBProcess2Cox(data, strata, mask,
+    stats = party_b_process_2_cox(data, strata, mask,
                               monitor_folder, sleep_time, max_waiting_time,
                               popmednet, trace, verbose)
   } else if (regression == "linear") {
-    stats = PartyBProcess2Linear(data, monitor_folder, sleep_time, max_waiting_time,
+    stats = party_b_process_2_linear(data, monitor_folder, sleep_time, max_waiting_time,
                                  popmednet, trace, verbose)
   } else if (regression == "logistic") {
     stats = PartyBProcess2Logistic(data, monitor_folder, sleep_time, max_waiting_time,
@@ -217,16 +217,16 @@ DataPartner.2Party <- function(regression          = "linear",
 #' @rdname distributed3party
 #' @export
 DataPartner1.3Party <- function(regression            = "linear",
-                               data                  = NULL,
-                               response              = NULL,
-                               strata                = NULL,
-                               mask                  = TRUE,
-                               monitor_folder         = NULL,
-                               sleep_time             = 10,
-                               max_waiting_time        = 86400,
-                               popmednet             = TRUE,
-                               trace                 = FALSE,
-                               verbose               = TRUE) {
+                                data                  = NULL,
+                                response              = NULL,
+                                strata                = NULL,
+                                mask                  = TRUE,
+                                monitor_folder         = NULL,
+                                sleep_time             = 10,
+                                max_waiting_time        = 86400,
+                                popmednet             = TRUE,
+                                trace                 = FALSE,
+                                verbose               = TRUE) {
 
   start_time <- proc.time()
   stats = list()
@@ -239,8 +239,8 @@ DataPartner1.3Party <- function(regression            = "linear",
                               verbose)
   } else if (regression == "linear") {
     stats = party_a_process_3_linear(data, response, monitor_folder,
-                                 sleep_time, max_waiting_time, popmednet, trace,
-                                 verbose)
+                                     sleep_time, max_waiting_time, popmednet, trace,
+                                     verbose)
   } else  if (regression == "logistic") {
     stats = PartyAProcess3Logistic(data, response, monitor_folder,
                                    sleep_time, max_waiting_time, popmednet, trace,
@@ -259,15 +259,15 @@ DataPartner1.3Party <- function(regression            = "linear",
 #' @rdname distributed3party
 #' @export
 DataPartner2.3Party <- function(regression          = "linear",
-                               data                = NULL,
-                               strata              = NULL,
-                               mask                = TRUE,
-                               monitor_folder       = NULL,
-                               sleep_time           = 10,
-                               max_waiting_time      = 86400,
-                               popmednet           = TRUE,
-                               trace               = FALSE,
-                               verbose             = TRUE) {
+                                data                = NULL,
+                                strata              = NULL,
+                                mask                = TRUE,
+                                monitor_folder       = NULL,
+                                sleep_time           = 10,
+                                max_waiting_time      = 86400,
+                                popmednet           = TRUE,
+                                trace               = FALSE,
+                                verbose             = TRUE) {
   start_time <- proc.time()
   stats = list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
@@ -460,16 +460,16 @@ DataPartner2.3Party <- function(regression          = "linear",
 #' }
 #' @export
 AnalysisCenter.3Party <- function(regression            = "linear",
-                                 monitor_folder         = NULL,
-                                 msreqid               = "v_default_00_000",
-                                 blocksize             = 500,
-                                 tol                   = 1e-8,
-                                 max_iterations         = 25,
-                                 sleep_time             = 10,
-                                 max_waiting_time        = 86400,
-                                 popmednet             = TRUE,
-                                 trace                 = FALSE,
-                                 verbose               = TRUE) {
+                                  monitor_folder         = NULL,
+                                  msreqid               = "v_default_00_000",
+                                  blocksize             = 500,
+                                  tol                   = 1e-8,
+                                  max_iterations         = 25,
+                                  sleep_time             = 10,
+                                  max_waiting_time        = 86400,
+                                  popmednet             = TRUE,
+                                  trace                 = FALSE,
+                                  verbose               = TRUE) {
   start_time <- proc.time()
   stats = list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
@@ -502,18 +502,18 @@ AnalysisCenter.3Party <- function(regression            = "linear",
 #' @rdname distributedKparty
 #' @export
 DataPartner.KParty <- function(regression            = "linear",
-                              data                  = NULL,
-                              response              = NULL,
-                              strata                = NULL,
-                              mask                  = TRUE,
-                              numDataPartners       = NULL,
-                              data_partner_id         = NULL,
-                              monitor_folder         = NULL,
-                              sleep_time             = 10,
-                              max_waiting_time        = 86400,
-                              popmednet             = TRUE,
-                              trace                 = FALSE,
-                              verbose               = TRUE) {
+                               data                  = NULL,
+                               response              = NULL,
+                               strata                = NULL,
+                               mask                  = TRUE,
+                               numDataPartners       = NULL,
+                               data_partner_id         = NULL,
+                               monitor_folder         = NULL,
+                               sleep_time             = 10,
+                               max_waiting_time        = 86400,
+                               popmednet             = TRUE,
+                               trace                 = FALSE,
+                               verbose               = TRUE) {
   start_time <- proc.time()
   stats = list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
@@ -723,16 +723,16 @@ DataPartner.KParty <- function(regression            = "linear",
 #' }
 
 AnalysisCenter.KParty <- function(regression            = "linear",
-                                 numDataPartners       = NULL,
-                                 monitor_folder         = NULL,
-                                 msreqid               = "v_default_00_000",
-                                 tol                   = 1e-8,
-                                 max_iterations         = 25,
-                                 sleep_time             = 10,
-                                 max_waiting_time        = 86400,
-                                 popmednet             = TRUE,
-                                 trace                 = FALSE,
-                                 verbose               = TRUE) {
+                                  numDataPartners       = NULL,
+                                  monitor_folder         = NULL,
+                                  msreqid               = "v_default_00_000",
+                                  tol                   = 1e-8,
+                                  max_iterations         = 25,
+                                  sleep_time             = 10,
+                                  max_waiting_time        = 86400,
+                                  popmednet             = TRUE,
+                                  trace                 = FALSE,
+                                  verbose               = TRUE) {
   start_time <- proc.time()
   stats = list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
@@ -916,7 +916,7 @@ CreateModelMatrixTags <- function(data) {
 ########################### 2 PARTY SETUP FUNCTIONS ############################
 
 prepare_params_2p <- function(analysis, party, msreqid = "v_default_00_000",
-                            popmednet = TRUE, trace = FALSE, verbose = TRUE) {
+                              popmednet = TRUE, trace = FALSE, verbose = TRUE) {
   params                     = list()
   params$party_name           = party
   params$analysis            = analysis
@@ -934,8 +934,8 @@ prepare_params_2p <- function(analysis, party, msreqid = "v_default_00_000",
   params$lastIteration       = FALSE
   params$p1                  = 0
   params$p2                  = 0
-  params$p1.old              = 0
-  params$p2.old              = 0
+  params$p1_old              = 0
+  params$p2_old              = 0
   params$stats               = list()
   class(params$stats)        = paste0("vdra", analysis)
   params$stats$failed        = TRUE
@@ -946,7 +946,7 @@ prepare_params_2p <- function(analysis, party, msreqid = "v_default_00_000",
 ########################### 3 PARTY SETUP FUNCTIONS ############################
 
 prepare_params_3p <- function(analysis, party, msreqid = "v_default_00_000",
-                            popmednet = TRUE, trace = FALSE, verbose = TRUE) {
+                              popmednet = TRUE, trace = FALSE, verbose = TRUE) {
   params                     = list()
   params$party_name           = party
   params$analysis            = analysis
@@ -964,8 +964,8 @@ prepare_params_3p <- function(analysis, party, msreqid = "v_default_00_000",
   params$lastIteration       = FALSE
   params$p1                  = 0
   params$p2                  = 0
-  params$p1.old              = 0
-  params$p2.old              = 0
+  params$p1_old              = 0
+  params$p2_old              = 0
   params$stats               = list()
   class(params$stats)        = paste0("vdra", analysis)
   params$stats$failed        = TRUE
@@ -976,9 +976,9 @@ prepare_params_3p <- function(analysis, party, msreqid = "v_default_00_000",
 ########################### K PARTY SETUP FUNCTIONS ############################
 
 prepare_params_kp <- function(analysis, data_partner_id, numDataPartners,
-                            msreqid = "v_default_00_000", cutoff = NULL,
-                            max_iterations = NULL, ac = FALSE, popmednet = TRUE,
-                            trace = FALSE, verbose = TRUE) {
+                              msreqid = "v_default_00_000", cutoff = NULL,
+                              max_iterations = NULL, ac = FALSE, popmednet = TRUE,
+                              trace = FALSE, verbose = TRUE) {
   params                     = list()
   params$data_partner_id       = data_partner_id
   params$numDataPartners     = numDataPartners
@@ -1257,7 +1257,7 @@ MultiplyDiagonalWTimesX <- function(w, x) {
 #' @importFrom stats runif
 FindOrthogonalVectors <- function(x, g) {
   x = as.matrix(x)
-  x = cbind(x, runif(nrow(x)))  # Randomize Z
+  x = cbind(x, runif(nrow(x)))  # Randomize z
   # Save the Random Vector Here
   n = nrow(x)
   Q = qr.Q(qr(x), complete = TRUE)
@@ -1287,8 +1287,8 @@ seq_zw <- function(letter = "Z_", nblocks = 1) {
 
 
 Standby <- function(triggerName, triggerLocation,
-                   sleep_time = 1, max_waiting_time = NULL, remove = FALSE,
-                   verbose = TRUE) {
+                    sleep_time = 1, max_waiting_time = NULL, remove = FALSE,
+                    verbose = TRUE) {
 
   found = FALSE
 
@@ -1387,9 +1387,9 @@ read_error_message <- function(read_path) {
 ###################### 2 PARTY PMN COMMUNICATION FUNCTIONS ######################
 
 send_pause_quit_2p <- function(params,
-                            files <- c(),
-                            sleep_time = 10,
-                            job_failed = FALSE) {
+                               files = c(),
+                               sleep_time = 10,
+                               job_failed = FALSE) {
 
   params <- StoreLogEntry.2p(params, files)
   params <- StoreTrackingTableEntry.2p(params)
@@ -1401,10 +1401,10 @@ send_pause_quit_2p <- function(params,
   if (params$party_name == "A") {
     if (job_failed) {
       files <- c(files, "job_fail.ok")
-      params <- StoreStampsEntry(params, "Job failed trigger file", "Trigger File created")
+      params <- store_stamp_entry(params, "Job failed trigger file", "Trigger File created")
     } else {
       files <- c(files, "job_done.ok")
-      params <- StoreStampsEntry(params, "Job done trigger file", "Trigger File created")
+      params <- store_stamp_entry(params, "Job done trigger file", "Trigger File created")
     }
     transfer = c(transfer, 10)
   }
@@ -1420,9 +1420,9 @@ send_pause_quit_2p <- function(params,
     destination[transfer == 10] = 10
   }
   MakeCSV(files, transfer, destination, params$write_path)
-  params <- StoreStampsEntry(params, "Files done trigger file", "Trigger File Created")
-  params <- StoreStampsEntry(params, "R program execution complete, output files written",
-                            "Tracking Table")
+  params <- store_stamp_entry(params, "Files done trigger file", "Trigger File Created")
+  params <- store_stamp_entry(params, "R program execution complete, output files written",
+                             "Tracking Table")
   WriteStampsCSV(params)
   WriteStampsRaw(params)
   if (job_failed)  {
@@ -1435,10 +1435,10 @@ send_pause_quit_2p <- function(params,
 }
 
 send_pause_continue_2p <- function(params,
-                                files <- c(),
-                                sleep_time = 10,
-                                max_waiting_time = NULL,
-                                job_started = FALSE) {
+                                   files = c(),
+                                   sleep_time = 10,
+                                   max_waiting_time = NULL,
+                                   job_started = FALSE) {
   params <- StoreLogEntry.2p(params, files)
   params <- StoreTrackingTableEntry.2p(params)
   WriteLogCSV(params)
@@ -1457,7 +1457,7 @@ send_pause_continue_2p <- function(params,
     destination[transfer == 10] = 10
   }
   MakeCSV(files, transfer, destination, params$write_path)
-  params <- StoreStampsEntry(params, "Files done trigger file", "Trigger File created")
+  params <- store_stamp_entry(params, "Files done trigger file", "Trigger File created")
   WriteStampsCSV(params)
   WriteStampsRaw(params)
   params$pmnStepCounter      = params$pmnStepCounter + 2
@@ -1476,12 +1476,12 @@ send_pause_continue_2p <- function(params,
           verbose = params$verbose)
   if (params$verbose) cat("Resuming local processing\n\n")
   delete_trigger("files_done.ok", params$read_path)
-  params <- ReadLogRaw.2p(params)
-  params <- NewLogEntry.2p(params)
-  params <- ReadStampsRaw.2p(params)
-  params <- StoreStampsEntry(params, "R program execution begins", "Tracking Table")
+  params <- read_log_raw_2p(params)
+  params <- new_log_entry_2p(params)
+  params <- read_stamps_raw_2p(params)
+  params <- store_stamp_entry(params, "R program execution begins", "Tracking Table")
   if (params$party_name == "A") {
-    params <- ReadTrackingTableUpdate.2p(params)
+    params <- read_tracking_table_update_2p(params)
   }
   return(params)
 }
@@ -1501,9 +1501,9 @@ PauseContinue.2p <- function(params, max_waiting_time) {
   if (params$verbose) cat("Resuming local processing\n\n")
   delete_trigger("files_done.ok", params$read_path)
   params <- MergeLogRaw.2p(params)
-  params <- NewLogEntry.2p(params)
+  params <- new_log_entry_2p(params)
   params <- MergeStampsRaw.2p(params)
-  params <- ReadTrackingTableUpdate.2p(params)
+  params <- read_tracking_table_update_2p(params)
   WriteLogCSV(params)
   return(params)
 }
@@ -1540,12 +1540,12 @@ WaitForTurn.3p <- function(params, sleep_time) {
 
 
 send_pause_quit_3p <- function(params,
-                            filesA = NULL,
-                            filesB = NULL,
-                            filesT = NULL,
-                            sleep_time = 10,
-                            job_failed = FALSE,
-                            waitForTurn = FALSE) {
+                               filesA = NULL,
+                               filesB = NULL,
+                               filesT = NULL,
+                               sleep_time = 10,
+                               job_failed = FALSE,
+                               waitForTurn = FALSE) {
 
   params$lastIteration = TRUE
   params$completed     = TRUE
@@ -1563,10 +1563,10 @@ send_pause_quit_3p <- function(params,
   if (params$party == "T") {
     if (job_failed) {
       files <- c(files, "job_fail.ok")
-      params <- StoreStampsEntry(params, "Job failed trigger file", "Trigger File created")
+      params <- store_stamp_entry(params, "Job failed trigger file", "Trigger File created")
     } else {
       files <- c(files, "job_done.ok")
-      params <- StoreStampsEntry(params, "Job done trigger file", "Trigger File created")
+      params <- store_stamp_entry(params, "Job done trigger file", "Trigger File created")
     }
     transfer = c(transfer, 10)
     destination = c(destination, 10)
@@ -1588,13 +1588,13 @@ send_pause_quit_3p <- function(params,
     destination = c(destination, 0)
   }
   MakeCSV(files, transfer, destination, params$write_path)
-  params <- StoreStampsEntry(params, "Files done trigger file", "Trigger File Created")
-  params <- StoreStampsEntry(params, "R program execution complete, output files written",
-                            "Tracking Table")
+  params <- store_stamp_entry(params, "Files done trigger file", "Trigger File Created")
+  params <- store_stamp_entry(params, "R program execution complete, output files written",
+                             "Tracking Table")
   if (waitForTurn) {
-    params <- StoreStampsEntry(params, "R program execution delayed", "Tracking Table")
+    params <- store_stamp_entry(params, "R program execution delayed", "Tracking Table")
     WaitForTurn.3p(params, sleep_time)
-    params <- StoreStampsEntry(params, "R program execution restarted", "Tracking Table")
+    params <- store_stamp_entry(params, "R program execution restarted", "Tracking Table")
   }
   WriteStampsCSV(params)
   WriteStampsRaw(params)
@@ -1610,14 +1610,14 @@ send_pause_quit_3p <- function(params,
 }
 
 send_pause_continue_3p <- function(params,
-                                filesA = NULL,
-                                filesB = NULL,
-                                filesT = NULL,
-                                from   = NULL,
-                                sleep_time = 10,
-                                max_waiting_time = 24 * 60 * 60,
-                                job_started = FALSE,
-                                waitForTurn = FALSE) {
+                                   filesA = NULL,
+                                   filesB = NULL,
+                                   filesT = NULL,
+                                   from   = NULL,
+                                   sleep_time = 10,
+                                   max_waiting_time = 24 * 60 * 60,
+                                   job_started = FALSE,
+                                   waitForTurn = FALSE) {
   params <- StoreLogEntry.3p(params, c(filesA, filesB, filesT))
   params <- StoreTrackingTableEntry.3p(params)
   WriteLogCSV(params)
@@ -1653,11 +1653,11 @@ send_pause_continue_3p <- function(params,
     destination = c(destination, 10)
   }
   MakeCSV(files, transfer, destination, params$write_path)
-  params <- StoreStampsEntry(params, "Files done trigger file", "Trigger File created")
+  params <- store_stamp_entry(params, "Files done trigger file", "Trigger File created")
   if (waitForTurn) {
-    params <- StoreStampsEntry(params, "R program execution delayed", "Tracking Table")
+    params <- store_stamp_entry(params, "R program execution delayed", "Tracking Table")
     WaitForTurn.3p(params, sleep_time)
-    params <- StoreStampsEntry(params, "R program execution restarted", "Tracking Table")
+    params <- store_stamp_entry(params, "R program execution restarted", "Tracking Table")
   }
   WriteStampsCSV(params)
   WriteStampsRaw(params)
@@ -1684,9 +1684,9 @@ send_pause_continue_3p <- function(params,
   delete_trigger("files_done.ok", params$read_path[from])
   params <- MergeLogRaw.3p(params, from)
   params <- UpdateCounters.3p(params)
-  params <- NewLogEntry.3p(params)
+  params <- new_log_entry_3p(params)
   params <- MergeStampsRaw.3p(params, from)
-  params <- StoreStampsEntry(params, "R program execution begins", "Tracking Table")
+  params <- store_stamp_entry(params, "R program execution begins", "Tracking Table")
   params <- MergeTrackingTableRAW.3p(params, from)
   return(params)
 }
@@ -1714,7 +1714,7 @@ PauseContinue.3p <- function(params, from = NULL, max_waiting_time = 24 * 60 * 6
   delete_trigger("files_done.ok", params$read_path[from])
   params <- MergeLogRaw.3p(params, from)
   params <- UpdateCounters.3p(params)
-  params <- NewLogEntry.3p(params)
+  params <- new_log_entry_3p(params)
   params <- MergeStampsRaw.3p(params, from)
   params <- MergeTrackingTableRAW.3p(params, from)
   WriteLogCSV(params)
@@ -1759,11 +1759,11 @@ WaitForTurn.kp <- function(params, sleep_time) {
 
 
 send_pause_quit_kp <- function(params,
-                            filesAC = NULL,
-                            filesDP = NULL,
-                            sleep_time = 10,
-                            job_failed = FALSE,
-                            waitForTurn = FALSE) {
+                               filesAC = NULL,
+                               filesDP = NULL,
+                               sleep_time = 10,
+                               job_failed = FALSE,
+                               waitForTurn = FALSE) {
 
   # Assumes that upon quitting, same thing is sent to everyone, so filesDP cannot be a list
 
@@ -1796,23 +1796,23 @@ send_pause_quit_kp <- function(params,
     files       = c("dl_track_tbl.csv", "file_list.csv")
     if (job_failed) {
       files <- c(files, "job_fail.ok")
-      params <- StoreStampsEntry(params, "Job failed trigger file", "Trigger File created")
+      params <- store_stamp_entry(params, "Job failed trigger file", "Trigger File created")
     } else {
       files <- c(files, "job_done.ok")
-      params <- StoreStampsEntry(params, "Job done trigger file", "Trigger File created")
+      params <- store_stamp_entry(params, "Job done trigger file", "Trigger File created")
     }
     transfer = c(10, 10, 10)
     destination = c(10, 10, 10)
   }
 
   MakeCSV(files, transfer, destination, params$write_path)
-  params <- StoreStampsEntry(params, "Files done trigger file", "Trigger File Created")
-  params <- StoreStampsEntry(params, "R program execution complete, output files written",
-                            "Tracking Table")
+  params <- store_stamp_entry(params, "Files done trigger file", "Trigger File Created")
+  params <- store_stamp_entry(params, "R program execution complete, output files written",
+                             "Tracking Table")
   if (waitForTurn) {
-    params <- StoreStampsEntry(params, "R program execution delayed", "Tracking Table")
+    params <- store_stamp_entry(params, "R program execution delayed", "Tracking Table")
     WaitForTurn.kp(params, sleep_time)
-    params <- StoreStampsEntry(params, "R program execution restarted", "Tracking Table")
+    params <- store_stamp_entry(params, "R program execution restarted", "Tracking Table")
   }
   WriteStampsCSV(params)
   WriteStampsRaw(params)
@@ -1829,13 +1829,13 @@ send_pause_quit_kp <- function(params,
 
 
 send_pause_continue_kp <- function(params,
-                                filesAC = NULL,
-                                filesDP = NULL,
-                                from   = NULL,
-                                sleep_time = 10,
-                                max_waiting_time = 24 * 60 * 60,
-                                job_started = FALSE,
-                                waitForTurn = FALSE) {
+                                   filesAC = NULL,
+                                   filesDP = NULL,
+                                   from   = NULL,
+                                   sleep_time = 10,
+                                   max_waiting_time = 24 * 60 * 60,
+                                   job_started = FALSE,
+                                   waitForTurn = FALSE) {
   if (class(filesDP) != "list") {
     params <- StoreLogEntry.kp(params, c(filesAC, filesDP))
     params <- StoreTrackingTableEntry.kp(params)
@@ -1897,11 +1897,11 @@ send_pause_continue_kp <- function(params,
     destination = c(destination, 10)
   }
   MakeCSV(files, transfer, destination, params$write_path)
-  params <- StoreStampsEntry(params, "Files done trigger file", "Trigger File created")
+  params <- store_stamp_entry(params, "Files done trigger file", "Trigger File created")
   if (waitForTurn) {
-    params <- StoreStampsEntry(params, "R program execution delayed", "Tracking Table")
+    params <- store_stamp_entry(params, "R program execution delayed", "Tracking Table")
     WaitForTurn.kp(params, sleep_time)
-    params <- StoreStampsEntry(params, "R program execution restarted", "Tracking Table")
+    params <- store_stamp_entry(params, "R program execution restarted", "Tracking Table")
   }
   WriteStampsCSV(params)
   WriteStampsRaw(params)
@@ -1948,9 +1948,9 @@ send_pause_continue_kp <- function(params,
   if (params$verbose) cat("Resuming local processing\n\n")
   params <- MergeLogRaw.kp(params, from)
   params <- UpdateCounters.kp(params)
-  params <- NewLogEntry.kp(params)
+  params <- new_log_entry_kp(params)
   params <- MergeStampsRaw.kp(params, from)
-  params <- StoreStampsEntry(params, "R program execution begins", "Tracking Table")
+  params <- store_stamp_entry(params, "R program execution begins", "Tracking Table")
   params <- MergeTrackingTableRAW.kp(params, from)
   return(params)
 }
@@ -1960,7 +1960,7 @@ PauseContinue.kp <- function(params, from = NULL, max_waiting_time = 24 * 60 * 6
   params <- StoreLogEntry.kp(params, "")
   params <- StoreTrackingTableEntry.kp(params)
   WriteLogCSV(params)
-  params <- StoreStampsEntry(params, "R program execution paused", "Tracking Table")
+  params <- store_stamp_entry(params, "R program execution paused", "Tracking Table")
   if (from == "AC") {
     if (params$verbose) cat("Waiting for analysis center\n")
     Standby("files_done.ok",
@@ -1987,9 +1987,9 @@ PauseContinue.kp <- function(params, from = NULL, max_waiting_time = 24 * 60 * 6
   if (params$verbose) cat("Resuming local processing\n\n")
   params <- MergeLogRaw.kp(params, from)
   params <- UpdateCounters.kp(params)
-  params <- NewLogEntry.kp(params)
+  params <- new_log_entry_kp(params)
   params <- MergeStampsRaw.kp(params, from)
-  params <- StoreStampsEntry(params, "R program execution begins", "Tracking Table")
+  params <- store_stamp_entry(params, "R program execution begins", "Tracking Table")
   params <- MergeTrackingTableRAW.kp(params, from)
   WriteLogCSV(params)
   return(params)
@@ -2176,29 +2176,29 @@ CreateContainers <- function(pA, pB, blocks) {
 
   littleBlockG = blocks$gLittleBlock
 
-  littleFilesize.Z   = 8 * littleBlocksize * littleBlockG
-  littleFilesize.W   = 8 * littleBlocksize * pB # used for W, V, RW, WR, RV, Cox
+  littleFilesize.z   = 8 * littleBlocksize * littleBlockG
+  littleFilesize.w   = 8 * littleBlocksize * pB # used for w, V, RW, WR, RV, Cox
   littleFilesize.RZ  = 8 * littleBlocksize^2
   littleFilesize.PR  = 8 * (pA + 1) * pB        # I think this is not used anymore
   littleFilesize.XR = 8 * pA * pB
 
-  numContainers.Z = ceiling(num_blocks * littleFilesize.Z / maximumFilesize)
-  num_blocksSmallContainer.Z = trunc(num_blocks / numContainers.Z)
-  num_blocksLargeContainer.Z = num_blocksSmallContainer.Z + 1
-  numLargeContainer.Z = num_blocks %% numContainers.Z
-  numSmallContainer.Z = numContainers.Z - numLargeContainer.Z
+  numContainers.z <- ceiling(num_blocks * littleFilesize.z / maximumFilesize)
+  num_blocksSmallContainer.z <- trunc(num_blocks / numContainers.z)
+  num_blocksLargeContainer.z <- num_blocksSmallContainer.z + 1
+  numLargeContainer.z <- num_blocks %% numContainers.z
+  numSmallContainer.z <- numContainers.z - numLargeContainer.z
 
-  numContainers.W = ceiling(num_blocks * littleFilesize.W / maximumFilesize)
-  num_blocksSmallContainer.W = trunc(num_blocks / numContainers.W)
-  num_blocksLargeContainer.W = num_blocksSmallContainer.W + 1
-  numLargeContainer.W = num_blocks %% numContainers.W
-  numSmallContainer.W = numContainers.W - numLargeContainer.W
+  numContainers.w = ceiling(num_blocks * littleFilesize.w / maximumFilesize)
+  num_blocksSmallContainer.w = trunc(num_blocks / numContainers.w)
+  num_blocksLargeContainer.w = num_blocksSmallContainer.w + 1
+  numLargeContainer.w = num_blocks %% numContainers.w
+  numSmallContainer.w = numContainers.w - numLargeContainer.w
 
-  numContainers.RZ = ceiling(num_blocks * littleFilesize.RZ / maximumFilesize)
-  num_blocksSmallContainer.RZ = trunc(num_blocks / numContainers.RZ)
-  num_blocksLargeContainer.RZ = num_blocksSmallContainer.RZ + 1
-  numLargeContainer.RZ = num_blocks %% numContainers.RZ
-  numSmallContainer.RZ = numContainers.RZ - numLargeContainer.RZ
+  numContainers.rz <- ceiling(num_blocks * littleFilesize.RZ / maximumFilesize)
+  num_blocksSmallContainer.rz <- trunc(num_blocks / numContainers.RZ)
+  num_blocksLargeContainer.rz <- num_blocksSmallContainer.RZ + 1
+  numLargeContainer.rz <- num_blocks %% numContainers.RZ
+  numSmallContainer.rz <- numContainers.RZ - numLargeContainer.RZ
 
   numContainers.PR = ceiling(num_blocks * littleFilesize.PR / maximumFilesize)
   num_blocksSmallContainer.PR = trunc(num_blocks / numContainers.PR)
@@ -2212,30 +2212,30 @@ CreateContainers <- function(pA, pB, blocks) {
   numLargeContainer.XR = num_blocks %% numContainers.XR
   numSmallContainer.XR = numContainers.XR - numLargeContainer.XR
 
-  if (numLargeContainer.Z > 0) {
-    file_break_z = c(0:(numLargeContainer.Z - 1) * num_blocksLargeContainer.Z + 1,
-                    0:(numSmallContainer.Z - 1) * num_blocksSmallContainer.Z + 1 +
-                      numLargeContainer.Z * num_blocksLargeContainer.Z)
+  if (numLargeContainer.z > 0) {
+    file_break_z = c(0:(numLargeContainer.z - 1) * num_blocksLargeContainer.z + 1,
+                     0:(numSmallContainer.z - 1) * num_blocksSmallContainer.z + 1 +
+                       numLargeContainer.z * num_blocksLargeContainer.z)
   } else {
-    file_break_z = c(0:(numSmallContainer.Z - 1) * num_blocksSmallContainer.Z + 1 +
-                      numLargeContainer.Z * num_blocksLargeContainer.Z)
+    file_break_z = c(0:(numSmallContainer.z - 1) * num_blocksSmallContainer.z + 1 +
+                       numLargeContainer.z * num_blocksLargeContainer.z)
   }
 
-  if (numLargeContainer.W > 0) {
-    filebreak.W = c(0:(numLargeContainer.W - 1) * num_blocksLargeContainer.W + 1,
-                    0:(numSmallContainer.W - 1) * num_blocksSmallContainer.W + 1 +
-                      numLargeContainer.W * num_blocksLargeContainer.W)
+  if (numLargeContainer.w > 0) {
+    filebreak.w = c(0:(numLargeContainer.w - 1) * num_blocksLargeContainer.w + 1,
+                    0:(numSmallContainer.w - 1) * num_blocksSmallContainer.w + 1 +
+                      numLargeContainer.w * num_blocksLargeContainer.w)
   } else {
-    filebreak.W = c(0:(numSmallContainer.W - 1) * num_blocksSmallContainer.W + 1 +
-                      numLargeContainer.W * num_blocksLargeContainer.W)
+    filebreak.w = c(0:(numSmallContainer.w - 1) * num_blocksSmallContainer.w + 1 +
+                      numLargeContainer.w * num_blocksLargeContainer.w)
   }
 
   if (numLargeContainer.RZ > 0) {
-    filebreak.RZ = c(0:(numLargeContainer.RZ - 1) * num_blocksLargeContainer.RZ + 1,
+    filebreak.rz <- c(0:(numLargeContainer.RZ - 1) * num_blocksLargeContainer.RZ + 1,
                      0:(numSmallContainer.RZ - 1) * num_blocksSmallContainer.RZ + 1 +
                        numLargeContainer.RZ * num_blocksLargeContainer.RZ)
   } else {
-    filebreak.RZ = c(0:(numSmallContainer.RZ - 1) * num_blocksSmallContainer.RZ + 1 +
+    filebreak.rz <- c(0:(numSmallContainer.RZ - 1) * num_blocksSmallContainer.RZ + 1 +
                        numLargeContainer.RZ * num_blocksLargeContainer.RZ)
   }
 
@@ -2258,15 +2258,15 @@ CreateContainers <- function(pA, pB, blocks) {
   }
 
   containers$file_break_z   = file_break_z
-  containers$filebreak.W   = filebreak.W
+  containers$filebreak.w   = filebreak.w
   containers$filebreak.RZ  = filebreak.RZ
   containers$filebreak.PR  = filebreak.PR # I think we are not using this anymore
-  containers$filebreak.V   = filebreak.W
-  containers$filebreak.RW  = filebreak.W
-  containers$filebreak.WR  = filebreak.W
-  containers$filebreak.RV  = filebreak.W
-  containers$filebreak.VR  = filebreak.W
-  containers$filebreak.Cox = filebreak.W
+  containers$filebreak.V   = filebreak.w
+  containers$filebreak.RW  = filebreak.w
+  containers$filebreak.WR  = filebreak.w
+  containers$filebreak.RV  = filebreak.w
+  containers$filebreak.VR  = filebreak.w
+  containers$filebreak.Cox = filebreak.w
   containers$filebreak.XR = filebreak.XR
 
   return(containers)
@@ -2371,7 +2371,7 @@ formatStatList <- function(vals) {
 
 ########################### SHARED STAMPS FUNCTIONS ############################
 
-StoreStampsEntry <- function(params, description = "", type = "") {
+store_stamp_entry <- function(params, description = "", type = "") {
   newEntry             = params$stamps$blank
   newEntry$Step        = params$pmnStepCounter
   newEntry$Description = description
@@ -2410,7 +2410,7 @@ initialize_time_stamps_2p <- function(params) {
 }
 
 
-ReadStampsRaw.2p <- function(params) {
+read_stamps_raw_2p <- function(params) {
   stamps = NULL
   load(file.path(params$read_path, "stamps.rdata"))
   params$stamps$history = stamps
@@ -2546,7 +2546,7 @@ add_to_log <- function(params, functionName, readTime, readSize, writeTime, writ
     params$log$current$Functions <- functionName
   } else {
     params$log$current$Functions <- paste0(params$log$current$Functions,
-                                          ", ", functionName)
+                                           ", ", functionName)
   }
   params$log$current$Read.Time  <- params$log$current$Read.Time + readTime
   params$log$current$Read.Size  <- params$log$current$Read.Size + readSize
@@ -2571,7 +2571,7 @@ WriteLogCSV <- function(params) {
 
 #' @importFrom utils write.table
 WriteToLogSummary <- function(c1 = "", c2 = "", c3 = "",
-                             write_path = NULL, append = TRUE) {
+                              write_path = NULL, append = TRUE) {
   if (is.numeric(c2)) {
     c2 = round(c2, 2)
   }
@@ -2605,7 +2605,7 @@ initialize_log_2p <- function(params) {
 }
 
 
-NewLogEntry.2p <- function(params) {
+new_log_entry_2p <- function(params) {
   params$log$current = params$log$blank
   params$log$current$Party         = params$party_name
   params$log$current$Start.Time    = GetUTCTime()
@@ -2644,7 +2644,7 @@ StoreLogEntry.2p <- function(params, files) {
   return(params)
 }
 
-ReadLogRaw.2p <- function(params) {
+read_log_raw_2p <- function(params) {
   load(file.path(params$read_path, "log.rdata"))
   params$log$history = log
   return(params)
@@ -2732,9 +2732,9 @@ SummarizeLog.2p <- function(params) {
   }
   if (!is.null(params$n))   WriteToLogSummary(c1 = "N", c2 = params$n, write_path = write_path)
 
-  p = max(0, params$p1.old - (params$analysis != "cox"))
+  p = max(0, params$p1_old - (params$analysis != "cox"))
   WriteToLogSummary(c1 = "pA", c2 = p, write_path = write_path)
-  p = params$p2.old
+  p = params$p2_old
   WriteToLogSummary(c1 = "pB", c2 = p, write_path = write_path)
 
   WriteToLogSummary(write_path = write_path)
@@ -2808,7 +2808,7 @@ initialize_log_3p <- function(params) {
 }
 
 
-NewLogEntry.3p <- function(params) {
+new_log_entry_3p <- function(params) {
   params$log$current = params$log$blank
   params$log$current$Party         = params$party_name
   params$log$current$Start.Time    = GetUTCTime()
@@ -2958,9 +2958,9 @@ SummarizeLog.3p <- function(params) {
   }
   if (!is.null(params$n))   WriteToLogSummary(c1 = "N", c2 = params$n, write_path = write_path)
 
-  p = max(0, params$p1.old - (params$analysis != "cox"))
+  p = max(0, params$p1_old - (params$analysis != "cox"))
   WriteToLogSummary(c1 = "pA", c2 = p, write_path = write_path)
-  p = params$p2.old
+  p = params$p2_old
   WriteToLogSummary(c1 = "pB", c2 = p, write_path = write_path)
 
   WriteToLogSummary(write_path = write_path)
@@ -3049,7 +3049,7 @@ initialize_log_kp <- function(params) {
 }
 
 
-NewLogEntry.kp <- function(params) {
+new_log_entry_kp <- function(params) {
   params$log$current = params$log$blank
   params$log$current$Party         = paste0("dp", params$data_partner_id)
   params$log$current$Start.Time    = GetUTCTime()
@@ -3306,7 +3306,7 @@ StoreTrackingTableEntry.2p <- function(params) {
   return(params)
 }
 
-ReadTrackingTableUpdate.2p <- function(params) {
+read_tracking_table_update_2p <- function(params) {
   trackingTableEntry = NULL
   load(file.path(params$read_path, "tr_tb_updt.rdata"))
   trackingTableEntry$MSREQID = params$msreqid
@@ -4092,11 +4092,11 @@ differentModel <- function(formula = NULL, x = NULL) {
     }
   }
 
-  xtx.old   = xtx
-  xty.old   = xty
+  xtx_old   = xtx
+  xty_old   = xty
   xtx       = xtx[indicies, indicies]
   xty       = matrix(xty[indicies, 1], ncol = 1)
-  means.old = means
+  means_old = means
   means     = means[indicies]
   p         = length(indicies)
   n         = x$n
@@ -4166,22 +4166,22 @@ differentModel <- function(formula = NULL, x = NULL) {
   y$df1                    = df1
   y$df2                    = df2
   y$n                      = x$n
-  y$xtx                    = xtx.old
-  y$xty                    = xty.old
+  y$xtx                    = xtx_old
+  y$xty                    = xty_old
   y$yty                    = yty
   y$meansy                 = meansy
-  y$means                  = means.old
+  y$means                  = means_old
 
-  names.old                = all_names[covariate_index]
-  names(y$party)           = names.old
-  names(y$coefficients)    = names.old
-  names(y$secoef)          = names.old
-  names(y$tvals)           = names.old
-  names(y$pvals)           = names.old
-  colnames(y$xtx)          = names.old
-  rownames(y$xtx)          = names.old
+  names_old                = all_names[covariate_index]
+  names(y$party)           = names_old
+  names(y$coefficients)    = names_old
+  names(y$secoef)          = names_old
+  names(y$tvals)           = names_old
+  names(y$pvals)           = names_old
+  colnames(y$xtx)          = names_old
+  rownames(y$xtx)          = names_old
   colnames(y$xty)          = responseName
-  rownames(y$xty)          = names.old
+  rownames(y$xty)          = names_old
   return(invisible(y))
 }
 

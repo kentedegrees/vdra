@@ -238,8 +238,8 @@ prepare_folder_linear_t3 <- function(params, monitor_folder = NULL) {
 
 prepare_params_linear_a3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_a3\n\n")
-  params$n     = nrow(data$X)
-  params$p     = ncol(data$X)
+  params$n     = nrow(data$x)
+  params$p     = ncol(data$x)
   params$means = data$means
   params$sd    = data$sd
 
@@ -253,7 +253,7 @@ prepare_params_linear_a3 <- function(params, data) {
   pa$meansy   = data$meansy
   pa$sdy      = data$sdy
   pa$y_name    = data$y_name
-  pa$colnames = colnames(data$X)
+  pa$colnames = colnames(data$x)
   pa$tags     = data$tags
 
   write_time <- proc.time()[3]
@@ -267,8 +267,8 @@ prepare_params_linear_a3 <- function(params, data) {
 
 prepare_params_linear_b3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_b3\n\n")
-  params$n     = nrow(data$X)
-  params$p     = ncol(data$X)
+  params$n     = nrow(data$x)
+  params$p     = ncol(data$x)
   params$means = data$means
   params$sd    = data$sd
 
@@ -278,7 +278,7 @@ prepare_params_linear_b3 <- function(params, data) {
   pb$p         = params$p
   pb$means     = data$means
   pb$sd        = data$sd
-  pb$colnames  = colnames(data$X)
+  pb$colnames  = colnames(data$x)
   pb$tags      = data$tags
 
   write_time <- proc.time()[3]
@@ -317,8 +317,8 @@ prepare_params_linear_t3 <- function(params, cutoff = 1e-8, max_iterations = 25)
   params$n             = pa$n
   params$p1            = pa$p
   params$p2            = pb$p
-  params$p1.old        = params$p1
-  params$p2.old        = params$p2
+  params$p1_old        = params$p1
+  params$p2_old        = params$p2
   params$p             = pa$p + pb$p
   params$meansA        = pa$means
   params$sdA           = pa$sd
@@ -425,7 +425,7 @@ get_z_linear_a3 <- function(params, data) {
   write_size <- 0
 
   num_blocks = params$blocks$num_blocks
-  pbar = MakeProgressBar1(num_blocks, "Z", params$verbose)
+  pbar = MakeProgressBar1(num_blocks, "z", params$verbose)
   container_ct_z <- 0
   for (i in 1:num_blocks) {
     if (i %in% params$container$file_break_z) {
@@ -437,10 +437,10 @@ get_z_linear_a3 <- function(params, data) {
     stp <- params$blocks$stops[i]
     n = stp - strt + 1
     g = params$blocks$g[i]
-    Z = FindOrthogonalVectors(cbind(data$Y[strt:stp, ], data$X[strt:stp, ]), g)
+    z <- FindOrthogonalVectors(cbind(data$Y[strt:stp, ], data$x[strt:stp, ]), g)
 
     write_time <- write_time - proc.time()[3]
-    writeBin(as.vector(Z), con = to_write, endian = "little")
+    writeBin(as.vector(z), con = to_write, endian = "little")
     write_time <- write_time + proc.time()[3]
     if ((i + 1) %in% params$container$file_break_z || i == num_blocks) {
       close(to_write)
@@ -460,9 +460,9 @@ ProcessZLinear.t3 <- function(params) {
   write_time <- 0
   write_size <- 0
   num_blocks = params$blocks$num_blocks
-  pbar = MakeProgressBar1(num_blocks, "R(I-Z*Z')", params$verbose)
+  pbar = MakeProgressBar1(num_blocks, "R(I-z*z')", params$verbose)
   container_ct_z <- 0
-  container_ct_RZ = 0
+  container_ct_rz <- 0
   for (i in 1:num_blocks) {
     if (i %in% params$container$file_break_z) {
       container_ct_z <- container_ct_z + 1
@@ -470,7 +470,7 @@ ProcessZLinear.t3 <- function(params) {
       toRead = file(file.path(params$read_path[["A"]], filename1), "rb")
     }
     if (i %in% params$container$filebreak.RZ) {
-      container_ct_RZ = container_ct_RZ + 1
+      container_ct_rz <- container_ct_RZ + 1
       filename2 <- paste0("crz_", container_ct_RZ, ".rdata")
       to_write <- file(file.path(params$write_path, filename2), "wb")
     }
@@ -482,11 +482,11 @@ ProcessZLinear.t3 <- function(params) {
     g = params$blocks$g[i]
 
     read_time <- read_time - proc.time()[3]
-    Z = matrix(readBin(con = toRead, what = numeric(), n = n * g,
+    z <- matrix(readBin(con = toRead, what = numeric(), n = n * g,
                        endian = "little"), nrow = n, ncol = g)
     read_time <- read_time + proc.time()[3]
     R = RandomOrthonomalMatrix(n)
-    RZ = R - (R %*% Z) %*% t(Z)
+    rz <- R - (R %*% z) %*% t(z)
 
     write_time <- write_time - proc.time()[3]
     writeBin(as.vector(RZ), con = to_write, endian = "little")
@@ -537,18 +537,18 @@ GetRWLinear.b3 <- function(params, data) {
 
   num_blocks = params$blocks$num_blocks
 
-  xb_t_xb <- t(data$X) %*% data$X
+  xb_t_xb <- t(data$x) %*% data$x
   write_time <- proc.time()[3]
   save(xb_t_xb, file = file.path(params$write_path, "xbtxb.rdata"))
   write_size <- file.size(file.path(params$write_path, "xbtxb.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  pbar = MakeProgressBar1(num_blocks, "R(I-Z*Z')XB", params$verbose)
-  container_ct_RZ = 0
+  pbar = MakeProgressBar1(num_blocks, "R(I-z*z')XB", params$verbose)
+  container_ct_rz <- 0
   container_ct_RW = 0
   for (i in 1:num_blocks) {
     if (i %in% params$container$filebreak.RZ) {
-      container_ct_RZ = container_ct_RZ + 1
+      container_ct_rz <- container_ct_RZ + 1
       filename1 <- paste0("crz_", container_ct_RZ, ".rdata")
       toRead = file(file.path(params$read_path[["T"]], filename1), "rb")
     }
@@ -562,9 +562,9 @@ GetRWLinear.b3 <- function(params, data) {
     n    = stp - strt + 1
     g = params$blocks$g[i]
 
-    XB = data$X[strt:stp, , drop = FALSE]
+    XB = data$x[strt:stp, , drop = FALSE]
     read_time <- read_time - proc.time()[3]
-    RZ = matrix(readBin(con = toRead, what = numeric(), n = n * n,
+    rz <- matrix(readBin(con = toRead, what = numeric(), n = n * n,
                         endian = "little"), nrow = n, ncol = n)
     read_time <- read_time + proc.time()[3]
 
@@ -605,7 +605,7 @@ ProcessWLinear.t3 <- function(params) {
   write_time <- proc.time()[3] - write_time
 
   num_blocks = params$blocks$num_blocks
-  pbar = MakeProgressBar1(num_blocks, "(I-Z*Z')XB*R", params$verbose)
+  pbar = MakeProgressBar1(num_blocks, "(I-z*z')XB*R", params$verbose)
 
   container_ct_RW = 0
   container_ct_wr = 0
@@ -638,9 +638,9 @@ ProcessWLinear.t3 <- function(params) {
                         endian = "little"), nrow = n, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
-    W = t(R1) %*% RW
+    w = t(R1) %*% RW
     R2 = RandomOrthonomalMatrix(p2)
-    WR2 = W %*% R2
+    WR2 = w %*% R2
 
     write_time <- write_time - proc.time()[3]
     to_write4 = file(file.path(params$dp_local_path, filename4), "wb")
@@ -668,8 +668,8 @@ ProcessWLinear.t3 <- function(params) {
 
 get_wr_linear_a3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "get_wr_linear_a3\n\n")
-  XATXA = t(data$X) %*% data$X
-  XATY  = t(data$X) %*% data$Y
+  XATXA = t(data$x) %*% data$x
+  XATY  = t(data$x) %*% data$Y
   write_time <- proc.time()[3]
   save(XATXA, XATY, file = file.path(params$write_path, "xatxa.rdata"))
   write_size <- file.size(file.path(params$write_path, "xatxa.rdata"))
@@ -682,7 +682,7 @@ get_wr_linear_a3 <- function(params, data) {
   read_time <- proc.time()[3] - read_time
 
   num_blocks = params$blocks$num_blocks
-  pbar = MakeProgressBar1(num_blocks, "XA'(I-Z*Z')XB*R", params$verbose)
+  pbar = MakeProgressBar1(num_blocks, "XA'(I-z*z')XB*R", params$verbose)
 
   container_ct_wr = 0
   container_ct_PR = 0
@@ -707,7 +707,7 @@ get_wr_linear_a3 <- function(params, data) {
                         endian = "little"), nrow = n, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
-    YXA = cbind(data$Y[strt:stp, ], data$X[strt:stp, ])
+    YXA = cbind(data$Y[strt:stp, ], data$x[strt:stp, ])
     PR = t(YXA) %*% WR
     write_time <- write_time - proc.time()[3]
     writeBin(as.vector(PR), con = to_write, endian = "little")
@@ -729,8 +729,8 @@ get_wr_linear_a3 <- function(params, data) {
 }
 
 
-GetProductsLinear.t3 <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "GetProductsLinear.t3\n\n")
+get_products_linear_t3 <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "get_products_linear_t3\n\n")
   n  = params$n
   p1 = params$p1
   p2 = params$p2
@@ -794,16 +794,16 @@ GetProductsLinear.t3 <- function(params) {
 
   params$converged = TRUE
 
-  params <- add_to_log(params, "GetProductsLinear.t3", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "get_products_linear_t3", read_time, read_size, 0, 0)
   return(params)
 }
 
 
 #' @importFrom  stats pf pt
-ComputeResultsLinear.t3 <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLinear.t3\n\n")
+compute_results_linear_t3 <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "compute_results_linear_t3\n\n")
   stats    = params$stats
-  stats$converged = params$converged
+  stats$converged <- params$converged
   stats$failed    = FALSE
   a_names   = params$colnamesA
   b_names   = params$colnamesB
@@ -845,8 +845,8 @@ ComputeResultsLinear.t3 <- function(params) {
   b_indicies_keep = indicies[-a_index] - length(a_names)
   names_old     = c(a_names, b_names)
   p             = length(indicies)
-  xtx.old       = xtx
-  xty.old       = xty
+  xtx_old       = xtx
+  xty_old       = xty
   xtx           = xtx[indicies, indicies, drop = FALSE]
   xty           = matrix(xty[indicies, ], ncol = 1)
 
@@ -884,8 +884,8 @@ ComputeResultsLinear.t3 <- function(params) {
 
   secoef  = tvals^-1 * betas
   pvals   = 2 * pt(abs(tvals), n - numCovariates - 1, lower.tail = FALSE)
-  stats$party                  = c(rep("dp1", params$p1.old),
-                                   rep("dp2", params$p2.old))
+  stats$party                  = c(rep("dp1", params$p1_old),
+                                   rep("dp2", params$p2_old))
   stats$responseParty          = "dp1"
   stats$coefficients           = rep(NA, params$p)
   stats$tvals                  = rep(NA, params$p)
@@ -905,8 +905,8 @@ ComputeResultsLinear.t3 <- function(params) {
   stats$df1                    = df1
   stats$df2                    = df2
   stats$n                      = params$n
-  stats$xtx                    = xtx.old
-  stats$xty                    = xty.old
+  stats$xtx                    = xtx_old
+  stats$xty                    = xty_old
   stats$yty                    = yty
   stats$meansy                 = meansy
   stats$means                  = c(meansA, meansB)
@@ -941,7 +941,7 @@ ComputeResultsLinear.t3 <- function(params) {
   write_size <- file.size(file.path(params$write_path, "stats.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "ComputeResultsLinear.t3", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "compute_results_linear_t3", 0, 0, write_time, write_size)
   return(params)
 }
 
@@ -1189,8 +1189,8 @@ PartyTProcess3Linear <- function(monitor_folder         = NULL,
   params <- send_pause_continue_3p(params, filesA = files, from  = "A",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
-  params <- GetProductsLinear.t3(params)
-  params <- ComputeResultsLinear.t3(params)
+  params <- get_products_linear_t3(params)
+  params <- compute_results_linear_t3(params)
 
   if (params$failed) {
     warning(params$error_message)
