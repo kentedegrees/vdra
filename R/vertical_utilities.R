@@ -804,7 +804,7 @@ CheckDataFormat <- function(params, data) {
       badValue = badValue | is.na(data[, i])
     }
   }
-  idx = data.frame(which(badValue))
+  idx <- data.frame(which(badValue))
   colnames(idx) = "Observations with invalid entries"
   if (nrow(idx) > 0) {
     warning(paste0("Some observations contain invalid values: NA, NaN, or Inf. ",
@@ -1387,7 +1387,7 @@ read_error_message <- function(read_path) {
 ###################### 2 PARTY PMN COMMUNICATION FUNCTIONS ######################
 
 send_pause_quit_2p <- function(params,
-                            files = c(),
+                            files <- c(),
                             sleep_time = 10,
                             job_failed = FALSE) {
 
@@ -1396,25 +1396,25 @@ send_pause_quit_2p <- function(params,
   WriteLogCSV(params)
   write_log_raw(params)
   params$lastIteration = TRUE
-  files = c(files, "stamps.rdata", "log.rdata", "file_list.csv")
+  files <- c(files, "stamps.rdata", "log.rdata", "file_list.csv")
   transfer = c(rep(1, length(files) - 1), 10)
   if (params$party_name == "A") {
     if (job_failed) {
-      files = c(files, "job_fail.ok")
+      files <- c(files, "job_fail.ok")
       params <- StoreStampsEntry(params, "Job failed trigger file", "Trigger File created")
     } else {
-      files = c(files, "job_done.ok")
+      files <- c(files, "job_done.ok")
       params <- StoreStampsEntry(params, "Job done trigger file", "Trigger File created")
     }
     transfer = c(transfer, 10)
   }
   if (params$party_name == "A") {
-    files = c(files, "dl_track_tbl.csv")
+    files <- c(files, "dl_track_tbl.csv")
     transfer = c(transfer, 10)
     destination = rep(1, length(files))
     destination[transfer == 10] = 10
   } else {
-    files = c(files, "tr_tb_updt.rdata")
+    files <- c(files, "tr_tb_updt.rdata")
     transfer = c(transfer, 1)
     destination = rep(0, length(files))
     destination[transfer == 10] = 10
@@ -1435,7 +1435,7 @@ send_pause_quit_2p <- function(params,
 }
 
 send_pause_continue_2p <- function(params,
-                                files = c(),
+                                files <- c(),
                                 sleep_time = 10,
                                 max_waiting_time = NULL,
                                 job_started = FALSE) {
@@ -1443,15 +1443,15 @@ send_pause_continue_2p <- function(params,
   params <- StoreTrackingTableEntry.2p(params)
   WriteLogCSV(params)
   write_log_raw(params)
-  files = c(files, "stamps.rdata", "log.rdata", "file_list.csv")
+  files <- c(files, "stamps.rdata", "log.rdata", "file_list.csv")
   transfer = c(rep(1, length(files) - 1), 10)
   if (params$party_name == "A") {
-    files = c(files, "dl_track_tbl.csv")
+    files <- c(files, "dl_track_tbl.csv")
     transfer = c(transfer, 10)
     destination = rep(1, length(files))
     destination[transfer == 10] = 10
   } else {
-    files = c("tr_tb_updt.rdata", files)
+    files <- c("tr_tb_updt.rdata", files)
     transfer = c(1, transfer)
     destination = rep(0, length(files))
     destination[transfer == 10] = 10
@@ -1549,23 +1549,23 @@ send_pause_quit_3p <- function(params,
 
   params$lastIteration = TRUE
   params$completed     = TRUE
-  files = c(filesA, filesB, filesT, "file_list.csv")
+  files <- c(filesA, filesB, filesT, "file_list.csv")
   transfer = c(rep(1, length(files) - 1), 10)
   destination = c(rep(1, length(filesA)),
                   rep(2, length(filesB)),
                   rep(0, length(filesT)),
                   10)
   if (params$party != "T") {
-    files = c(files, "stamps.rdata", "log.rdata")
+    files <- c(files, "stamps.rdata", "log.rdata")
     transfer = c(transfer, 1, 1)
     destination = c(destination, 0, 0)
   }
   if (params$party == "T") {
     if (job_failed) {
-      files = c(files, "job_fail.ok")
+      files <- c(files, "job_fail.ok")
       params <- StoreStampsEntry(params, "Job failed trigger file", "Trigger File created")
     } else {
-      files = c(files, "job_done.ok")
+      files <- c(files, "job_done.ok")
       params <- StoreStampsEntry(params, "Job done trigger file", "Trigger File created")
     }
     transfer = c(transfer, 10)
@@ -1578,12 +1578,12 @@ send_pause_quit_3p <- function(params,
 
   if (params$party_name == "T") {
     WriteTrackingTableCSV(params)
-    files = c(files, "dl_track_tbl.csv")
+    files <- c(files, "dl_track_tbl.csv")
     transfer = c(transfer, 10)
     destination = c(destination, 10)
   } else {
     WriteTrackingTableRaw(params)
-    files = c(files, "tr_tb_updt.rdata")
+    files <- c(files, "tr_tb_updt.rdata")
     transfer = c(transfer, 1)
     destination = c(destination, 0)
   }
@@ -1623,7 +1623,7 @@ send_pause_continue_3p <- function(params,
   WriteLogCSV(params)
   write_log_raw(params)
 
-  files = c(filesA, filesB, filesT, "file_list.csv")
+  files <- c(filesA, filesB, filesT, "file_list.csv")
   transfer = c(rep(1, length(files) - 1), 10)
   destination = c(rep(1, length(filesA)),
                   rep(2, length(filesB)),
@@ -1632,23 +1632,23 @@ send_pause_continue_3p <- function(params,
     WriteTrackingTableRaw(params)
   }
   if (!is.null(filesA)) {
-    files = c(files, "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
+    files <- c(files, "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
     transfer = c(transfer, 1, 1, 1)
     destination = c(destination, 1, 1, 1)
   }
   if (!is.null(filesB)) {
-    files = c(files, "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
+    files <- c(files, "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
     transfer = c(transfer, 1, 1, 1)
     destination = c(destination, 2, 2, 2)
   }
   if (!is.null(filesT)) {
-    files = c(files, "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
+    files <- c(files, "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
     transfer = c(transfer, 1, 1, 1)
     destination = c(destination, 0, 0, 0)
   }
   if (params$party_name == "T") {
     WriteTrackingTableCSV(params)
-    files = c(files, "dl_track_tbl.csv")
+    files <- c(files, "dl_track_tbl.csv")
     transfer    = c(transfer, 10)
     destination = c(destination, 10)
   }
@@ -1784,7 +1784,7 @@ send_pause_quit_kp <- function(params,
 
     dataPartnerTarget = 1:params$numDataPartners
     dataPartnerTarget = dataPartnerTarget[-params$data_partner_id]
-    files = c(filesAC, rep(filesDP, length(dataPartnerTarget)), "file_list.csv")
+    files <- c(filesAC, rep(filesDP, length(dataPartnerTarget)), "file_list.csv")
     transfer = c(rep(1, length(files) - 1), 10)
     destination = c(rep(0, length(filesAC)),
                     rep(dataPartnerTarget, each = length(filesDP)),
@@ -1795,10 +1795,10 @@ send_pause_quit_kp <- function(params,
     WriteTrackingTableCSV(params)
     files       = c("dl_track_tbl.csv", "file_list.csv")
     if (job_failed) {
-      files = c(files, "job_fail.ok")
+      files <- c(files, "job_fail.ok")
       params <- StoreStampsEntry(params, "Job failed trigger file", "Trigger File created")
     } else {
-      files = c(files, "job_done.ok")
+      files <- c(files, "job_done.ok")
       params <- StoreStampsEntry(params, "Job done trigger file", "Trigger File created")
     }
     transfer = c(10, 10, 10)
@@ -1856,15 +1856,15 @@ send_pause_continue_kp <- function(params,
       dataPartnerTarget = dataPartnerTarget[-params$data_partner_id]
     }
 
-    files = c(filesAC, rep(filesDP, length(dataPartnerTarget)), "file_list.csv")
+    files <- c(filesAC, rep(filesDP, length(dataPartnerTarget)), "file_list.csv")
     transfer = c(rep(1, length(files) - 1), 10)
     destination = c(rep(0, length(filesAC)),
                     rep(dataPartnerTarget, each = length(filesDP)),
                     10)
   } else {
-    files = filesAC
+    files <- filesAC
     for (dp in 1:params$numDataPartners) {
-      files = c(files, filesDP[[dp]])
+      files <- c(files, filesDP[[dp]])
     }
     params <- StoreLogEntry.kp(params, files)
     params <- StoreTrackingTableEntry.kp(params)
@@ -1876,23 +1876,23 @@ send_pause_continue_kp <- function(params,
     if (!is.null(filesAC)) {
       filesAC = c(filesAC, "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
     }
-    files = filesAC
+    files <- filesAC
     transfer = rep(1, length(files))
     destination = rep(0, length(filesAC))
     for (dp in 1:params$numDataPartners) {
       if (length(filesDP[[dp]]) > 0 && dp != params$data_partner_id) {
-        files = c(files, filesDP[[dp]], "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
+        files <- c(files, filesDP[[dp]], "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
         transfer = c(transfer, rep(1, length(filesDP[[dp]]) + 3))
         destination = c(destination, rep(dp, length(filesDP[[dp]]) + 3))
       }
     }
-    files = c(files, "file_list.csv")
+    files <- c(files, "file_list.csv")
     transfer = c(transfer, 10)
     destination = c(destination, 10)
   }
   if (params$data_partner_id == 0) {
     WriteTrackingTableCSV(params)
-    files = c(files, "dl_track_tbl.csv")
+    files <- c(files, "dl_track_tbl.csv")
     transfer    = c(transfer, 10)
     destination = c(destination, 10)
   }
@@ -2455,14 +2455,14 @@ MergeStampsRaw.3p <- function(params, from) {
     key2 = paste0(stamps$Step,
                   stamps$Source,
                   stamps$Description)
-    idx = which(key2 %in% key1)
+    idx <- which(key2 %in% key1)
     if (length(idx) == 0) {
       params$stamps$history = rbind(params$stamps$history, stamps)
     } else if (length(idx) < length(key2)) {
       params$stamps$history = rbind(params$stamps$history, stamps[-idx, ])
     }
   }
-  idx = order(as.character(params$stamps$history$Time))
+  idx <- order(as.character(params$stamps$history$Time))
   params$stamps$history = params$stamps$history[idx, ]
   return(params)
 }
@@ -2492,7 +2492,7 @@ MergeStampsRaw.kp <- function(params, from) {
     key2 = paste0(stamps$Step,
                   stamps$Source,
                   stamps$Description)
-    idx = which(key2 %in% key1)
+    idx <- which(key2 %in% key1)
     if (length(idx) == 0) {
       params$stamps$history = rbind(params$stamps$history, stamps)
     } else if (length(idx) < length(key2)) {
@@ -2506,7 +2506,7 @@ MergeStampsRaw.kp <- function(params, from) {
     key2 = paste0(stamps$Step,
                   stamps$Source,
                   stamps$Description)
-    idx = which(key2 %in% key1)
+    idx <- which(key2 %in% key1)
     if (length(idx) == 0) {
       params$stamps$history = rbind(params$stamps$history, stamps)
     } else if (length(idx) < length(key2)) {
@@ -2522,7 +2522,7 @@ MergeStampsRaw.kp <- function(params, from) {
       key2 = paste0(stamps$Step,
                     stamps$Source,
                     stamps$Description)
-      idx = which(key2 %in% key1)
+      idx <- which(key2 %in% key1)
       if (length(idx) == 0) {
         params$stamps$history = rbind(params$stamps$history, stamps)
       } else if (length(idx) < length(key2)) {
@@ -2530,7 +2530,7 @@ MergeStampsRaw.kp <- function(params, from) {
       }
     }
   }
-  idx = order(as.character(params$stamps$history$Time))
+  idx <- order(as.character(params$stamps$history$Time))
   params$stamps$history = params$stamps$history[idx, ]
   return(params)
 }
@@ -2856,14 +2856,14 @@ MergeLogRaw.3p <- function(params, from) {
     load(file.path(params$read_path[[party]], "log.rdata"))
     key1 = paste0(params$log$history$Step, params$log$history$Party)
     key2 = paste0(log$Step, log$Party)
-    idx = which(key2 %in% key1)
+    idx <- which(key2 %in% key1)
     if (length(idx) == 0) {
       params$log$history = rbind(params$log$history, log)
     } else if (length(idx) < length(key2)) {
       params$log$history = rbind(params$log$history, log[-idx, ])
     }
   }
-  idx = order(params$log$history$Step, params$log$history$Party)
+  idx <- order(params$log$history$Step, params$log$history$Party)
   params$log$history = params$log$history[idx, ]
 
   return(params)
@@ -3097,7 +3097,7 @@ MergeLogRaw.kp <- function(params, from) {
     load(file.path(params$readPathAC, "log.rdata"))
     key1 = paste0(params$log$history$Step, params$log$history$Party)
     key2 = paste0(log$Step, log$Party)
-    idx = which(key2 %in% key1)
+    idx <- which(key2 %in% key1)
     if (length(idx) == 0) {
       params$log$history = rbind(params$log$history, log)
     } else if (length(idx) < length(key2)) {
@@ -3107,7 +3107,7 @@ MergeLogRaw.kp <- function(params, from) {
     load(file.path(params$readPathDP[1], "log.rdata"))
     key1 = paste0(params$log$history$Step, params$log$history$Party)
     key2 = paste0(log$Step, log$Party)
-    idx = which(key2 %in% key1)
+    idx <- which(key2 %in% key1)
     if (length(idx) == 0) {
       params$log$history = rbind(params$log$history, log)
     } else if (length(idx) < length(key2)) {
@@ -3119,7 +3119,7 @@ MergeLogRaw.kp <- function(params, from) {
       load(file.path(params$readPathDP[id], "log.rdata"))
       key1 = paste0(params$log$history$Step, params$log$history$Party)
       key2 = paste0(log$Step, log$Party)
-      idx = which(key2 %in% key1)
+      idx <- which(key2 %in% key1)
       if (length(idx) == 0) {
         params$log$history = rbind(params$log$history, log)
       } else if (length(idx) < length(key2)) {
@@ -3127,7 +3127,7 @@ MergeLogRaw.kp <- function(params, from) {
       }
     }
   }
-  idx = order(params$log$history$Step, params$log$history$Party)
+  idx <- order(params$log$history$Step, params$log$history$Party)
   params$log$history = params$log$history[idx, ]
   return(params)
 }
@@ -3154,7 +3154,7 @@ SummarizeLog.kp <- function(params) {
   total.time.0 = 0
   for (party in 0:params$numDataPartners) {
     party_name <- paste0("dp", party)
-    index = which(log$Party == party_name)
+    index = which(log$Party =<- party_name)
     if (length(index) > 0) {
       Start.Time = log$Start.Time[index[1]]
       End.Time   = log$End.Time[index[length(index)]]
@@ -3267,7 +3267,7 @@ initialize_tracking_table_2p <- function(params) {
                                      UTC_OFFSET_SEC     = GetUTCOffsetSeconds(),
                                      REGR_TYPE_CD       = params$analysis
   )
-  trackingTable$history = NA
+  trackingTable$history <- NA
   params$trackingTable = trackingTable
   return(params)
 }
@@ -3342,7 +3342,7 @@ initialize_tracking_table_3p <- function(params) {
                                      UTC_OFFSET_SEC     = GetUTCOffsetSeconds(),
                                      REGR_TYPE_CD       = params$analysis
   )
-  trackingTable$history = NA
+  trackingTable$history <- NA
   params$trackingTable = trackingTable
   return(params)
 }
@@ -3389,7 +3389,7 @@ MergeTrackingTableRAW.3p <- function(params, from) {
     key2 = paste0(trackingTable$ITER_NB,
                   trackingTable$DP_CD)
 
-    idx = which(key2 %in% key1)
+    idx <- which(key2 %in% key1)
     if (length(idx) == 0) {
       params$trackingTable$history =
         rbind(params$trackingTable$history, trackingTable)
@@ -3398,7 +3398,7 @@ MergeTrackingTableRAW.3p <- function(params, from) {
         rbind(params$trackingTable$history, trackingTable[-idx, ])
     }
   }
-  idx = order(params$trackingTable$history$START_DTM)
+  idx <- order(params$trackingTable$history$START_DTM)
   params$trackingTable$history = params$trackingTable$history[idx, ]
   params$trackingTable$history$MSREQID = params$msreqid
   return(params)
@@ -3426,7 +3426,7 @@ initialize_tracking_table_kp <- function(params) {
                                      UTC_OFFSET_SEC     = GetUTCOffsetSeconds(),
                                      REGR_TYPE_CD       = params$analysis
   )
-  trackingTable$history = NA
+  trackingTable$history <- NA
   params$trackingTable = trackingTable
   return(params)
 }
@@ -3479,7 +3479,7 @@ MergeTrackingTableRAW.kp <- function(params, from) {
     key2 = paste0(trackingTable$ITER_NB,
                   trackingTable$DP_CD)
 
-    idx = which(key2 %in% key1)
+    idx <- which(key2 %in% key1)
     if (length(idx) == 0) {
       params$trackingTable$history =
         rbind(params$trackingTable$history, trackingTable)
@@ -3494,7 +3494,7 @@ MergeTrackingTableRAW.kp <- function(params, from) {
     key2 = paste0(trackingTable$ITER_NB,
                   trackingTable$DP_CD)
 
-    idx = which(key2 %in% key1)
+    idx <- which(key2 %in% key1)
     if (length(idx) == 0) {
       params$trackingTable$history =
         rbind(params$trackingTable$history, trackingTable)
@@ -3511,7 +3511,7 @@ MergeTrackingTableRAW.kp <- function(params, from) {
       key2 = paste0(trackingTable$ITER_NB,
                     trackingTable$DP_CD)
 
-      idx = which(key2 %in% key1)
+      idx <- which(key2 %in% key1)
       if (length(idx) == 0) {
         params$trackingTable$history =
           rbind(params$trackingTable$history, trackingTable)
@@ -3521,7 +3521,7 @@ MergeTrackingTableRAW.kp <- function(params, from) {
       }
     }
   }
-  idx = order(params$trackingTable$history$START_DTM)
+  idx <- order(params$trackingTable$history$START_DTM)
   params$trackingTable$history = params$trackingTable$history[idx, ]
   params$trackingTable$history$MSREQID = params$msreqid
   return(params)
@@ -4420,7 +4420,7 @@ GetColors <- function(n) {
   }
   cols = c()
   for (i in 1:n) {
-    idx = 4 * (i - 1) / (n - 1) + 1 # If we add yellow back in, change 4 to 5
+    idx <- 4 * (i - 1) / (n - 1) + 1 # If we add yellow back in, change 4 to 5
     idx1 = floor(idx)
     idx2 = ceiling(idx)
     dx   = idx - idx1
@@ -4603,8 +4603,8 @@ survfitDistributed.formula <- function(x, formula, data) {
         colnames(temp0) = c("0", "1")
       }
     }
-    idx = which(temp0[, 2] > 0)
-    if (temp0[nrow(temp0), 2] == 0) idx = c(idx, nrow(temp0))
+    idx <- which(temp0[, 2] > 0)
+    if (temp0[nrow(temp0), 2] == 0) idx <- c(idx, nrow(temp0))
     nfails = temp0[idx, 2]
     start0 = c(1, (cumsum(temp)[1:(m - 1)] + 1))[idx]
     start1 = start0 + temp0[idx, 1]

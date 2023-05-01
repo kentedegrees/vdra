@@ -142,7 +142,7 @@ extract_strata <- function(params, data, stratas, mask) {
       return(strata)
     }
     if (length(stratas) > 0) {
-      idx = stratas %in% colnames(data)
+      idx <- stratas %in% colnames(data)
       if (!is.null(params$party_name) && params$party_name == "A")  {
         strata$strata_from_a <- stratas[idx]
         strata$strata_from_b <- stratas[!idx]
@@ -261,8 +261,8 @@ prepare_params_cox_b2 <- function(params, data) {
   params$p2.old <- params$p2
   params$a_col_names <- c("")
   params$b_col_names <- colnames(data$X)
-  params$a_col_names.old <- c("")
-  params$b_col_names.old <- c("")
+  params$a_col_names_old <- c("")
+  params$b_col_names_old <- c("")
   params$cutoff        <- 1
   params$max_iterations <- 1
 
@@ -312,7 +312,7 @@ check_strata_cox_a2 <- function(params, data) {
       params$error_message <-
         paste("Party A and Party B have", length(a_cap_b), "variable(s) with the same name which are used in the strata.",
               "These variable(s) are <", paste0(a_cap_b, collapse = ", "), ">.",
-              "Make sure the variables from each party have distinct names.")
+              "Make sure the variables from each party have distinct names_")
     } else if (length(b_cap_a) > 0) {
       params$error_message <-
         paste("Party A and Party B have specified", length(b_cap_a), "variable(s) for the strata which are not found in the data.",
@@ -404,7 +404,7 @@ prepare_strata_cox_a2 <- function(params, data) {
   empty_strata <- c()
   data$X = cbind(matrix(0, nrow = nrow(data$X), ncol = length(strata)), data$X)
   for (i in 1:length(strata)) {
-    idx = strata[[i]]$start:strata[[i]]$end
+    idx <- strata[[i]]$start:strata[[i]]$end
     data$X[idx, i] = 1
     temp  = table(data$survival$rank[idx])
     m = length(temp)   # number of unique observed times, including where no one fails
@@ -492,8 +492,8 @@ prepare_params_cox_a2 <- function(params, data, cutoff = 0.01, max_iterations = 
 
   params$a_col_names <- colnames(data$X)
   params$b_col_names <- pb$b_col_names
-  params$a_col_names.old <- c("")
-  params$b_col_names.old <- c("")
+  params$a_col_names_old <- c("")
+  params$b_col_names_old <- c("")
 
   params$Atags         <- data$tags
   params$Btags         <- pb$tags
@@ -796,8 +796,8 @@ check_colinearity_cox_a2 <- function(params, data) {
   params$b_indicies_keep <- indicies[b_index] - length(a_names)
   AnamesKeep <- a_names[params$a_indicies_keep]
   BnamesKeep <- b_names[params$b_indicies_keep]
-  params$a_col_names.old <- params$a_col_names
-  params$b_col_names.old <- params$b_col_names
+  params$a_col_names_old <- params$a_col_names
+  params$b_col_names_old <- params$b_col_names
   params$a_col_names     <- AnamesKeep
   params$b_col_names     <- BnamesKeep
   params$p1.old        <- params$p1
@@ -953,10 +953,10 @@ update_params_cox_b2 <- function(params) {
   load(file.path(params$read_path, "indicies.rdata")) # load Aindicies, Bindicies
   read_size <- sum(file.size(file.path(params$read_path, "indicies.rdata")))
   read_time <- proc.time()[3] - read_time
-  params$a_col_names.old = params$a_col_names
-  params$b_col_names.old = params$b_col_names
-  params$a_col_names     = params$a_col_names.old[Aindicies]
-  params$b_col_names     = params$b_col_names.old[Bindicies]
+  params$a_col_names_old = params$a_col_names
+  params$b_col_names_old = params$b_col_names
+  params$a_col_names     = params$a_col_names_old[Aindicies]
+  params$b_col_names     = params$b_col_names_old[Bindicies]
   params$p1.old = params$p1
   params$p2.old = params$p2
   params$p1     = length(Aindicies)
@@ -1129,10 +1129,10 @@ compute_inverse_cox_a2 <- function(params, data) {
     params$error_message <- "The matrix XWX is singular.  This is probably due to divergence of the coefficients."
     warning(params$error_message)
 
-    betas = rep(NA, length(params$a_col_names.old))
+    betas = rep(NA, length(params$a_col_names_old))
     betas[params$a_indicies_keep] = params$betasA
     betas = data.frame(betas)
-    rownames(betas) = params$a_col_names.old
+    rownames(betas) = params$a_col_names_old
     params <- add_to_log(params, "compute_inverse_cox_a2", read_time, read_size, write_time, write_size)
     return(params)
   }
@@ -1314,22 +1314,22 @@ compute_results_cox_a2 <- function(params, data) {
   params$betasB = betasB
   params$nullScore = rbind(params$nullScore, nullScoreB)
 
-  names.new          = c(params$a_col_names, params$b_col_names)
-  names.old          = c(params$a_col_names.old, params$b_col_names.old)
+  names_new          = c(params$a_col_names, params$b_col_names)
+  names_old          = c(params$a_col_names_old, params$b_col_names_old)
   idxA               = params$a_indicies_keep
   idxB               = params$b_indicies_keep
-  idx                = c(idxA, idxB + length(params$a_col_names.old))
-  stats$party        = c(rep("dp0", length(params$a_col_names.old)),
-                         rep("dp1", length(params$b_col_names.old)))
+  idx                = c(idxA, idxB + length(params$a_col_names_old))
+  stats$party        = c(rep("dp0", length(params$a_col_names_old)),
+                         rep("dp1", length(params$b_col_names_old)))
   stats$coefficients = rep(NA, length(stats$party))
   tempcoefs          = c(params$betasA, params$betasB)
   stats$coefficients[idx] = tempcoefs
   stats$expcoef      = exp(stats$coefficients)  # exp(coef) = hazard ratios
   stats$expncoef     = exp(-stats$coefficients)
   tempvar            = solve(params$XtWX)
-  stats$var          = matrix(0, length(names.old), length(names.old))
+  stats$var          = matrix(0, length(names_old), length(names_old))
   stats$var[idx, idx] = tempvar
-  stats$secoef       = rep(NA, length(names.old))
+  stats$secoef       = rep(NA, length(names_old))
   stats$secoef[idx]  = sqrt(diag(tempvar))  # se(coef)
 
   stats$zvals        = stats$coefficients / stats$secoef  # z values
@@ -1393,18 +1393,18 @@ compute_results_cox_a2 <- function(params, data) {
     stats$strata$label[i]  = data$survival$strata[[i]]$label
   }
 
-  names(stats$party)           = names.old
-  names(stats$coefficients)    = names.old
-  names(stats$expcoef)         = names.old
-  names(stats$expncoef)        = names.old
-  rownames(stats$var)          = names.old
-  colnames(stats$var)          = names.old
-  names(stats$secoef)          = names.old
-  names(stats$zvals)           = names.old
-  names(stats$pvals)           = names.old
-  names(stats$stars)           = names.old
-  names(stats$lower95)         = names.old
-  names(stats$upper95)         = names.old
+  names(stats$party)           = names_old
+  names(stats$coefficients)    = names_old
+  names(stats$expcoef)         = names_old
+  names(stats$expncoef)        = names_old
+  rownames(stats$var)          = names_old
+  colnames(stats$var)          = names_old
+  names(stats$secoef)          = names_old
+  names(stats$zvals)           = names_old
+  names(stats$pvals)           = names_old
+  names(stats$stars)           = names_old
+  names(stats$lower95)         = names_old
+  names(stats$upper95)         = names_old
   names(stats$loglik)          = c("loglikelihood", "null loglikelihood")
   names(stats$score)           = c("score", "p-value")
   names(stats$lrt)             = c("likelihood ratio", "p-value")
@@ -1478,7 +1478,7 @@ check_colinearity_cox_b2 <- function(params, data) {
   indicies = indicies[-(1:num_strata)] - num_strata  # Get rid of the Strata
 
   params$a_indicies_keep = c()
-  params$a_col_names.old = c()
+  params$a_col_names_old = c()
   params$a_col_names     = c()
   params$p1.old        = params$p1
   params$p1            = 0
@@ -1486,7 +1486,7 @@ check_colinearity_cox_b2 <- function(params, data) {
   b_names               = params$b_col_names
   BnamesKeep           = b_names[indicies]
   params$b_indicies_keep = indicies
-  params$b_col_names.old = params$b_col_names
+  params$b_col_names_old = params$b_col_names
   params$b_col_names     = BnamesKeep
   params$p2.old        = params$p2
   params$p2            = length(BnamesKeep)
@@ -1649,10 +1649,10 @@ compute_cox_b2 <- function(params, data) {
       params$error_message <- "The matrix t(X)WX is singular.  This is probably due to divergence of the coefficients."
       warning(params$error_message)
 
-      betas = rep(NA, length(params$b_col_names.old))
+      betas = rep(NA, length(params$b_col_names_old))
       betas[params$b_indicies_keep] = betasB
       betas = data.frame(betas)
-      rownames(betas) = params$b_col_names.old
+      rownames(betas) = params$b_col_names_old
       params <- add_to_log(params, "compute_cox_b2", 0, 0, 0, 0)
       return(params)
     }
@@ -1695,12 +1695,12 @@ compute_results_cox_b2 <- function(params, data) {
   stats$failed    <- FALSE
 
   fitExists = !is.null(params$fit)
-  names.old          = c(params$a_col_names.old, params$b_col_names.old)
+  names_old          = c(params$a_col_names_old, params$b_col_names_old)
   idxA               = params$a_indicies_keep
   idxB               = params$b_indicies_keep
-  idx                = c(idxA, idxB + length(params$a_col_names.old))
-  stats$party        = c(rep("dp0", length(params$a_col_names.old)),
-                         rep("dp1", length(params$b_col_names.old)))
+  idx                = c(idxA, idxB + length(params$a_col_names_old))
+  stats$party        = c(rep("dp0", length(params$a_col_names_old)),
+                         rep("dp1", length(params$b_col_names_old)))
   stats$coefficients = rep(NA, length(stats$party))
   if (fitExists) {
     stats$coefficients[idx] = params$fit$coefficients
@@ -1711,9 +1711,9 @@ compute_results_cox_b2 <- function(params, data) {
   }
   stats$expcoef      = exp(stats$coefficients)  # exp(coef) = hazard ratios
   stats$expncoef     = exp(-stats$coefficients)
-  stats$var          = matrix(0, length(names.old), length(names.old))
+  stats$var          = matrix(0, length(names_old), length(names_old))
   stats$var[idx, idx] = tempvar
-  stats$secoef       = rep(NA, length(names.old))
+  stats$secoef       = rep(NA, length(names_old))
   stats$secoef[idx]  = sqrt(diag(tempvar))  # se(coef)
 
   stats$zvals        = stats$coefficients / stats$secoef  # z values
@@ -1773,18 +1773,18 @@ compute_results_cox_b2 <- function(params, data) {
     stats$strata$label[i]  = data$survival$strata[[i]]$label
   }
 
-  names(stats$party)           = names.old
-  names(stats$coefficients)    = names.old
-  names(stats$expcoef)         = names.old
-  names(stats$expncoef)        = names.old
-  rownames(stats$var)          = names.old
-  colnames(stats$var)          = names.old
-  names(stats$secoef)          = names.old
-  names(stats$zvals)           = names.old
-  names(stats$pvals)           = names.old
-  names(stats$stars)           = names.old
-  names(stats$lower95)         = names.old
-  names(stats$upper95)         = names.old
+  names(stats$party)           = names_old
+  names(stats$coefficients)    = names_old
+  names(stats$expcoef)         = names_old
+  names(stats$expncoef)        = names_old
+  rownames(stats$var)          = names_old
+  colnames(stats$var)          = names_old
+  names(stats$secoef)          = names_old
+  names(stats$zvals)           = names_old
+  names(stats$pvals)           = names_old
+  names(stats$stars)           = names_old
+  names(stats$lower95)         = names_old
+  names(stats$upper95)         = names_old
   names(stats$loglik)          = c("loglikelihood", "null loglikelihood")
   names(stats$score)           = c("score", "p-value")
   names(stats$lrt)             = c("likelihood ratio", "p-value")
@@ -1860,7 +1860,7 @@ PartyAProcess2Cox <- function(data,
     params$complete = TRUE
     message = "Error in processing the data for Party A."
     make_error_message(params$write_path, message)
-    files = c("error_message.rdata")
+    files <- c("error_message.rdata")
     params$pmnStepCounter = 1
     params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
     params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
@@ -1870,7 +1870,7 @@ PartyAProcess2Cox <- function(data,
 
   params <- check_strata_cox_a2(params, data)
   if (params$get_strata_from_b) {
-    files = c()
+    files <- c()
     params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
   }
 
@@ -1879,7 +1879,7 @@ PartyAProcess2Cox <- function(data,
   if (params$failed) {   # Check for failed from prepare_params_cox_a2()
     params$complete = TRUE
     make_error_message(params$write_path, params$error_message)
-    files = c("error_message.rdata")
+    files <- c("error_message.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
     params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.2p(params)
@@ -1893,7 +1893,7 @@ PartyAProcess2Cox <- function(data,
 
   if (params$p1 == 0) { # Check for $p1 == 0 => no covariates, only strata
     MakeTransferMessage(params$write_path)
-    files = c("transferControl.rdata", "pa.rdata", "survival.rdata")
+    files <- c("transferControl.rdata", "pa.rdata", "survival.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
     if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
       params$complete = TRUE
@@ -1913,7 +1913,7 @@ PartyAProcess2Cox <- function(data,
   if (params$failed) { # Check for failed from prepare_blocks_cox_a2()
     params$complete = TRUE
     make_error_message(params$write_path, params$error_message)
-    files = c("error_message.rdata")
+    files <- c("error_message.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
     params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.2p(params)
@@ -1924,7 +1924,7 @@ PartyAProcess2Cox <- function(data,
 
   # This works even in the case that we send no blocks over.  Just set
   # file_break_z = c()
-  files = c("pa.rdata", "blocksize.rdata", "survival.rdata",
+  files <- c("pa.rdata", "blocksize.rdata", "survival.rdata",
             seq_zw("cz_", length(params$container$file_break_z)))
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
@@ -1934,7 +1934,7 @@ PartyAProcess2Cox <- function(data,
     params$complete = TRUE
     warning(params$error_message)
     make_error_message(params$write_path, params$error_message)
-    files = c("error_message.rdata")
+    files <- c("error_message.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
     params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.2p(params)
@@ -1943,7 +1943,7 @@ PartyAProcess2Cox <- function(data,
 
   if (params$p1 == 0) { # No covariates left.  All colinear with Strata
     MakeTransferMessage(params$write_path)
-    files = c("transferControl.rdata", "indicies.rdata")
+    files <- c("transferControl.rdata", "indicies.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
     if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
       params$complete = TRUE
@@ -1967,11 +1967,11 @@ PartyAProcess2Cox <- function(data,
 
     params <- compute_log_likelihood_cox_a2(params, data)
 
-    files = c("X_betas_ss.rdata")
+    files <- c("X_betas_ss.rdata")
     if (params$algIterationCounter == 1) {
-      files = c("indicies.rdata", files)
+      files <- c("indicies.rdata", files)
     } else {
-      files = c("converged.rdata", files)
+      files <- c("converged.rdata", files)
     }
 
     params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
@@ -1981,14 +1981,14 @@ PartyAProcess2Cox <- function(data,
     if (params$failed) { # Check for failed from compute_inverse_cox_a2()
       params$complete = TRUE
       make_error_message(params$write_path, params$error_message)
-      files = c("error_message.rdata")
+      files <- c("error_message.rdata")
       params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
       params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
       SummarizeLog.2p(params)
       return(params$stats)
     }
 
-    files = c("M.rdata")
+    files <- c("M.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
     params <- compute_beta_cox_a2(params, data)
@@ -1997,12 +1997,12 @@ PartyAProcess2Cox <- function(data,
     params$algIterationCounter = params$algIterationCounter + 1
   }
   params$complete = TRUE
-  files = c("converged.rdata")
+  files <- c("converged.rdata")
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   params <- compute_results_cox_a2(params, data)
 
-  files = c("stats.rdata")
+  files <- c("stats.rdata")
   params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
   params <- send_pause_quit_2p(params, sleep_time = sleep_time)
   SummarizeLog.2p(params)
@@ -2036,13 +2036,13 @@ PartyBProcess2Cox <- function(data,
     params$complete = TRUE
     message = "Error in processing the data for Party B."
     make_error_message(params$write_path, message)
-    files = c("error_message.rdata")
+    files <- c("error_message.rdata")
     params <- send_pause_quit_2p(params, files, sleep_time = sleep_time, job_failed = TRUE)
     return(params$stats)
   }
 
   params <- prepare_params_cox_b2(params, data)
-  files = c("pb.rdata")
+  files <- c("pb.rdata")
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
@@ -2054,7 +2054,7 @@ PartyBProcess2Cox <- function(data,
 
   if (!is.null(data$strata$strata_from_b)) {
     params <- send_strata_cox_b2(params, data)
-    files = c("strata.rdata")
+    files <- c("strata.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
     if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
@@ -2076,7 +2076,7 @@ PartyBProcess2Cox <- function(data,
     if (params$failed) {  # Happens if pB.new == 0
       params$complete = TRUE
       make_error_message(params$write_path, params$error_message)
-      files = c("error_message.rdata")
+      files <- c("error_message.rdata")
       params <- send_pause_quit_2p(params, files, sleep_time = sleep_time, job_failed = TRUE)
       return(params$stats)
     }
@@ -2091,14 +2091,14 @@ PartyBProcess2Cox <- function(data,
     if (params$failed) {      # We could get a job_failed here from coefficient explosion
       params$complete = TRUE
       make_error_message(params$write_path, params$error_message)
-      files = c("error_message.rdata")
+      files <- c("error_message.rdata")
       params <- send_pause_quit_2p(params, files, sleep_time = sleep_time, job_failed = TRUE)
       return(params$stats)
     }
     params <- compute_results_cox_b2(params, data)
     stats = params$stats
     save(stats, file = file.path(params$write_path, "stats.rdata"))
-    files = c("stats.rdata")
+    files <- c("stats.rdata")
     params <- send_pause_quit_2p(params, files, sleep_time = sleep_time)
     return(params$stats)
   }
@@ -2107,7 +2107,7 @@ PartyBProcess2Cox <- function(data,
   params <- prepare_blocks_cox_b2(params)
   params <- get_w_cox_b2(params, data)
 
-  files = c("xbtxb.rdata", seq_zw("cw_", length(params$container$filebreak.W)))
+  files <- c("xbtxb.rdata", seq_zw("cw_", length(params$container$filebreak.W)))
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   if (file.exists(file.path(params$read_path, "transferControl.rdata"))) {
@@ -2123,14 +2123,14 @@ PartyBProcess2Cox <- function(data,
     if (params$failed) {      # We could get a job_failed here from coefficient explosion
       params$complete = TRUE
       make_error_message(params$write_path, params$error_message)
-      files = c("error_message.rdata")
+      files <- c("error_message.rdata")
       params <- send_pause_quit_2p(params, files, sleep_time = sleep_time, job_failed = TRUE)
       return(params$stats)
     }
     params <- compute_results_cox_b2(params, data)
     stats = params$stats
     save(stats, file = file.path(params$write_path, "stats.rdata"))
-    files = c("stats.rdata")
+    files <- c("stats.rdata")
     params <- send_pause_quit_2p(params, files, sleep_time = sleep_time)
     return(params$stats)
   }
@@ -2158,7 +2158,7 @@ PartyBProcess2Cox <- function(data,
 
     params <- compute_log_likelihood_cox_b2(params, data)
 
-    files = c("tXB_w_XB.rdata", seq_zw("cCox_", length(params$container$filebreak.Cox)))
+    files <- c("tXB_w_XB.rdata", seq_zw("cCox_", length(params$container$filebreak.Cox)))
     params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
     if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
@@ -2170,7 +2170,7 @@ PartyBProcess2Cox <- function(data,
 
     params <- compute_beta_cox_b2(params, data)
 
-    files = c("XB_betasB.rdata", "M2_tXB_deltal.rdata")
+    files <- c("XB_betasB.rdata", "M2_tXB_deltal.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
     EndingIteration(params)
@@ -2179,7 +2179,7 @@ PartyBProcess2Cox <- function(data,
   }
   params$complete = TRUE
 
-  files = c("B_betas_ns.rdata")
+  files <- c("B_betas_ns.rdata")
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   params <- get_results_cox_b2(params)

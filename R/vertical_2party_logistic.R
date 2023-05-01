@@ -235,8 +235,8 @@ PrepareParamsLogistic.b2 <- function(params, data) {
   params$a_col_names     = c("")
   params$b_col_names     = colnames(data$X)
   params$y_name         = ""
-  params$a_col_names.old = c("")
-  params$b_col_names.old = c("")
+  params$a_col_names_old = c("")
+  params$b_col_names_old = c("")
   params$cutoff        = 1
   params$max_iterations = 1
 
@@ -302,8 +302,8 @@ PrepareParamsLogistic.a2 <- function(params, data, cutoff = 0.01, max_iterations
   params$a_col_names = colnames(data$X)
   params$b_col_names = pb$b_col_names
   params$y_name     = colnames(data$Y)
-  params$a_col_names.old = c("")
-  params$b_col_names.old = c("")
+  params$a_col_names_old = c("")
+  params$b_col_names_old = c("")
   params$Atags         = data$tags
   params$Btags         = pb$tags
 
@@ -609,8 +609,8 @@ CheckColinearityLogistic.a2 <- function(params, data) {
 
   AnamesKeep = a_names[params$a_indicies_keep]
   BnamesKeep = b_names[params$b_indicies_keep]
-  params$a_col_names.old = params$a_col_names
-  params$b_col_names.old = params$b_col_names
+  params$a_col_names_old = params$a_col_names
+  params$b_col_names_old = params$b_col_names
   params$a_col_names     = AnamesKeep
   params$b_col_names     = BnamesKeep
   params$p1.old        = params$p1
@@ -704,10 +704,10 @@ UpdateParamsLogistic.b2 <- function(params) {
   read_size <- sum(file.size(file.path(params$read_path, c("indicies.rdata",
                                                         "Bbetas_xty.rdata"))))
   read_time <- proc.time()[3] - read_time
-  params$a_col_names.old = params$a_col_names
-  params$b_col_names.old = params$b_col_names
-  params$a_col_names     = params$a_col_names.old[Aindicies]
-  params$b_col_names     = params$b_col_names.old[Bindicies]
+  params$a_col_names_old = params$a_col_names
+  params$b_col_names_old = params$b_col_names
+  params$a_col_names     = params$a_col_names_old[Aindicies]
+  params$b_col_names     = params$b_col_names_old[Bindicies]
   params$p1.old = params$p1
   params$p2.old = params$p2
   params$p1     = length(Aindicies)
@@ -1062,8 +1062,8 @@ ComputeResultsLogistic.a2 <- function(params, data) {
   sdB    = params$sdB
   meansA = params$meansA
   meansB = params$meansB
-  a_names = params$a_col_names.old
-  b_names = params$b_col_names.old
+  a_names = params$a_col_names_old
+  b_names = params$b_col_names_old
   p1.old = params$p1.old
   p2.old = params$p2.old
   p.old  = params$p.old
@@ -1125,12 +1125,12 @@ ComputeResultsLogistic.a2 <- function(params, data) {
   stats$ROC     = RocInternal(params, data)
   stats$iter    = params$algIterationCounter - 1
 
-  names.old = c(a_names, b_names)
-  names(stats$coefficients) = names.old
-  names(stats$party) = names.old
-  names(stats$secoef) = names.old
-  names(stats$tvals) = names.old
-  names(stats$pvals) = names.old
+  names_old = c(a_names, b_names)
+  names(stats$coefficients) = names_old
+  names(stats$party) = names_old
+  names(stats$secoef) = names_old
+  names(stats$tvals) = names_old
+  names(stats$pvals) = names_old
 
   write_time <- proc.time()[3]
   save(stats, file = file.path(params$write_path, "stats.rdata"))
@@ -1202,7 +1202,7 @@ PartyAProcess2Logistic <- function(data,
     params$completed = TRUE
     message = "Error in processing the data for Party A."
     make_error_message(params$write_path, message)
-    files = c("error_message.rdata")
+    files <- c("error_message.rdata")
     params$pmnStepCounter = 1
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
     params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
@@ -1215,7 +1215,7 @@ PartyAProcess2Logistic <- function(data,
   if (params$failed) {   # Check for failed from PrepareParamsLogistic.a2()
     params$completed = TRUE
     make_error_message(params$write_path, params$error_message)
-    files = c("error_message.rdata")
+    files <- c("error_message.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
     params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.2p(params)
@@ -1227,7 +1227,7 @@ PartyAProcess2Logistic <- function(data,
   if (params$failed) { # Check for failed from PrepareBlocksLogistic.a2()
     params$completed = TRUE
     make_error_message(params$write_path, params$error_message)
-    files = c("error_message.rdata")
+    files <- c("error_message.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
     params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.2p(params)
@@ -1236,7 +1236,7 @@ PartyAProcess2Logistic <- function(data,
 
   params <- GetZLogistic.a2(params, data)
 
-  files = c("pa.rdata", "blocksize.rdata",
+  files <- c("pa.rdata", "blocksize.rdata",
             seq_zw("cz_", length(params$container$file_break_z)))
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
@@ -1246,7 +1246,7 @@ PartyAProcess2Logistic <- function(data,
     params$completed = TRUE
     warning(params$error_message)
     make_error_message(params$write_path, params$error_message)
-    files = c("error_message.rdata")
+    files <- c("error_message.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
     params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.2p(params)
@@ -1256,30 +1256,30 @@ PartyAProcess2Logistic <- function(data,
   params <- add_to_log(params, "UpdateDataLogistic.a2", 0, 0, 0, 0)
   params <- ComputeInitialBetasLogistic.a2(params, data)
 
-  files = c("indicies.rdata", "Bbetas_xty.rdata")
+  files <- c("indicies.rdata", "Bbetas_xty.rdata")
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   while (!params$converged && !params$maxIterExceeded) {
     BeginningIteration(params)
     params <- GetWeightsLogistic.a2(params, data)
-    files = c("pi_.rdata")
+    files <- c("pi_.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
     params <- GetIILogistic.a2(params, data)
 
     if (params$failed) { # Check for failed from ComputeInverseLogistic.a2()
       params$completed = TRUE
       make_error_message(params$write_path, params$error_message)
-      files = c("error_message.rdata")
+      files <- c("error_message.rdata")
       params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
       params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
       SummarizeLog.2p(params)
       return(params$stats)
     }
-    files = c("a21i1_xtwx.rdata")
+    files <- c("a21i1_xtwx.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
     params <- GetCoefLogistic.a2(params, data)
-    files = "deltabeta.rdata"
+    files <- "deltabeta.rdata"
     params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
     EndingIteration(params)
@@ -1289,7 +1289,7 @@ PartyAProcess2Logistic <- function(data,
 
   params <- ComputeResultsLogistic.a2(params, data)
 
-  files = c("stats.rdata")
+  files <- c("stats.rdata")
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
   params <- send_pause_quit_2p(params, sleep_time = sleep_time)
   SummarizeLog.2p(params)
@@ -1320,14 +1320,14 @@ PartyBProcess2Logistic <- function(data,
     params$completed = TRUE
     message = "Error in processing the data for Party B."
     make_error_message(params$write_path, message)
-    files = c("error_message.rdata")
+    files <- c("error_message.rdata")
     params <- send_pause_quit_2p(params, files, sleep_time = sleep_time, job_failed = TRUE)
     return(params$stats)
   }
 
   params   = PrepareParamsLogistic.b2(params, data)
 
-  files = c("pb.rdata")
+  files <- c("pb.rdata")
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
@@ -1341,7 +1341,7 @@ PartyBProcess2Logistic <- function(data,
   params <- PrepareBlocksLogistic.b2(params)
   params <- GetWLogistic.b2(params, data)
 
-  files = c("xbtxb.rdata", seq_zw("cw_", length(params$container$filebreak.W)))
+  files <- c("xbtxb.rdata", seq_zw("cw_", length(params$container$filebreak.W)))
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
@@ -1360,11 +1360,11 @@ PartyBProcess2Logistic <- function(data,
     BeginningIteration(params)
     params <- GetXBetaLogistic.b2(params, data)
 
-    files = c("xbetab.rdata")
+    files <- c("xbetab.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
     params <- GetVLogistic.b2(params, data)
-    files = c("sumswx_xbtwxb.rdata",
+    files <- c("sumswx_xbtwxb.rdata",
               seq_zw("cv_", length(params$container$filebreak.V)))
     params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
@@ -1376,7 +1376,7 @@ PartyBProcess2Logistic <- function(data,
     }
 
     params <- GetCoefLogistic.b2(params, data)
-    files = c("a12_deltabetaB.rdata")
+    files <- c("a12_deltabetaB.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
     params <- GetConvergedStatusLogistic.b2(params)
@@ -1387,7 +1387,7 @@ PartyBProcess2Logistic <- function(data,
   params$completed = TRUE
 
   params <- GetFinalCoefLogistic.b2(params, data)
-  files = c("b_final.rdata")
+  files <- c("b_final.rdata")
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   params <- GetResultsLogistic.b2(params)

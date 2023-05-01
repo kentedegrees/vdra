@@ -239,8 +239,8 @@ prepare_params_linear_b2 <- function(params, data) {
   params$a_col_names     = c("")
   params$b_col_names     = colnames(data$X)
   params$y_name         = ""
-  params$a_col_names.old = c("")
-  params$b_col_names.old = c("")
+  params$a_col_names_old = c("")
+  params$b_col_names_old = c("")
 
   params$meansA        = 0
   params$sdA           = 0
@@ -304,8 +304,8 @@ prepare_params_linear_a2 <- function(params, data) {
   params$a_col_names = colnames(data$X)
   params$b_col_names = pb$b_col_names
   params$y_name     = colnames(data$Y)
-  params$a_col_names.old = c("")
-  params$b_col_names.old = c("")
+  params$a_col_names_old = c("")
+  params$b_col_names_old = c("")
   params$Atags     = data$tags
   params$Btags     = pb$tags
 
@@ -637,7 +637,7 @@ ComputeResultsLinear.a2 <- function(params, data) {
   a_indicies_keep = indicies[a_index]
   b_indicies_keep = indicies[-a_index] - length(a_names)
 
-  names.old     = c(a_names, b_names)
+  names_old     = c(a_names, b_names)
   p             = length(indicies)
   xtx.old       = xtx
   xty.old       = xty
@@ -704,16 +704,16 @@ ComputeResultsLinear.a2 <- function(params, data) {
   stats$meansy                 = meansy
   stats$means                  = c(meansA, meansB)
 
-  names(stats$party)           = names.old
-  names(stats$coefficients)    = names.old
-  names(stats$secoef)          = names.old
-  names(stats$tvals)           = names.old
-  names(stats$pvals)           = names.old
+  names(stats$party)           = names_old
+  names(stats$coefficients)    = names_old
+  names(stats$secoef)          = names_old
+  names(stats$tvals)           = names_old
+  names(stats$pvals)           = names_old
 
-  colnames(stats$xtx)          = names.old
-  rownames(stats$xtx)          = names.old
+  colnames(stats$xtx)          = names_old
+  rownames(stats$xtx)          = names_old
   colnames(stats$xty)          = colnames(params$xty)
-  rownames(stats$xty)          = names.old
+  rownames(stats$xty)          = names_old
 
   params$stats = stats
   write_time <- proc.time()[3]
@@ -784,7 +784,7 @@ PartyAProcess2Linear <- function(data,
     params$completed = TRUE
     message = "Error in processing the data for Party A."
     make_error_message(params$write_path, message)
-    files = c("error_message.rdata")
+    files <- c("error_message.rdata")
     params$pmnStepCounter = 1
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
     params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
@@ -797,7 +797,7 @@ PartyAProcess2Linear <- function(data,
   if (params$failed) {   # Check for failed from prepare_params_linear_a2()
     params$completed = TRUE
     make_error_message(params$write_path, params$error_message)
-    files = c("error_message.rdata")
+    files <- c("error_message.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
     params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.2p(params)
@@ -809,7 +809,7 @@ PartyAProcess2Linear <- function(data,
   if (params$failed) { # Check for failed from prepare_blocks_cox_a2()
     params$completed = TRUE
     make_error_message(params$write_path, params$error_message)
-    files = c("error_message.rdata")
+    files <- c("error_message.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
     params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.2p(params)
@@ -818,14 +818,14 @@ PartyAProcess2Linear <- function(data,
 
   params <- get_z_linear_a2(params, data)
 
-  files = c("pa.rdata", "blocksize.rdata",
+  files <- c("pa.rdata", "blocksize.rdata",
             seq_zw("cz_", length(params$container$file_break_z)))
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   params$completed = TRUE
   params <- GetProductsLinear.a2(params, data)
   params <- ComputeResultsLinear.a2(params, data)
-  files = c("stats.rdata")
+  files <- c("stats.rdata")
   params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
   params <- send_pause_quit_2p(params, sleep_time = sleep_time)
   SummarizeLog.2p(params)
@@ -858,14 +858,14 @@ PartyBProcess2Linear <- function(data,
     params$completed = TRUE
     message = "Error in processing the data for Party B."
     make_error_message(params$write_path, message)
-    files = c("error_message.rdata")
+    files <- c("error_message.rdata")
     params <- send_pause_quit_2p(params, files, sleep_time = sleep_time, job_failed = TRUE)
     return(params$stats)
   }
 
   params   = prepare_params_linear_b2(params, data)
 
-  files = c("pb.rdata")
+  files <- c("pb.rdata")
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
@@ -879,7 +879,7 @@ PartyBProcess2Linear <- function(data,
   params <- prepare_blocks_linear_b2(params)
   params <- GetWLinear.b2(params, data)
 
-  files = c("xbtxb.rdata", seq_zw("cw_", length(params$container$filebreak.W)))
+  files <- c("xbtxb.rdata", seq_zw("cw_", length(params$container$filebreak.W)))
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   params <- get_results_linear_b2(params)

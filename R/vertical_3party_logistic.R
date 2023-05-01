@@ -315,9 +315,9 @@ GetRVLogistic.b3 <- function(params, data) {
 
     RV = RZ %*% WXblock
 
-    write_time <-write_time - proc.time()[3]
+    write_time <- write_time - proc.time()[3]
     writeBin(as.vector(RV), con = to_write, endian = "little")
-    write_time <-write_time + proc.time()[3]
+    write_time <- write_time + proc.time()[3]
 
     XBTWXB = XBTWXB + t(Xblock) %*% WXblock
 
@@ -332,10 +332,10 @@ GetRVLogistic.b3 <- function(params, data) {
     pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
 
-  write_time <-write_time - proc.time()[3]
+  write_time <- write_time - proc.time()[3]
   save(XBTWXB, file = file.path(params$write_path, "xbtwxb.rdata"))
   write_size <- write_size + sum(file.size(c(file.path(params$write_path, "xbtwxb.rdata"))))
-  write_time <-write_time + proc.time()[3]
+  write_time <- write_time + proc.time()[3]
 
   params <- add_to_log(params, "GetRVLogistic.b3", read_time, read_size, write_time, write_size)
   return(params)
@@ -393,13 +393,13 @@ ProcessVLogistic.t3 <- function(params) {
     R3 = RandomOrthonomalMatrix(p2)
     VR = V %*% R3
 
-    write_time <-write_time - proc.time()[3]
+    write_time <- write_time - proc.time()[3]
     to_write4 = file(file.path(params$dplocalPath, filename4), "wb")
     writeBin(as.vector(R3), con = to_write4, endian = "little")
     close(to_write4)
     write_size <- write_size + file.size(file.path(params$dplocalPath, filename4))
     writeBin(as.vector(VR), con = to_write3, endian = "little")
-    write_time <-write_time + proc.time()[3]
+    write_time <- write_time + proc.time()[3]
     if ((i + 1) %in% params$container$filebreak.RV || i == num_blocks) {
       close(toRead2)
       read_size <- read_size + file.size(file.path(params$dplocalPath, filename1))
@@ -461,9 +461,9 @@ GetXRLogistic.a3 <- function(params, data) {
 
     XR = t(Xblock) %*% VR
 
-    write_time <-write_time - proc.time()[3]
+    write_time <- write_time - proc.time()[3]
     writeBin(as.vector(XR), con = to_write, endian = "little")
-    write_time <-write_time + proc.time()[3]
+    write_time <- write_time + proc.time()[3]
 
     XATWXA = XATWXA + t(Xblock) %*% WXblock
 
@@ -478,10 +478,10 @@ GetXRLogistic.a3 <- function(params, data) {
     pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
 
-  write_time <-write_time - proc.time()[3]
+  write_time <- write_time - proc.time()[3]
   save(XATWXA, file = file.path(params$write_path, "xatwxa.rdata"))
   write_size <- write_size + sum(file.size(c(file.path(params$write_path, "xatwxa.rdata"))))
-  write_time <-write_time + proc.time()[3]
+  write_time <- write_time + proc.time()[3]
 
   params <- add_to_log(params, "GetXRLogistic.a3", read_time, read_size, write_time, write_size)
   return(params)
@@ -794,12 +794,12 @@ ComputeResultsLogistic.t3 <- function(params) {
   stats$hoslem  = hoslem
   stats$ROC     = ROC
   stats$iter    = params$algIterationCounter - 1
-  names.old = c(a_names, b_names)
-  names(stats$coefficients) = names.old
-  names(stats$party) = names.old
-  names(stats$secoef) = names.old
-  names(stats$tvals) = names.old
-  names(stats$pvals) = names.old
+  names_old = c(a_names, b_names)
+  names(stats$coefficients) = names_old
+  names(stats$party) = names_old
+  names(stats$secoef) = names_old
+  names(stats$tvals) = names_old
+  names(stats$pvals) = names_old
 
   write_time <- proc.time()[3]
   save(stats, file = file.path(params$write_path, "stats.rdata"))
@@ -871,13 +871,13 @@ PartyAProcess3Logistic <- function(data,
   if (data$failed) {
     message = "Error in processing the data for Party A."
     make_error_message(params$write_path, message)
-    files = c("error_message.rdata")
+    files <- c("error_message.rdata")
     params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
   params <- prepare_params_linear_a3(params, data)
-  files = "pa.rdata"
+  files <- "pa.rdata"
   params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
@@ -891,12 +891,12 @@ PartyAProcess3Logistic <- function(data,
   params <- prepare_blocks_linear_a3(params)
 
   params <- get_z_linear_a3(params, data)
-  files = seq_zw("cz_", length(params$container$file_break_z))
+  files <- seq_zw("cz_", length(params$container$file_break_z))
   params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- get_wr_linear_a3(params, data)
-  files = c("xatxa.rdata", seq_zw("cpr_", length(params$container$filebreak.PR)))
+  files <- c("xatxa.rdata", seq_zw("cpr_", length(params$container$filebreak.PR)))
   params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
@@ -914,12 +914,12 @@ PartyAProcess3Logistic <- function(data,
   while (!params$converged && !params$maxIterExceeded) {
     BeginningIteration(params)
     params <- GetXAbetaALogistic.a3(params, data)
-    files = c("xabeta.rdata")
+    files <- c("xabeta.rdata")
     params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
     params <- GetXRLogistic.a3(params, data)
-    files = c("xatwxa.rdata", seq_zw("cxr_", length(params$container$filebreak.XR)))
+    files <- c("xatwxa.rdata", seq_zw("cxr_", length(params$container$filebreak.XR)))
     params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
@@ -930,7 +930,7 @@ PartyAProcess3Logistic <- function(data,
     }
 
     params <- UpdateBetaLogistic.a3(params, data)
-    files = c("ai.rdata")
+    files <- c("ai.rdata")
     params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
@@ -940,12 +940,12 @@ PartyAProcess3Logistic <- function(data,
   }
 
   params <- GetFinalBetaLogistic.a3(params, data)
-  files = "Afinalfitted.rdata"
+  files <- "Afinalfitted.rdata"
   params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
   params <- ComputeResultsLogistic.a3(params, data)
-  files = c("logisticstats.rdata")
+  files <- c("logisticstats.rdata")
   params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
@@ -982,13 +982,13 @@ PartyBProcess3Logistic <- function(data,
   if (data$failed) {
     message = "Error in processing the data for Party B."
     make_error_message(params$write_path, message)
-    files = c("error_message.rdata")
+    files <- c("error_message.rdata")
     params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
   params <- prepare_params_linear_b3(params, data)
-  files = "pb.rdata"
+  files <- "pb.rdata"
   params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
@@ -1002,7 +1002,7 @@ PartyBProcess3Logistic <- function(data,
   params <- prepare_blocks_linear_b3(params)
 
   params <- GetRWLinear.b3(params, data)
-  files = c("xbtxb.rdata", seq_zw("crw_", length(params$container$filebreak.RW)))
+  files <- c("xbtxb.rdata", seq_zw("crw_", length(params$container$filebreak.RW)))
   params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
@@ -1020,12 +1020,12 @@ PartyBProcess3Logistic <- function(data,
   while (!params$converged && !params$maxIterExceeded) {
     BeginningIteration(params)
     params <- GetXBbetaBLogistic.b3(params, data)
-    files = c("xbbeta.rdata")
+    files <- c("xbbeta.rdata")
     params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
     params <- GetRVLogistic.b3(params, data)
-    files = c("xbtwxb.rdata", seq_zw("crv_", length(params$container$filebreak.RV)))
+    files <- c("xbtwxb.rdata", seq_zw("crv_", length(params$container$filebreak.RV)))
     params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
@@ -1036,7 +1036,7 @@ PartyBProcess3Logistic <- function(data,
     }
 
     params <- UpdateBetaLogistic.b3(params, data)
-    files = c("bi.rdata")
+    files <- c("bi.rdata")
     params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
@@ -1046,7 +1046,7 @@ PartyBProcess3Logistic <- function(data,
   }
 
   params <- GetFinalBetaLogistic.b3(params, data)
-  files = "Bfinalfitted.rdata"
+  files <- "Bfinalfitted.rdata"
   params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
@@ -1094,7 +1094,7 @@ PartyTProcess3Logistic <- function(monitor_folder         = NULL,
     warning(read_error_message(params$read_path[["A"]]))
     file.copy(file.path(params$read_path[["A"]], "error_message.rdata"),
               file.path(params$write_path, "error_message.rdata"))
-    files = "error_message.rdata"
+    files <- "error_message.rdata"
     params <- send_pause_continue_3p(params, filesB = files, from = "B",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE)
@@ -1105,7 +1105,7 @@ PartyTProcess3Logistic <- function(monitor_folder         = NULL,
     warning(read_error_message(params$read_path[["B"]]))
     file.copy(file.path(params$read_path[["B"]], "error_message.rdata"),
               file.path(params$write_path, "error_message.rdata"))
-    files = "error_message.rdata"
+    files <- "error_message.rdata"
     params <- send_pause_continue_3p(params, filesA = files, from = "A",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE)
@@ -1120,7 +1120,7 @@ PartyTProcess3Logistic <- function(monitor_folder         = NULL,
   if (params$failed) {
     warning(params$error_message)
     make_error_message(params$write_path, params$error_message)
-    files = "error_message.rdata"
+    files <- "error_message.rdata"
     params <- send_pause_continue_3p(params, filesA = files, filesB = files,
                                   from = c("A", "B"),
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
@@ -1129,18 +1129,18 @@ PartyTProcess3Logistic <- function(monitor_folder         = NULL,
     return(params$stats)
   }
 
-  files = "blocks.rdata"
+  files <- "blocks.rdata"
   params <- send_pause_continue_3p(params, filesA = files, from = "A",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params$algIterationCounter = 1
   params <- ProcessZLinear.t3(params)
-  files = c("blocks.rdata", seq_zw("crz_", length(params$container$filebreak.RZ)))
+  files <- c("blocks.rdata", seq_zw("crz_", length(params$container$filebreak.RZ)))
   params <- send_pause_continue_3p(params, filesB = files, from  = "B",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- ProcessWLinear.t3(params)
-  files = c("p2.rdata", seq_zw("cwr_", length(params$container$filebreak.WR)))
+  files <- c("p2.rdata", seq_zw("cwr_", length(params$container$filebreak.WR)))
   params <- send_pause_continue_3p(params, filesA = files, from  = "A",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
@@ -1151,7 +1151,7 @@ PartyTProcess3Logistic <- function(monitor_folder         = NULL,
   if (params$failed) {
     warning(params$error_message)
     make_error_message(params$write_path, params$error_message)
-    files = "error_message.rdata"
+    files <- "error_message.rdata"
     params <- send_pause_continue_3p(params, filesA = files, filesB = files,
                                   from = c("A", "B"),
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
@@ -1170,12 +1170,12 @@ PartyTProcess3Logistic <- function(monitor_folder         = NULL,
   while (!params$converged && !params$maxIterExceeded) {
     BeginningIteration(params)
     params <- GetWeightsLogistic.t3(params)
-    files = "pi.rdata"
+    files <- "pi.rdata"
     params <- send_pause_continue_3p(params, filesB = files, from  = "B",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
     params <- ProcessVLogistic.t3(params)
-    files = c("pi.rdata", seq_zw("cvr_", length(params$container$filebreak.RV)))
+    files <- c("pi.rdata", seq_zw("cvr_", length(params$container$filebreak.RV)))
     params <- send_pause_continue_3p(params, filesA = files, from  = "A",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
@@ -1184,7 +1184,7 @@ PartyTProcess3Logistic <- function(monitor_folder         = NULL,
     if (params$failed) {
       warning(params$error_message)
       make_error_message(params$write_path, params$error_message)
-      files = "error_message.rdata"
+      files <- "error_message.rdata"
       params <- send_pause_continue_3p(params, filesA = files, filesB = files,
                                     from = c("A", "B"),
                                     sleep_time = sleep_time, max_waiting_time = max_waiting_time)
@@ -1212,7 +1212,7 @@ PartyTProcess3Logistic <- function(monitor_folder         = NULL,
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- ComputeResultsLogistic.t3(params)
-  files = "stats.rdata"
+  files <- "stats.rdata"
   params <- send_pause_continue_3p(params, filesA = files, filesB = files, from  = c("A", "B"),
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 

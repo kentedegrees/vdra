@@ -439,9 +439,9 @@ get_z_linear_a3 <- function(params, data) {
     g = params$blocks$g[i]
     Z = FindOrthogonalVectors(cbind(data$Y[strt:stp, ], data$X[strt:stp, ]), g)
 
-    write_time <-write_time - proc.time()[3]
+    write_time <- write_time - proc.time()[3]
     writeBin(as.vector(Z), con = to_write, endian = "little")
-    write_time <-write_time + proc.time()[3]
+    write_time <- write_time + proc.time()[3]
     if ((i + 1) %in% params$container$file_break_z || i == num_blocks) {
       close(to_write)
       write_size <- write_size + file.size(file.path(params$write_path, filename))
@@ -488,13 +488,13 @@ ProcessZLinear.t3 <- function(params) {
     R = RandomOrthonomalMatrix(n)
     RZ = R - (R %*% Z) %*% t(Z)
 
-    write_time <-write_time - proc.time()[3]
+    write_time <- write_time - proc.time()[3]
     writeBin(as.vector(RZ), con = to_write, endian = "little")
     to_write2 = file(file.path(params$dp_local_path, filename3), "wb")
     writeBin(as.vector(R), con = to_write2, endian = "little")
     close(to_write2)
     write_size <- write_size + file.size(file.path(params$dp_local_path, filename3))
-    write_time <-write_time + proc.time()[3]
+    write_time <- write_time + proc.time()[3]
 
     if ((i + 1) %in% params$container$file_break_z || i == num_blocks) {
       close(toRead)
@@ -570,9 +570,9 @@ GetRWLinear.b3 <- function(params, data) {
 
     RW = RZ %*% XB
 
-    write_time <-write_time - proc.time()[3]
+    write_time <- write_time - proc.time()[3]
     writeBin(as.vector(RW), con = to_write, endian = "little")
-    write_time <-write_time + proc.time()[3]
+    write_time <- write_time + proc.time()[3]
     if ((i + 1) %in% params$container$filebreak.RZ || i == num_blocks) {
       close(toRead)
       read_size <- read_size + file.size(file.path(params$read_path[["T"]], filename1))
@@ -642,13 +642,13 @@ ProcessWLinear.t3 <- function(params) {
     R2 = RandomOrthonomalMatrix(p2)
     WR2 = W %*% R2
 
-    write_time <-write_time - proc.time()[3]
+    write_time <- write_time - proc.time()[3]
     to_write4 = file(file.path(params$dp_local_path, filename4), "wb")
     writeBin(as.vector(R2), con = to_write4, endian = "little")
     close(to_write4)
     write_size <- write_size + file.size(file.path(params$dp_local_path, filename4))
     writeBin(as.vector(WR2), con = to_write3, endian = "little")
-    write_time <-write_time + proc.time()[3]
+    write_time <- write_time + proc.time()[3]
     if ((i + 1) %in% params$container$filebreak.RW || i == num_blocks) {
       close(toRead2)
       read_size <- read_size + file.size(file.path(params$read_path[["B"]], filename2))
@@ -709,9 +709,9 @@ get_wr_linear_a3 <- function(params, data) {
 
     YXA = cbind(data$Y[strt:stp, ], data$X[strt:stp, ])
     PR = t(YXA) %*% WR
-    write_time <-write_time - proc.time()[3]
+    write_time <- write_time - proc.time()[3]
     writeBin(as.vector(PR), con = to_write, endian = "little")
-    write_time <-write_time + proc.time()[3]
+    write_time <- write_time + proc.time()[3]
 
     if ((i + 1) %in% params$container$filebreak.WR || i == num_blocks) {
       close(toRead)
@@ -843,7 +843,7 @@ ComputeResultsLinear.t3 <- function(params) {
   a_index        = which(indicies <= length(a_names))
   a_indicies_keep = indicies[a_index]
   b_indicies_keep = indicies[-a_index] - length(a_names)
-  names.old     = c(a_names, b_names)
+  names_old     = c(a_names, b_names)
   p             = length(indicies)
   xtx.old       = xtx
   xty.old       = xty
@@ -911,16 +911,16 @@ ComputeResultsLinear.t3 <- function(params) {
   stats$meansy                 = meansy
   stats$means                  = c(meansA, meansB)
 
-  names(stats$party)           = names.old
-  names(stats$coefficients)    = names.old
-  names(stats$secoef)          = names.old
-  names(stats$tvals)           = names.old
-  names(stats$pvals)           = names.old
+  names(stats$party)           = names_old
+  names(stats$coefficients)    = names_old
+  names(stats$secoef)          = names_old
+  names(stats$tvals)           = names_old
+  names(stats$pvals)           = names_old
 
-  colnames(stats$xtx)          = names.old
-  rownames(stats$xtx)          = names.old
+  colnames(stats$xtx)          = names_old
+  rownames(stats$xtx)          = names_old
   colnames(stats$xty)          = colnames(params$xty)
-  rownames(stats$xty)          = names.old
+  rownames(stats$xty)          = names_old
 
   params$stats = stats
 
@@ -1006,13 +1006,13 @@ party_a_process_3_linear <- function(data,
   if (data$failed) {
     message = "Error in processing the data for Party A."
     make_error_message(params$write_path, message)
-    files = c("error_message.rdata")
+    files <- c("error_message.rdata")
     params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
   params <- prepare_params_linear_a3(params, data)
-  files = "pa.rdata"
+  files <- "pa.rdata"
   params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
@@ -1024,12 +1024,12 @@ party_a_process_3_linear <- function(data,
 
   params <- prepare_blocks_linear_a3(params)
   params <- get_z_linear_a3(params, data)
-  files = seq_zw("cz_", length(params$container$file_break_z))
+  files <- seq_zw("cz_", length(params$container$file_break_z))
   params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- get_wr_linear_a3(params, data)
-  files = c("xatxa.rdata", seq_zw("cpr_", length(params$container$filebreak.PR)))
+  files <- c("xatxa.rdata", seq_zw("cpr_", length(params$container$filebreak.PR)))
   params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
@@ -1071,13 +1071,13 @@ PartyBProcess3Linear <- function(data,
   if (data$failed) {
     message = "Error in processing the data for Party B."
     make_error_message(params$write_path, message)
-    files = c("error_message.rdata")
+    files <- c("error_message.rdata")
     params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
   params <- prepare_params_linear_b3(params, data)
-  files = "pb.rdata"
+  files <- "pb.rdata"
   params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
@@ -1090,7 +1090,7 @@ PartyBProcess3Linear <- function(data,
 
   params <- prepare_blocks_linear_b3(params)
   params <- GetRWLinear.b3(params, data)
-  files = c("xbtxb.rdata", seq_zw("crw_", length(params$container$filebreak.RW)))
+  files <- c("xbtxb.rdata", seq_zw("crw_", length(params$container$filebreak.RW)))
   params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
@@ -1141,7 +1141,7 @@ PartyTProcess3Linear <- function(monitor_folder         = NULL,
     warning(read_error_message(params$read_path[["A"]]))
     file.copy(file.path(params$read_path[["A"]], "error_message.rdata"),
               file.path(params$write_path, "error_message.rdata"))
-    files = "error_message.rdata"
+    files <- "error_message.rdata"
     params <- send_pause_continue_3p(params, filesB = files, from = "B",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE)
@@ -1152,7 +1152,7 @@ PartyTProcess3Linear <- function(monitor_folder         = NULL,
     warning(read_error_message(params$read_path[["B"]]))
     file.copy(file.path(params$read_path[["B"]], "error_message.rdata"),
               file.path(params$write_path, "error_message.rdata"))
-    files = "error_message.rdata"
+    files <- "error_message.rdata"
     params <- send_pause_continue_3p(params, filesA = files, from = "A",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE)
@@ -1166,7 +1166,7 @@ PartyTProcess3Linear <- function(monitor_folder         = NULL,
   if (params$failed) {
     warning(params$error_message)
     make_error_message(params$write_path, params$error_message)
-    files = "error_message.rdata"
+    files <- "error_message.rdata"
     params <- send_pause_continue_3p(params, filesA = files, filesB = files,
                                   from = c("A", "B"),
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
@@ -1175,17 +1175,17 @@ PartyTProcess3Linear <- function(monitor_folder         = NULL,
     return(params$stats)
   }
 
-  files = "blocks.rdata"
+  files <- "blocks.rdata"
   params <- send_pause_continue_3p(params, filesA = files, from = "A",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- ProcessZLinear.t3(params)
-  files = c("blocks.rdata", seq_zw("crz_", length(params$container$filebreak.RZ)))
+  files <- c("blocks.rdata", seq_zw("crz_", length(params$container$filebreak.RZ)))
   params <- send_pause_continue_3p(params, filesB = files, from  = "B",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- ProcessWLinear.t3(params)
-  files = c("p2.rdata", seq_zw("cwr_", length(params$container$filebreak.WR)))
+  files <- c("p2.rdata", seq_zw("cwr_", length(params$container$filebreak.WR)))
   params <- send_pause_continue_3p(params, filesA = files, from  = "A",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
@@ -1195,7 +1195,7 @@ PartyTProcess3Linear <- function(monitor_folder         = NULL,
   if (params$failed) {
     warning(params$error_message)
     make_error_message(params$write_path, params$error_message)
-    files = "error_message.rdata"
+    files <- "error_message.rdata"
     params <- send_pause_continue_3p(params, filesA = files, filesB = files,
                                   from = c("A", "B"),
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
@@ -1204,7 +1204,7 @@ PartyTProcess3Linear <- function(monitor_folder         = NULL,
     return(params$stats)
   }
 
-  files = "stats.rdata"
+  files <- "stats.rdata"
   params <- send_pause_continue_3p(params, filesA = files, filesB = files, from  = c("A", "B"),
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 

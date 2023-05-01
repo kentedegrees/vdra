@@ -124,10 +124,10 @@ CheckColinearityLogistic.AC <- function(params) {
 
   for (id in 1:params$numDataPartners) {
     max = min + params$pi[id] - 1
-    idx = indicies[which(min <= indicies & indicies <= max)] - min + 1
+    idx <- indicies[which(min <= indicies & indicies <= max)] - min + 1
     params$indicies[[id]] = idx
     if (id == 1) {
-      idx = (idx - 1)[-1]
+      idx <- (idx - 1)[-1]
     }
     temp = params$tags[[id]]
     temp = temp[idx]
@@ -163,10 +163,10 @@ CheckColinearityLogistic.AC <- function(params) {
     params$halfshare[[id]] = params$halfshare[[id]][, indicies[[id]], drop = FALSE]
   }
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(indicies, file = file.path(params$write_path, "indicies.rdata"))
   write_size <- file.size(file.path(params$write_path, "indicies.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "CheckColinearityLogistic.AC", 0, 0, write_time, write_size)
 
@@ -189,10 +189,10 @@ ComputeInitialBetasLogistic.AC <- function(params) {
     end = start + length(params$indicies[[id]]) - 1
     betas = beta[start:end]
 
-    write_time <-write_time - proc.time()[3]
+    write_time <- write_time - proc.time()[3]
     save(u, betas, file = file.path(params$write_path, paste0("u_beta_", id, ".rdata")))
     write_size <- write_size + file.size(file.path(params$write_path, paste0("u_beta_", id, ".rdata")))
-    write_time <-write_time + proc.time()[3]
+    write_time <- write_time + proc.time()[3]
     start = end + 1
   }
   params <- add_to_log(params, "ComputeInitialBetasLogistic.AC", 0, 0, write_time, write_size)
@@ -225,7 +225,7 @@ UpdateDataLogistic.DP <- function(params, data) {
   if (params$data_partner_id == 1) {
     data$Y = data$X[, 1, drop = FALSE]
   }
-  idx = params$indicies[[params$data_partner_id]]
+  idx <- params$indicies[[params$data_partner_id]]
   data$X = data$X[, idx, drop = FALSE]
   data$colmin = data$colmin[idx]
   data$colmax = data$colmax[idx]
@@ -248,10 +248,10 @@ ComputeSbetaLogistic.DP <- function(params, data) {
 
   Sbeta = (data$X %*% params$betas + params$u) / (2 * params$u) + V - params$scaler / sum(params$scalers) * Vsum
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(Sbeta, file = file.path(params$write_path, "sbeta.rdata"))
   write_size <- file.size(file.path(params$write_path, "sbeta.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "ComputeSbetaLogistic.DP", 0, 0, write_time, write_size)
   return(params)
 }
@@ -274,10 +274,10 @@ ComputeWeightsLogistic.AC <- function(params) {
   pi_ = 1 / (1 + exp(-sbeta))
   params$pi_ = pi_
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(pi_, file = file.path(params$write_path, "pi.rdata"))
   write_size <- file.size(file.path(params$write_path, "pi.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "ComptueWeightsLogistic.AC", read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -296,7 +296,7 @@ ComputeStWSLogistic.DP <- function(params, data) {
   W = pi_ * (1 - pi_)
   C = rep(list(list()), params$numDataPartners)
 
-  idx = params$indicies[[params$data_partner_id]]
+  idx <- params$indicies[[params$data_partner_id]]
   set.seed(params$seed, kind = "Mersenne-Twister")
   halfshare = matrix(rnorm(params$n * params$p, sd = 20),
                      nrow = params$n, ncol = params$p)[, idx, drop = FALSE]
@@ -304,7 +304,7 @@ ComputeStWSLogistic.DP <- function(params, data) {
   for (id in 1:params$numDataPartners) {
     if (id < params$data_partner_id) {
       set.seed(params$seeds[id], kind = "Mersenne-Twister")
-      idx = params$indicies[[id]]
+      idx <- params$indicies[[id]]
       halfshareDP = matrix(rnorm(params$n * params$ps[id], sd = 20),
                            nrow = params$n, ncol = params$ps[id])[, idx, drop = FALSE]
       C[[id]] = params$scaler / (params$scaler + params$scalers[id]) *
@@ -314,7 +314,7 @@ ComputeStWSLogistic.DP <- function(params, data) {
       C[[id]] = t(data$X) %*% MultiplyDiagonalWTimesX(W, data$X)
     } else {
       set.seed(params$seeds[id], kind = "Mersenne-Twister")
-      idx = params$indicies[[id]]
+      idx <- params$indicies[[id]]
       halfshareDP = matrix(rnorm(params$n * params$ps[id], sd = 20),
                            nrow = params$n, ncol = params$ps[id])[, idx, drop = FALSE]
       C[[id]] = params$scaler / (params$scaler + params$scalers[id]) *
@@ -323,10 +323,10 @@ ComputeStWSLogistic.DP <- function(params, data) {
     }
   }
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(C, file = file.path(params$write_path, "stwsshare.rdata"))
   write_size <- file.size(file.path(params$write_path, "stwsshare.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "ComputeStWSLogistic.DP", read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -415,10 +415,10 @@ ComputeStWSLogistic.AC <- function(params) {
   for (id in 1:params$numDataPartners) {
     I = Itemp[start:stop, , drop = FALSE]
     IDt = IDttemp[start:stop, , drop = FALSE]
-    write_time <-write_time - proc.time()[3]
+    write_time <- write_time - proc.time()[3]
     save(I, IDt, file = file.path(params$write_path, paste0("ID", id, ".rdata")))
     write_size <- write_size + file.size(file.path(params$write_path, paste0("ID", id, ".rdata")))
-    write_time <-write_time + proc.time()[3]
+    write_time <- write_time + proc.time()[3]
     start = stop + 1
     stop = stop + params$pReduct[id + 1]
   }
@@ -439,12 +439,12 @@ UpdateBetaLogistic.DP <- function(params) {
 
   id = 1
   set.seed(params$seeds[id], kind = "Mersenne-Twister")
-  idx = params$indicies[[id]]
+  idx <- params$indicies[[id]]
   halfshareDP = matrix(rnorm(params$n * params$ps[id], sd = 20),
                        nrow = params$n, ncol = params$ps[id])[, idx, drop = FALSE]
   for (id in 2:params$numDataPartners) {
     set.seed(params$seeds[id], kind = "Mersenne-Twister")
-    idx = params$indicies[[id]]
+    idx <- params$indicies[[id]]
     halfshareDP = cbind(halfshareDP,
                         matrix(rnorm(params$n * params$ps[id], sd = 20),
                                nrow = params$n, ncol = params$ps[id])[, idx, drop = FALSE])
@@ -456,10 +456,10 @@ UpdateBetaLogistic.DP <- function(params) {
   maxdifference = max(abs(deltaBeta) / (abs(params$betas) + .1))
   utemp = sum(runif(length(deltaBeta), min = 1, max = 5) * abs(params$betas))
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(utemp, maxdifference, file = file.path(params$write_path, "u_converge.rdata"))
   write_size <- file.size(file.path(params$write_path, "u_converge.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "UpdateBetaLogistic.DP", read_time, read_size, write_time, write_size)
   return(params)
@@ -486,10 +486,10 @@ ComputeConvergeStatusLogistic.AC <- function(params) {
   params$maxIterExceeded = maxIterExceeded
   params$u = u
   params$converged = converged
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(u, converged, maxIterExceeded, file = file.path(params$write_path, "u_converge.rdata"))
   write_size <- file.size(file.path(params$write_path, "u_converge.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "ComputeConvergeStatusLogistic.AC", read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -513,10 +513,10 @@ GetConvergeStatusLogistic.DP <- function(params) {
 SendFinalBetasLogistic.DP <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "SendFinalBetasLogistic.DP\n\n")
   betas = params$betas
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(betas, file = file.path(params$write_path, "finalbetas.rdata"))
   write_size <- file.size(file.path(params$write_path, "finalbetas.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "SendFinalBetasLogistic.DP", 0, 0, write_time, write_size)
   return(params)
 }
@@ -536,10 +536,10 @@ ComputeFinalSBetaLogistic.AC <- function(params) {
   }
   sbeta = 2 * params$u * sbeta - params$numDataPartners * params$u
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(sbeta, file = file.path(params$write_path, "sbeta.rdata"))
   write_size <- file.size(file.path(params$write_path, "sbeta.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "ComputeFinalSBetaLogistic.AC", read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -562,10 +562,10 @@ ComputeResultsLogistic.DP <- function(params, data) {
   hoslem  = HoslemInternal(params, data)
   ROC     = RocInternal(params, data)
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(resdev, nulldev, hoslem, ROC, file = file.path(params$write_path, "logisticstats.rdata"))
   write_size <- file.size(file.path(params$write_path, "logisticstats.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "ComputeResultsLogistic.DP", read_time, read_size, write_time, write_size)
   return(params)
@@ -637,10 +637,10 @@ ComputeResultsLogistic.AC <- function(params) {
   names(stats$tvals) = params$colnames
   names(stats$pvals) = params$colnames
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(stats, file = file.path(params$write_path, "stats.rdata"))
   write_size <- file.size(file.path(params$write_path, "stats.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_time <- proc.time()[3] - write_time
 
   params$stats      = stats
 
@@ -709,7 +709,7 @@ DataPartnerKLogistic <- function(data,
   if (data$failed) {
     params$error_message = paste("Error processing data for data partner", params$data_partner_id, "\n")
     make_error_message(params$write_path, params$error_message)
-    files = "error_message.rdata"
+    files <- "error_message.rdata"
     params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
     params$error_message = read_error_message(params$readPathAC)
@@ -719,7 +719,7 @@ DataPartnerKLogistic <- function(data,
   }
 
   params <- SendBasicInfo.DP(params, data)
-  files = "n_analysis.rdata"
+  files <- "n_analysis.rdata"
   params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
@@ -732,12 +732,12 @@ DataPartnerKLogistic <- function(data,
   }
 
   params <- prepare_params_linear_DP(params, data)
-  files = "p_scaler_seed.rdata"
+  files <- "p_scaler_seed.rdata"
   params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
   params <- PrepareSharesLinear.DP(params, data)
-  files = c("products.rdata", "halfshare.rdata", "colstats.rdata")
+  files <- c("products.rdata", "halfshare.rdata", "colstats.rdata")
   params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
@@ -759,12 +759,12 @@ DataPartnerKLogistic <- function(data,
     BeginningIteration(params)
 
     params <- ComputeSbetaLogistic.DP(params, data)
-    files = "Sbeta.rdata"
+    files <- "Sbeta.rdata"
     params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
     params <- ComputeStWSLogistic.DP(params, data)
-    files = "stwsshare.rdata"
+    files <- "stwsshare.rdata"
     params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
@@ -777,7 +777,7 @@ DataPartnerKLogistic <- function(data,
     }
 
     params <- UpdateBetaLogistic.DP(params)
-    files = "u_converge.rdata"
+    files <- "u_converge.rdata"
     params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
@@ -792,13 +792,13 @@ DataPartnerKLogistic <- function(data,
 
   params <- SendFinalBetasLogistic.DP(params)
 
-  files = c("sbeta.rdata", "finalbetas.rdata")
+  files <- c("sbeta.rdata", "finalbetas.rdata")
   params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
   if (data_partner_id == 1) {
     params <- ComputeResultsLogistic.DP(params, data)
-    files = "logisticstats.rdata"
+    files <- "logisticstats.rdata"
     params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
   }
@@ -847,7 +847,7 @@ AnalysisCenterKLogistic <- function(numDataPartners = NULL,
     params$error_message = possibleError$message
     warning(possibleError$message)
     make_error_message(params$write_path, possibleError$message)
-    files = "error_message.rdata"
+    files <- "error_message.rdata"
     params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     params <- send_pause_quit_kp(params, sleep_time = sleep_time, job_failed = TRUE)
@@ -859,7 +859,7 @@ AnalysisCenterKLogistic <- function(numDataPartners = NULL,
 
   if (params$failed) {
     make_error_message(params$write_path, params$error_message)
-    files = "error_message.rdata"
+    files <- "error_message.rdata"
     warning(params$error_message)
     params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
@@ -868,7 +868,7 @@ AnalysisCenterKLogistic <- function(numDataPartners = NULL,
     return(params$stats)
   }
 
-  files = "empty.rdata"
+  files <- "empty.rdata"
   params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
@@ -879,7 +879,7 @@ AnalysisCenterKLogistic <- function(numDataPartners = NULL,
 
   if (params$failed) {
     make_error_message(params$write_path, params$error_message)
-    files = "error_message.rdata"
+    files <- "error_message.rdata"
     warning(params$error_message)
     params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
@@ -901,7 +901,7 @@ AnalysisCenterKLogistic <- function(numDataPartners = NULL,
   while (!params$converged && !params$maxIterExceeded) {
     BeginningIteration(params)
     params <- ComputeWeightsLogistic.AC(params)
-    files = "pi.rdata"
+    files <- "pi.rdata"
     params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
@@ -909,7 +909,7 @@ AnalysisCenterKLogistic <- function(numDataPartners = NULL,
 
     if (params$failed) {
       make_error_message(params$write_path, params$error_message)
-      files = "error_message.rdata"
+      files <- "error_message.rdata"
       warning(params$error_message)
       params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
                                     sleep_time = sleep_time, max_waiting_time = max_waiting_time)
@@ -925,7 +925,7 @@ AnalysisCenterKLogistic <- function(numDataPartners = NULL,
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
     params <- ComputeConvergeStatusLogistic.AC(params)
-    files = "u_converge.rdata"
+    files <- "u_converge.rdata"
     params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     EndingIteration(params)
@@ -939,7 +939,7 @@ AnalysisCenterKLogistic <- function(numDataPartners = NULL,
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- ComputeResultsLogistic.AC(params)
-  files = "stats.rdata"
+  files <- "stats.rdata"
   params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
   params <- send_pause_quit_kp(params, sleep_time = sleep_time)

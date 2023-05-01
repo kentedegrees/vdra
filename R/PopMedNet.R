@@ -73,9 +73,9 @@ pmn <- function(num_party, directory = NULL, verbose = TRUE) {
 
   write_directory <- rep("", num_party)
   read_directory <- matrix("", num_party, num_party)
-  names(write_directory) = party_name
-  colnames(read_directory) = party_name
-  rownames(read_directory) = party_name
+  names(write_directory) <- party_name
+  colnames(read_directory) <- party_name
+  rownames(read_directory) <- party_name
   for (i in 1:num_party) {
     write_directory[i] <- file.path(paths[i], ifelse(i == 1, "inputfiles", "msoc"))
     if (!dir.exists(write_directory[i])) dir.create(write_directory[i])
@@ -83,12 +83,12 @@ pmn <- function(num_party, directory = NULL, verbose = TRUE) {
       read_directory[i, j] <- file.path(paths[j], ifelse(i == 1, "inputfiles", paste0("msoc", i - 1)))
       if (!dir.exists(read_directory[i, j])) dir.create(read_directory[i, j])
     }
-    read_directory[i, i] = NA
+    read_directory[i, i] <- NA
   }
 
-  source = c(FALSE, rep(TRUE, num_party - 1))
-  quit = FALSE
-  copyit = 1
+  source <- c(FALSE, rep(TRUE, num_party - 1))
+  quit <- FALSE
+  copy_it <- 1
   repeat {
     # Gather all files to copy
 
@@ -102,25 +102,25 @@ pmn <- function(num_party, directory = NULL, verbose = TRUE) {
         if (source[i]) {
           if (file.exists(file.path(write_directory[i], "files_done.ok"))) {
             Sys.sleep(sleep_time)
-            files = read.csv(file.path(write_directory[i], "file_list.csv"))
+            files <- read.csv(file.path(write_directory[i], "file_list.csv"))
             if (verbose) cat("\n")
             if (verbose) print(files)
             if (verbose) cat("\n")
             if (i == 1) {
-              jobdone = files$file_nm == "job_done.ok" &
+              job_done <- files$file_nm == "job_done.ok" &
                 files$dp_cd_list == 10 &
                 files$transfer_to_site_in == 10
-              jobfail = files$file_nm == "job_fail.ok" &
+              job_fail <- files$file_nm == "job_fail.ok" &
                 files$dp_cd_list == 10 &
                 files$transfer_to_site_in == 10
-              if (sum(jobdone | jobfail) > 0) quit = TRUE
+              if (sum(job_done | job_fail) > 0) quit <- TRUE
 
             }
-            idx = which(files$transfer_to_site_in == 1)
+            idx <- which(files$transfer_to_site_in == 1)
             if (length(idx) > 0) {
-              files = files[idx, c(1, 3)]
-              files$dp_cd_list = files$dp_cd_list + 1
-              files$source = i
+              files <- files[idx, c(1, 3)]
+              files$dp_cd_list <- files$dp_cd_list + 1
+              files$source <- i
               if (is.null(files_to_send)) {
                 files_to_send <- files
               } else {
@@ -129,7 +129,7 @@ pmn <- function(num_party, directory = NULL, verbose = TRUE) {
             }
             file.remove(file.path(write_directory[i], "files_done.ok"))
             if (verbose) cat("  Party", party_name[i], "- files_done.ok\n")
-            source[i] = FALSE
+            source[i] <- FALSE
             if (sum(source) > 0) {
               if (verbose) cat("Waiting for", party_name[source], "-", hms(proc.time()[3] - start_time), "\n")
             }
@@ -141,34 +141,34 @@ pmn <- function(num_party, directory = NULL, verbose = TRUE) {
 
     if (quit) break
 
-    sink   = rep(FALSE, num_party)
+    sink   <- rep(FALSE, num_party)
 
     if (is.null(files_to_send) || nrow(files_to_send) == 0) {
       warning("No files to transfer and job_done.ok not specified.")
-      quit = TRUE
+      quit <- TRUE
     } else {
-      if (verbose) cat("\nCOPYING", paste0("(", copyit, ") -"),  hms(proc.time()[3] - start_time), "\n")
-      copyit = copyit + 1
-      mark = matrix(FALSE, num_party, num_party)
+      if (verbose) cat("\nCOPYING", paste0("(", copy_it, ") -"),  hms(proc.time()[3] - start_time), "\n")
+      copy_it <- copy_it + 1
+      mark <- matrix(FALSE, num_party, num_party)
       for (i in 1:nrow(files_to_send)) {
-        origin      = files_to_send$source[i]
-        destination = files_to_send$dp_cd_list[i]
-        fn          = files_to_send$file_nm[i]
-        exists = file.exists(file.path(write_directory[origin], fn))
+        origin      <- files_to_send$source[i]
+        destination <- files_to_send$dp_cd_list[i]
+        fn          <- files_to_send$file_nm[i]
+        exists <- file.exists(file.path(write_directory[origin], fn))
         if (exists) {
           if (verbose) cat("  ")
         } else {
           if (verbose) cat("X ")
         }
-        size = format(file.size(file.path(write_directory[origin], fn)), big.mark = ",", scientific = FALSE)
-        space = paste0(rep(" ", 33 - nchar(size) - nchar(as.character(fn))), collapse = "")
+        size  <- format(file.size(file.path(write_directory[origin], fn)), big.mark = ",", scientific = FALSE)
+        space <- paste0(rep(" ", 33 - nchar(size) - nchar(as.character(fn))), collapse = "")
 
         if (verbose) cat(party_name[origin], "->", party_name[destination], ":", as.character(fn), space, size, "\n")
         file.copy(file.path(write_directory[origin], fn),
                   file.path(read_directory[origin, destination], fn),
                   overwrite = TRUE)
-        mark[origin, destination] = TRUE
-        sink[destination] = TRUE
+        mark[origin, destination] <- TRUE
+        sink[destination] <- TRUE
       }
       for (origin in 1:num_party) {
         for (destination in 1:num_party) {
@@ -179,7 +179,7 @@ pmn <- function(num_party, directory = NULL, verbose = TRUE) {
       }
     }
 
-    source = sink
+    source <- sink
   }
 
   if (verbose) cat("\nFinished -", hms(proc.time()[3] - start_time), "\n")
