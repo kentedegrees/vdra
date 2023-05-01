@@ -25,7 +25,7 @@ PrepareFolder.ACDP <- function(params, monitor_folder) {
     params$write_path   <- file.path(monitor_folder, "msoc")
   }
   params$readPathAC    <- file.path(monitor_folder, "inputfiles")
-  params$readPathDP    <- file.path(monitor_folder, paste0("msoc", 1:params$numDataPartners))
+  params$readPathDP    <- file.path(monitor_folder, paste0("msoc", 1:params$num_data_partners))
 
   if (!create_io_location(monitor_folder, "dplocal")) {
     params$failed <- TRUE
@@ -62,7 +62,7 @@ PrepareFolder.ACDP <- function(params, monitor_folder) {
                                 paste0(params$write_path, "."),
                                 "Check the path and restart the program.")
   }
-  for (id in 1:params$numDataPartners) {
+  for (id in 1:params$num_data_partners) {
     if (!create_io_location(monitor_folder, paste0("msoc", id))) {
       params$failed <- TRUE
       params$error_message <- paste(params$error_message,
@@ -75,7 +75,7 @@ PrepareFolder.ACDP <- function(params, monitor_folder) {
   if (params$data_partner_id != 0) {
     Sys.sleep(1)
     delete_trigger("files_done.ok", params$readPathAC)
-    for (id in 1:params$numDataPartners) {
+    for (id in 1:params$num_data_partners) {
       delete_trigger("files_done.ok", params$readpathDP[id])
     }
   }
@@ -191,15 +191,15 @@ CheckAgreement.AC <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "CheckAgreement.AC\n\n")
   read_time <- 0
   read_size = 0
-  analysisAll = rep("", params$numDataPartners)
-  nAll        = rep(0, params$numDataPartners)
-  ndata_partner_id = rep(0, params$numDataPartners)
+  analysisAll = rep("", params$num_data_partners)
+  nAll        = rep(0, params$num_data_partners)
+  ndata_partner_id = rep(0, params$num_data_partners)
   message1    = NULL
   message2    = NULL
   n           = NULL
   analysis    = NULL
   data_partner_id = NULL
-  for (id in 1:params$numDataPartners) {
+  for (id in 1:params$num_data_partners) {
     read_time <- read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "n_analysis.rdata"))
     read_size = read_size + file.size(file.path(params$readPathDP[id], "n_analysis.rdata"))
@@ -213,7 +213,7 @@ CheckAgreement.AC <- function(params) {
     params$failed <- TRUE
     message1 = "Different regressions have been specified.\n"
     message1 = paste(message1, "Analysis center specified", params$analysis, "regression.\n")
-    for (id in 1:params$numDataPartners) {
+    for (id in 1:params$num_data_partners) {
       message1 = paste(message1, "Data partner", id, "specified", analysisAll[id], "regression.\n")
     }
   }
@@ -221,14 +221,14 @@ CheckAgreement.AC <- function(params) {
   if (min(nAll) < max(nAll)) {
     params$failed <- TRUE
     message2 = "Data partners provided different numbers of observations.\n"
-    for (id in 1:params$numDataPartners) {
+    for (id in 1:params$num_data_partners) {
       message2 = paste(message2, "Data partner", id, "has", nAll[id], "observations.\n")
     }
   }
 
   message3error = FALSE
   message3 = ""
-  for (i in 1:params$numDataPartners) {
+  for (i in 1:params$num_data_partners) {
     if (i != ndata_partner_id[i]) {
       message3error = TRUE
       params$failed <- TRUE
@@ -282,13 +282,13 @@ PrepareSharesLinear.DP <- function(params, data) {
   set.seed(params$seed, kind = "Mersenne-Twister")
   halfshare = matrix(rnorm(params$n * params$p, sd = 20), nrow = params$n, ncol = params$p)
 
-  products = rep(list(list()), params$numDataPartners)
+  products = rep(list(list()), params$num_data_partners)
 
   params$ps = c()
   params$scalers = c()
   params$seeds = c()
 
-  for (id in 1:params$numDataPartners) {
+  for (id in 1:params$num_data_partners) {
     if (id == params$data_partner_id) {
       products[[id]] <- t(data$x) %*% data$x
       params$ps      = c(params$ps, params$p)
@@ -344,16 +344,16 @@ get_products_linear_AC <- function(params) {
   p = 0
   n = 0
 
-  allproducts  = rep(list(list()), params$numDataPartners)
-  allhalfshare = rep(list(list()), params$numDataPartners)
-  alltags      = rep(list(list()), params$numDataPartners)
+  allproducts  = rep(list(list()), params$num_data_partners)
+  allhalfshare = rep(list(list()), params$num_data_partners)
+  alltags      = rep(list(list()), params$num_data_partners)
   products  = NULL
   halfshare = NULL
   tags      = NULL
   allcolmin = allcolrange = allcolsum = allcolnames = NULL
   colmin = colrange = colsum = colnames = NULL
   party = NULL
-  for (id in 1:params$numDataPartners) {
+  for (id in 1:params$num_data_partners) {
     read_time <- read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "products.rdata"))
     load(file.path(params$readPathDP[id], "halfshare.rdata"))
@@ -380,12 +380,12 @@ get_products_linear_AC <- function(params) {
   colnames(m) = allcolnames
   rownames(m) = allcolnames
   offset1 = 1
-  params$pi = rep(0, params$numDataPartners)
-  for (id1 in 1:params$numDataPartners) {
+  params$pi = rep(0, params$num_data_partners)
+  for (id1 in 1:params$num_data_partners) {
     p1 = ncol(allhalfshare[[id1]])
     params$pi[id1] = p1
     offset2 = offset1
-    for (id2 in id1:params$numDataPartners) {
+    for (id2 in id1:params$num_data_partners) {
       p2 = ncol(allhalfshare[[id2]])
       if (id1 == id2) {
         m[offset1:(offset1 + p1 - 1), offset2:(offset2 + p2 - 1)] = allproducts[[id1]][[id2]]
@@ -445,7 +445,7 @@ compute_results_linear_AC <- function(params) {
 
   tags <- params$tags
   min = 1
-  for (id in 1:params$numDataPartners) {
+  for (id in 1:params$num_data_partners) {
     max = min + params$pi[id] - 1
     if (id == 1) {
       max = max - 1
@@ -459,7 +459,7 @@ compute_results_linear_AC <- function(params) {
 
   params$error_message <- ""
   numeric_found = FALSE
-  for (id in 2:params$numDataPartners) {
+  for (id in 2:params$num_data_partners) {
     if (length(unique(tags[[id]])) == 0) {
       params$failed <- TRUE
       params$error_message <- paste0(params$error_message,
@@ -585,7 +585,7 @@ get_results_linear_DP <- function(params) {
 
 DataPartnerKLinear <- function(data,
                               y_name           = NULL,
-                              numDataPartners = NULL,
+                              num_data_partners = NULL,
                               data_partner_id   = NULL,
                               monitor_folder   = NULL,
                               sleep_time       = 10,
@@ -594,7 +594,7 @@ DataPartnerKLinear <- function(data,
                               trace          = FALSE,
                               verbose        = TRUE) {
 
-  params <- prepare_params_kp("linear", data_partner_id, numDataPartners, ac = FALSE,
+  params <- prepare_params_kp("linear", data_partner_id, num_data_partners, ac = FALSE,
                             popmednet = popmednet, trace = trace, verbose = verbose)
   if (params$failed) {
     warning(params$error_message)
@@ -670,7 +670,7 @@ DataPartnerKLinear <- function(data,
 }
 
 
-AnalysisCenterKLinear <- function(numDataPartners = NULL,
+AnalysisCenterKLinear <- function(num_data_partners = NULL,
                                  monitor_folder   = NULL,
                                  msreqid         = "v_default_0_000",
                                  sleep_time       = 10,
@@ -678,7 +678,7 @@ AnalysisCenterKLinear <- function(numDataPartners = NULL,
                                  popmednet       = TRUE,
                                  trace           = FALSE,
                                  verbose         = TRUE) {
-  params <- prepare_params_kp("linear", 0, numDataPartners, msreqid, ac = TRUE,
+  params <- prepare_params_kp("linear", 0, num_data_partners, msreqid, ac = TRUE,
                             popmednet = popmednet, trace = trace, verbose = verbose)
   if (params$failed) {
     warning(params$error_message)

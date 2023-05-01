@@ -1,7 +1,7 @@
 ################### DISTRIBUTED COX REGRESSION FUNCTIONS ##################
 
 #' @importFrom stats model.matrix
-prepare_data_cox_DP <- function(params, data, y_name, strata, mask) {
+prepare_data_cox_dp <- function(params, data, y_name, strata, mask) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_data_cox_23\n\n")
 
   workdata <- list()
@@ -63,61 +63,61 @@ prepare_data_cox_DP <- function(params, data, y_name, strata, mask) {
 }
 
 
-SendStrataNamesCox.DP <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "SendStrataNamesCox.DP\n\n")
-  strataNames <- list()
-  strataNames$strataFromMe <- data$strata$strataFromMe
-  strataNames$strataFromOthers <- data$strata$strataFromOthers
+send_strata_names_cox_dp <- function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "send_strata_names_cox_dp\n\n")
+  strata_names <- list()
+  strata_names$strata_from_me <- data$strata$strata_from_me
+  strata_names$strata_from_others <- data$strata$strata_from_others
   write_time <- proc.time()[3]
-  save(strataNames, file = file.path(params$write_path, "strata_names.rdata"))
+  save(strata_names, file = file.path(params$write_path, "strata_names.rdata"))
   write_size <- file.size(file.path(params$write_path, "strata_names.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "SendStrataNamesCox.DP", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "send_strata_names_cox_dp", 0, 0, write_time, write_size)
   return(params)
 }
 
 
-check_strata_cox_DP <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "check_strata_cox_DP\n\n")
+check_strata_cox_dp <- function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "check_strata_cox_dp\n\n")
   read_time <- 0
   read_size <- 0
-  strataNames          = NULL
-  strataClaimed        = rep(list(list()), params$numDataPartners)
-  strataUnclaimed      = rep(list(list()), params$numDataPartners)
-  if (length(data$strata$strataFromMe) > 0) {
-    strataClaimed[[1]]   <- data$strata$strataFromMe
+  strata_names          = NULL
+  strata_claimed        = rep(list(list()), params$num_data_partners)
+  strata_unclaimed      = rep(list(list()), params$num_data_partners)
+  if (length(data$strata$strata_from_me) > 0) {
+    strata_claimed[[1]]   <- data$strata$strata_from_me
   }
-  if (length(data$strata$strataFromOthers) > 0) {
-    strataUnclaimed[[1]] <- data$strata$strataFromOthers
+  if (length(data$strata$strata_from_others) > 0) {
+    strata_unclaimed[[1]] <- data$strata$strata_from_others
   }
-  for (i in 2:params$numDataPartners) {
+  for (i in 2:params$num_data_partners) {
     read_time <- read_time - proc.time()[3]
     load(file.path(params$readPathDP[i], "strata_names.rdata"))
     read_size <- read_size + file.size(file.path(params$readPathDP[i], "strata_names.rdata"))
     read_time <- read_time + proc.time()[3]
-    if (length(strataNames$strataFromMe) > 0) {
-      strataClaimed[[i]] = strataNames$strataFromMe
+    if (length(strata_names$strata_from_me) > 0) {
+      strata_claimed[[i]] = strata_names$strata_from_me
     }
-    if (length(strataNames$strataFromOthers) > 0) {
-      strataUnclaimed[[i]] = strataNames$strataFromOthers
+    if (length(strata_names$strata_from_others) > 0) {
+      strata_unclaimed[[i]] = strata_names$strata_from_others
     }
   }
 
-  params$strataClaimed = strataClaimed
+  params$strata_claimed = strata_claimed
 
   claimed = c()
   unclaimed = c()
-  specified = rep(list(list()), params$numDataPartners)
-  for (i in 1:params$numDataPartners) {
-    temp <- c(as.character(strataClaimed[[i]]), as.character(strataUnclaimed[[i]]))
+  specified = rep(list(list()), params$num_data_partners)
+  for (i in 1:params$num_data_partners) {
+    temp <- c(as.character(strata_claimed[[i]]), as.character(strata_unclaimed[[i]]))
     if (length(temp) > 0) {
       specified[[i]] = sort(temp)
     }
-    if (length(strataClaimed[[i]]) > 0) {
-      claimed = c(claimed, strataClaimed[[i]])
+    if (length(strata_claimed[[i]]) > 0) {
+      claimed = c(claimed, strata_claimed[[i]])
     }
-    if (length(strataUnclaimed[[i]]) > 0) {
-      unclaimed = union(unclaimed, strataUnclaimed[[i]])
+    if (length(strata_unclaimed[[i]]) > 0) {
+      unclaimed = union(unclaimed, strata_unclaimed[[i]])
     }
   }
 
@@ -129,14 +129,14 @@ check_strata_cox_DP <- function(params, data) {
   }
 
   passed = TRUE
-  for (i in 2:params$numDataPartners) {
+  for (i in 2:params$num_data_partners) {
     passed = passed && length(specified[[1]]) == length(specified[[i]]) && all(specified[[1]] == specified[[i]])
   }
 
   if (!passed) {
     params$failed <- TRUE
     params$error_message <- "Data partners specified different strata:\n"
-    for (i in 1:params$numDataPartners) {
+    for (i in 1:params$num_data_partners) {
       temp <- NULL
       if (length(specified[[i]] > 0)) {
         temp <- paste0(specified[[i]], collapse = ", ")
@@ -144,7 +144,7 @@ check_strata_cox_DP <- function(params, data) {
       params$error_message <- paste0(params$error_message,
                                    paste("Data Partner", i, "specified strata:", temp, "\n"))
     }
-    params <- add_to_log(params, "check_strata_cox_DP", read_time, read_size, 0, 0)
+    params <- add_to_log(params, "check_strata_cox_dp", read_time, read_size, 0, 0)
     return(params)
   }
   passed = TRUE
@@ -158,7 +158,7 @@ check_strata_cox_DP <- function(params, data) {
     params$error_message <- "The following strata are claimed by two or more data partners: "
     params$error_message <- paste0(params$error_message, paste0(names(tab[which(tab > 1)]), collapse = ", "), "\n")
     params$error_message <- paste0(params$error_message, "Make Sure that strata covariate names are unique to each data partner.")
-    params <- add_to_log(params, "check_strata_cox_DP", read_time, read_size, 0, 0)
+    params <- add_to_log(params, "check_strata_cox_dp", read_time, read_size, 0, 0)
     return(params)
   }
 
@@ -170,17 +170,17 @@ check_strata_cox_DP <- function(params, data) {
     params$failed <- TRUE
     params$error_message <- "No data partner has the following specified strata: "
     params$error_message <- paste0(params$error_message, paste0(unclaimed[which(!(unclaimed %in% claimed1))], collapse = ", "), ".")
-    params <- add_to_log(params, "check_strata_cox_DP", read_time, read_size, 0, 0)
+    params <- add_to_log(params, "check_strata_cox_dp", read_time, read_size, 0, 0)
     return(params)
   }
 
-  params <- add_to_log(params, "check_strata_cox_DP", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "check_strata_cox_dp", read_time, read_size, 0, 0)
   return(params)
 }
 
 
-send_strata_cox_DP <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "send_strata_cox_DP\n\n")
+send_strata_cox_dp <- function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "send_strata_cox_dp\n\n")
   strata <- list()
   strata$x <- data$strata$x
   strata$legend <- data$strata$legend
@@ -188,7 +188,7 @@ send_strata_cox_DP <- function(params, data) {
   save(strata, file = file.path(params$write_path, "strata.rdata"))
   write_size <- file.size(file.path(params$write_path, "strata.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "send_strata_cox_DP", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "send_strata_cox_dp", 0, 0, write_time, write_size)
   return(params)
 }
 
@@ -201,8 +201,8 @@ prepare_strata_cox_DP <- function(params, data) {
   totalStrata = 0
   read_size <- 0
   read_time <- 0
-  for (id in 1:params$numDataPartners) {
-    totalStrata = totalStrata + length(params$strataClaimed[[id]])
+  for (id in 1:params$num_data_partners) {
+    totalStrata = totalStrata + length(params$strata_claimed[[id]])
   }
 
   if (totalStrata == 0) {
@@ -211,8 +211,8 @@ prepare_strata_cox_DP <- function(params, data) {
   } else {
     first = TRUE
     strataTemp$legend <- list()
-    for (id in 1:params$numDataPartners) {
-      if (length(params$strataClaimed[[id]]) > 0) {
+    for (id in 1:params$num_data_partners) {
+      if (length(params$strata_claimed[[id]]) > 0) {
         if (id == 1) {
           strataTemp$x <- data$strata$x
           strataTemp$legend <- data$strata$legend
@@ -394,13 +394,13 @@ PrepareSharesCox.DP <- function(params, data) {
 
   halfshare.R  <- data$x - halfshare.L
 
-  products = rep(list(list()), params$numDataPartners)
+  products = rep(list(list()), params$num_data_partners)
 
   params$ps = c()
   params$scalers = c()
   params$seeds = c()
 
-  for (id in 1:params$numDataPartners) {
+  for (id in 1:params$num_data_partners) {
     if (id == params$data_partner_id) {
       products[[id]] <- t(data$x) %*% data$x
       params$ps      = c(params$ps, params$p)
@@ -471,16 +471,16 @@ get_products_cox_AC <- function(params) {
   p = 0
   n = 0
 
-  allproducts  = rep(list(list()), params$numDataPartners)
-  allhalfshare = rep(list(list()), params$numDataPartners)
-  alltags      = rep(list(list()), params$numDataPartners)
+  allproducts  = rep(list(list()), params$num_data_partners)
+  allhalfshare = rep(list(list()), params$num_data_partners)
+  alltags      = rep(list(list()), params$num_data_partners)
   products    = NULL
   halfshare.R = NULL
   tags        = NULL
   allcolmin = allcolrange = allcolsum = allcolnames = NULL
   colmin = colrange = colsum = colnames = NULL
   party = NULL
-  for (id in 1:params$numDataPartners) {
+  for (id in 1:params$num_data_partners) {
     read_time <- read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "products.rdata"))
     load(file.path(params$readPathDP[id], "halfshare.rdata"))
@@ -507,12 +507,12 @@ get_products_cox_AC <- function(params) {
   colnames(m) = allcolnames
   rownames(m) = allcolnames
   offset1 = 1
-  params$pi = rep(0, params$numDataPartners)
-  for (id1 in 1:params$numDataPartners) {
+  params$pi = rep(0, params$num_data_partners)
+  for (id1 in 1:params$num_data_partners) {
     p1 = ncol(allhalfshare[[id1]])
     params$pi[id1] = p1
     offset2 = offset1
-    for (id2 in id1:params$numDataPartners) {
+    for (id2 in id1:params$num_data_partners) {
       p2 = ncol(allhalfshare[[id2]])
       if (id1 == id2) {
         m[offset1:(offset1 + p1 - 1), offset2:(offset2 + p2 - 1)] = allproducts[[id1]][[id2]]
@@ -575,13 +575,13 @@ check_colinearity_cox_AC <- function(params) {
   params$fullindicies = indicies       # To be used when computing stats
   params$p            = params$p - 1   # Get rid of the response from the count
 
-  params$indicies = rep(list(c()), params$numDataPartners)
-  params$idx      = rep(list(c()), params$numDataPartners)
-  tags            = rep(list(c()), params$numDataPartners)
+  params$indicies = rep(list(c()), params$num_data_partners)
+  params$idx      = rep(list(c()), params$num_data_partners)
+  tags            = rep(list(c()), params$num_data_partners)
 
   start = 1
   min = 1
-  for (id in 1:params$numDataPartners) {
+  for (id in 1:params$num_data_partners) {
     max = min + params$pi[id] - 1
     idx <- which(min <= indicies & indicies <= max)
     if (length(idx) > 0) {
@@ -604,7 +604,7 @@ check_colinearity_cox_AC <- function(params) {
 
   params$error_message <- ""
   numeric_found = FALSE
-  for (id in 2:params$numDataPartners) {
+  for (id in 2:params$num_data_partners) {
     if (length(unique(tags[[id]])) == 0) {
       params$failed <- TRUE
       params$error_message <- paste0(params$error_message,
@@ -619,11 +619,11 @@ check_colinearity_cox_AC <- function(params) {
   idx      = params$idx
 
   params$pReduct = c()
-  for (id in 1:params$numDataPartners) {
+  for (id in 1:params$num_data_partners) {
     params$pReduct = c(params$pReduct, length(indicies[[id]]))
   }
 
-  for (id in 1:params$numDataPartners) {
+  for (id in 1:params$num_data_partners) {
     params$halfshare[[id]] = params$halfshare[[id]][, indicies[[id]], drop = FALSE]
   }
   params$halfshare <- do.call(cbind, params$halfshare)
@@ -650,7 +650,7 @@ ComputeUCox.AC <- function(params) {
     u = 1
   } else {
     utemp <- 0
-    for (id in 1:params$numDataPartners) {
+    for (id in 1:params$num_data_partners) {
       read_time <- read_time - proc.time()[3]
       load(file.path(params$readPathDP[id], "u.rdata"))
       read_size <- read_size + file.size(file.path(params$readPathDP[id], "u.rdata"))
@@ -709,8 +709,8 @@ update_data_cox_DP <- function(params, data) {
   data$colrange = data$colrange[idx]
 
   if (params$data_partner_id == 1) {
-    halfshare = rep(list(list()), params$numDataPartners)
-    for (id in 1:params$numDataPartners) {
+    halfshare = rep(list(list()), params$num_data_partners)
+    for (id in 1:params$num_data_partners) {
       set.seed(params$seeds[id], kind = "Mersenne-Twister")
       halfshare[[id]]  <- matrix(rnorm(params$n * params$ps[id], sd = 20), nrow = params$n, ncol = params$ps[id])
       halfshare[[id]] = halfshare[[id]][, params$indicies[[id]], drop = FALSE]
@@ -732,7 +732,7 @@ ComputeSBetaCox.DP <- function(params, data) {
 
   sBetaPart = (data$x %*% params$betas + u) / (2 * u)
   v = 0
-  for (id in 1:params$numDataPartners) {
+  for (id in 1:params$num_data_partners) {
     set.seed(params$seeds[id] + params$alg_iteration_counter)
     v = rnorm(n, mean = runif(n = 1, min = -1, max = 1), sd = 20)
     v = v + v
@@ -757,14 +757,14 @@ GetSBetaCox.AC <- function(params) {
   sBetaPart = NULL
   read_time <- 0
   read_size <- 0
-  for (id in 1:params$numDataPartners) {
+  for (id in 1:params$num_data_partners) {
     read_time <- read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "sbeta.rdata"))
     read_size <- read_size + file.size(file.path(params$readPathDP[id], "sbeta.rdata"))
     read_time <- read_time + proc.time()[3]
     sBeta = sBeta + sBetaPart
   }
-  sBeta = 2 * params$u * sBeta - params$u * params$numDataPartners
+  sBeta = 2 * params$u * sBeta - params$u * params$num_data_partners
   params$sBeta = sBeta
   write_time <- proc.time()[3]
   save(sBeta, file = file.path(params$write_path, "sbeta.rdata"))
@@ -953,17 +953,17 @@ ComputeProductsCox.DP <- function(params, data) {
     load(file.path(params$readPathAC, "wsr1.rdata"))
     read_size <- file.size(file.path(params$readPathAC, "wsr1.rdata"))
     read_time <- proc.time()[3] - read_time
-    E = rep(list(list()), params$numDataPartners)
-    E1 = rep(list(matrix(0, 0, 0)), params$numDataPartners)
+    E = rep(list(list()), params$num_data_partners)
+    E1 = rep(list(matrix(0, 0, 0)), params$num_data_partners)
     p = length(params$idx[[1]])
     if (p == 0) {
-      for (id2 in 1:params$numDataPartners) {
+      for (id2 in 1:params$num_data_partners) {
         E1[[id2]]  <- matrix(0, nrow = 0, ncol = length(params$idx[[id2]]))
       }
     } else {
       E1[[1]] <- t(data$x) %*% (params$w_s_l[, params$idx[[1]], drop = FALSE] + w_s_r_1)
       D = diag(params$colrange.w_s_l[params$idx[[1]]], ncol = p, nrow = p)
-      for (id2 in 2:params$numDataPartners) {
+      for (id2 in 2:params$num_data_partners) {
         set.seed(params$seeds[id2], kind = "Mersenne-Twister")
         halfshare.RL  <- matrix(rnorm(params$n * params$ps[id2], sd = 20),
                               nrow = params$n, ncol = params$ps[id2])  # needed to get randomization to right spot
@@ -975,14 +975,14 @@ ComputeProductsCox.DP <- function(params, data) {
       }
     }
     E[[1]] = E1
-    for (id1 in 2:params$numDataPartners) {
-      E1 = rep(list(matrix(0, 0, 0)), params$numDataPartners)
+    for (id1 in 2:params$num_data_partners) {
+      E1 = rep(list(matrix(0, 0, 0)), params$num_data_partners)
       p = length(params$idx[[id1]])
       D = diag(params$colrange.w_s_l[params$idx[[id1]]], ncol = p, nrow = p)
       set.seed(params$seeds[id1], kind = "Mersenne-Twister")
       halfshare.L  <- matrix(rnorm(params$n * params$ps[id1], sd = 20),
                            nrow = params$n, ncol = params$ps[id1])[, params$indicies[[id1]], drop = FALSE]
-      for (id2 in 2:params$numDataPartners) {
+      for (id2 in 2:params$num_data_partners) {
         set.seed(params$seeds[id2], kind = "Mersenne-Twister")
         halfshare.RL  <- matrix(rnorm(params$n * params$ps[id2], sd = 20),
                               nrow = params$n, ncol = params$ps[id2])
@@ -1005,13 +1005,13 @@ ComputeProductsCox.DP <- function(params, data) {
     read_size <- file.size(file.path(params$readPathDP[1], "scaledwsll.rdata"))
     read_time <- proc.time()[3] - read_time
 
-    F1 = rep(list(list()), params$numDataPartners)
+    F1 = rep(list(list()), params$num_data_partners)
     set.seed(params$seed, kind = "Mersenne-Twister")
     halfshare.L  <- matrix(rnorm(params$n * params$p, sd = 20), nrow = params$n, ncol = params$p)[, params$indicies[[params$data_partner_id]], drop = FALSE]
     halfshare.R <- data$x - halfshare.L
     halfshare.R.L  <- matrix(rnorm(params$n * params$p, sd = 20), nrow = params$n, ncol = params$p)[, params$indicies[[params$data_partner_id]], drop = FALSE]
     halfshare.R.R = halfshare.R - halfshare.R.L  # This is halfshare.R.L and halfshare.R.R
-    for (id in 1:params$numDataPartners) {
+    for (id in 1:params$num_data_partners) {
       F1[[id]] = params$scaler / (params$scalers[1] + params$scaler) * t(scaled.w_s_l.L[, params$idx[[id]], drop = FALSE]) %*% halfshare.R.L +
         t(scaled.w_s_l.L[, params$idx[[id]], drop = FALSE]) %*% halfshare.R.R
     }
@@ -1044,14 +1044,14 @@ ComputeStWSCox.AC <- function(params) {
   scaled.w_s_l.R = NULL
   colmin.w_s_l = NULL
   colrange.w_s_l = NULL
-  F1 = rep(list(list()), params$numDataPartners)
+  F1 = rep(list(list()), params$num_data_partners)
   read_time <- proc.time()[3]
   load(file.path(params$readPathDP[1], "scaledwslr.rdata"))
   load(file.path(params$readPathDP[1], "products.rdata"))
   read_size <- file.size(file.path(params$readPathDP[1], "scaledwslr.rdata")) +
     file.size(file.path(params$readPathDP[1], "products.rdata"))
   read_time <- proc.time()[3] - read_time
-  for (id in 2:params$numDataPartners) {
+  for (id in 2:params$num_data_partners) {
     read_time <- read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "products.rdata"))
     read_size <- read_size + file.size(file.path(params$readPathDP[id], "products.rdata"))
@@ -1059,18 +1059,18 @@ ComputeStWSCox.AC <- function(params) {
     F1[[id]] = F1
   }
   p = 0
-  for (id in 1:params$numDataPartners) {
+  for (id in 1:params$num_data_partners) {
     p = p + length(params$idx[[id]])
   }
   m  <- matrix(0, p, p)
   startrow = 1
-  for (id1 in 1:params$numDataPartners) {
+  for (id1 in 1:params$num_data_partners) {
     p1 = length(params$idx[[id1]])
     if (p1 == 0) next
     endrow = startrow + p1 - 1
     startcol = startrow
     D = diag(x = colrange.w_s_l[params$idx[[id1]]], nrow = p1, ncol = p1)
-    for (id2  in id1:params$numDataPartners) {
+    for (id2  in id1:params$num_data_partners) {
       p2 = length(params$idx[[id2]])
       endcol = startcol + p2 - 1
       if (p2 == 0) next
@@ -1150,7 +1150,7 @@ ComputeStWSCox.AC <- function(params) {
 
   write_time <- 0
   write_size <- 0
-  for (id in 1:params$numDataPartners) {
+  for (id in 1:params$num_data_partners) {
     I.part = I[params$idx[[id]], , drop = FALSE]
     IDt.part = IDt[params$idx[[id]], , drop = FALSE]
     write_time <- write_time - proc.time()[3]
@@ -1311,7 +1311,7 @@ compute_results_cox_AC <- function(params) {
   score             = params$score
   read_time <- proc.time()[3]
   betas  <- matrix(0, nrow = 0, ncol = 1)
-  for (id in 1:params$numDataPartners) {
+  for (id in 1:params$num_data_partners) {
     load(file.path(params$readPathDP[id], "betas.rdata"))
     betas <- rbind(betas, betasnew)
     score = score + scorePart
@@ -1454,7 +1454,7 @@ DataPartnerKCox <- function(data,
                            y_name           = NULL,
                            strata          = NULL,
                            mask            = TRUE,
-                           numDataPartners = NULL,
+                           num_data_partners = NULL,
                            data_partner_id   = NULL,
                            monitor_folder   = NULL,
                            sleep_time       = 10,
@@ -1463,7 +1463,7 @@ DataPartnerKCox <- function(data,
                            trace           = FALSE,
                            verbose         = TRUE) {
 
-  params <- prepare_params_kp("cox", data_partner_id, numDataPartners, ac = FALSE,
+  params <- prepare_params_kp("cox", data_partner_id, num_data_partners, ac = FALSE,
                             popmednet = popmednet, trace = trace, verbose = verbose)
   if (params$failed) {
     warning(params$error_message)
@@ -1481,8 +1481,8 @@ DataPartnerKCox <- function(data,
     return(invisible(NULL))
   }
 
-  data <- prepare_data_cox_DP(params, data, y_name, strata, mask)
-  params <- add_to_log(params, "prepare_data_cox_DP", 0, 0, 0, 0)
+  data <- prepare_data_cox_dp(params, data, y_name, strata, mask)
+  params <- add_to_log(params, "prepare_data_cox_dp", 0, 0, 0, 0)
 
   if (data$failed) {
     params$error_message <- paste("Error processing data for data partner", params$data_partner_id)
@@ -1514,7 +1514,7 @@ DataPartnerKCox <- function(data,
     params <- send_pause_continue_kp(params, filesAC = "empty.rdata", from = "DP",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
-    params <- check_strata_cox_DP(params, data)
+    params <- check_strata_cox_dp(params, data)
 
     if (params$failed) {
       make_error_message(params$write_path, params$error_message)
@@ -1539,8 +1539,8 @@ DataPartnerKCox <- function(data,
     data   = AddStrataToDataCox.DP(params, data)
     params <- add_to_log(params, "AddStrataToDataCox.DP", 0, 0, 0, 0)
   } else {
-    params <- SendStrataNamesCox.DP(params, data)
-    filesList = rep(list(list()), numDataPartners)
+    params <- send_strata_names_cox_dp(params, data)
+    filesList = rep(list(list()), num_data_partners)
     filesList[[1]] = "strata_names.rdata"
     params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP1",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
@@ -1554,8 +1554,8 @@ DataPartnerKCox <- function(data,
       return(params$stats)
     }
 
-    params <- send_strata_cox_DP(params, data)
-    filesList = rep(list(list()), numDataPartners)
+    params <- send_strata_cox_dp(params, data)
+    filesList = rep(list(list()), num_data_partners)
     filesList[[1]] = "strata.rdata"
     params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP1",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
@@ -1613,7 +1613,7 @@ DataPartnerKCox <- function(data,
 
       params <- DoNothing.ACDP(params)
 
-      filesList = rep(list(list()), numDataPartners)
+      filesList = rep(list(list()), num_data_partners)
       filesList[[1]] = "empty.rdata"
       params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP1",
                                     sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
@@ -1662,7 +1662,7 @@ DataPartnerKCox <- function(data,
 }
 
 
-AnalysisCenterKCox <- function(numDataPartners = NULL,
+AnalysisCenterKCox <- function(num_data_partners = NULL,
                               monitor_folder   = NULL,
                               msreqid         = "v_default_0_000",
                               cutoff          = 1E-8,
@@ -1673,9 +1673,9 @@ AnalysisCenterKCox <- function(numDataPartners = NULL,
                               trace           = FALSE,
                               verbose         = TRUE) {
 
-  filesList = rep(list(list()), numDataPartners)
+  filesList = rep(list(list()), num_data_partners)
 
-  params <- prepare_params_kp("cox", 0, numDataPartners, msreqid, cutoff, max_iterations, ac = TRUE,
+  params <- prepare_params_kp("cox", 0, num_data_partners, msreqid, cutoff, max_iterations, ac = TRUE,
                             popmednet = popmednet, trace = trace, verbose = verbose)
   if (params$failed) {
     warning(params$error_message)
@@ -1727,7 +1727,7 @@ AnalysisCenterKCox <- function(numDataPartners = NULL,
 
 
   params <- DoNothing.ACDP(params)
-  filesList = rep(list(list()), numDataPartners)
+  filesList = rep(list(list()), num_data_partners)
   filesList[[1]] = "empty.rdata"
   params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
@@ -1770,14 +1770,14 @@ AnalysisCenterKCox <- function(numDataPartners = NULL,
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
     params <- GetSBetaCox.AC(params)
-    filesList = rep(list(list()), numDataPartners)
+    filesList = rep(list(list()), num_data_partners)
     filesList[[1]] = "sbeta.rdata"
     filesList[[2]] = "empty.rdata"
     params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP1",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
     params <- ComputeSDelLCox.AC(params)
-    filesList = rep(list(list()), numDataPartners)
+    filesList = rep(list(list()), num_data_partners)
     filesList[[1]] = "wsr1.rdata"
     params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
@@ -1796,8 +1796,8 @@ AnalysisCenterKCox <- function(numDataPartners = NULL,
       return(params$stats)
     }
 
-    filesList = rep(list(list()), numDataPartners)
-    for (id in 1:params$numDataPartners) {
+    filesList = rep(list(list()), num_data_partners)
+    for (id in 1:params$num_data_partners) {
       filesList[[id]] = c(paste0("update", id, ".rdata"), "maxiterexceeded.rdata")
     }
     params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP",

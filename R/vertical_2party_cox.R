@@ -151,11 +151,11 @@ extract_strata <- function(params, data, stratas, mask) {
         strata$strata_from_a <- stratas[!idx]
       }
       if (!is.null(params$data_partner_id) && params$data_partner_id == "1") {
-        strata$strataFromMe     <- stratas[idx]
-        strata$strataFromOthers <- stratas[!idx]
+        strata$strata_from_me     <- stratas[idx]
+        strata$strata_from_others <- stratas[!idx]
       } else {
-        strata$strataFromMe     <- stratas[idx]
-        strata$strataFromOthers <- stratas[!idx]
+        strata$strata_from_me     <- stratas[idx]
+        strata$strata_from_others <- stratas[!idx]
       }
       strata$strata_index <- which(colnames(data) %in% stratas)
       if (length(strata$strata_index) > 0) {

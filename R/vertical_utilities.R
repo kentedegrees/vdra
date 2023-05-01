@@ -506,7 +506,7 @@ DataPartner.KParty <- function(regression            = "linear",
                                response              = NULL,
                                strata                = NULL,
                                mask                  = TRUE,
-                               numDataPartners       = NULL,
+                               num_data_partners       = NULL,
                                data_partner_id         = NULL,
                                monitor_folder         = NULL,
                                sleep_time             = 10,
@@ -519,22 +519,22 @@ DataPartner.KParty <- function(regression            = "linear",
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.")
-  } else if (is.null(numDataPartners)) {
-    warning("numDataPartners must be specified")
+  } else if (is.null(num_data_partners)) {
+    warning("num_data_partners must be specified")
   } else if (is.null(data_partner_id)) {
     warning("data_partner_id must be specified")
   } else if (regression == "cox") {
-    stats <- DataPartnerKCox(data, response, strata, mask, numDataPartners,
+    stats <- DataPartnerKCox(data, response, strata, mask, num_data_partners,
                             data_partner_id, monitor_folder,
                             sleep_time, max_waiting_time, popmednet, trace,
                             verbose)
   } else if (regression == "linear") {
-    stats <- DataPartnerKLinear(data, response, numDataPartners,
+    stats <- DataPartnerKLinear(data, response, num_data_partners,
                                data_partner_id, monitor_folder,
                                sleep_time, max_waiting_time, popmednet, trace,
                                verbose)
   } else  if (regression == "logistic") {
-    stats <- DataPartnerKLogistic(data, response, numDataPartners,
+    stats <- DataPartnerKLogistic(data, response, num_data_partners,
                                  data_partner_id, monitor_folder,
                                  sleep_time, max_waiting_time, popmednet, trace,
                                  verbose)
@@ -589,12 +589,12 @@ DataPartner.KParty <- function(regression            = "linear",
 #'   by name. If \code{TRUE}, levels for the strata which belong to the party
 #'   which specified \code{TRUE} will be put in a random order and level names
 #'   will be changed to \code{NA}.
-#' @param numDataPartners the number of data partners which are supplying data
+#' @param num_data_partners the number of data partners which are supplying data
 #'   for the regression.
 #' @param data_partner_id a unique identifier for each data partner.  The data
 #'   partner with the response variable(s) must have \code{data_partner_id = 1}.
 #'   All other data partners must have an integer value from 2 to
-#'   \code{numDataPartners}.
+#'   \code{num_data_partners}.
 #' @param monitor_folder the folder where the directories \code{dplocal},
 #'   \code{inputfiles}, \code{macros}, \code{msoc}, and \code{rprograms} are
 #'   located.
@@ -633,7 +633,7 @@ DataPartner.KParty <- function(regression            = "linear",
 #' # requset for the analysis center.
 #'
 #' fit = AnalysisCenter.KParty(regression = "linear",
-#'                             numDataPartners = 2,
+#'                             num_data_partners = 2,
 #'                             monitor_folder = tempdir())
 #'
 #' # Data Partner 1 -- To be run in second instand of R, on perhaps a different
@@ -643,7 +643,7 @@ DataPartner.KParty <- function(regression            = "linear",
 #' fit = DataPartner.KParty(regression = "linear",
 #'                          data = vdra_data[, c(1, 5:7)],
 #'                          response = "Change_BMI",
-#'                          numDataPartners = 2,
+#'                          num_data_partners = 2,
 #'                          data_partner_id = 1,
 #'                          monitor_folder = tempdir())
 #'
@@ -653,7 +653,7 @@ DataPartner.KParty <- function(regression            = "linear",
 #'
 #' fit = DataPartner.KParty(regression = "linear",
 #'                          data = vdra_data[, 8:11],
-#'                          numDataPartners = 2,
+#'                          num_data_partners = 2,
 #'                          data_partner_id = 2,
 #'                          monitor_folder = tempdir())
 #'
@@ -664,7 +664,7 @@ DataPartner.KParty <- function(regression            = "linear",
 #' # requset for the analysis center.
 #'
 #' fit = AnalysisCenter.KParty(regression = "logistic",
-#'                             numDataPartners = 2,
+#'                             num_data_partners = 2,
 #'                             monitor_folder = tempdir())
 #'
 #' # Data Partner 1 -- To be run in second instand of R, on perhaps a different
@@ -674,7 +674,7 @@ DataPartner.KParty <- function(regression            = "linear",
 #' fit = DataPartner.KParty(regression = "logistic",
 #'                          data = vdra_data[, c(2, 5:7)],
 #'                          response = "WtLost",
-#'                          numDataPartners = 2,
+#'                          num_data_partners = 2,
 #'                          data_partner_id = 1,
 #'                          monitor_folder = tempdir())
 #'
@@ -684,7 +684,7 @@ DataPartner.KParty <- function(regression            = "linear",
 #'
 #' fit = DataPartner.KParty(regression = "logistic",
 #'                          data = vdra_data[, 8:11],
-#'                          numDataPartners = 2,
+#'                          num_data_partners = 2,
 #'                          data_partner_id = 2,
 #'                          monitor_folder = tempdir())
 #'
@@ -695,7 +695,7 @@ DataPartner.KParty <- function(regression            = "linear",
 #' # requset for the analysis center.
 #'
 #' fit = AnalysisCenter.KParty(regression = "cox",
-#'                             numDataPartners = 2,
+#'                             num_data_partners = 2,
 #'                             monitor_folder = tempdir())
 #'
 #' # Data Partner 1 -- To be run in second instand of R, on perhaps a different
@@ -706,7 +706,7 @@ DataPartner.KParty <- function(regression            = "linear",
 #'                          data = vdra_data[, c(3:4, 5:7)],
 #'                          response = c("Time", "Status"),
 #'                          strata = c("Exposure", "Sex"),
-#'                          numDataPartners = 2,
+#'                          num_data_partners = 2,
 #'                          data_partner_id = 1,
 #'                          monitor_folder = tempdir())
 #'
@@ -717,13 +717,13 @@ DataPartner.KParty <- function(regression            = "linear",
 #' fit = DataPartner.KParty(regression = "cox",
 #'                          data = vdra_data[, 8:11],
 #'                          strata = c("Exposure", "Sex"),
-#'                          numDataPartners = 2,
+#'                          num_data_partners = 2,
 #'                          data_partner_id = 2,
 #'                          monitor_folder = tempdir())
 #' }
 
 AnalysisCenter.KParty <- function(regression            = "linear",
-                                  numDataPartners       = NULL,
+                                  num_data_partners       = NULL,
                                   monitor_folder         = NULL,
                                   msreqid               = "v_default_00_000",
                                   tol                   = 1e-8,
@@ -738,18 +738,18 @@ AnalysisCenter.KParty <- function(regression            = "linear",
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.")
-  } else if (is.null(numDataPartners)) {
-    warning("numDataPartners must be specified.")
+  } else if (is.null(num_data_partners)) {
+    warning("num_data_partners must be specified.")
   } else if (regression == "cox") {
-    stats <- AnalysisCenterKCox(numDataPartners, monitor_folder, msreqid, tol,
+    stats <- AnalysisCenterKCox(num_data_partners, monitor_folder, msreqid, tol,
                                max_iterations, sleep_time, max_waiting_time,
                                popmednet, trace, verbose)
   } else if (regression == "linear") {
-    stats <- AnalysisCenterKLinear(numDataPartners, monitor_folder, msreqid,
+    stats <- AnalysisCenterKLinear(num_data_partners, monitor_folder, msreqid,
                                   sleep_time, max_waiting_time, popmednet, trace,
                                   verbose)
   } else if (regression == "logistic") {
-    stats <- AnalysisCenterKLogistic(numDataPartners, monitor_folder, msreqid, tol,
+    stats <- AnalysisCenterKLogistic(num_data_partners, monitor_folder, msreqid, tol,
                                     max_iterations, sleep_time, max_waiting_time,
                                     popmednet, trace, verbose)
   } else {
@@ -975,13 +975,13 @@ prepare_params_3p <- function(analysis, party, msreqid = "v_default_00_000",
 
 ########################### K PARTY SETUP FUNCTIONS ############################
 
-prepare_params_kp <- function(analysis, data_partner_id, numDataPartners,
+prepare_params_kp <- function(analysis, data_partner_id, num_data_partners,
                               msreqid = "v_default_00_000", cutoff = NULL,
                               max_iterations = NULL, ac = FALSE, popmednet = TRUE,
                               trace = FALSE, verbose = TRUE) {
   params                     <- list()
   params$data_partner_id       = data_partner_id
-  params$numDataPartners     = numDataPartners
+  params$num_data_partners     = num_data_partners
   params$analysis            = analysis
   params$msreqid             = msreqid
   params$popmednet           = popmednet
@@ -1001,13 +1001,13 @@ prepare_params_kp <- function(analysis, data_partner_id, numDataPartners,
   class(params$stats)        = paste0("vdra", analysis)
   params$stats$failed        = TRUE
   params$stats$converged     = FALSE
-  if (((class(numDataPartners) != "integer" &&
-        class(numDataPartners) != "numeric") ||
-       numDataPartners <= 0 ||
-       is.infinite(numDataPartners) ||
-       round(numDataPartners) != numDataPartners)) {
+  if (((class(num_data_partners) != "integer" &&
+        class(num_data_partners) != "numeric") ||
+       num_data_partners <= 0 ||
+       is.infinite(num_data_partners) ||
+       round(num_data_partners) != num_data_partners)) {
     params$failed <- TRUE
-    params$errormessage <- "numDataPartners must be a positive integer, and must equal the number of data partners providing data."
+    params$errormessage <- "num_data_partners must be a positive integer, and must equal the number of data partners providing data."
   }
   if (!params$failed) {
     if (ac) {
@@ -1016,9 +1016,9 @@ prepare_params_kp <- function(analysis, data_partner_id, numDataPartners,
         params$errormessage <- "data_partner_id for Analysis Center must be 0.\n\n"
       }
     } else {
-      if (data_partner_id <= 0 || data_partner_id > numDataPartners) {
+      if (data_partner_id <= 0 || data_partner_id > num_data_partners) {
         params$failed <- TRUE
-        params$errormessage <- paste0("data_partner_id must be between 1 and ", numDataPartners, " inclusive.\n\n")
+        params$errormessage <- paste0("data_partner_id must be between 1 and ", num_data_partners, " inclusive.\n\n")
       }
     }
   }
@@ -1745,7 +1745,7 @@ wait_for_turn.kp <- function(params, sleep_time) {
 
   partyOffset = 15
 
-  modulus   = (params$numDataPartners + 1) * partyOffset
+  modulus   = (params$num_data_partners + 1) * partyOffset
   targetTime = params$data_partner_id * partyOffset
 
   if (params$verbose) cat("Elapsed Time:", HMS(0), "\r")
@@ -1782,7 +1782,7 @@ send_pause_quit_kp <- function(params,
       filesDP = c(filesDP, "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
     }
 
-    dataPartnerTarget = 1:params$numDataPartners
+    dataPartnerTarget = 1:params$num_data_partners
     dataPartnerTarget = dataPartnerTarget[-params$data_partner_id]
     files <- c(filesAC, rep(filesDP, length(dataPartnerTarget)), "file_list.csv")
     transfer = c(rep(1, length(files) - 1), 10)
@@ -1851,7 +1851,7 @@ send_pause_continue_kp <- function(params,
     if (!is.null(filesDP)) {
       filesDP = c(filesDP, "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
     }
-    dataPartnerTarget = 1:params$numDataPartners
+    dataPartnerTarget = 1:params$num_data_partners
     if (params$data_partner_id != 0) {
       dataPartnerTarget = dataPartnerTarget[-params$data_partner_id]
     }
@@ -1863,7 +1863,7 @@ send_pause_continue_kp <- function(params,
                     10)
   } else {
     files <- filesAC
-    for (dp in 1:params$numDataPartners) {
+    for (dp in 1:params$num_data_partners) {
       files <- c(files, filesDP[[dp]])
     }
     params <- StoreLogEntry.kp(params, files)
@@ -1879,7 +1879,7 @@ send_pause_continue_kp <- function(params,
     files <- filesAC
     transfer = rep(1, length(files))
     destination = rep(0, length(filesAC))
-    for (dp in 1:params$numDataPartners) {
+    for (dp in 1:params$num_data_partners) {
       if (length(filesDP[[dp]]) > 0 && dp != params$data_partner_id) {
         files <- c(files, filesDP[[dp]], "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
         transfer = c(transfer, rep(1, length(filesDP[[dp]]) + 3))
@@ -2011,7 +2011,7 @@ ReceivedError.kp <- function(params, from) {
     }
   } else {
     messageExists = file.exists(file.path(params$readPathDP, "errorMessage.rdata"))
-    for (id in 1:params$numDataPartners) {
+    for (id in 1:params$num_data_partners) {
       if (messageExists[id]) {
         message <- paste0(message, read_error_message(params$readPathDP[id]), " ")
       }
@@ -2513,7 +2513,7 @@ MergeStampsRaw.kp <- function(params, from) {
       params$stamps$history = rbind(params$stamps$history, stamps[-idx, ])
     }
   } else {
-    for (id in 1:params$numDataPartners) {
+    for (id in 1:params$num_data_partners) {
       if (id == params$data_partner_id) next
       load(file.path(params$readPathDP[id], "stamps.rdata"))
       key1 = paste0(params$stamps$history$Step,
@@ -3114,7 +3114,7 @@ MergeLogRaw.kp <- function(params, from) {
       params$log$history = rbind(params$log$history, log[-idx, ])
     }
   } else {
-    for (id in 1:params$numDataPartners) {
+    for (id in 1:params$num_data_partners) {
       if (id == params$data_partner_id) next
       load(file.path(params$readPathDP[id], "log.rdata"))
       key1 = paste0(params$log$history$Step, params$log$history$Party)
@@ -3140,7 +3140,7 @@ SummarizeLog.kp <- function(params) {
   WriteToLogSummary(c1 = "Analysis", c2 = params$analysis, write_path = write_path, append = FALSE)
   if (!is.null(params$n))   WriteToLogSummary(c1 = "N", c2 = params$n, write_path = write_path)
 
-  for (i in 1:params$numDataPartners) {
+  for (i in 1:params$num_data_partners) {
     if (is.null(params$pi))  {
       p = 0
     } else {
@@ -3152,7 +3152,7 @@ SummarizeLog.kp <- function(params) {
   WriteToLogSummary(write_path = write_path)
 
   total.time.0 = 0
-  for (party in 0:params$numDataPartners) {
+  for (party in 0:params$num_data_partners) {
     party_name <- paste0("dp", party)
     index <- which(log$Party == party_name)
     if (length(index) > 0) {
@@ -3440,7 +3440,7 @@ StoreTrackingTableEntry.kp <- function(params) {
     params$trackingTable$current$STEP_RETURN_MSG = message
   } else {
     msg = ""
-    for (id in 1:params$numDataPartners) {
+    for (id in 1:params$num_data_partners) {
       if (!is.na(params$readPathDP[id]) &&
           file.exists(file.path(params$readPathDP[id], "errorMessage.rdata"))) {
         load(file.path(params$readPathDP[id], "errorMessage.rdata"))
@@ -3503,7 +3503,7 @@ MergeTrackingTableRAW.kp <- function(params, from) {
         rbind(params$trackingTable$history, trackingTable[-idx, ])
     }
   } else {
-    for (id in 1:params$numDataPartners) {
+    for (id in 1:params$num_data_partners) {
       if (id == params$data_partner_id) next
       load(file.path(params$readPathDP[id], "tr_tb_updt.rdata"))
       key1 = paste0(params$trackingTable$history$ITER_NB,
