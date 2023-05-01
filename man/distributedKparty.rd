@@ -28,7 +28,7 @@ AnalysisCenter.KParty(
   monitor_folder = NULL,
   msreqid = "v_default_00_000",
   tol = 1e-08,
-  maxIterations = 25,
+  max_iterations = 25,
   sleepTime = 10,
   maxWaitingTime = 86400,
   popmednet = TRUE,
@@ -107,7 +107,7 @@ PopMedNet. Used for logging purposes only.}
 \item{tol}{the tolerance used to determine convergence in \code{"logistic"}
 and \code{"cox"} regression.}
 
-\item{maxIterations}{the maximum number of iterations to perform
+\item{max_iterations}{the maximum number of iterations to perform
 \code{"logistic"} or \code{"cox"} regression before non-convergence is
 declared.}
 }

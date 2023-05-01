@@ -49,7 +49,7 @@
 #'   for data transfer between the two parties.
 #' @param tol the tolerance used to determine convergence in \code{"logistic"}
 #'   and \code{"cox"} regression.
-#' @param maxIterations the maximum number of iterations to perform
+#' @param max_iterations the maximum number of iterations to perform
 #'   \code{"logistic"} or \code{"cox"} regression before non-convergence is
 #'   declared.
 #' @param sleep_time the number of seconds to wait after writing the last file to
@@ -141,7 +141,7 @@ AnalysisCenter.2Party = function(regression            = "linear",
                                  msreqid               = "v_default_00_000",
                                  blocksize             = 500,
                                  tol                   = 1e-8,
-                                 maxIterations         = 25,
+                                 max_iterations         = 25,
                                  sleep_time             = 10,
                                  maxWaitingTime        = 86400,
                                  popmednet             = TRUE,
@@ -154,7 +154,7 @@ AnalysisCenter.2Party = function(regression            = "linear",
     warning("monitor_folder must be specified.")
   } else if (regression == "cox") {
     stats = PartyAProcess2Cox(data, response, strata, mask, monitor_folder,
-                              msreqid, blocksize, tol, maxIterations,
+                              msreqid, blocksize, tol, max_iterations,
                               sleep_time, maxWaitingTime, popmednet, trace,
                               verbose)
   } else if (regression == "linear") {
@@ -163,7 +163,7 @@ AnalysisCenter.2Party = function(regression            = "linear",
                                  popmednet, trace, verbose)
   } else if (regression == "logistic") {
     stats = PartyAProcess2Logistic(data, response, monitor_folder, msreqid,
-                                   blocksize, tol, maxIterations, sleep_time,
+                                   blocksize, tol, max_iterations, sleep_time,
                                    maxWaitingTime, popmednet, trace, verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
@@ -353,7 +353,7 @@ DataPartner2.3Party = function(regression          = "linear",
 #'   for data transfer between the two parties.
 #' @param tol the tolerance used to determine convergence in \code{"logistic"}
 #'   and \code{"cox"} regression.
-#' @param maxIterations the maximum number of iterations to perform
+#' @param max_iterations the maximum number of iterations to perform
 #'   \code{"logistic"} or \code{"cox"} regression before non-convergence is
 #'   declared.
 #' @param sleep_time the number of seconds to wait after writing the last file to
@@ -464,7 +464,7 @@ AnalysisCenter.3Party = function(regression            = "linear",
                                  msreqid               = "v_default_00_000",
                                  blocksize             = 500,
                                  tol                   = 1e-8,
-                                 maxIterations         = 25,
+                                 max_iterations         = 25,
                                  sleep_time             = 10,
                                  maxWaitingTime        = 86400,
                                  popmednet             = TRUE,
@@ -477,7 +477,7 @@ AnalysisCenter.3Party = function(regression            = "linear",
     warning("monitor_folder must be specified.")
   } else if (regression == "cox") {
     stats = PartyTProcess3Cox(monitor_folder, msreqid, blocksize, tol,
-                              maxIterations, sleep_time, maxWaitingTime,
+                              max_iterations, sleep_time, maxWaitingTime,
                               popmednet, trace, verbose)
   } else if (regression == "linear") {
     stats = PartyTProcess3Linear(monitor_folder, msreqid, blocksize,
@@ -485,7 +485,7 @@ AnalysisCenter.3Party = function(regression            = "linear",
                                  verbose)
   } else if (regression == "logistic") {
     stats = PartyTProcess3Logistic(monitor_folder, msreqid, blocksize, tol,
-                                   maxIterations, sleep_time, maxWaitingTime,
+                                   max_iterations, sleep_time, maxWaitingTime,
                                    popmednet, trace, verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
@@ -603,7 +603,7 @@ DataPartner.KParty = function(regression            = "linear",
 #'   PopMedNet. Used for logging purposes only.
 #' @param tol the tolerance used to determine convergence in \code{"logistic"}
 #'   and \code{"cox"} regression.
-#' @param maxIterations the maximum number of iterations to perform
+#' @param max_iterations the maximum number of iterations to perform
 #'   \code{"logistic"} or \code{"cox"} regression before non-convergence is
 #'   declared.
 #' @param sleep_time the number of seconds to wait after writing the last file to
@@ -727,7 +727,7 @@ AnalysisCenter.KParty = function(regression            = "linear",
                                  monitor_folder         = NULL,
                                  msreqid               = "v_default_00_000",
                                  tol                   = 1e-8,
-                                 maxIterations         = 25,
+                                 max_iterations         = 25,
                                  sleep_time             = 10,
                                  maxWaitingTime        = 86400,
                                  popmednet             = TRUE,
@@ -742,7 +742,7 @@ AnalysisCenter.KParty = function(regression            = "linear",
     warning("numDataPartners must be specified.")
   } else if (regression == "cox") {
     stats = AnalysisCenterKCox(numDataPartners, monitor_folder, msreqid, tol,
-                               maxIterations, sleep_time, maxWaitingTime,
+                               max_iterations, sleep_time, maxWaitingTime,
                                popmednet, trace, verbose)
   } else if (regression == "linear") {
     stats = AnalysisCenterKLinear(numDataPartners, monitor_folder, msreqid,
@@ -750,7 +750,7 @@ AnalysisCenter.KParty = function(regression            = "linear",
                                   verbose)
   } else if (regression == "logistic") {
     stats = AnalysisCenterKLogistic(numDataPartners, monitor_folder, msreqid, tol,
-                                    maxIterations, sleep_time, maxWaitingTime,
+                                    max_iterations, sleep_time, maxWaitingTime,
                                     popmednet, trace, verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
@@ -977,7 +977,7 @@ PrepareParams.3p = function(analysis, party, msreqid = "v_default_00_000",
 
 PrepareParams.kp = function(analysis, data_partner_id, numDataPartners,
                             msreqid = "v_default_00_000", cutoff = NULL,
-                            maxIterations = NULL, ac = FALSE, popmednet = TRUE,
+                            max_iterations = NULL, ac = FALSE, popmednet = TRUE,
                             trace = FALSE, verbose = TRUE) {
   params                     = list()
   params$data_partner_id       = data_partner_id
@@ -991,7 +991,7 @@ PrepareParams.kp = function(analysis, data_partner_id, numDataPartners,
   params$errorMessage        = ""
   params$pmnStepCounter      = 0
   params$algIterationCounter = 0
-  params$maxIterations       = maxIterations
+  params$max_iterations       = max_iterations
   params$completed           = FALSE
   params$converged           = FALSE
   params$maxIterExceeded     = FALSE
@@ -1394,7 +1394,7 @@ SendPauseQuit.2p = function(params,
   params <- StoreLogEntry.2p(params, files)
   params <- StoreTrackingTableEntry.2p(params)
   WriteLogCSV(params)
-  WriteLogRaw(params)
+  write_log_raw(params)
   params$lastIteration = TRUE
   files = c(files, "stamps.rdata", "log.rdata", "file_list.csv")
   transfer = c(rep(1, length(files) - 1), 10)
@@ -1442,7 +1442,7 @@ SendPauseContinue.2p = function(params,
   params <- StoreLogEntry.2p(params, files)
   params <- StoreTrackingTableEntry.2p(params)
   WriteLogCSV(params)
-  WriteLogRaw(params)
+  write_log_raw(params)
   files = c(files, "stamps.rdata", "log.rdata", "file_list.csv")
   transfer = c(rep(1, length(files) - 1), 10)
   if (params$party_name == "A") {
@@ -1574,7 +1574,7 @@ SendPauseQuit.3p = function(params,
   params <- StoreLogEntry.3p(params, c(filesA, filesB, filesT))
   params <- StoreTrackingTableEntry.3p(params)
   WriteLogCSV(params)
-  WriteLogRaw(params)
+  write_log_raw(params)
 
   if (params$party_name == "T") {
     WriteTrackingTableCSV(params)
@@ -1621,7 +1621,7 @@ SendPauseContinue.3p = function(params,
   params <- StoreLogEntry.3p(params, c(filesA, filesB, filesT))
   params <- StoreTrackingTableEntry.3p(params)
   WriteLogCSV(params)
-  WriteLogRaw(params)
+  write_log_raw(params)
 
   files = c(filesA, filesB, filesT, "file_list.csv")
   transfer = c(rep(1, length(files) - 1), 10)
@@ -1772,7 +1772,7 @@ SendPauseQuit.kp = function(params,
   params <- StoreLogEntry.kp(params, c(filesAC, filesDP))
   params <- StoreTrackingTableEntry.kp(params)
   WriteLogCSV(params)
-  WriteLogRaw(params)
+  write_log_raw(params)
 
   if (params$data_partner_id != 0) {
     WriteTrackingTableRaw(params)
@@ -1840,7 +1840,7 @@ SendPauseContinue.kp = function(params,
     params <- StoreLogEntry.kp(params, c(filesAC, filesDP))
     params <- StoreTrackingTableEntry.kp(params)
     WriteLogCSV(params)
-    WriteLogRaw(params)
+    write_log_raw(params)
     if (length(filesAC) + length(filesDP) > 0) {
       WriteTrackingTableRaw(params)
     }
@@ -1869,7 +1869,7 @@ SendPauseContinue.kp = function(params,
     params <- StoreLogEntry.kp(params, files)
     params <- StoreTrackingTableEntry.kp(params)
     WriteLogCSV(params)
-    WriteLogRaw(params)
+    write_log_raw(params)
     if (length(files) > 0) {
       WriteTrackingTableRaw(params)
     }
@@ -2112,7 +2112,7 @@ HMS = function(t) {
 
 ############################### BLOCK FUNCTIONS ################################
 
-GetBlockSize = function(pA, pB) {
+get_block_size = function(pA, pB) {
   # This minimium is set up based on our current encryption scheme
   # We need to guarentee that pA + pB + g <= blocksize
   # where g = (pA + 1) / (pA + pB + 1) * blocksize
@@ -2129,15 +2129,15 @@ CreateBlocks = function(pA, pB, n, blocksize) {
 
   blocks = list()
 
-  numBlocks       = max(trunc(n / blocksize), 1)
-  newBlocksize    = trunc(n / numBlocks)
+  num_blocks       = max(trunc(n / blocksize), 1)
+  newBlocksize    = trunc(n / num_blocks)
   numBigBlocks    = n %% newBlocksize
-  numLittleBlocks = numBlocks - numBigBlocks
+  numLittleBlocks = num_blocks - numBigBlocks
   bigBlocksize    = newBlocksize + 1
   gLittleBlock    = trunc(newBlocksize * (pA + 1) / (pA + pB + 1))
   gBigBlock       = trunc(bigBlocksize * (pA + 1) / (pA + pB + 1))
 
-  blocks$numBlocks       = numBlocks
+  blocks$num_blocks       = num_blocks
   blocks$littleBlocksize = newBlocksize
   blocks$bigBlocksize    = bigBlocksize
   blocks$numLittleBlocks = numLittleBlocks
@@ -2154,10 +2154,10 @@ CreateBlocks = function(pA, pB, n, blocksize) {
                        newBlocksize * 1:numLittleBlocks)
   }
 
-  if (numBlocks == 1) {
+  if (num_blocks == 1) {
     blocks$starts = c(1)
   } else {
-    blocks$starts = c(1, 1 + blocks$stops)[1:numBlocks]
+    blocks$starts = c(1, 1 + blocks$stops)[1:num_blocks]
   }
 
   blocks$g = c(rep(gBigBlock, numBigBlocks), rep(gLittleBlock, numLittleBlocks))
@@ -2171,7 +2171,7 @@ CreateContainers = function(pA, pB, blocks) {
 
   maximumFilesize = 25 * 1024^2
 
-  numBlocks = blocks$numBlocks
+  num_blocks = blocks$num_blocks
   littleBlocksize = blocks$littleBlocksize
 
   littleBlockG = blocks$gLittleBlock
@@ -2182,79 +2182,79 @@ CreateContainers = function(pA, pB, blocks) {
   littleFilesize.PR  = 8 * (pA + 1) * pB        # I think this is not used anymore
   littleFilesize.XR = 8 * pA * pB
 
-  numContainers.Z = ceiling(numBlocks * littleFilesize.Z / maximumFilesize)
-  numBlocksSmallContainer.Z = trunc(numBlocks / numContainers.Z)
-  numBlocksLargeContainer.Z = numBlocksSmallContainer.Z + 1
-  numLargeContainer.Z = numBlocks %% numContainers.Z
+  numContainers.Z = ceiling(num_blocks * littleFilesize.Z / maximumFilesize)
+  num_blocksSmallContainer.Z = trunc(num_blocks / numContainers.Z)
+  num_blocksLargeContainer.Z = num_blocksSmallContainer.Z + 1
+  numLargeContainer.Z = num_blocks %% numContainers.Z
   numSmallContainer.Z = numContainers.Z - numLargeContainer.Z
 
-  numContainers.W = ceiling(numBlocks * littleFilesize.W / maximumFilesize)
-  numBlocksSmallContainer.W = trunc(numBlocks / numContainers.W)
-  numBlocksLargeContainer.W = numBlocksSmallContainer.W + 1
-  numLargeContainer.W = numBlocks %% numContainers.W
+  numContainers.W = ceiling(num_blocks * littleFilesize.W / maximumFilesize)
+  num_blocksSmallContainer.W = trunc(num_blocks / numContainers.W)
+  num_blocksLargeContainer.W = num_blocksSmallContainer.W + 1
+  numLargeContainer.W = num_blocks %% numContainers.W
   numSmallContainer.W = numContainers.W - numLargeContainer.W
 
-  numContainers.RZ = ceiling(numBlocks * littleFilesize.RZ / maximumFilesize)
-  numBlocksSmallContainer.RZ = trunc(numBlocks / numContainers.RZ)
-  numBlocksLargeContainer.RZ = numBlocksSmallContainer.RZ + 1
-  numLargeContainer.RZ = numBlocks %% numContainers.RZ
+  numContainers.RZ = ceiling(num_blocks * littleFilesize.RZ / maximumFilesize)
+  num_blocksSmallContainer.RZ = trunc(num_blocks / numContainers.RZ)
+  num_blocksLargeContainer.RZ = num_blocksSmallContainer.RZ + 1
+  numLargeContainer.RZ = num_blocks %% numContainers.RZ
   numSmallContainer.RZ = numContainers.RZ - numLargeContainer.RZ
 
-  numContainers.PR = ceiling(numBlocks * littleFilesize.PR / maximumFilesize)
-  numBlocksSmallContainer.PR = trunc(numBlocks / numContainers.PR)
-  numBlocksLargeContainer.PR = numBlocksSmallContainer.PR + 1
-  numLargeContainer.PR = numBlocks %% numContainers.PR
+  numContainers.PR = ceiling(num_blocks * littleFilesize.PR / maximumFilesize)
+  num_blocksSmallContainer.PR = trunc(num_blocks / numContainers.PR)
+  num_blocksLargeContainer.PR = num_blocksSmallContainer.PR + 1
+  numLargeContainer.PR = num_blocks %% numContainers.PR
   numSmallContainer.PR = numContainers.PR - numLargeContainer.PR
 
-  numContainers.XR = ceiling(numBlocks * littleFilesize.XR / maximumFilesize)
-  numBlocksSmallContainer.XR = trunc(numBlocks / numContainers.XR)
-  numBlocksLargeContainer.XR = numBlocksSmallContainer.XR + 1
-  numLargeContainer.XR = numBlocks %% numContainers.XR
+  numContainers.XR = ceiling(num_blocks * littleFilesize.XR / maximumFilesize)
+  num_blocksSmallContainer.XR = trunc(num_blocks / numContainers.XR)
+  num_blocksLargeContainer.XR = num_blocksSmallContainer.XR + 1
+  numLargeContainer.XR = num_blocks %% numContainers.XR
   numSmallContainer.XR = numContainers.XR - numLargeContainer.XR
 
   if (numLargeContainer.Z > 0) {
-    filebreak.Z = c(0:(numLargeContainer.Z - 1) * numBlocksLargeContainer.Z + 1,
-                    0:(numSmallContainer.Z - 1) * numBlocksSmallContainer.Z + 1 +
-                      numLargeContainer.Z * numBlocksLargeContainer.Z)
+    filebreak.Z = c(0:(numLargeContainer.Z - 1) * num_blocksLargeContainer.Z + 1,
+                    0:(numSmallContainer.Z - 1) * num_blocksSmallContainer.Z + 1 +
+                      numLargeContainer.Z * num_blocksLargeContainer.Z)
   } else {
-    filebreak.Z = c(0:(numSmallContainer.Z - 1) * numBlocksSmallContainer.Z + 1 +
-                      numLargeContainer.Z * numBlocksLargeContainer.Z)
+    filebreak.Z = c(0:(numSmallContainer.Z - 1) * num_blocksSmallContainer.Z + 1 +
+                      numLargeContainer.Z * num_blocksLargeContainer.Z)
   }
 
   if (numLargeContainer.W > 0) {
-    filebreak.W = c(0:(numLargeContainer.W - 1) * numBlocksLargeContainer.W + 1,
-                    0:(numSmallContainer.W - 1) * numBlocksSmallContainer.W + 1 +
-                      numLargeContainer.W * numBlocksLargeContainer.W)
+    filebreak.W = c(0:(numLargeContainer.W - 1) * num_blocksLargeContainer.W + 1,
+                    0:(numSmallContainer.W - 1) * num_blocksSmallContainer.W + 1 +
+                      numLargeContainer.W * num_blocksLargeContainer.W)
   } else {
-    filebreak.W = c(0:(numSmallContainer.W - 1) * numBlocksSmallContainer.W + 1 +
-                      numLargeContainer.W * numBlocksLargeContainer.W)
+    filebreak.W = c(0:(numSmallContainer.W - 1) * num_blocksSmallContainer.W + 1 +
+                      numLargeContainer.W * num_blocksLargeContainer.W)
   }
 
   if (numLargeContainer.RZ > 0) {
-    filebreak.RZ = c(0:(numLargeContainer.RZ - 1) * numBlocksLargeContainer.RZ + 1,
-                     0:(numSmallContainer.RZ - 1) * numBlocksSmallContainer.RZ + 1 +
-                       numLargeContainer.RZ * numBlocksLargeContainer.RZ)
+    filebreak.RZ = c(0:(numLargeContainer.RZ - 1) * num_blocksLargeContainer.RZ + 1,
+                     0:(numSmallContainer.RZ - 1) * num_blocksSmallContainer.RZ + 1 +
+                       numLargeContainer.RZ * num_blocksLargeContainer.RZ)
   } else {
-    filebreak.RZ = c(0:(numSmallContainer.RZ - 1) * numBlocksSmallContainer.RZ + 1 +
-                       numLargeContainer.RZ * numBlocksLargeContainer.RZ)
+    filebreak.RZ = c(0:(numSmallContainer.RZ - 1) * num_blocksSmallContainer.RZ + 1 +
+                       numLargeContainer.RZ * num_blocksLargeContainer.RZ)
   }
 
   if (numLargeContainer.PR > 0) {
-    filebreak.PR = c(0:(numLargeContainer.PR - 1) * numBlocksLargeContainer.PR + 1,
-                     0:(numSmallContainer.PR - 1) * numBlocksSmallContainer.PR + 1 +
-                       numLargeContainer.PR * numBlocksLargeContainer.PR)
+    filebreak.PR = c(0:(numLargeContainer.PR - 1) * num_blocksLargeContainer.PR + 1,
+                     0:(numSmallContainer.PR - 1) * num_blocksSmallContainer.PR + 1 +
+                       numLargeContainer.PR * num_blocksLargeContainer.PR)
   } else {
-    filebreak.PR = c(0:(numSmallContainer.PR - 1) * numBlocksSmallContainer.PR + 1 +
-                       numLargeContainer.PR * numBlocksLargeContainer.PR)
+    filebreak.PR = c(0:(numSmallContainer.PR - 1) * num_blocksSmallContainer.PR + 1 +
+                       numLargeContainer.PR * num_blocksLargeContainer.PR)
   }
 
   if (numLargeContainer.XR > 0) {
-    filebreak.XR = c(0:(numLargeContainer.XR - 1) * numBlocksLargeContainer.XR + 1,
-                     0:(numSmallContainer.XR - 1) * numBlocksSmallContainer.XR + 1 +
-                       numLargeContainer.XR * numBlocksLargeContainer.XR)
+    filebreak.XR = c(0:(numLargeContainer.XR - 1) * num_blocksLargeContainer.XR + 1,
+                     0:(numSmallContainer.XR - 1) * num_blocksSmallContainer.XR + 1 +
+                       numLargeContainer.XR * num_blocksLargeContainer.XR)
   } else {
-    filebreak.XR = c(0:(numSmallContainer.XR - 1) * numBlocksSmallContainer.XR + 1 +
-                       numLargeContainer.XR * numBlocksLargeContainer.XR)
+    filebreak.XR = c(0:(numSmallContainer.XR - 1) * num_blocksSmallContainer.XR + 1 +
+                       numLargeContainer.XR * num_blocksLargeContainer.XR)
   }
 
   containers$filebreak.Z   = filebreak.Z
@@ -2537,26 +2537,26 @@ MergeStampsRaw.kp = function(params, from) {
 
 ############################# SHARED LOG FUNCTIONS #############################
 
-AddToLog = function(params, functionName, readTime, readSize, writeTime, writeSize) {
-  readTime  = round(as.numeric(readTime),  digits = 2)
-  writeTime = round(as.numeric(writeTime), digits = 2)
-  readSize  = round(as.numeric(readSize),  digits = 0)
-  writeSize = round(as.numeric(writeSize), digits = 0)
+add_to_log <- function(params, functionName, readTime, readSize, writeTime, writeSize) {
+  readTime  <- round(as.numeric(readTime),  digits = 2)
+  writeTime <- round(as.numeric(writeTime), digits = 2)
+  readSize  <- round(as.numeric(readSize),  digits = 0)
+  writeSize <- round(as.numeric(writeSize), digits = 0)
   if (params$log$current$Functions == "") {
-    params$log$current$Functions = functionName
+    params$log$current$Functions <- functionName
   } else {
-    params$log$current$Functions = paste0(params$log$current$Functions,
+    params$log$current$Functions <- paste0(params$log$current$Functions,
                                           ", ", functionName)
   }
-  params$log$current$Read.Time = params$log$current$Read.Time + readTime
-  params$log$current$Read.Size = params$log$current$Read.Size + readSize
-  params$log$current$Write.Time = params$log$current$Write.Time + writeTime
-  params$log$current$Write.Size = params$log$current$Write.Size + writeSize
+  params$log$current$Read.Time  <- params$log$current$Read.Time + readTime
+  params$log$current$Read.Size  <- params$log$current$Read.Size + readSize
+  params$log$current$Write.Time <- params$log$current$Write.Time + writeTime
+  params$log$current$Write.Size <- params$log$current$Write.Size + writeSize
   return(params)
 }
 
 
-WriteLogRaw = function(params) {
+write_log_raw <- function(params) {
   log = params$log$history
   save(log, file = file.path(params$write_path, "log.rdata"))
 }

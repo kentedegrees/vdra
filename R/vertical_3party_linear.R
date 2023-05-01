@@ -256,10 +256,10 @@ PrepareParamsLinear.a3 = function(params, data) {
   pa$colnames = colnames(data$X)
   pa$tags     = data$tags
 
-  write_time = proc.time()[3]
+  write_time <-proc.time()[3]
   save(pa, file = file.path(params$write_path, "pa.rdata"))
   write_size = file.size(file.path(params$write_path, "pa.rdata"))
-  write_time = proc.time()[3] - write_time
+  write_time <-proc.time()[3] - write_time
   params <- add_to_log(params, "PrepareParamsLinear.a3", 0, 0, write_time, write_size)
   return(params)
 }
@@ -281,25 +281,25 @@ PrepareParamsLinear.b3 = function(params, data) {
   pb$colnames  = colnames(data$X)
   pb$tags      = data$tags
 
-  write_time = proc.time()[3]
+  write_time <-proc.time()[3]
   save(pb, file = file.path(params$write_path, "pb.rdata"))
   write_size = file.size(file.path(params$write_path, "pb.rdata"))
-  write_time = proc.time()[3] - write_time
+  write_time <-proc.time()[3] - write_time
   params <- add_to_log(params, "PrepareParamsLinear.b3", 0, 0, write_time, write_size)
   return(params)
 }
 
 
-PrepareParamsLinear.t3 = function(params, cutoff = 1e-8, maxIterations = 25) {
+PrepareParamsLinear.t3 = function(params, cutoff = 1e-8, max_iterations = 25) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareParamsLinear.t3\n\n")
   pa = NULL
   pb = NULL
-  read_time = proc.time()[3]
+  read_time <- proc.time()[3]
   load(file.path(params$read_path[["A"]], "pa.rdata"))
   load(file.path(params$read_path[["B"]], "pb.rdata"))
   read_size = file.size(file.path(params$read_path[["A"]], "pa.rdata")) +
     file.size(file.path(params$read_path[["B"]], "pb.rdata"))
-  read_time = proc.time()[3] - read_time
+  read_time <- proc.time()[3] - read_time
   if (length(table(c(pa$analysis, pb$analysis, params$analysis))) > 1) {
     params$failed <- TRUE
     params$error_message <- paste("Party A specified", pa$analysis, "regression, ",
@@ -333,7 +333,7 @@ PrepareParamsLinear.t3 = function(params, cutoff = 1e-8, maxIterations = 25) {
   params$Btags         = pb$tags
   params$yname         = pa$yname
   params$cutoff        = cutoff
-  params$maxIterations = maxIterations
+  params$max_iterations = max_iterations
 
   params <- add_to_log(params, "PrepareParamsLinear.t3", read_time, read_size, 0, 0)
   return(params)
@@ -348,27 +348,27 @@ PrepareBlocksLinear.t3 = function(params, blocksize) {
   p2 = params$p2
 
 
-  minimumBlocksize = GetBlockSize(p1, p2)
-  if (n < minimumBlocksize) {
-    maxACovariates = trunc(sqrt(p2 * n) - p2 - 1)
+  minimum_block_size = get_block_size(p1, p2)
+  if (n < minimum_block_size) {
+    max_a_covariates = trunc(sqrt(p2 * n) - p2 - 1)
 
     params$error_message <-
-      paste("The minimum secure blocksize of", minimumBlocksize,
+      paste("The minimum secure blocksize of", minimum_block_size,
             "is larger than the number of observations", paste0(n, ".\n"),
             "Your options are:\n",
             "Increase the number of observations to at least",
-            paste0(minimumBlocksize, ".\n"),
-            "Decrease the number of A covariates to", maxACovariates, "or less.")
+            paste0(minimum_block_size, ".\n"),
+            "Decrease the number of A covariates to", max_a_covariates, "or less.")
 
     b = n - 2 * p1 - 2
     discrim = b^2 - 4 * (p1 + 1)^2
     if (discrim >= 0) {
-      minBCovariates = trunc(1 + (b - sqrt(discrim)) / 2)
-      maxBCovariates = trunc((b + sqrt(discrim)) / 2)
+      min_b_covariates = trunc(1 + (b - sqrt(discrim)) / 2)
+      max_b_covariates = trunc((b + sqrt(discrim)) / 2)
       params$error_message <-
         paste0(params$error_message,
-               "\nSet the number of B covariates to be between ", minBCovariates, "and",
-               paste0(maxBCovariates, "."))
+               "\nSet the number of B covariates to be between ", min_b_covariates, "and",
+               paste0(max_b_covariates, "."))
     }
     warning(params$error_message)
     params$failed <- TRUE
@@ -377,13 +377,13 @@ PrepareBlocksLinear.t3 = function(params, blocksize) {
   }
 
   if (is.null(blocksize)) {
-    blocksize = minimumBlocksize
+    blocksize = minimum_block_size
   }
-  if (blocksize < minimumBlocksize) {
+  if (blocksize < minimum_block_size) {
     message(paste("Block size of", blocksize,
                   "is too small. Proceeding with minimum blocksize of",
-                  paste0(minimumBlocksize, ".")))
-    blocksize = minimumBlocksize
+                  paste0(minimum_block_size, ".")))
+    blocksize = minimum_block_size
   } else if (n < blocksize) {
     message(paste("Block size of", blocksize,
                   "is larger than size of data.  Proceeding with blocksize of",
@@ -394,10 +394,10 @@ PrepareBlocksLinear.t3 = function(params, blocksize) {
   params$container = CreateContainers(p1, p2, params$blocks)
   blocks     = params$blocks
   containers = params$container
-  write_time = proc.time()[3]
+  write_time <-proc.time()[3]
   save(blocks, containers, file = file.path(params$write_path, "blocks.rdata"))
   write_size = file.size(file.path(params$write_path, "blocks.rdata"))
-  write_time = proc.time()[3] - write_time
+  write_time <-proc.time()[3] - write_time
   params <- add_to_log(params, "PrepareBlocksLinear.t3", 0, 0, write_time, write_size)
   return(params)
 }
@@ -407,10 +407,10 @@ PrepareBlocksLinear.a3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareBlocksLinear.a3\n\n")
   blocks     = NULL
   containers = NULL
-  read_time = proc.time()[3]
+  read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "blocks.rdata"))
   read_size = file.size(file.path(params$read_path[["T"]], "blocks.rdata"))
-  read_time = proc.time()[3] - read_time
+  read_time <- proc.time()[3] - read_time
 
   params$blocks = blocks
   params$containers = containers
@@ -421,17 +421,17 @@ PrepareBlocksLinear.a3 = function(params) {
 
 GetZLinear.a3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetZLinear.a3\n\n")
-  write_time = 0
+  write_time <-0
   write_size = 0
 
-  numBlocks = params$blocks$numBlocks
-  pbar = MakeProgressBar1(numBlocks, "Z", params$verbose)
-  containerCt.Z = 0
-  for (i in 1:numBlocks) {
+  num_blocks = params$blocks$num_blocks
+  pbar = MakeProgressBar1(num_blocks, "Z", params$verbose)
+  container_ct_z = 0
+  for (i in 1:num_blocks) {
     if (i %in% params$container$filebreak.Z) {
-      containerCt.Z = containerCt.Z + 1
-      filename = paste0("cz_", containerCt.Z, ".rdata")
-      toWrite = file(file.path(params$write_path, filename), "wb")
+      container_ct_z = container_ct_z + 1
+      filename = paste0("cz_", container_ct_z, ".rdata")
+      to_write <- file(file.path(params$write_path, filename), "wb")
     }
     strt = params$blocks$starts[i]
     stp = params$blocks$stops[i]
@@ -439,11 +439,11 @@ GetZLinear.a3 = function(params, data) {
     g = params$blocks$g[i]
     Z = FindOrthogonalVectors(cbind(data$Y[strt:stp, ], data$X[strt:stp, ]), g)
 
-    write_time = write_time - proc.time()[3]
-    writeBin(as.vector(Z), con = toWrite, endian = "little")
-    write_time = write_time + proc.time()[3]
-    if ((i + 1) %in% params$container$filebreak.Z || i == numBlocks) {
-      close(toWrite)
+    write_time <-write_time - proc.time()[3]
+    writeBin(as.vector(Z), con = to_write, endian = "little")
+    write_time <-write_time + proc.time()[3]
+    if ((i + 1) %in% params$container$filebreak.Z || i == num_blocks) {
+      close(to_write)
       write_size = write_size + file.size(file.path(params$write_path, filename))
     }
     pbar = MakeProgressBar2(i, pbar, params$verbose)
@@ -455,24 +455,24 @@ GetZLinear.a3 = function(params, data) {
 
 ProcessZLinear.t3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ProcessZLinear.t3\n\n")
-  read_time = 0
+  read_time <- 0
   read_size = 0
-  write_time = 0
+  write_time <-0
   write_size = 0
-  numBlocks = params$blocks$numBlocks
-  pbar = MakeProgressBar1(numBlocks, "R(I-Z*Z')", params$verbose)
-  containerCt.Z = 0
-  containerCt.RZ = 0
-  for (i in 1:numBlocks) {
+  num_blocks = params$blocks$num_blocks
+  pbar = MakeProgressBar1(num_blocks, "R(I-Z*Z')", params$verbose)
+  container_ct_z = 0
+  container_ct_RZ = 0
+  for (i in 1:num_blocks) {
     if (i %in% params$container$filebreak.Z) {
-      containerCt.Z = containerCt.Z + 1
-      filename1 = paste0("cz_", containerCt.Z, ".rdata")
+      container_ct_z = container_ct_z + 1
+      filename1 = paste0("cz_", container_ct_z, ".rdata")
       toRead = file(file.path(params$read_path[["A"]], filename1), "rb")
     }
     if (i %in% params$container$filebreak.RZ) {
-      containerCt.RZ = containerCt.RZ + 1
-      filename2 = paste0("crz_", containerCt.RZ, ".rdata")
-      toWrite = file(file.path(params$write_path, filename2), "wb")
+      container_ct_RZ = container_ct_RZ + 1
+      filename2 = paste0("crz_", container_ct_RZ, ".rdata")
+      to_write <- file(file.path(params$write_path, filename2), "wb")
     }
     filename3 = paste0("r1_", i, ".rdata")
 
@@ -481,27 +481,27 @@ ProcessZLinear.t3 = function(params) {
     n = stp - strt + 1
     g = params$blocks$g[i]
 
-    read_time = read_time - proc.time()[3]
+    read_time <- read_time - proc.time()[3]
     Z = matrix(readBin(con = toRead, what = numeric(), n = n * g,
                        endian = "little"), nrow = n, ncol = g)
-    read_time = read_time + proc.time()[3]
+    read_time <- read_time + proc.time()[3]
     R = RandomOrthonomalMatrix(n)
     RZ = R - (R %*% Z) %*% t(Z)
 
-    write_time = write_time - proc.time()[3]
-    writeBin(as.vector(RZ), con = toWrite, endian = "little")
-    toWrite2 = file(file.path(params$dp_local_path, filename3), "wb")
-    writeBin(as.vector(R), con = toWrite2, endian = "little")
-    close(toWrite2)
+    write_time <-write_time - proc.time()[3]
+    writeBin(as.vector(RZ), con = to_write, endian = "little")
+    to_write2 = file(file.path(params$dp_local_path, filename3), "wb")
+    writeBin(as.vector(R), con = to_write2, endian = "little")
+    close(to_write2)
     write_size = write_size + file.size(file.path(params$dp_local_path, filename3))
-    write_time = write_time + proc.time()[3]
+    write_time <-write_time + proc.time()[3]
 
-    if ((i + 1) %in% params$container$filebreak.Z || i == numBlocks) {
+    if ((i + 1) %in% params$container$filebreak.Z || i == num_blocks) {
       close(toRead)
       read_size = read_size + file.size(file.path(params$read_path[["A"]], filename1))
     }
-    if ((i + 1) %in% params$container$filebreak.RZ || i == numBlocks) {
-      close(toWrite)
+    if ((i + 1) %in% params$container$filebreak.RZ || i == num_blocks) {
+      close(to_write)
       write_size = write_size + file.size(file.path(params$write_path, filename2))
     }
 
@@ -517,10 +517,10 @@ PrepareBlocksLinear.b3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareBlocksLinear.b3\n\n")
   blocks     = NULL
   containers = NULL
-  read_time = proc.time()[3]
+  read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "blocks.rdata"))
   read_size = file.size(file.path(params$read_path[["T"]], "blocks.rdata"))
-  read_time = proc.time()[3] - read_time
+  read_time <- proc.time()[3] - read_time
 
   params$blocks = blocks
   params$containers = containers
@@ -532,30 +532,30 @@ PrepareBlocksLinear.b3 = function(params) {
 GetRWLinear.b3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetRWLinear.b3\n\n")
 
-  read_time = 0
+  read_time <- 0
   read_size = 0
 
-  numBlocks = params$blocks$numBlocks
+  num_blocks = params$blocks$num_blocks
 
   XBTXB = t(data$X) %*% data$X
-  write_time = proc.time()[3]
+  write_time <-proc.time()[3]
   save(XBTXB, file = file.path(params$write_path, "xbtxb.rdata"))
   write_size = file.size(file.path(params$write_path, "xbtxb.rdata"))
-  write_time = proc.time()[3] - write_time
+  write_time <-proc.time()[3] - write_time
 
-  pbar = MakeProgressBar1(numBlocks, "R(I-Z*Z')XB", params$verbose)
-  containerCt.RZ = 0
-  containerCt.RW = 0
-  for (i in 1:numBlocks) {
+  pbar = MakeProgressBar1(num_blocks, "R(I-Z*Z')XB", params$verbose)
+  container_ct_RZ = 0
+  container_ct_RW = 0
+  for (i in 1:num_blocks) {
     if (i %in% params$container$filebreak.RZ) {
-      containerCt.RZ = containerCt.RZ + 1
-      filename1 = paste0("crz_", containerCt.RZ, ".rdata")
+      container_ct_RZ = container_ct_RZ + 1
+      filename1 = paste0("crz_", container_ct_RZ, ".rdata")
       toRead = file(file.path(params$read_path[["T"]], filename1), "rb")
     }
     if (i %in% params$container$filebreak.RW) {
-      containerCt.RW = containerCt.RW + 1
-      filename2 = paste0("crw_", containerCt.RW, ".rdata")
-      toWrite = file(file.path(params$write_path, filename2), "wb")
+      container_ct_RW = container_ct_RW + 1
+      filename2 = paste0("crw_", container_ct_RW, ".rdata")
+      to_write <- file(file.path(params$write_path, filename2), "wb")
     }
     strt = params$blocks$starts[i]
     stp  = params$blocks$stops[i]
@@ -563,22 +563,22 @@ GetRWLinear.b3 = function(params, data) {
     g = params$blocks$g[i]
 
     XB = data$X[strt:stp, , drop = FALSE]
-    read_time = read_time - proc.time()[3]
+    read_time <- read_time - proc.time()[3]
     RZ = matrix(readBin(con = toRead, what = numeric(), n = n * n,
                         endian = "little"), nrow = n, ncol = n)
-    read_time = read_time + proc.time()[3]
+    read_time <- read_time + proc.time()[3]
 
     RW = RZ %*% XB
 
-    write_time = write_time - proc.time()[3]
-    writeBin(as.vector(RW), con = toWrite, endian = "little")
-    write_time = write_time + proc.time()[3]
-    if ((i + 1) %in% params$container$filebreak.RZ || i == numBlocks) {
+    write_time <-write_time - proc.time()[3]
+    writeBin(as.vector(RW), con = to_write, endian = "little")
+    write_time <-write_time + proc.time()[3]
+    if ((i + 1) %in% params$container$filebreak.RZ || i == num_blocks) {
       close(toRead)
       read_size = read_size + file.size(file.path(params$read_path[["T"]], filename1))
     }
-    if ((i + 1) %in% params$container$filebreak.RW || i == numBlocks) {
-      close(toWrite)
+    if ((i + 1) %in% params$container$filebreak.RW || i == num_blocks) {
+      close(to_write)
       write_size = write_size + file.size(file.path(params$write_path, filename2))
     }
 
@@ -592,33 +592,33 @@ GetRWLinear.b3 = function(params, data) {
 
 ProcessWLinear.t3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ProcessWLinear.t3\n\n")
-  read_time = 0
+  read_time <- 0
   read_size = 0
-  write_time = 0
+  write_time <-0
   write_size = 0
 
   p2 = params$p2
 
-  write_time = proc.time()[3]
+  write_time <-proc.time()[3]
   save(p2, file = file.path(params$write_path, "p2.rdata"))
   write_size = file.size(file.path(params$write_path, "p2.rdata"))
-  write_time = proc.time()[3] - write_time
+  write_time <-proc.time()[3] - write_time
 
-  numBlocks = params$blocks$numBlocks
-  pbar = MakeProgressBar1(numBlocks, "(I-Z*Z')XB*R", params$verbose)
+  num_blocks = params$blocks$num_blocks
+  pbar = MakeProgressBar1(num_blocks, "(I-Z*Z')XB*R", params$verbose)
 
-  containerCt.RW = 0
-  containerCt.WR = 0
-  for (i in 1:numBlocks) {
+  container_ct_RW = 0
+  container_ct_wr = 0
+  for (i in 1:num_blocks) {
     if (i %in% params$container$filebreak.RW) {
-      containerCt.RW = containerCt.RW + 1
-      filename2 = paste0("crw_", containerCt.RW, ".rdata")
+      container_ct_RW = container_ct_RW + 1
+      filename2 = paste0("crw_", container_ct_RW, ".rdata")
       toRead2 = file(file.path(params$read_path[["B"]], filename2), "rb")
     }
     if (i %in% params$container$filebreak.WR) {
-      containerCt.WR = containerCt.WR + 1
-      filename3 = paste0("cwr_", containerCt.WR, ".rdata")
-      toWrite3 = file(file.path(params$write_path, filename3), "wb")
+      container_ct_wr = container_ct_wr + 1
+      filename3 = paste0("cwr_", container_ct_wr, ".rdata")
+      to_write3 = file(file.path(params$write_path, filename3), "wb")
     }
 
     strt = params$blocks$starts[i]
@@ -628,7 +628,7 @@ ProcessWLinear.t3 = function(params) {
     filename1 = paste0("r1_", i, ".rdata")
     filename4 = paste0("r2_", i, ".rdata")
 
-    read_time = read_time - proc.time()[3]
+    read_time <- read_time - proc.time()[3]
     toRead1 = file(file.path(params$dp_local_path, filename1), "rb")
     R1 = matrix(readBin(con = toRead1, what = numeric(), n = n * n,
                         endian = "little"), nrow = n, ncol = n)
@@ -636,25 +636,25 @@ ProcessWLinear.t3 = function(params) {
     close(toRead1)
     RW = matrix(readBin(con = toRead2, what = numeric(), n = n * p2,
                         endian = "little"), nrow = n, ncol = p2)
-    read_time = read_time + proc.time()[3]
+    read_time <- read_time + proc.time()[3]
 
     W = t(R1) %*% RW
     R2 = RandomOrthonomalMatrix(p2)
     WR2 = W %*% R2
 
-    write_time = write_time - proc.time()[3]
-    toWrite4 = file(file.path(params$dp_local_path, filename4), "wb")
-    writeBin(as.vector(R2), con = toWrite4, endian = "little")
-    close(toWrite4)
+    write_time <-write_time - proc.time()[3]
+    to_write4 = file(file.path(params$dp_local_path, filename4), "wb")
+    writeBin(as.vector(R2), con = to_write4, endian = "little")
+    close(to_write4)
     write_size = write_size + file.size(file.path(params$dp_local_path, filename4))
-    writeBin(as.vector(WR2), con = toWrite3, endian = "little")
-    write_time = write_time + proc.time()[3]
-    if ((i + 1) %in% params$container$filebreak.RW || i == numBlocks) {
+    writeBin(as.vector(WR2), con = to_write3, endian = "little")
+    write_time <-write_time + proc.time()[3]
+    if ((i + 1) %in% params$container$filebreak.RW || i == num_blocks) {
       close(toRead2)
       read_size = read_size + file.size(file.path(params$read_path[["B"]], filename2))
     }
-    if ((i + 1) %in% params$container$filebreak.WR || i == numBlocks) {
-      close(toWrite3)
+    if ((i + 1) %in% params$container$filebreak.WR || i == num_blocks) {
+      close(to_write3)
       write_size = write_size + file.size(file.path(params$write_path, filename3))
     }
 
@@ -670,55 +670,55 @@ GetWRLinear.a3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetWRLinear.a3\n\n")
   XATXA = t(data$X) %*% data$X
   XATY  = t(data$X) %*% data$Y
-  write_time = proc.time()[3]
+  write_time <-proc.time()[3]
   save(XATXA, XATY, file = file.path(params$write_path, "xatxa.rdata"))
   write_size = file.size(file.path(params$write_path, "xatxa.rdata"))
-  write_time = proc.time()[3] - write_time
+  write_time <-proc.time()[3] - write_time
 
   p2 = NULL
-  read_time = proc.time()[3]
+  read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "p2.rdata"))
   read_size = file.size(file.path(params$read_path[["T"]], "p2.rdata"))
-  read_time = proc.time()[3] - read_time
+  read_time <- proc.time()[3] - read_time
 
-  numBlocks = params$blocks$numBlocks
-  pbar = MakeProgressBar1(numBlocks, "XA'(I-Z*Z')XB*R", params$verbose)
+  num_blocks = params$blocks$num_blocks
+  pbar = MakeProgressBar1(num_blocks, "XA'(I-Z*Z')XB*R", params$verbose)
 
-  containerCt.WR = 0
-  containerCt.PR = 0
-  for (i in 1:numBlocks) {
+  container_ct_wr = 0
+  container_ct_PR = 0
+  for (i in 1:num_blocks) {
     if (i %in% params$container$filebreak.WR) {
-      containerCt.WR = containerCt.WR + 1
-      filename1 = paste0("cwr_", containerCt.WR, ".rdata")
+      container_ct_wr = container_ct_wr + 1
+      filename1 = paste0("cwr_", container_ct_wr, ".rdata")
       toRead = file(file.path(params$read_path[["T"]], filename1), "rb")
     }
     if (i %in% params$container$filebreak.PR) {
-      containerCt.PR = containerCt.PR + 1
-      filename2 = paste0("cpr_", containerCt.PR, ".rdata")
-      toWrite = file(file.path(params$write_path, filename2), "wb")
+      container_ct_PR = container_ct_PR + 1
+      filename2 = paste0("cpr_", container_ct_PR, ".rdata")
+      to_write <- file(file.path(params$write_path, filename2), "wb")
     }
 
     strt = params$blocks$starts[i]
     stp = params$blocks$stops[i]
     n = stp - strt + 1
 
-    read_time = read_time - proc.time()[3]
+    read_time <- read_time - proc.time()[3]
     WR = matrix(readBin(con = toRead, what = numeric(), n = n * p2,
                         endian = "little"), nrow = n, ncol = p2)
-    read_time = read_time + proc.time()[3]
+    read_time <- read_time + proc.time()[3]
 
     YXA = cbind(data$Y[strt:stp, ], data$X[strt:stp, ])
     PR = t(YXA) %*% WR
-    write_time = write_time - proc.time()[3]
-    writeBin(as.vector(PR), con = toWrite, endian = "little")
-    write_time = write_time + proc.time()[3]
+    write_time <-write_time - proc.time()[3]
+    writeBin(as.vector(PR), con = to_write, endian = "little")
+    write_time <-write_time + proc.time()[3]
 
-    if ((i + 1) %in% params$container$filebreak.WR || i == numBlocks) {
+    if ((i + 1) %in% params$container$filebreak.WR || i == num_blocks) {
       close(toRead)
       read_size = read_size + file.size(file.path(params$read_path[["T"]], filename1))
     }
-    if ((i + 1) %in% params$container$filebreak.PR || i == numBlocks) {
-      close(toWrite)
+    if ((i + 1) %in% params$container$filebreak.PR || i == num_blocks) {
+      close(to_write)
       write_size = write_size + file.size(file.path(params$write_path, filename2))
     }
 
@@ -739,28 +739,28 @@ GetProductsLinear.t3 = function(params) {
   XATY  = 0
   YXATXB = 0
 
-  numBlocks = params$blocks$numBlocks
-  read_time = proc.time()[3]
+  num_blocks = params$blocks$num_blocks
+  read_time <- proc.time()[3]
   load(file.path(params$read_path[["B"]], "xbtxb.rdata"))
   load(file.path(params$read_path[["A"]], "xatxa.rdata"))
   read_size = sum(file.size(file.path(params$read_path[["B"]], "xbtxb.rdata")),
                  file.size(file.path(params$read_path[["A"]], "xatxa.rdata")))
-  read_time = proc.time()[3] - read_time
+  read_time <- proc.time()[3] - read_time
 
-  pbar = MakeProgressBar1(numBlocks, "X'X", params$verbose)
+  pbar = MakeProgressBar1(num_blocks, "X'X", params$verbose)
 
-  containerCt.PR = 0
-  for (i in 1:numBlocks) {
+  container_ct_PR = 0
+  for (i in 1:num_blocks) {
     if (i %in% params$container$filebreak.PR) {
-      containerCt.PR = containerCt.PR + 1
-      filename1 = paste0("cpr_", containerCt.PR, ".rdata")
+      container_ct_PR = container_ct_PR + 1
+      filename1 = paste0("cpr_", container_ct_PR, ".rdata")
       toRead = file(file.path(params$read_path[["A"]], filename1), "rb")
       read_size = read_size + file.size(file.path(params$read_path[["A"]], filename1))
     }
 
     filename1 = paste0("r2_", i, ".rdata")
 
-    read_time = read_time - proc.time()[3]
+    read_time <- read_time - proc.time()[3]
     toRead1 = file(file.path(params$dp_local_path, filename1), "rb")
     R2 = matrix(readBin(con = toRead1, what = numeric(), n = p2 * p2,
                         endian = "little"), p2, p2)
@@ -768,11 +768,11 @@ GetProductsLinear.t3 = function(params) {
     close(toRead1)
     PR = matrix(readBin(con = toRead, what = numeric(), n = (p1 + 1) * p2,
                         endian = "little"), p1 + 1, p2)
-    read_time = read_time + proc.time()[3]
+    read_time <- read_time + proc.time()[3]
 
     YXATXB = YXATXB + PR %*% t(R2)
 
-    if ((i + 1) %in% params$container$filebreak.PR || i == numBlocks) {
+    if ((i + 1) %in% params$container$filebreak.PR || i == num_blocks) {
       close(toRead)
     }
 
@@ -805,8 +805,8 @@ ComputeResultsLinear.t3 = function(params) {
   stats    = params$stats
   stats$converged = params$converged
   stats$failed    = FALSE
-  Anames   = params$colnamesA
-  Bnames   = params$colnamesB
+  a_names   = params$colnamesA
+  b_names   = params$colnamesB
   n        = params$n
   yty      = params$yty
   xty      = params$xty
@@ -840,10 +840,10 @@ ComputeResultsLinear.t3 = function(params) {
   }
 
 
-  Aindex        = which(indicies <= length(Anames))
-  AIndiciesKeep = indicies[Aindex]
-  BIndiciesKeep = indicies[-Aindex] - length(Anames)
-  names.old     = c(Anames, Bnames)
+  a_index        = which(indicies <= length(a_names))
+  a_indicies_keep = indicies[a_index]
+  b_indicies_keep = indicies[-a_index] - length(a_names)
+  names.old     = c(a_names, b_names)
   p             = length(indicies)
   xtx.old       = xtx
   xty.old       = xty
@@ -924,7 +924,7 @@ ComputeResultsLinear.t3 = function(params) {
 
   params$stats = stats
 
-  tags = params$Btags[BIndiciesKeep]
+  tags = params$Btags[b_indicies_keep]
 
   if (length(unique(tags)) < 2) {
     params$failed <- TRUE
@@ -936,10 +936,10 @@ ComputeResultsLinear.t3 = function(params) {
 
   stats$failed = params$failed
 
-  write_time = proc.time()[3]
+  write_time <-proc.time()[3]
   save(stats, file = file.path(params$write_path, "stats.rdata"))
   write_size = file.size(file.path(params$write_path, "stats.rdata"))
-  write_time = proc.time()[3] - write_time
+  write_time <-proc.time()[3] - write_time
 
   params <- add_to_log(params, "ComputeResultsLinear.t3", 0, 0, write_time, write_size)
   return(params)
@@ -950,10 +950,10 @@ GetResultsLinear.a3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetResultsLinear.a3\n\n")
   params$converged = TRUE
   stats = NULL
-  read_time = proc.time()[3]
+  read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "stats.rdata"))
   read_size = file.size(file.path(params$read_path[["T"]], "stats.rdata"))
-  read_time = proc.time()[3] - read_time
+  read_time <- proc.time()[3] - read_time
   params$stats = stats
 
   params <- add_to_log(params, "GetResultsLinear.a3", read_time, read_size, 0, 0)
@@ -965,10 +965,10 @@ GetResultsLinear.b3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetResultsLinear.b3\n\n")
   params$converged = TRUE
   stats = NULL
-  read_time = proc.time()[3]
+  read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "stats.rdata"))
   read_size = file.size(file.path(params$read_path[["T"]], "stats.rdata"))
-  read_time = proc.time()[3] - read_time
+  read_time <- proc.time()[3] - read_time
   params$stats = stats
 
   params <- add_to_log(params, "GetResultsLinear.b3", read_time, read_size, 0, 0)

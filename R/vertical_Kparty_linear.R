@@ -81,10 +81,10 @@ PrepareFolder.ACDP = function(params, monitor_folder) {
   }
 
   empty = NULL
-  write_time = proc.time()[3]
+  write_time <-proc.time()[3]
   save(empty, file = file.path(params$write_path, "empty.rdata"))
   write_size = file.size(file.path(params$write_path, "empty.rdata"))
-  write_time = proc.time()[3] - write_time
+  write_time <-proc.time()[3] - write_time
 
   params <- add_to_log(params, "PrepareFolder.ACDP", 0, 0, write_time, write_size)
   return(params)
@@ -179,17 +179,17 @@ SendBasicInfo.DP = function(params, data) {
   params$n = n
   analysis = params$analysis
   data_partner_id = params$data_partner_id
-  write_time = proc.time()[3]
+  write_time <-proc.time()[3]
   save(analysis, n, data_partner_id, file = file.path(params$write_path, "n_analysis.rdata"))
   write_size = file.size(file.path(params$write_path, "n_analysis.rdata"))
-  write_time = proc.time()[3] - write_time
+  write_time <-proc.time()[3] - write_time
   params <- add_to_log(params, "SendBasicInfo.DP", 0, 0, write_time, write_size)
   return(params)
 }
 
 CheckAgreement.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "CheckAgreement.AC\n\n")
-  read_time = 0
+  read_time <- 0
   read_size = 0
   analysisAll = rep("", params$numDataPartners)
   nAll        = rep(0, params$numDataPartners)
@@ -200,10 +200,10 @@ CheckAgreement.AC = function(params) {
   analysis    = NULL
   data_partner_id = NULL
   for (id in 1:params$numDataPartners) {
-    read_time = read_time - proc.time()[3]
+    read_time <- read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "n_analysis.rdata"))
     read_size = read_size + file.size(file.path(params$readPathDP[id], "n_analysis.rdata"))
-    read_time = read_time + proc.time()[3]
+    read_time <- read_time + proc.time()[3]
     analysisAll[id] = analysis
     nAll[id]        = n
     ndata_partner_id[id] = data_partner_id
@@ -262,10 +262,10 @@ PrepareParamsLinear.DP = function(params, data) {
   seed = params$seed
   scaler = params$scaler
 
-  write_time = proc.time()[3]
+  write_time <-proc.time()[3]
   save(p, scaler, seed, file = file.path(params$write_path, "p_scaler_seed.rdata"))
   write_size = file.size(file.path(params$write_path, "p_scaler_seed.rdata"))
-  write_time = proc.time()[3] - write_time
+  write_time <-proc.time()[3] - write_time
 
   params <- add_to_log(params, "PrepareParamsLinear.DP", 0, 0, write_time, write_size)
   return(params)
@@ -275,7 +275,7 @@ PrepareParamsLinear.DP = function(params, data) {
 #' @importFrom stats rnorm
 PrepareSharesLinear.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareSharesLinear.DP\n\n")
-  read_time = 0
+  read_time <- 0
   read_size = 0
   p = seed = scaler = NULL
 
@@ -296,10 +296,10 @@ PrepareSharesLinear.DP = function(params, data) {
       params$seeds   = c(params$seeds, params$seed)
       next
     }
-    read_time = read_time - proc.time()[3]
+    read_time <- read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "p_scaler_seed.rdata"))
     read_size = read_size + file.size(file.path(params$readPathDP[id], "p_scaler_seed.rdata"))
-    read_time = read_time + proc.time()[3]
+    read_time <- read_time + proc.time()[3]
     params$ps      = c(params$ps, p)
     params$scalers = c(params$scalers, scaler)
     params$seeds   = c(params$seeds, seed)
@@ -323,14 +323,14 @@ PrepareSharesLinear.DP = function(params, data) {
   colnames  = colnames(data$X)
   tags      = data$tags
 
-  write_time = proc.time()[3]
+  write_time <-proc.time()[3]
   save(products, file = file.path(params$write_path, "products.rdata"))
   save(halfshare, file = file.path(params$write_path, "halfshare.rdata"))
   save(colmin, colrange, colsum, colnames, tags, file = file.path(params$write_path, "colstats.rdata"))
   write_size = sum(file.size(file.path(params$write_path, c("products.rdata",
                                                           "halfshare.rdata",
                                                           "colstats.rdata"))))
-  write_time = proc.time()[3] - write_time
+  write_time <-proc.time()[3] - write_time
 
   params <- add_to_log(params, "PrepareSharesLinear.DP", read_time, read_size, write_time, write_size)
   return(params)
@@ -339,7 +339,7 @@ PrepareSharesLinear.DP = function(params, data) {
 
 GetProductsLinear.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetProductsLinear.AC\n\n")
-  read_time = 0
+  read_time <- 0
   read_size = 0
   p = 0
   n = 0
@@ -354,7 +354,7 @@ GetProductsLinear.AC = function(params) {
   colmin = colrange = colsum = colnames = NULL
   party = NULL
   for (id in 1:params$numDataPartners) {
-    read_time = read_time - proc.time()[3]
+    read_time <- read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "products.rdata"))
     load(file.path(params$readPathDP[id], "halfshare.rdata"))
     load(file.path(params$readPathDP[id], "colstats.rdata"))
@@ -362,7 +362,7 @@ GetProductsLinear.AC = function(params) {
                                                   c("products.rdata",
                                                     "halfshare.rdata",
                                                     "colstats.rdata"))))
-    read_time = read_time + proc.time()[3]
+    read_time <- read_time + proc.time()[3]
 
     allproducts[[id]]  = products
     allhalfshare[[id]] = halfshare
@@ -556,10 +556,10 @@ ComputeResultsLinear.AC = function(params) {
   class(stats) = "vdralinear"
 
   params$stats = stats
-  write_time = proc.time()[3]
+  write_time <-proc.time()[3]
   save(stats, file = file.path(params$write_path, "stats.rdata"))
   write_size = file.size(file.path(params$write_path, "stats.rdata"))
-  write_time = proc.time()[3] - write_time
+  write_time <-proc.time()[3] - write_time
   params <- add_to_log(params, "ComputeResultsLinear.AC", 0, 0, write_time, write_size)
   return(params)
 }
@@ -569,10 +569,10 @@ GetResultsLinear.DP = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetResultsLinear.DP\n\n")
   params$converged = TRUE
   stats = NULL
-  read_time = proc.time()[3]
+  read_time <- proc.time()[3]
   load(file.path(params$readPathAC, "stats.rdata"))
   read_size = file.size(file.path(params$readPathAC, "stats.rdata"))
-  read_time = proc.time()[3] - read_time
+  read_time <- proc.time()[3] - read_time
   params$stats = stats
 
   params <- add_to_log(params, "GetResultsLinear.DP", read_time, read_size, 0, 0)

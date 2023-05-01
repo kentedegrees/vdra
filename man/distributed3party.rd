@@ -40,7 +40,7 @@ AnalysisCenter.3Party(
   msreqid = "v_default_00_000",
   blocksize = 500,
   tol = 1e-08,
-  maxIterations = 25,
+  max_iterations = 25,
   sleepTime = 10,
   maxWaitingTime = 86400,
   popmednet = TRUE,
@@ -113,7 +113,7 @@ for data transfer between the two parties.}
 \item{tol}{the tolerance used to determine convergence in \code{"logistic"}
 and \code{"cox"} regression.}
 
-\item{maxIterations}{the maximum number of iterations to perform
+\item{max_iterations}{the maximum number of iterations to perform
 \code{"logistic"} or \code{"cox"} regression before non-convergence is
 declared.}
 }

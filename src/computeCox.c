@@ -65,7 +65,7 @@ int printMessage(int stepCounter, int numEvents, int currentPercent, int verbose
 
 
 SEXP ComputeCox(SEXP _strata, SEXP _X, SEXP _w,
-                SEXP _deltal, SEXP _WX, SEXP _n,
+                SEXP _deltal, SEXP _wx, SEXP _n,
                 SEXP _p, SEXP _numEvents, SEXP _verbose)
 {
   int verbose = INTEGER(_verbose)[0] == 1;
@@ -82,7 +82,7 @@ SEXP ComputeCox(SEXP _strata, SEXP _X, SEXP _w,
   double *X      = REAL(_X);
   double *w      = REAL(_w);
   double *deltal = REAL(_deltal);
-  double *WX     = REAL(_WX);
+  double *WX     = REAL(_wx);
 
   double *wz    = (double*)malloc(sizeof(double) * n);
   double *YWX   = (double*)malloc(sizeof(double) * p);
