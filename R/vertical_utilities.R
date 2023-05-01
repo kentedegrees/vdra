@@ -234,7 +234,7 @@ DataPartner1.3Party <- function(regression            = "linear",
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.")
   } else if (regression == "cox") {
-    stats <- PartyAProcess3Cox(data, response, strata, mask, monitor_folder,
+    stats <- party_a_process_3_cox(data, response, strata, mask, monitor_folder,
                               sleep_time, max_waiting_time, popmednet, trace,
                               verbose)
   } else if (regression == "linear") {
@@ -274,11 +274,11 @@ DataPartner2.3Party <- function(regression          = "linear",
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.")
   } else if (regression == "cox") {
-    stats <- PartyBProcess3Cox(data, strata, mask, monitor_folder,
+    stats <- party_b_process_3_cox(data, strata, mask, monitor_folder,
                               sleep_time, max_waiting_time, popmednet, trace,
                               verbose)
   } else if (regression == "linear") {
-    stats <- PartyBProcess3Linear(data, monitor_folder,
+    stats <- party_b_process_3_linear(data, monitor_folder,
                                  sleep_time, max_waiting_time, popmednet, trace,
                                  verbose)
   } else if (regression == "logistic") {
@@ -476,11 +476,11 @@ AnalysisCenter.3Party <- function(regression            = "linear",
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.")
   } else if (regression == "cox") {
-    stats <- PartyTProcess3Cox(monitor_folder, msreqid, blocksize, tol,
+    stats <- party_t_process_3_cox(monitor_folder, msreqid, blocksize, tol,
                               max_iterations, sleep_time, max_waiting_time,
                               popmednet, trace, verbose)
   } else if (regression == "linear") {
-    stats <- PartyTProcess3Linear(monitor_folder, msreqid, blocksize,
+    stats <- party_t_process_3_linear(monitor_folder, msreqid, blocksize,
                                  sleep_time, max_waiting_time, popmednet, trace,
                                  verbose)
   } else if (regression == "logistic") {
@@ -1540,8 +1540,8 @@ WaitForTurn.3p <- function(params, sleep_time) {
 
 
 send_pause_quit_3p <- function(params,
-                               filesA = NULL,
-                               filesB = NULL,
+                               files_a = NULL,
+                               files_b = NULL,
                                filesT = NULL,
                                sleep_time = 10,
                                job_failed = FALSE,
@@ -1549,10 +1549,10 @@ send_pause_quit_3p <- function(params,
 
   params$lastIteration = TRUE
   params$completed     = TRUE
-  files <- c(filesA, filesB, filesT, "file_list.csv")
+  files <- c(files_a, files_b, filesT, "file_list.csv")
   transfer = c(rep(1, length(files) - 1), 10)
-  destination = c(rep(1, length(filesA)),
-                  rep(2, length(filesB)),
+  destination = c(rep(1, length(files_a)),
+                  rep(2, length(files_b)),
                   rep(0, length(filesT)),
                   10)
   if (params$party != "T") {
@@ -1571,7 +1571,7 @@ send_pause_quit_3p <- function(params,
     transfer = c(transfer, 10)
     destination = c(destination, 10)
   }
-  params <- StoreLogEntry.3p(params, c(filesA, filesB, filesT))
+  params <- StoreLogEntry.3p(params, c(files_a, files_b, filesT))
   params <- StoreTrackingTableEntry.3p(params)
   WriteLogCSV(params)
   write_log_raw(params)
@@ -1610,33 +1610,33 @@ send_pause_quit_3p <- function(params,
 }
 
 send_pause_continue_3p <- function(params,
-                                   filesA = NULL,
-                                   filesB = NULL,
+                                   files_a = NULL,
+                                   files_b = NULL,
                                    filesT = NULL,
                                    from   = NULL,
                                    sleep_time = 10,
                                    max_waiting_time = 24 * 60 * 60,
                                    job_started = FALSE,
                                    waitForTurn = FALSE) {
-  params <- StoreLogEntry.3p(params, c(filesA, filesB, filesT))
+  params <- StoreLogEntry.3p(params, c(files_a, files_b, filesT))
   params <- StoreTrackingTableEntry.3p(params)
   WriteLogCSV(params)
   write_log_raw(params)
 
-  files <- c(filesA, filesB, filesT, "file_list.csv")
+  files <- c(files_a, files_b, filesT, "file_list.csv")
   transfer = c(rep(1, length(files) - 1), 10)
-  destination = c(rep(1, length(filesA)),
-                  rep(2, length(filesB)),
+  destination = c(rep(1, length(files_a)),
+                  rep(2, length(files_b)),
                   rep(0, length(filesT)), 10)
   if (length(files) > 1) {
     WriteTrackingTableRaw(params)
   }
-  if (!is.null(filesA)) {
+  if (!is.null(files_a)) {
     files <- c(files, "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
     transfer = c(transfer, 1, 1, 1)
     destination = c(destination, 1, 1, 1)
   }
-  if (!is.null(filesB)) {
+  if (!is.null(files_b)) {
     files <- c(files, "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
     transfer = c(transfer, 1, 1, 1)
     destination = c(destination, 2, 2, 2)

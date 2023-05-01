@@ -1019,8 +1019,8 @@ get_xr_cox_a3 <- function(params, data) {
 }
 
 
-ProcessXtWXCox.t3 <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "ProcessXtWXCox.t3\n\n")
+process_x_t_w_x_cox_t3 <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "process_x_t_w_x_cox_t3\n\n")
   p1 = params$p1
   p2 = params$p2
 
@@ -1049,7 +1049,7 @@ ProcessXtWXCox.t3 <- function(params) {
     filename2 <- paste0("r3_", i, ".rdata")
     read_time <- read_time - proc.time()[3]
     to_read_1 = file(file.path(params$dp_local_path, filename2), "rb")
-    R = matrix(readBin(con = to_read_1, what = numeric(), n = p2 * p2,
+    r = matrix(readBin(con = to_read_1, what = numeric(), n = p2 * p2,
                        endian = "little"), nrow = p2, ncol = p2)
     close(to_read_1)
     xr = matrix(readBin(con = to_read, what = numeric(), n = p1 * p2,
@@ -1058,7 +1058,7 @@ ProcessXtWXCox.t3 <- function(params) {
     read_size <- read_size + file.size(file.path(params$dp_local_path, filename2))
     read_time <- read_time + proc.time()[3]
 
-    xa_t_w_xb = xa_t_w_xb + xr %*% t(R)
+    xa_t_w_xb = xa_t_w_xb + xr %*% t(r)
 
     if ((i + 1) %in% params$container$filebreak_xr || i == params$blocks$num_blocks) {
       close(to_read)
@@ -1091,7 +1091,7 @@ ProcessXtWXCox.t3 <- function(params) {
              "          duplicates for both parties and / or reduce the\n",
              "          number of variables used. Once this is done,\n",
              "          rerun the data analysis.")
-    params <- add_to_log(params, "ProcessXtWXCox.t3", read_time, read_size, 0, 0)
+    params <- add_to_log(params, "process_x_t_w_x_cox_t3", read_time, read_size, 0, 0)
     return(params)
   }
 
@@ -1126,14 +1126,14 @@ ProcessXtWXCox.t3 <- function(params) {
                                                           "converged.rdata"))))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "ProcessXtWXCox.t3", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "process_x_t_w_x_cox_t3", read_time, read_size, write_time, write_size)
 
   return(params)
 }
 
 
-survfit_cox_Bt3 <- function(params, pred) {
-  if (params$trace) cat(as.character(Sys.time()), "survfit_cox_Bt3\n\n")
+survfit_cox_bt3 <- function(params, pred) {
+  if (params$trace) cat(as.character(Sys.time()), "survfit_cox_bt3\n\n")
   survival = params$survival
   surv = rep(1, length(survival$rank))
   for (i in 1:length(survival$strata)) {
@@ -1240,7 +1240,7 @@ compute_results_cox_t3 <- function(params) {
     rank   = params$survival$rank,
     status = params$survival$status,
     sorted = params$survival$sorted,
-    surv   = survfit_cox_Bt3(params, pred)
+    surv   = survfit_cox_bt3(params, pred)
   )
   stats$strata = as.data.frame(matrix(0, length(params$survival$strata), 3))
   stats$strata$label = ""
@@ -1622,7 +1622,7 @@ compute_results_cox_b3 <- function(params, data) {
     rank   = data$survival$rank,
     status = data$survival$status,
     sorted = data$survival$sorted,
-    surv   = survfit_cox_Bt3(params, pred)
+    surv   = survfit_cox_bt3(params, pred)
   )
   stats$strata = as.data.frame(matrix(0, length(data$survival$strata), 3))
   stats$strata$label = ""
@@ -1664,8 +1664,8 @@ compute_results_cox_b3 <- function(params, data) {
 }
 
 
-TransferResultsCox.t3 <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "TransferResultsCox.t3\n\n")
+transfer_results_cox_t3 <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "transfer_results_cox_t3\n\n")
   stats = NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["B"]], "stats.rdata"))
@@ -1677,7 +1677,7 @@ TransferResultsCox.t3 <- function(params) {
   save(stats, file = file.path(params$write_path, "stats.rdata"))
   write_size <- file.size(file.path(params$write_path, "stats.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "TransferResultsCox.t3", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "transfer_results_cox_t3", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -1685,7 +1685,7 @@ TransferResultsCox.t3 <- function(params) {
 ############################## PARENT FUNCTIONS ##############################
 
 
-PartyAProcess3Cox <- function(data,
+party_a_process_3_cox <- function(data,
                              y_name                 = NULL,
                              strata                = NULL,
                              mask                  = TRUE,
@@ -1826,7 +1826,7 @@ PartyAProcess3Cox <- function(data,
   return(params$stats)
 }
 
-PartyBProcess3Cox <- function(data,
+party_b_process_3_cox <- function(data,
                              strata              = NULL,
                              mask                = TRUE,
                              monitor_folder       = NULL,
@@ -1932,7 +1932,7 @@ PartyBProcess3Cox <- function(data,
   data = sort_data_cox_b3(params, data)
   params <- add_to_log(params, "sort_data_cox_b3", data$read_time, data$read_size, 0, 0)
   params <- prepare_blocks_linear_b3(params)
-  params <- GetRWLinear.b3(params, data)
+  params <- get_rw_linear_b3(params, data)
   params <- get_s_xb_cox_b3(params, data)
   files <- c("sxb.rdata", "xbtxb.rdata", seq_zw("crw_", length(params$container$filebreak.RW)))
   params <- send_pause_continue_3p(params, filesT = files, from = "T",
@@ -2010,7 +2010,7 @@ PartyBProcess3Cox <- function(data,
 }
 
 
-PartyTProcess3Cox <- function(monitor_folder         = NULL,
+party_t_process_3_cox <- function(monitor_folder         = NULL,
                              msreqid               = "v_default_0_000",
                              blocksize             = 500,
                              cutoff                = 1e-8,
@@ -2020,14 +2020,14 @@ PartyTProcess3Cox <- function(monitor_folder         = NULL,
                              popmednet             = TRUE,
                              trace                 = FALSE,
                              verbose               = TRUE) {
-  Tparams <- prepare_params_3p("cox", "T", msreqid = msreqid,
+  t_params <- prepare_params_3p("cox", "T", msreqid = msreqid,
                              popmednet = popmednet, trace = trace, verbose = verbose)
-  Tparams <- initialize_log_3p(Tparams)
-  Tparams <- initialize_time_stamps_3p(Tparams)
-  Tparams <- initialize_tracking_table_3p(Tparams)
+  t_params <- initialize_log_3p(t_params)
+  t_params <- initialize_time_stamps_3p(t_params)
+  t_params <- initialize_tracking_table_3p(t_params)
 
-  header(Tparams)
-  params   = prepare_folder_linear_t3(Tparams, monitor_folder)
+  header(t_params)
+  params   = prepare_folder_linear_t3(t_params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
@@ -2048,7 +2048,7 @@ PartyTProcess3Cox <- function(monitor_folder         = NULL,
     file.copy(file.path(params$read_path[["A"]], "error_message.rdata"),
               file.path(params$write_path, "error_message.rdata"))
     files <- "error_message.rdata"
-    params <- send_pause_continue_3p(params, filesB = files, from = "B",
+    params <- send_pause_continue_3p(params, files_b = files, from = "B",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.3p(params)
@@ -2059,7 +2059,7 @@ PartyTProcess3Cox <- function(monitor_folder         = NULL,
     file.copy(file.path(params$read_path[["B"]], "error_message.rdata"),
               file.path(params$write_path, "error_message.rdata"))
     files <- "error_message.rdata"
-    params <- send_pause_continue_3p(params, filesA = files, from = "A",
+    params <- send_pause_continue_3p(params, files_a = files, from = "A",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.3p(params)
@@ -2074,7 +2074,7 @@ PartyTProcess3Cox <- function(monitor_folder         = NULL,
     warning(params$error_message)
     make_error_message(params$write_path, params$error_message)
     files <- "error_message.rdata"
-    params <- send_pause_continue_3p(params, filesA = files, filesB = files,
+    params <- send_pause_continue_3p(params, files_a = files, files_b = files,
                                   from = c("A", "B"),
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE)
@@ -2083,7 +2083,7 @@ PartyTProcess3Cox <- function(monitor_folder         = NULL,
   }
 
   files <- "empty.rdata"
-  params <- send_pause_continue_3p(params, filesA = files, filesB = files, from = c("A", "B"),
+  params <- send_pause_continue_3p(params, files_a = files, files_b = files, from = c("A", "B"),
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- prepare_strata_cox_t3(params)
@@ -2092,23 +2092,23 @@ PartyTProcess3Cox <- function(monitor_folder         = NULL,
     params$alg_iteration_counter = 1
     MakeTransferMessage(params$write_path)
     files <- c("transfercontrol.rdata", "max_iterations.rdata", "survival.rdata")
-    params <- send_pause_continue_3p(params, filesB = files, from = "B",
+    params <- send_pause_continue_3p(params, files_b = files, from = "B",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     if (file.exists(file.path(params$read_path[["B"]], "error_message.rdata"))) {
       warning(read_error_message(params$read_path[["B"]]))
       file.copy(file.path(params$read_path[["B"]], "error_message.rdata"),
                 file.path(params$write_path, "error_message.rdata"))
       files <- "error_message.rdata"
-      params <- send_pause_continue_3p(params, filesA = files, from = "A",
+      params <- send_pause_continue_3p(params, files_a = files, from = "A",
                                     sleep_time = sleep_time, max_waiting_time = max_waiting_time)
       params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE)
       SummarizeLog.3p(params)
       return(params$stats)
     }
-    params <- TransferResultsCox.t3(params)
+    params <- transfer_results_cox_t3(params)
     params$converged = params$stats$converged
     files <- "stats.rdata"
-    params <- send_pause_continue_3p(params, filesA = files, from = "A",
+    params <- send_pause_continue_3p(params, files_a = files, from = "A",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     params <- send_pause_quit_3p(params, sleep_time = sleep_time)
     SummarizeLog.3p(params)
@@ -2121,7 +2121,7 @@ PartyTProcess3Cox <- function(monitor_folder         = NULL,
     warning(params$error_message)
     make_error_message(params$write_path, params$error_message)
     files <- "error_message.rdata"
-    params <- send_pause_continue_3p(params, filesA = files, filesB = files,
+    params <- send_pause_continue_3p(params, files_a = files, files_b = files,
                                   from = c("A", "B"),
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE)
@@ -2130,17 +2130,17 @@ PartyTProcess3Cox <- function(monitor_folder         = NULL,
   }
 
   files <- c("survival.rdata", "blocks.rdata")
-  params <- send_pause_continue_3p(params, filesA = files, from = "A",
+  params <- send_pause_continue_3p(params, files_a = files, from = "A",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
-  params <- ProcessZLinear.t3(params)
+  params <- process_z_linear_t3(params)
   files <- c("survival.rdata", "blocks.rdata", seq_zw("crz_", length(params$container$filebreak.RZ)))
-  params <- send_pause_continue_3p(params, filesB = files, from = "B",
+  params <- send_pause_continue_3p(params, files_b = files, from = "B",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
-  params <- ProcessWLinear.t3(params)
+  params <- process_w_linear_t3(params)
   files <- c("p2.rdata", seq_zw("cwr_", length(params$container$filebreak.wr)))
-  params <- send_pause_continue_3p(params, filesA = files, from = "A",
+  params <- send_pause_continue_3p(params, files_a = files, from = "A",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- get_products_cox_t3(params)
@@ -2150,7 +2150,7 @@ PartyTProcess3Cox <- function(monitor_folder         = NULL,
     warning(params$error_message)
     make_error_message(params$write_path, params$error_message)
     files <- "error_message.rdata"
-    params <- send_pause_continue_3p(params, filesA = files, filesB = files,
+    params <- send_pause_continue_3p(params, files_a = files, files_b = files,
                                   from = c("A", "B"),
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE)
@@ -2162,23 +2162,23 @@ PartyTProcess3Cox <- function(monitor_folder         = NULL,
     params$alg_iteration_counter = 1
     MakeTransferMessage(params$write_path)
     files <- c("transfercontrol.rdata", "Bindicies.rdata", "max_iterations.rdata", "survival.rdata")
-    params <- send_pause_continue_3p(params, filesB = files, from = "B",
+    params <- send_pause_continue_3p(params, files_b = files, from = "B",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     if (file.exists(file.path(params$read_path[["B"]], "error_message.rdata"))) {
       warning(read_error_message(params$read_path[["B"]]))
       file.copy(file.path(params$read_path[["B"]], "error_message.rdata"),
                 file.path(params$write_path, "error_message.rdata"))
       files <- "error_message.rdata"
-      params <- send_pause_continue_3p(params, filesA = files, from = "A",
+      params <- send_pause_continue_3p(params, files_a = files, from = "A",
                                     sleep_time = sleep_time, max_waiting_time = max_waiting_time)
       params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE)
       SummarizeLog.3p(params)
       return(params$stats)
     }
-    params <- TransferResultsCox.t3(params)
+    params <- transfer_results_cox_t3(params)
     params$converged = params$stats$converged
     files <- "stats.rdata"
-    params <- send_pause_continue_3p(params, filesA = files, from = "A",
+    params <- send_pause_continue_3p(params, files_a = files, from = "A",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     params <- send_pause_quit_3p(params, sleep_time = sleep_time)
     SummarizeLog.3p(params)
@@ -2187,40 +2187,40 @@ PartyTProcess3Cox <- function(monitor_folder         = NULL,
 
   params <- compute_initial_betas_cox_t3(params)
 
-  filesA = c("Aindicies.rdata", "betasA.rdata", "converged.rdata")
-  filesB = c("Bindicies.rdata", "betasB.rdata", "converged.rdata")
-  params <- send_pause_continue_3p(params, filesA = filesA, filesB = filesB,
+  files_a = c("Aindicies.rdata", "betasA.rdata", "converged.rdata")
+  files_b = c("Bindicies.rdata", "betasB.rdata", "converged.rdata")
+  params <- send_pause_continue_3p(params, files_a = files_a, files_b = files_b,
                                 from = c("A", "B"),
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   while (!params$converged && !params$max_iter_exceeded) {
     BeginningIteration(params)
     if (params$alg_iteration_counter > 1) {
-      filesA = c("converged.rdata", "betasA.rdata")
-      filesB = c("converged.rdata", "betasB.rdata")
-      params <- send_pause_continue_3p(params, filesA = filesA, filesB = filesB,
+      files_a = c("converged.rdata", "betasA.rdata")
+      files_b = c("converged.rdata", "betasB.rdata")
+      params <- send_pause_continue_3p(params, files_a = files_a, files_b = files_b,
                                     from = c("A", "B"),
                                     sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     }
 
     params <- compute_log_likelihood_cox_t3(params)
     files <- "Xbeta.rdata"
-    params <- send_pause_continue_3p(params, filesA = files, filesB = files, from = c("A", "B"),
+    params <- send_pause_continue_3p(params, files_a = files, files_b = files, from = c("A", "B"),
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
     params <- process_v_cox_t3(params)
 
     files <- seq_zw("cvr_", length(params$container$filebreak_vr))
-    params <- send_pause_continue_3p(params, filesA = files, from = "A",
+    params <- send_pause_continue_3p(params, files_a = files, from = "A",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
-    params <- ProcessXtWXCox.t3(params)
+    params <- process_x_t_w_x_cox_t3(params)
 
     if (params$failed) {
       warning(params$error_message)
       make_error_message(params$write_path, params$error_message)
       files <- "error_message.rdata"
-      params <- send_pause_continue_3p(params, filesA = files, filesB = files,
+      params <- send_pause_continue_3p(params, files_a = files, files_b = files,
                                     from = c("A", "B"),
                                     sleep_time = sleep_time, max_waiting_time = max_waiting_time)
       params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE)
@@ -2233,9 +2233,9 @@ PartyTProcess3Cox <- function(monitor_folder         = NULL,
 
   params <- compute_results_cox_t3(params)
 
-  filesA = c("converged.rdata", "betasA.rdata", "stats.rdata")
-  filesB = c("converged.rdata", "betasB.rdata", "stats.rdata")
-  params <- send_pause_continue_3p(params, filesA = filesA, filesB = filesB,
+  files_a = c("converged.rdata", "betasA.rdata", "stats.rdata")
+  files_b = c("converged.rdata", "betasB.rdata", "stats.rdata")
+  params <- send_pause_continue_3p(params, files_a = files_a, files_b = files_b,
                                 from = c("A", "B"),
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
