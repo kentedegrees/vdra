@@ -35,10 +35,10 @@ CheckColinearityLogistic.t3 <- function(params) {
   params$p2            = length(b_names_keep)
   params$p_old         = params$p1_old + params$p2_old
   params$p             = params$p1 + params$p2
-  params$meansA        = params$meansA[params$a_indicies_keep]
-  params$meansB        = params$meansB[params$b_indicies_keep]
-  params$sdA           = params$sdA[params$a_indicies_keep]
-  params$sdB           = params$sdB[params$b_indicies_keep]
+  params$means_a        = params$means_a[params$a_indicies_keep]
+  params$means_b        = params$means_b[params$b_indicies_keep]
+  params$sda           = params$sda[params$a_indicies_keep]
+  params$sdb           = params$sdb[params$b_indicies_keep]
   params$xtx           = xtx
   params$xty           = xty
 
@@ -693,7 +693,7 @@ GetFinalFittedLogistic.t3 <- function(params) {
     file.size(file.path(params$read_path[["B"]], "Bfinalfitted.rdata"))
   read_time <- proc.time()[3] - read_time
 
-  betas = params$betas / c(params$sdA, params$sdB)
+  betas = params$betas / c(params$sda, params$sdb)
   betas[1] = betas[1] - offsetA - offsetB
 
   finalFitted = AFinalFitted + BFinalFitted + betas[1]
@@ -755,10 +755,10 @@ ComputeResultsLogistic.t3 <- function(params) {
   n      = params$n
   p1     = params$p1
   p2     = params$p2
-  sdA    = params$sdA
-  sdB    = params$sdB
-  meansA = params$meansA
-  meansB = params$meansB
+  sda    = params$sda
+  sdb    = params$sdb
+  means_a = params$means_a
+  means_b = params$means_b
   a_names = params$colnamesA_old
   b_names = params$colnamesB_old
   p1_old = params$p1_old
@@ -769,8 +769,8 @@ ComputeResultsLogistic.t3 <- function(params) {
   # If xtwx were singular, it would have been caught in GetII.A2(), so we may
   # assume that xtwx is NOT singular and so we do not have to do a check.
   cov1 = solve(params$xtwx)
-  secoef = sqrt(diag(cov1)) / c(sdA, sdB)
-  tmp = matrix(c(1, (-meansA / sdA)[-1], -meansB / sdB), ncol = 1)
+  secoef = sqrt(diag(cov1)) / c(sda, sdb)
+  tmp = matrix(c(1, (-means_a / sda)[-1], -means_b / sdb), ncol = 1)
   secoef[1] = sqrt(t(tmp) %*% cov1 %*% tmp)
 
   stats$party <- c(rep("dp1", p1_old), rep("dp2", p2_old))

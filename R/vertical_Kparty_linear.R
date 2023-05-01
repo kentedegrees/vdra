@@ -407,7 +407,7 @@ get_products_linear_AC <- function(params) {
   params$xtx          = m[2:p, 2:p, drop = FALSE]
   params$xty          = m[2:p, 1, drop = FALSE]
   params$yty          = m[1, 1]
-  params$meansy       = allcolsum[1] / n
+  params$means_y       = allcolsum[1] / n
   params$means        = allcolsum[-1] / n
   params$n            = n
   params$p            = p
@@ -430,7 +430,7 @@ compute_results_linear_AC <- function(params) {
   yty      = params$yty
   xty      = params$xty
   xtx      = params$xtx
-  meansy   = params$meansy
+  means_y   = params$means_y
 
   # First we de-standardize.
 
@@ -487,36 +487,36 @@ compute_results_linear_AC <- function(params) {
   invxtx = solve(xtx)
   betas  = drop(invxtx %*% xty)
 
-  numCovariates = p - 1
+  num_covariates <- p - 1
 
   #   # If true sse is approximately 0, random variations could cause this
   #   # calculation to be less than 0
   #   # If calculated sse is less than 0, we set it equal to 0.
   sse     = max(drop(yty - 2 * t(xty) %*% betas + (t(betas) %*% xtx) %*% betas), 0)
-  rstderr = drop(sqrt(sse / (n - numCovariates - 1)))
-  sst     = drop(yty - meansy^2 * n)
+  rstderr = drop(sqrt(sse / (n - num_covariates - 1)))
+  sst     = drop(yty - means_y^2 * n)
   ssr     = sst - sse
-  df1     = numCovariates
-  df2     = n - numCovariates - 1
+  df1     = num_covariates
+  df2     = n - num_covariates - 1
   if (sse == 0) {
-    Fstat = Inf
+    f_stat <- Inf
   } else {
-    Fstat   = (ssr / df1) / (sse / df2)
+    f_stat <- (ssr / df1) / (sse / df2)
   }
-  Fpval   = pf(Fstat, df1, df2, lower.tail = FALSE)
+  f_pval <- pf(f_stat, df1, df2, lower.tail = FALSE)
   if (sse == 0) {
-    Rsq = 1
+    r_sq <- 1
   } else {
-    Rsq     = drop(1 - sse / sst)
+    r_sq <- drop(1 - sse / sst)
   }
-  adjRsq  = drop(1 - (n - 1) / (n - numCovariates - 1) * (1 - Rsq))
+  adj_r_sq <- drop(1 - (n - 1) / (n - num_covariates - 1) * (1 - r_sq))
   if (rstderr == 0) {
-    tvals = rep(Inf, numCovariates + 1)
+    tvals = rep(Inf, num_covariates + 1)
   } else {
     tvals   = betas / (rstderr * sqrt(diag(invxtx)))
   }
   secoef  = tvals^-1 * betas
-  pvals   = 2 * pt(abs(tvals), n - numCovariates - 1, lower.tail = FALSE)
+  pvals   = 2 * pt(abs(tvals), n - num_covariates - 1, lower.tail = FALSE)
   stats$party                  = params$party
   stats$responseParty          = "dp1"
   stats$coefficients           = rep(NA, p1)
@@ -530,17 +530,17 @@ compute_results_linear_AC <- function(params) {
   stats$secoef[indicies]       = secoef
   stats$pvals[indicies]        = pvals
   stats$rstderr                = rstderr
-  stats$rsquare                = Rsq
-  stats$adjrsquare             = adjRsq
-  stats$Fstat                  = Fstat
-  stats$Fpval                  = Fpval
+  stats$rsquare                = r_sq
+  stats$adjrsquare             = adj_r_sq
+  stats$f_stat                  = f_stat
+  stats$f_pval <- f_pval
   stats$df1                    = df1
   stats$df2                    = df2
   stats$n                      = params$n
   stats$xtx                    = xtx_old
   stats$xty                    = xty_old
   stats$yty                    = yty
-  stats$meansy                 = meansy
+  stats$means_y                 = means_y
   stats$means                  = params$means
 
   names(stats$party)           = params$colnames

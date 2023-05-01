@@ -250,7 +250,7 @@ prepare_params_linear_a3 <- function(params, data) {
   pa$means    = data$means
   pa$sd       = data$sd
   pa$yty      = data$yty
-  pa$meansy   = data$meansy
+  pa$means_y   = data$means_y
   pa$sdy      = data$sdy
   pa$y_name    = data$y_name
   pa$colnames = colnames(data$x)
@@ -320,11 +320,11 @@ prepare_params_linear_t3 <- function(params, cutoff = 1e-8, max_iterations = 25)
   params$p1_old        = params$p1
   params$p2_old        = params$p2
   params$p             = pa$p + pb$p
-  params$meansA        = pa$means
-  params$sdA           = pa$sd
-  params$meansB        = pb$means
-  params$sdB           = pb$sd
-  params$meansy        = pa$meansy
+  params$means_a        = pa$means
+  params$sda           = pa$sd
+  params$means_b        = pb$means
+  params$sdb           = pb$sd
+  params$means_y        = pa$means_y
   params$sdy           = pa$sdy
   params$yty           = pa$yty
   params$colnamesA     = pa$colnames
@@ -669,9 +669,9 @@ ProcessWLinear.t3 <- function(params) {
 get_wr_linear_a3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "get_wr_linear_a3\n\n")
   xa_t_xa = t(data$x) %*% data$x
-  XATY  = t(data$x) %*% data$Y
+  xa_t_y  = t(data$x) %*% data$Y
   write_time <- proc.time()[3]
-  save(xa_t_xa, XATY, file = file.path(params$write_path, "xatxa.rdata"))
+  save(xa_t_xa, xa_t_y, file = file.path(params$write_path, "xatxa.rdata"))
   write_size <- file.size(file.path(params$write_path, "xatxa.rdata"))
   write_time <- proc.time()[3] - write_time
 
@@ -736,7 +736,7 @@ get_products_linear_t3 <- function(params) {
   p2 = params$p2
   xa_t_xa = 0
   xb_t_xb <- 0
-  XATY  = 0
+  xa_t_y  = 0
   Yxa_t_xb = 0
 
   num_blocks = params$blocks$num_blocks
@@ -779,18 +779,18 @@ get_products_linear_t3 <- function(params) {
     pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
 
-  YTXB = Yxa_t_xb[1, , drop = FALSE]
+  y_t_xb = Yxa_t_xb[1, , drop = FALSE]
   xa_t_xb = Yxa_t_xb[-1, , drop = FALSE]
   xtx = rbind(cbind(xa_t_xa, xa_t_xb), cbind(t(xa_t_xb), xb_t_xb))
-  XTY = rbind(XATY, t(YTXB))
+  x_t_y = rbind(xa_t_y, t(y_t_xb))
 
-  XTXLasso = xtx / (n - 1)
-  XTYLasso = params$sdy * XTY / sqrt(n - 1)
+  x_t_x_lasso = xtx / (n - 1)
+  x_t_y_lasso = params$sdy * x_t_y / sqrt(n - 1)
 
   params$xtx = xtx
-  params$xty = XTY
-  params$xtxLasso = XTXLasso
-  params$xtyLasso = XTYLasso
+  params$xty = x_t_y
+  params$xtxLasso = x_t_x_lasso
+  params$xtyLasso = x_t_y_lasso
 
   params$converged = TRUE
 
@@ -812,21 +812,21 @@ compute_results_linear_t3 <- function(params) {
   xty      = params$xty
   xtx      = params$xtx
   sdy      = params$sdy
-  sdA      = params$sdA
-  sdB      = params$sdB
-  meansy   = params$meansy
-  meansA   = params$meansA
-  meansB   = params$meansB
+  sda      = params$sda
+  sdb      = params$sdb
+  means_y   = params$means_y
+  means_a   = params$means_a
+  means_b   = params$means_b
 
   # First we de-standardize.
-  xtx = diag(c(sdA, sdB)) %*% xtx %*% diag(c(sdA, sdB))
-  offset = matrix(c(meansA, meansB), ncol = 1) %*%
-    matrix(c(meansA, meansB), nrow = 1) * n
+  xtx = diag(c(sda, sdb)) %*% xtx %*% diag(c(sda, sdb))
+  offset = matrix(c(means_a, means_b), ncol = 1) %*%
+    matrix(c(means_a, means_b), nrow = 1) * n
   offset[1, 1] = 0
   xtx = xtx + offset
 
-  xty = diag(c(sdA, sdB)) %*% xty * sdy
-  offset = n * meansy * matrix(c(meansA, meansB), ncol = 1)
+  xty = diag(c(sda, sdb)) %*% xty * sdy
+  offset = n * means_y * matrix(c(means_a, means_b), ncol = 1)
   xty = xty + offset
 
   # Now, we check for colinearity
@@ -853,37 +853,37 @@ compute_results_linear_t3 <- function(params) {
   invxtx = solve(xtx)
   betas  = drop(invxtx %*% xty)
 
-  numCovariates = p - 1
+  num_covariates <- p - 1
 
   #   # If true sse is approximately 0, random variations could cause this
   #   # calculation to be less than 0
   #   # If calculated sse is less than 0, we set it equal to 0.
   sse     = max(drop(yty - 2 * t(xty) %*% betas + (t(betas) %*% xtx) %*% betas), 0)
-  rstderr = drop(sqrt(sse / (n - numCovariates - 1)))
-  sst     = drop(yty - meansy^2 * n)
+  rstderr = drop(sqrt(sse / (n - num_covariates - 1)))
+  sst     = drop(yty - means_y^2 * n)
   ssr     = sst - sse
-  df1     = numCovariates
-  df2     = n - numCovariates - 1
+  df1     = num_covariates
+  df2     = n - num_covariates - 1
   if (sse == 0) {
-    Fstat = Inf
+    f_stat <- Inf
   } else {
-    Fstat   = (ssr / df1) / (sse / df2)
+    f_stat <- (ssr / df1) / (sse / df2)
   }
-  Fpval   = pf(Fstat, df1, df2, lower.tail = FALSE)
+  f_pval <- pf(f_stat, df1, df2, lower.tail = FALSE)
   if (sse == 0) {
-    Rsq = 1
+    r_sq <- 1
   } else {
-    Rsq     = drop(1 - sse / sst)
+    r_sq <- drop(1 - sse / sst)
   }
-  adjRsq  = drop(1 - (n - 1) / (n - numCovariates - 1) * (1 - Rsq))
+  adj_r_sq <- drop(1 - (n - 1) / (n - num_covariates - 1) * (1 - r_sq))
   if (rstderr == 0) {
-    tvals = rep(Inf, numCovariates + 1)
+    tvals = rep(Inf, num_covariates + 1)
   } else {
     tvals   = betas / (rstderr * sqrt(diag(invxtx)))
   }
 
   secoef  = tvals^-1 * betas
-  pvals   = 2 * pt(abs(tvals), n - numCovariates - 1, lower.tail = FALSE)
+  pvals   = 2 * pt(abs(tvals), n - num_covariates - 1, lower.tail = FALSE)
   stats$party                  = c(rep("dp1", params$p1_old),
                                    rep("dp2", params$p2_old))
   stats$responseParty          = "dp1"
@@ -898,18 +898,18 @@ compute_results_linear_t3 <- function(params) {
   stats$secoef[indicies]       = secoef
   stats$pvals[indicies]        = pvals
   stats$rstderr                = rstderr
-  stats$rsquare                = Rsq
-  stats$adjrsquare             = adjRsq
-  stats$Fstat                  = Fstat
-  stats$Fpval                  = Fpval
+  stats$rsquare                = r_sq
+  stats$adjrsquare             = adj_r_sq
+  stats$f_stat                  = f_stat
+  stats$f_pval <- f_pval
   stats$df1                    = df1
   stats$df2                    = df2
   stats$n                      = params$n
   stats$xtx                    = xtx_old
   stats$xty                    = xty_old
   stats$yty                    = yty
-  stats$meansy                 = meansy
-  stats$means                  = c(meansA, meansB)
+  stats$means_y                 = means_y
+  stats$means                  = c(means_a, means_b)
 
   names(stats$party)           = names_old
   names(stats$coefficients)    = names_old

@@ -3627,13 +3627,13 @@ print.vdralinear <- function(x, ...) {
 #'
 #'   \item{adjrsquare}{adjusted r squared.}
 #'
-#'   \item{Fstat}{the F-statistic for the linear regression.}
+#'   \item{f_stat}{the F-statistic for the linear regression.}
 #'
 #'   \item{df1}{the numerator degrees of freedom for the F-statistic.}
 #'
 #'   \item{df2}{the denominator degrees of freedom for the F-statistic.}
 #'
-#'   \item{Fpval}{the p-value of the F-statistic for the linear regression.}
+#'   \item{f_pval}{the p-value of the F-statistic for the linear regression.}
 #'
 #'   }
 #'
@@ -3657,9 +3657,9 @@ summary.vdralinear <- function(object, ...) {
   temp$df2            = object$df2
   temp$rsquare        = object$rsquare
   temp$adjrsquare     = object$adjrsquare
-  temp$Fstat          = object$Fstat
+  temp$f_stat          = object$f_stat
   temp$df1            = object$df1
-  temp$Fpval          = object$Fpval
+  temp$f_pval <- object$f_pval
   return(temp)
 }
 
@@ -3697,7 +3697,7 @@ print.summary.vdralinear <- function(x, lion = FALSE, ...) {
   cat("---", "\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\n")
   cat("Residual standard error: ", formatStat(x$rstderr), "on", x$df2, "degrees of freedom\n")
   cat("Multiple R-squared: ", formatStat(x$rsquare), 	", Adjusted R-squared: ", formatStat(x$adjrsquare), "\n")
-  cat("F-statistic:", formatStat(x$Fstat), "on", x$df1, "and", x$df2, "DF, p-value:", format.pval(x$Fpval), "\n\n")
+  cat("F-statistic:", formatStat(x$f_stat), "on", x$df1, "and", x$df2, "DF, p-value:", format.pval(x$f_pval), "\n\n")
 }
 
 
@@ -4080,8 +4080,8 @@ differentModel <- function(formula = NULL, x = NULL) {
   xtx    = xytxy[covariate_index, covariate_index]
   xty    = matrix(xytxy[covariate_index, response_index], ncol = 1)
   yty    = xytxy[response_index, response_index]
-  means  = c(x$meansy, x$means)[scramble][covariate_index]
-  meansy = c(x$meansy, x$means)[scramble][response_index]
+  means  = c(x$means_y, x$means)[scramble][covariate_index]
+  means_y = c(x$means_y, x$means)[scramble][response_index]
 
   nrow = nrow(xtx)
   indicies = c(1)
@@ -4104,33 +4104,33 @@ differentModel <- function(formula = NULL, x = NULL) {
   invxtx = solve(xtx)
   betas  = drop(invxtx %*% xty)
 
-  numCovariates = p - 1
+  num_covariates <- p - 1
 
   sse     = max(drop(yty - 2 * t(xty) %*% betas + (t(betas) %*% xtx) %*% betas), 0)
-  rstderr = drop(sqrt(sse / (n - numCovariates - 1)))
-  sst     = drop(yty - meansy^2 * n)
+  rstderr = drop(sqrt(sse / (n - num_covariates - 1)))
+  sst     = drop(yty - means_y^2 * n)
   ssr     = sst - sse
-  df1     = numCovariates
-  df2     = n - numCovariates - 1
+  df1     = num_covariates
+  df2     = n - num_covariates - 1
   if (sse == 0) {
-    Fstat = Inf
+    f_stat <- Inf
   } else {
-    Fstat   = (ssr / df1) / (sse / df2)
+    f_stat <- (ssr / df1) / (sse / df2)
   }
-  Fpval   = pf(Fstat, df1, df2, lower.tail = FALSE)
+  f_pval <- pf(f_stat, df1, df2, lower.tail = FALSE)
   if (sse == 0) {
-    Rsq = 1
+    r_sq <- 1
   } else {
-    Rsq     = drop(1 - sse / sst)
+    r_sq <- drop(1 - sse / sst)
   }
-  adjRsq  = drop(1 - (n - 1) / (n - numCovariates - 1) * (1 - Rsq))
+  adj_r_sq <- drop(1 - (n - 1) / (n - num_covariates - 1) * (1 - r_sq))
   if (rstderr == 0) {
-    tvals = rep(Inf, numCovariates + 1)
+    tvals = rep(Inf, num_covariates + 1)
   } else {
     tvals   = betas / (rstderr * sqrt(diag(invxtx)))
   }
   secoef  = tvals^-1 * betas
-  pvals   = 2 * pt(abs(tvals), n - numCovariates - 1, lower.tail = FALSE)
+  pvals   = 2 * pt(abs(tvals), n - num_covariates - 1, lower.tail = FALSE)
   stars   = matrix(sapply(pvals, function(x) {
     if (is.na(x)) ""
     else if (x < 0.001) "***"
@@ -4159,17 +4159,17 @@ differentModel <- function(formula = NULL, x = NULL) {
   y$secoef[indicies]       = secoef
   y$pvals[indicies]        = pvals
   y$rstderr                = rstderr
-  y$rsquare                = Rsq
-  y$adjrsquare             = adjRsq
-  y$Fstat                  = Fstat
-  y$Fpval                  = Fpval
+  y$rsquare                = r_sq
+  y$adjrsquare             = adj_r_sq
+  y$f_stat                  = f_stat
+  y$f_pval <- f_pval
   y$df1                    = df1
   y$df2                    = df2
   y$n                      = x$n
   y$xtx                    = xtx_old
   y$xty                    = xty_old
   y$yty                    = yty
-  y$meansy                 = meansy
+  y$means_y                 = means_y
   y$means                  = means_old
 
   names_old                = all_names[covariate_index]

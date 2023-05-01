@@ -70,7 +70,7 @@ GetProductsLogistic.AC <- function(params) {
   params$sts          = m[2:p, 2:p, drop = FALSE]
   params$sty          = m[2:p, 1, drop = FALSE]
   params$yty          = m[1, 1]
-  params$meansy       = allcolsum[1] / n
+  params$means_y       = allcolsum[1] / n
   params$means        = allcolsum[-1] / n
   params$n            = n
   params$p            = p

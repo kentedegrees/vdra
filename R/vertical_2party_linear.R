@@ -166,13 +166,13 @@ prepare_data_linear_a23 <- function(params, data, y_name = NULL) {
   })
   workdata$Y      = x[, 2, drop = FALSE]
   workdata$x      = x[, covariate_index, drop = FALSE]
-  workdata$meansy = means[2]
+  workdata$means_y = means[2]
   workdata$sdy    = sd[2]
   workdata$means  = means[covariate_index]
   workdata$sd     = sd[covariate_index]
   workdata$yty    = t(workdata$Y) %*% workdata$Y
 
-  workdata$Y      = (workdata$Y - workdata$meansy) / workdata$sdy
+  workdata$Y      = (workdata$Y - workdata$means_y) / workdata$sdy
 
   if (ncol(workdata$x) >= 2) {
     for (i in 2:ncol(workdata$x)) {
@@ -242,10 +242,10 @@ prepare_params_linear_b2 <- function(params, data) {
   params$a_col_names_old = c("")
   params$b_col_names_old = c("")
 
-  params$meansA        = 0
-  params$sdA           = 0
-  params$meansB        = data$means
-  params$sdB           = data$sd
+  params$means_a        = 0
+  params$sda           = 0
+  params$means_b        = data$means
+  params$sdb           = data$sd
   params$yty           = 0
 
   pb          = list()
@@ -309,12 +309,12 @@ prepare_params_linear_a2 <- function(params, data) {
   params$Atags     = data$tags
   params$Btags     = pb$tags
 
-  params$meansA = data$means
-  params$sdA    = data$sd
-  params$meansB = pb$means
-  params$sdB    = pb$sd
+  params$means_a = data$means
+  params$sda    = data$sd
+  params$means_b = pb$means
+  params$sdb    = pb$sd
   params$yty    = data$yty
-  params$meansy = data$meansy
+  params$means_y = data$means_y
   params$sdy    = data$sdy
 
   pa        = list()
@@ -439,8 +439,8 @@ finalize_params_linear_b2 <- function(params, data) {
   params$p1     = pa$p1
   params$p1_old = params$p1
   params$p      = params$p1 + params$p2
-  params$meansA = pa$means
-  params$sdA    = pa$sd
+  params$means_a = pa$means
+  params$sda    = pa$sd
   params$yty    = pa$yty
   params$y_name  = pa$y_name
 
@@ -542,8 +542,8 @@ get_products_linear_a2 <- function(params, data) {
   read_time <- proc.time()[3] - read_time
 
   xa_t_xa = t(data$x) %*% data$x
-  XATY  = t(data$x) %*% data$Y
-  YTXB  = 0
+  xa_t_y  = t(data$x) %*% data$Y
+  y_t_xb  = 0
   xa_t_xb = 0
 
   pbar <- make_progress_bar_1(params$blocks$num_blocks, "X'X", params$verbose)
@@ -565,7 +565,7 @@ get_products_linear_a2 <- function(params, data) {
     read_time <- read_time + proc.time()[3]
 
     xa_t_xb = xa_t_xb + t(data$x[strt:stp, ]) %*% w
-    YTXB  = YTXB  + t(data$Y[strt:stp, ]) %*% w
+    y_t_xb  = y_t_xb  + t(data$Y[strt:stp, ]) %*% w
 
     if ((i + 1) %in% params$container$filebreak.w || i == params$blocks$num_blocks) {
       close(to_read)
@@ -575,17 +575,17 @@ get_products_linear_a2 <- function(params, data) {
   }
 
   xtx = rbind(cbind(xa_t_xa, xa_t_xb), cbind(t(xa_t_xb), xb_t_xb))
-  XTY = rbind(XATY, t(YTXB))
+  x_t_y = rbind(xa_t_y, t(y_t_xb))
 
   # lasso: x is standardized but needs to be divided by sqrt(n - 1),
   # y is standardized
-  XTXLasso = xtx / (n - 1)
-  XTYLasso = params$sdy * XTY / sqrt(n - 1)
+  x_t_x_lasso = xtx / (n - 1)
+  x_t_y_lasso = params$sdy * x_t_y / sqrt(n - 1)
 
   params$xtx = xtx
-  params$xty = XTY
-  params$xtxLasso = XTXLasso
-  params$xtyLasso = XTYLasso
+  params$xty = x_t_y
+  params$xtxLasso = x_t_x_lasso
+  params$xtyLasso = x_t_y_lasso
 
   params$converged = TRUE
 
@@ -606,21 +606,21 @@ compute_results_linear_a2 <- function(params, data) {
   xty      <- params$xty
   xtx      <- params$xtx
   sdy      <- params$sdy
-  sdA      <- params$sdA
-  sdB      <- params$sdB
-  meansy   <- params$meansy
-  meansA   <- params$meansA
-  meansB   <- params$meansB
+  sda      <- params$sda
+  sdb      <- params$sdb
+  means_y   <- params$means_y
+  means_a   <- params$means_a
+  means_b   <- params$means_b
 
   # First we de-standardize.
-  xtx = diag(c(sdA, sdB)) %*% xtx %*% diag(c(sdA, sdB))
-  offset = matrix(c(meansA, meansB), ncol = 1) %*%
-    matrix(c(meansA, meansB), nrow = 1) * n
+  xtx = diag(c(sda, sdb)) %*% xtx %*% diag(c(sda, sdb))
+  offset = matrix(c(means_a, means_b), ncol = 1) %*%
+    matrix(c(means_a, means_b), nrow = 1) * n
   offset[1, 1] = 0
   xtx = xtx + offset
 
-  xty = diag(c(sdA, sdB)) %*% xty * sdy
-  offset = n * meansy * matrix(c(meansA, meansB), ncol = 1)
+  xty = diag(c(sda, sdb)) %*% xty * sdy
+  offset = n * means_y * matrix(c(means_a, means_b), ncol = 1)
   xty = xty + offset
 
   # Now, we check for colinearity
@@ -647,36 +647,36 @@ compute_results_linear_a2 <- function(params, data) {
   invxtx = solve(xtx)
   betas  = drop(invxtx %*% xty)
 
-  numCovariates = p - 1
+  num_covariates <- p - 1
 
   #   # If true sse is approximately 0, random variations could cause this
   #   # calculation to be less than 0
   #   # If calculated sse is less than 0, we set it equal to 0.
   sse     = max(drop(yty - 2 * t(xty) %*% betas + (t(betas) %*% xtx) %*% betas), 0)
-  rstderr = drop(sqrt(sse / (n - numCovariates - 1)))
-  sst     = drop(yty - meansy^2 * n)
+  rstderr = drop(sqrt(sse / (n - num_covariates - 1)))
+  sst     = drop(yty - means_y^2 * n)
   ssr     = sst - sse
-  df1     = numCovariates
-  df2     = n - numCovariates - 1
+  df1     = num_covariates
+  df2     = n - num_covariates - 1
   if (sse == 0) {
-    Fstat = Inf
+    f_stat <- Inf
   } else {
-    Fstat   = (ssr / df1) / (sse / df2)
+    f_stat <- (ssr / df1) / (sse / df2)
   }
-  Fpval   = pf(Fstat, df1, df2, lower.tail = FALSE)
+  f_pval <- pf(f_stat, df1, df2, lower.tail = FALSE)
   if (sse == 0) {
-    Rsq = 1
+    r_sq <- 1
   } else {
-    Rsq     = drop(1 - sse / sst)
+    r_sq <- drop(1 - sse / sst)
   }
-  adjRsq  = drop(1 - (n - 1) / (n - numCovariates - 1) * (1 - Rsq))
+  adj_r_sq <- drop(1 - (n - 1) / (n - num_covariates - 1) * (1 - r_sq))
   if (rstderr == 0) {
-    tvals = rep(Inf, numCovariates + 1)
+    tvals = rep(Inf, num_covariates + 1)
   } else {
     tvals   = betas / (rstderr * sqrt(diag(invxtx)))
   }
   secoef  <- tvals^-1 * betas
-  pvals   <- 2 * pt(abs(tvals), n - numCovariates - 1, lower.tail = FALSE)
+  pvals   <- 2 * pt(abs(tvals), n - num_covariates - 1, lower.tail = FALSE)
   stats$party                  <- c(rep("dp0", length(a_names)),
                                    rep("dp1", length(b_names)))
   stats$responseParty          <- "dp0"
@@ -691,18 +691,18 @@ compute_results_linear_a2 <- function(params, data) {
   stats$secoef[indicies]       <- secoef
   stats$pvals[indicies]        <- pvals
   stats$rstderr                <- rstderr
-  stats$rsquare                <- Rsq
-  stats$adjrsquare             <- adjRsq
-  stats$Fstat                  <- Fstat
-  stats$Fpval                  <- Fpval
+  stats$rsquare                <- r_sq
+  stats$adjrsquare             <- adj_r_sq
+  stats$f_stat                  <- f_stat
+  stats$f_pval                  <- f_pval
   stats$df1                    <- df1
   stats$df2                    <- df2
   stats$n                      <- params$n
   stats$xtx                    <- xtx_old
   stats$xty                    <- xty_old
   stats$yty                    <- yty
-  stats$meansy                 <- meansy
-  stats$means                  <- c(meansA, meansB)
+  stats$means_y                 <- means_y
+  stats$means                  <- c(means_a, means_b)
 
   names(stats$party)           <- names_old
   names(stats$coefficients)    <- names_old

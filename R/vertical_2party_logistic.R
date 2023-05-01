@@ -240,10 +240,10 @@ PrepareParamsLogistic.b2 <- function(params, data) {
   params$cutoff        = 1
   params$max_iterations = 1
 
-  params$meansA        = 0
-  params$sdA           = 0
-  params$meansB        = data$means
-  params$sdB           = data$sd
+  params$means_a        = 0
+  params$sda           = 0
+  params$means_b        = data$means
+  params$sdb           = data$sd
   params$yty           = 0
 
   pb          = list()
@@ -314,10 +314,10 @@ PrepareParamsLogistic.a2 <- function(params, data, cutoff = 0.01, max_iterations
   if (max_iterations < 1) max_iterations = 1
   params$max_iterations = max_iterations
 
-  params$meansA = data$means
-  params$sdA    = data$sd
-  params$meansB = pb$means
-  params$sdB    = pb$sd
+  params$means_a = data$means
+  params$sda    = data$sd
+  params$means_b = pb$means
+  params$sdb    = pb$sd
   params$yty    = data$yty
 
   pa               = list()
@@ -445,8 +445,8 @@ FinalizeParamsLogistic.b2 <- function(params, data) {
   read_time <- proc.time()[3] - read_time
   params$p1            = pa$p1
   params$p             = params$p1 + params$p2
-  params$meansA        = pa$means
-  params$sdA           = pa$sd
+  params$means_a        = pa$means
+  params$sda           = pa$sd
   params$yty           = pa$yty
   params$y_name         = pa$y_name
   params$cutoff        = pa$cutoff
@@ -554,8 +554,8 @@ CheckColinearityLogistic.a2 <- function(params, data) {
   read_time <- read_time + proc.time()[3]
   xa_t_xa = t(data$x) %*% data$x
   xa_t_xb = 0
-  XATY  = t(data$x) %*% data$Y
-  YTXB  = 0
+  xa_t_y  = t(data$x) %*% data$Y
+  y_t_xb  = 0
 
   pbar <- make_progress_bar_1(params$blocks$num_blocks, "X'X", params$verbose)
 
@@ -576,7 +576,7 @@ CheckColinearityLogistic.a2 <- function(params, data) {
     read_time <- read_time + proc.time()[3]
 
     xa_t_xb = xa_t_xb + t(data$x[strt:stp, ]) %*% w
-    YTXB  = YTXB  + t(data$Y[strt:stp, ]) %*% w
+    y_t_xb  = y_t_xb  + t(data$Y[strt:stp, ]) %*% w
 
     if ((i + 1) %in% params$container$filebreak.w || i == params$blocks$num_blocks) {
       close(to_read)
@@ -586,7 +586,7 @@ CheckColinearityLogistic.a2 <- function(params, data) {
   }
 
   xtx = rbind(cbind(xa_t_xa, xa_t_xb), cbind(t(xa_t_xb), xb_t_xb))
-  XTY = rbind(XATY, t(YTXB))
+  x_t_y = rbind(xa_t_y, t(y_t_xb))
 
   nrow = nrow(xtx)
   indicies = c(1)
@@ -598,7 +598,7 @@ CheckColinearityLogistic.a2 <- function(params, data) {
   }
 
   xtx = xtx[indicies, indicies]
-  XTY = matrix(XTY[indicies], ncol = 1)
+  x_t_y = matrix(x_t_y[indicies], ncol = 1)
 
   a_names   = params$a_col_names
   b_names   = params$b_col_names
@@ -619,12 +619,12 @@ CheckColinearityLogistic.a2 <- function(params, data) {
   params$p2            = length(b_names_keep)
   params$p_old         = params$p1_old + params$p2_old
   params$p             = params$p1 + params$p2
-  params$meansA        = params$meansA[params$a_indicies_keep]
-  params$meansB        = params$meansB[params$b_indicies_keep]
-  params$sdA           = params$sdA[params$a_indicies_keep]
-  params$sdB           = params$sdB[params$b_indicies_keep]
+  params$means_a        = params$means_a[params$a_indicies_keep]
+  params$means_b        = params$means_b[params$b_indicies_keep]
+  params$sda           = params$sda[params$a_indicies_keep]
+  params$sdb           = params$sdb[params$b_indicies_keep]
   params$xtx           = xtx
-  params$xty           = XTY
+  params$xty           = x_t_y
 
   a_indicies = params$a_indicies_keep
   b_indicies = params$b_indicies_keep
@@ -718,8 +718,8 @@ UpdateParamsLogistic.b2 <- function(params) {
   params$a_indicies_keep = a_indicies
   params$betas_b    = Bbetas
   params$betas_b_old = matrix(0, params$p2, 1)
-  params$meansB = params$meansB[b_indicies]
-  params$sdB    = params$sdB[b_indicies]
+  params$means_b = params$means_b[b_indicies]
+  params$sdb    = params$sdb[b_indicies]
   params$Bxty   = Bxty
   params <- add_to_log(params, "UpdateParamsLogistic.b2", read_time, read_size, 0, 0)
   return(params)
@@ -1037,9 +1037,9 @@ GetConvergedStatusLogistic.b2 <- function(params) {
 
 GetFinalCoefLogistic.b2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetFinalCoefLogistic.b2\n\n")
-  betas_b = params$betas_b / params$sdB
-  offsetB = sum(betas_b * params$meansB)
-  BFinalFitted = t(params$sdB * t(data$x) + params$meansB) %*% betas_b
+  betas_b = params$betas_b / params$sdb
+  offsetB = sum(betas_b * params$means_b)
+  BFinalFitted = t(params$sdb * t(data$x) + params$means_b) %*% betas_b
   write_time <- proc.time()[3]
   save(betas_b, BFinalFitted, offsetB, file = file.path(params$write_path, "b_final.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, "b_final.rdata")))
@@ -1058,10 +1058,10 @@ ComputeResultsLogistic.a2 <- function(params, data) {
   n      <- params$n
   p1     <- params$p1
   p2     <- params$p2
-  sdA    <- params$sdA
-  sdB    <- params$sdB
-  meansA <- params$meansA
-  meansB <- params$meansB
+  sda    <- params$sda
+  sdb    <- params$sdb
+  means_a <- params$means_a
+  means_b <- params$means_b
   a_names <- params$a_col_names_old
   b_names <- params$b_col_names_old
   p1_old <- params$p1_old
@@ -1077,13 +1077,13 @@ ComputeResultsLogistic.a2 <- function(params, data) {
   load(file.path(params$read_path, "b_final.rdata"))  # betas_b, offsetB, BFinalFitted
   read_size <- sum(file.size(file.path(params$read_path, "b_final.rdata")))
   read_time <- proc.time()[3] - read_time
-  betasA <- params$betasA / sdA
-  offsetA <- sum(betasA[-1] * params$meansA[-1])
+  betasA <- params$betasA / sda
+  offsetA <- sum(betasA[-1] * params$means_a[-1])
   betasA[1] <- betasA[1] - offsetA - offsetB
   betas <- c(betasA, betas_b)
 
-  AFinalFitted <- t(sdA * t(data$x) + meansA) %*% betasA -
-    t(sdA[1] * t(data$x[, 1]) + meansA[1]) %*% betasA[1]
+  AFinalFitted <- t(sda * t(data$x) + means_a) %*% betasA -
+    t(sda[1] * t(data$x[, 1]) + means_a[1]) %*% betasA[1]
   FinalFitted <- AFinalFitted + BFinalFitted + betas[1]
   params$FinalFitted <- FinalFitted
 
@@ -1095,8 +1095,8 @@ ComputeResultsLogistic.a2 <- function(params, data) {
   # If xtwx were singular, it would have been caught in GetII.a2(), so we may
   # assume that xtwx is NOT singular and so we do not have to do a check.
   cov1 <- solve(params$xtwx)
-  secoef <- sqrt(diag(cov1)) / c(sdA, sdB)
-  tmp <- matrix(c(1, (-meansA / sdA)[-1], -meansB / sdB), ncol = 1)
+  secoef <- sqrt(diag(cov1)) / c(sda, sdb)
+  tmp <- matrix(c(1, (-means_a / sda)[-1], -means_b / sdb), ncol = 1)
   secoef[1] <- sqrt(t(tmp) %*% cov1 %*% tmp)
 
 
