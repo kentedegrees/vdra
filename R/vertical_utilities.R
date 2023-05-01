@@ -2178,7 +2178,7 @@ create_containers <- function(pA, pB, blocks) {
 
   littleFilesize.z   = 8 * littleBlocksize * littleBlockG
   littleFilesize.w   = 8 * littleBlocksize * pB # used for w, v, RW, wr, rv, Cox
-  littleFilesize.RZ  = 8 * littleBlocksize^2
+  littleFilesize_rz  = 8 * littleBlocksize^2
   littleFilesize.pr  = 8 * (pA + 1) * pB        # I think this is not used anymore
   littleFilesize_xr = 8 * pA * pB
 
@@ -2194,11 +2194,11 @@ create_containers <- function(pA, pB, blocks) {
   numLargeContainer.w = num_blocks %% numContainers.w
   numSmallContainer.w = numContainers.w - numLargeContainer.w
 
-  numContainers.rz <- ceiling(num_blocks * littleFilesize.RZ / maximumFilesize)
-  num_blocksSmallContainer.rz <- trunc(num_blocks / numContainers.RZ)
-  num_blocksLargeContainer.rz <- num_blocksSmallContainer.RZ + 1
-  numLargeContainer.rz <- num_blocks %% numContainers.RZ
-  numSmallContainer.rz <- numContainers.RZ - numLargeContainer.RZ
+  numContainers_rz <- ceiling(num_blocks * littleFilesize_rz / maximumFilesize)
+  num_blocksSmallContainer_rz <- trunc(num_blocks / numContainers_rz)
+  num_blocksLargeContainer_rz <- num_blocksSmallContainer_rz + 1
+  numLargeContainer_rz <- num_blocks %% numContainers_rz
+  numSmallContainer_rz <- numContainers_rz - numLargeContainer_rz
 
   numContainers.pr = ceiling(num_blocks * littleFilesize_pr / maximumFilesize)
   num_blocksSmallContainer.pr <- trunc(num_blocks / numContainers_pr)
@@ -2230,13 +2230,13 @@ create_containers <- function(pA, pB, blocks) {
                       numLargeContainer.w * num_blocksLargeContainer.w)
   }
 
-  if (numLargeContainer.RZ > 0) {
-    filebreak.rz <- c(0:(numLargeContainer.RZ - 1) * num_blocksLargeContainer.RZ + 1,
-                     0:(numSmallContainer.RZ - 1) * num_blocksSmallContainer.RZ + 1 +
-                       numLargeContainer.RZ * num_blocksLargeContainer.RZ)
+  if (numLargeContainer_rz > 0) {
+    filebreak_rz <- c(0:(numLargeContainer_rz - 1) * num_blocksLargeContainer_rz + 1,
+                     0:(numSmallContainer_rz - 1) * num_blocksSmallContainer_rz + 1 +
+                       numLargeContainer_rz * num_blocksLargeContainer_rz)
   } else {
-    filebreak.rz <- c(0:(numSmallContainer.RZ - 1) * num_blocksSmallContainer.RZ + 1 +
-                       numLargeContainer.RZ * num_blocksLargeContainer.RZ)
+    filebreak_rz <- c(0:(numSmallContainer_rz - 1) * num_blocksSmallContainer_rz + 1 +
+                       numLargeContainer_rz * num_blocksLargeContainer_rz)
   }
 
   if (numLargeContainer.pr > 0) {
@@ -2259,7 +2259,7 @@ create_containers <- function(pA, pB, blocks) {
 
   containers$file_break_z   = file_break_z
   containers$filebreak.w   = filebreak.w
-  containers$filebreak.RZ  = filebreak.RZ
+  containers$filebreak_rz  = filebreak_rz
   containers$filebreak.pr  = filebreak_pr # I think we are not using this anymore
   containers$filebreak.v   = filebreak.w
   containers$filebreak.RW  = filebreak.w
@@ -2331,7 +2331,7 @@ formatStatList <- function(vals) {
     }
     return(f)
   }
-  temp = vals[keep]  # All non-zero, non-NA
+  temp <- vals[keep]  # All non-zero, non-NA
   minval = min(abs(temp))
   maxval = max(abs(temp))
   #Where most significant digit is located
@@ -4056,7 +4056,7 @@ differentModel <- function(formula = NULL, x = NULL) {
     if (length(vars) == 1) {
       warning("Variable", vars, "not found. Returning original model.")
     } else {
-      temp = c(paste0(vars[-length(vars)], ","), vars[length(vars)])
+      temp <- c(paste0(vars[-length(vars)], ","), vars[length(vars)])
       warning(paste("Variables", temp, "not found. Returning original model."))
     }
     return(invisible(x))
@@ -4391,7 +4391,7 @@ RocTest <- function(x = NULL, bins = 10) {
     return(invisible(NULL))
   } else if (is.numeric(bins)) {
     temp <- list()
-    temp = RocInternal(x, bins = bins)
+    temp <- RocInternal(x, bins = bins)
     class(temp) = "rocdistributed"
     return(temp)
   }
@@ -4591,7 +4591,7 @@ survfitDistributed.formula <- function(x, formula, data) {
     # Calculate the Kaplan Meier Curve Here per notes from 9/4/19
     rank2 = rank[start:end]
     event2 = status[start:end]
-    temp = table(rank2)
+    temp <- table(rank2)
     m = length(temp)
     temp0 <- table(rank2, event2)
     if (ncol(temp0) == 1) {
@@ -4631,7 +4631,7 @@ survfitDistributed.formula <- function(x, formula, data) {
     } else {
       label <- ""
       for (j in 1:ncol(data)) {
-        temp = colnames(data)[j]
+        temp <- colnames(data)[j]
         label <- paste0(label, temp, "=", legend[[temp]][data2[start, j]])
         if (j < ncol(data)) {
           label <- paste0(label, ", ")

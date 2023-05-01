@@ -253,7 +253,7 @@ prepare_params_linear_DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_DP\n\n")
   params$n          = nrow(data$x)
   params$p          = ncol(data$x)
-  temp = as.numeric(Sys.time())
+  temp <- as.numeric(Sys.time())
   set.seed((temp - trunc(temp)) * .Machine$integer.max)
   params$seed       = floor(runif(1) * .Machine$integer.max)
   params$scaler     = 1 + runif(1)
@@ -316,7 +316,7 @@ PrepareSharesLinear.DP <- function(params, data) {
     }
   }
 
-  halfshare = data$x - halfshare
+  halfshare <- data$x - halfshare
   colmin    = data$colmin
   colrange  = data$colrange
   colsum    = data$colsum
@@ -390,7 +390,7 @@ get_products_linear_AC <- function(params) {
       if (id1 == id2) {
         m[offset1:(offset1 + p1 - 1), offset2:(offset2 + p2 - 1)] = allproducts[[id1]][[id2]]
       } else {
-        temp = allproducts[[id1]][[id2]] + allproducts[[id2]][[id1]] +
+        temp <- allproducts[[id1]][[id2]] + allproducts[[id2]][[id1]] +
           t(allhalfshare[[id1]]) %*% allhalfshare[[id2]]
         m[offset1:(offset1 + p1 - 1), offset2:(offset2 + p2 - 1)] = temp
         m[offset2:(offset2 + p2 - 1), offset1:(offset1 + p1 - 1)] = t(temp)
@@ -451,8 +451,8 @@ compute_results_linear_AC <- function(params) {
       max = max - 1
     }
     idx <- indicies[which(min <= indicies & indicies <= max)] - min + 1
-    temp = tags[[id]]
-    temp = temp[idx]
+    temp <- tags[[id]]
+    temp <- temp[idx]
     tags[[id]] = temp
     min = max + 1
   }

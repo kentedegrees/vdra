@@ -340,7 +340,7 @@ prepare_blocks_linear_a2 <- function(params, blocksize) {
   # For now, assuming that p1 > 0 and p2 > 0
   n <- params$n
   p1 <- params$p1
-  p2 = params$p2
+  p2 <- params$p2
 
   minimum_block_size <- get_block_size(p1, p2)
   if (n < minimum_block_size) {
@@ -501,7 +501,7 @@ get_w_linear_b2 <- function(params, data) {
                        endian = "little"), nrow = n2, ncol = g1)
     read_time <- read_time + proc.time()[3]
 
-    w = data$x[strt:stp, ] - z %*% (t(z) %*% data$x[strt:stp, ])
+    w <- data$x[strt:stp, ] - z %*% (t(z) %*% data$x[strt:stp, ])
 
     write_time <- write_time - proc.time()[3]
     writeBin(as.vector(w), con = to_write, endian = "little")
@@ -533,7 +533,7 @@ get_products_linear_a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "get_products_linear_a2\n\n")
   n <- params$n
   p1 <- params$p1
-  p2 = params$p2
+  p2 <- params$p2
   xb_t_xb <- NULL
 
   read_time <- proc.time()[3]

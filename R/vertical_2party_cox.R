@@ -929,7 +929,7 @@ compute_log_likelihood_cox_a2 <- function(params, data) {
 
   if (params$alg_iteration_counter == 1) {
     params$nullloglikelihood <- loglikelihood
-    params$nullScore <- params$t_xa_delta_l
+    params$null_score <- params$t_xa_delta_l
   }
   params$x_betas <- x_betas
   params$step_size <- step_size
@@ -981,7 +981,7 @@ update_data_cox_b2 <- function(params, data) {
 compute_log_likelihood_cox_b2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "compute_log_likelihood_cox_b2\n\n")
   n <- params$n
-  p2  = params$p2
+  p2  <- params$p2
   step_size <- NULL
   x_betas  <- NULL
 
@@ -997,7 +997,7 @@ compute_log_likelihood_cox_b2 <- function(params, data) {
 
   params$step_size <- step_size
 
-  w = exp(x_betas)
+  w <- exp(x_betas)
   deltal <- as.numeric(data$survival$status)
   deltal[1] <- deltal[1]  # This is to force R to make a copy since we are exploiting
   # a pass by reference with the C call.
@@ -1033,7 +1033,7 @@ compute_log_likelihood_cox_b2 <- function(params, data) {
                        endian = "little"), nrow = n2, ncol = g)
     read_time <- read_time + proc.time()[3]
 
-    iz_tz_w_xbtemp = w_xb[strt:stp, , drop = FALSE] - z %*% (t(z) %*% w_xb[strt:stp, , drop = FALSE])
+    iz_tz_w_xbtemp <- w_xb[strt:stp, , drop = FALSE] - z %*% (t(z) %*% w_xb[strt:stp, , drop = FALSE])
 
     write_time <- write_time - proc.time()[3]
     writeBin(as.vector(iz_tz_w_xbtemp), con = to_write, endian = "little")
@@ -1054,7 +1054,7 @@ compute_log_likelihood_cox_b2 <- function(params, data) {
   params$txb_w_xb   <- t(data$x) %*% w_xb
   params$t_xb_delta_l <- t(data$x) %*% deltal
   if (params$alg_iteration_counter == 1) {
-    params$nullScore = params$t_xb_delta_l
+    params$null_score <- params$t_xb_delta_l
   }
 
   txb_w_xb <- params$txb_w_xb
@@ -1070,7 +1070,7 @@ compute_log_likelihood_cox_b2 <- function(params, data) {
 compute_inverse_cox_a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "compute_inverse_cox_a2\n\n")
   p1 <- params$p1
-  p2 = params$p2
+  p2 <- params$p2
   read_time <- 0
   read_size <- 0
   write_time <- 0
@@ -1083,11 +1083,11 @@ compute_inverse_cox_a2 <- function(params, data) {
   read_size <- read_size + file.size(file.path(params$read_path, "txb_w_xb.rdata"))
   read_time <- read_time + proc.time()[3]
 
-  container_ct_cox = 0
+  container_ct_cox <- 0
 
   for (i in 1:params$blocks$num_blocks) {
     if (i %in% params$container$filebreak.Cox) {
-      container_ct_cox = container_ct_cox + 1
+      container_ct_cox <- container_ct_cox + 1
       filename <- paste0("cCox_", container_ct_cox, ".rdata")
       to_read <- file(file.path(params$read_path, filename), "rb")
     }
@@ -1107,39 +1107,39 @@ compute_inverse_cox_a2 <- function(params, data) {
     }
   }
 
-  m = rbind(cbind(params$t_xa_w_xa, txa_w_xb),
+  m <- rbind(cbind(params$t_xa_w_xa, txa_w_xb),
             cbind(t(txa_w_xb), txb_w_xb))
 
   if (params$alg_iteration_counter == 1) {
-    params$nullHessian = m
+    params$nullHessian <- m
   }
-  params$XtWX = m
+  params$XtWX <- m
 
 
-  inv = NULL
+  inv <- NULL
   tryCatch({
-    inv = solve(m)
+    inv <- solve(m)
   },
   error = function(err) {
-    inv = NULL
+    inv <- NULL
   })
-  m = inv
+  m <- inv
   if (is.null(m)) {
     params$failed <- TRUE
     params$error_message <- "The matrix XWX is singular.  This is probably due to divergence of the coefficients."
     warning(params$error_message)
 
-    betas = rep(NA, length(params$a_col_names_old))
+    betas <- rep(NA, length(params$a_col_names_old))
     betas[params$a_indicies_keep] = params$betas_a
     betas <- data.frame(betas)
     rownames(betas) = params$a_col_names_old
     params <- add_to_log(params, "compute_inverse_cox_a2", read_time, read_size, write_time, write_size)
     return(params)
   }
-  m3 = m[(p1 + 1):(p1 + p2), 1:p1]
-  params$m = m
-  params$m3_txa_delta_l = m3 %*% params$t_xa_delta_l
-  m3_txa_delta_l = params$m3_txa_delta_l
+  m3 <- m[(p1 + 1):(p1 + p2), 1:p1]
+  params$m <- m
+  params$m3_txa_delta_l <- m3 %*% params$t_xa_delta_l
+  m3_txa_delta_l <- params$m3_txa_delta_l
   write_time <- write_time - proc.time()[3]
   save(m, m3_txa_delta_l, file = file.path(params$write_path, "M.rdata"))
   write_size <- write_size + sum(file.size(file.path(params$write_path, "M.rdata")))
@@ -1153,9 +1153,9 @@ compute_inverse_cox_a2 <- function(params, data) {
 compute_beta_cox_b2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "compute_beta_cox_b2\n\n")
   p1 <- params$p1
-  p2 = params$p2
-  m  = 0
-  m3_txa_delta_l = 0
+  p2 <- params$p2
+  m  <- 0
+  m3_txa_delta_l <- 0
 
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "M.rdata")) # load m, m3_txa_delta_l
@@ -1166,16 +1166,16 @@ compute_beta_cox_b2 <- function(params, data) {
     params$betas_b <- params$betas_b_old + (params$betas_b - params$betas_b_old) * params$step_size
   }
 
-  params$betas_b_old = params$betas_b
-  m4 = m[(p1 + 1):(p1 + p2), (p1 + 1):(p1 + p2)]
-  m2 = m[1:p1, (p1 + 1):(p1 + p2)]
+  params$betas_b_old <- params$betas_b
+  m4 <- m[(p1 + 1):(p1 + p2), (p1 + 1):(p1 + p2)]
+  m2 <- m[1:p1, (p1 + 1):(p1 + p2)]
 
-  params$m2_txb_deta_l = m2 %*% params$t_xb_delta_l
+  params$m2_txb_deta_l <- m2 %*% params$t_xb_delta_l
   params$betas_b <- params$betas_b + m3_txa_delta_l + m4 %*% params$t_xb_delta_l
 
   params$xb_betas_b <- data$x %*% params$betas_b
 
-  m2_txb_deta_l = params$m2_txb_deta_l
+  m2_txb_deta_l <- params$m2_txb_deta_l
   xb_betas_b <- params$xb_betas_b
   write_time <- proc.time()[3]
   save(m2_txb_deta_l, file = file.path(params$write_path, "M2_tXB_deltal.rdata"))
@@ -1192,7 +1192,7 @@ compute_beta_cox_b2 <- function(params, data) {
 compute_beta_cox_a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "compute_beta_cox_a2\n\n")
   p1 <- params$p1
-  m2_txb_deta_l = 0
+  m2_txb_deta_l <- 0
 
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "M2_tXB_deltal.rdata")) # load m2_txb_deta_l
@@ -1200,20 +1200,20 @@ compute_beta_cox_a2 <- function(params, data) {
   read_time <- proc.time()[3] - read_time
 
   if (params$step_size < 1) { # Is this in the wrong spot?
-    params$betas_a = params$betas_a_old + (params$betas_a - params$betas_a_old) * params$step_size
+    params$betas_a <- params$betas_a_old + (params$betas_a - params$betas_a_old) * params$step_size
   }
 
-  params$betas_a_old = params$betas_a
-  params$betas_a = params$betas_a + params$m[1:p1, 1:p1] %*% params$t_xa_delta_l + m2_txb_deta_l
+  params$betas_a_old <- params$betas_a
+  params$betas_a <- params$betas_a + params$m[1:p1, 1:p1] %*% params$t_xa_delta_l + m2_txb_deta_l
 
-  converged = abs(params$loglikelihood - params$loglikelihood_old) /
+  converged <- abs(params$loglikelihood - params$loglikelihood_old) /
     (abs(params$loglikelihood) + 0.1) < params$cutoff
-  params$converged = converged
+  params$converged <- converged
 
-  params$xa_betas_a = data$x %*% params$betas_a
+  params$xa_betas_a <- data$x %*% params$betas_a
 
   if (params$alg_iteration_counter >= params$max_iterations) {
-    params$halted = TRUE
+    params$halted <- TRUE
     warning(paste("Failed to converged in", params$max_iterations, "iterations."))
   }
 
@@ -1229,22 +1229,22 @@ compute_beta_cox_a2 <- function(params, data) {
 
 get_converged_status_cox_b2 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "get_converged_status_cox_b2\n\n")
-  converged = NULL
+  converged <- NULL
 
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "converged.rdata")) # load deltabeta
   read_size <- file.size(file.path(params$read_path, "converged.rdata"))
   read_time <- proc.time()[3] - read_time
-  params$converged = converged
+  params$converged <- converged
   if (params$alg_iteration_counter > params$max_iterations) {
-    params$halted = TRUE
+    params$halted <- TRUE
     warning(paste("Failed to converged in", params$max_iterations, "iterations."))
   }
   write_time <- 0
   write_size <- 0
   if (params$converged || params$halted) {
     betas_b <- params$betas_b
-    null_score_b <- params$nullScore
+    null_score_b <- params$null_score
     write_time <- proc.time()[3]
     save(betas_b, null_score_b, file = file.path(params$write_path, "B_betas_ns.rdata"))
     write_size <- sum(file.size(file.path(params$write_path, "B_betas_ns.rdata")))
@@ -1257,34 +1257,34 @@ get_converged_status_cox_b2 <- function(params) {
 
 survfit_cox_a2 <- function(params, survival, pred) {
   if (params$trace) cat(as.character(Sys.time()), "survfit_cox_a2\n\n")
-  surv = rep(1, length(survival$rank))
+  surv <- rep(1, length(survival$rank))
   for (i in 1:length(survival$strata)) {
     if (survival$strata[[i]]$J > 0) {
-      start   = survival$strata[[i]]$start
-      end     = survival$strata[[i]]$end
-      risk    = exp(pred[start:end])
-      dtime   = survival$rank[start:end]
-      status  = survival$status[start:end]
-      death   = status == 1                                  # times where death happened
-      time    = sort(unique(dtime))                          # (A) get unique event times
+      start   <- survival$strata[[i]]$start
+      end     <- survival$strata[[i]]$end
+      risk    <- exp(pred[start:end])
+      dtime   <- survival$rank[start:end]
+      status  <- survival$status[start:end]
+      death   <- status == 1                                  # times where death happened
+      time    <- sort(unique(dtime))                          # (A) get unique event times
       rcumsum <- function(x) rev(cumsum(rev(x)))
-      nevent  = as.vector(rowsum(as.numeric(death), dtime))  # (A) Count the number of deaths at each event time
-      ndeath  = rowsum(status, dtime)                        # (A) number of deaths at each unique event time
-      nrisk   = rcumsum(rowsum(risk, dtime))                 # (A) rowsum = sum of risk at each time, then reverse cum sum, sorted by time
-      erisk   = rowsum(risk * death, dtime)                  # (A) risk score sums of death at each unique event time
-      n       = length(nevent)
-      sum1 = double(n)   # a vector of 0's, length number of unique event times
+      nevent  <- as.vector(rowsum(as.numeric(death), dtime))  # (A) Count the number of deaths at each event time
+      ndeath  <- rowsum(status, dtime)                        # (A) number of deaths at each unique event time
+      nrisk   <- rcumsum(rowsum(risk, dtime))                 # (A) rowsum = sum of risk at each time, then reverse cum sum, sorted by time
+      erisk   <- rowsum(risk * death, dtime)                  # (A) risk score sums of death at each unique event time
+      n       <- length(nevent)
+      sum1    <- double(n)   # a vector of 0's, length number of unique event times
       for (i in 1:n) {
-        d = ndeath[i]
+        d <- ndeath[i]
         if (d == 1) {
           sum1[i] = 1 / nrisk[i]
         } else if (d > 1) {
           for (j in 0:(d - 1)) {
-            sum1[i] = sum1[i] + 1 / (d * nrisk[i] - erisk[i] * j)
+            sum1[i] <- sum1[i] + 1 / (d * nrisk[i] - erisk[i] * j)
           }
         }
       }
-      temp = exp(-cumsum(nevent * sum1))
+      temp <- exp(-cumsum(nevent * sum1))
       for (i in start:end) {
         surv[i] = temp[which(time == survival$rank[i])]
       }
@@ -1312,7 +1312,7 @@ compute_results_cox_a2 <- function(params, data) {
                                                           "XB_betasB.rdata"))))
   read_time <- proc.time()[3] - read_time
   params$betas_b <- betas_b
-  params$nullScore = rbind(params$nullScore, null_score_b)
+  params$null_score <- rbind(params$null_score, null_score_b)
 
   names_new          <- c(params$a_col_names, params$b_col_names)
   names_old          <- c(params$a_col_names_old, params$b_col_names_old)
@@ -1349,9 +1349,9 @@ compute_results_cox_a2 <- function(params, data) {
   stats$nevent       <- params$num_events
   stats$iter         <- params$alg_iteration_counter - 1
   stats$df           <- params$p
-  stats$score        <- t(params$nullScore) %*%
+  stats$score        <- t(params$null_score) %*%
     solve(params$nullHessian) %*%
-    params$nullScore
+    params$null_score
   stats$score        <- c(stats$score, 1 - pchisq(stats$score, stats$df))
   stats$method       <- "efron"
   stats$lrt          <- 2 * (stats$loglik[2] - stats$loglik[1])
@@ -1651,7 +1651,7 @@ compute_cox_b2 <- function(params, data) {
       params$error_message <- "The matrix t(X)WX is singular.  This is probably due to divergence of the coefficients."
       warning(params$error_message)
 
-      betas = rep(NA, length(params$b_col_names_old))
+      betas <- rep(NA, length(params$b_col_names_old))
       betas[params$b_indicies_keep] = betas_b
       betas <- data.frame(betas)
       rownames(betas) = params$b_col_names_old
@@ -1662,14 +1662,14 @@ compute_cox_b2 <- function(params, data) {
     betas_b    = betas_b_old + (betas_b - betas_b_old) * step_size
     betas_b_old = betas_b
     betas_b    = betas_b + delta_beta
-    x_betas   = data$x %*% betas_b
+    x_betas   <- data$x %*% betas_b
 
-    converged = abs(loglikelihood - loglikelihood_old) /
+    converged <- abs(loglikelihood - loglikelihood_old) /
       (abs(loglikelihood) + 0.1) < params$cutoff
-    params$converged = converged
+    params$converged <- converged
 
     if (params$alg_iteration_counter == 1) {
-      params$nullScore         <- t(data$x) %*% deltal
+      params$null_score         <- t(data$x) %*% deltal
       params$nullloglikelihood <- loglikelihood
     }
     loglikelihood_old = loglikelihood
@@ -1743,8 +1743,8 @@ compute_results_cox_b2 <- function(params, data) {
     stats$n            <- params$n
     stats$nevent       <- params$num_events
     stats$iter         <- params$alg_iteration_counter - 1
-    stats$score        <- t(params$nullScore) %*% solve(params$nullHessian) %*%
-      params$nullScore
+    stats$score        <- t(params$null_score) %*% solve(params$nullHessian) %*%
+      params$null_score
     stats$wald.test    <- t(params$betas_b) %*% params$XtWX %*% params$betas_b
     stats$concordance <- c(NA, NA, NA, NA, NA, NA)
   }

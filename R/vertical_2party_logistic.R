@@ -347,7 +347,7 @@ prepare_blocks_logistic_a2 <- function(params, blocksize) {
   # For now, assuming that p1 > 0 and p2 > 0
   n <- params$n
   p1 <- params$p1
-  p2 = params$p2
+  p2 <- params$p2
 
   minimum_block_size <- get_block_size(p1, p2)
   if (n < minimum_block_size) {
@@ -511,7 +511,7 @@ get_w_logistics_b2 <- function(params, data) {
                        endian = "little"), nrow = n2, ncol = g1)
     read_time <- read_time + proc.time()[3]
 
-    w = data$x[strt:stp, ] - z %*% (t(z) %*% data$x[strt:stp, ])
+    w <- data$x[strt:stp, ] - z %*% (t(z) %*% data$x[strt:stp, ])
 
     write_time <- write_time - proc.time()[3]
     writeBin(as.vector(w), con = to_write, endian = "little")
@@ -541,7 +541,7 @@ get_w_logistics_b2 <- function(params, data) {
 
 check_colinearity_logistic_a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "check_colinearity_logistic_a2\n\n")
-  p2 = params$p2
+  p2 <- params$p2
   read_time <- 0
   read_size <- 0
   write_time <- 0
@@ -664,7 +664,7 @@ compute_initial_betas_logistic_a2 <- function(params, data) {
   xty    = params$xty
   xtx    = params$xtx
 
-  betas = 4 * solve(xtx) %*% xty
+  betas <- 4 * solve(xtx) %*% xty
 
   a_betas   = betas[1:p1]
   b_betas   = betas[(p1 + 1):(p1 + p2)]
@@ -735,7 +735,7 @@ update_data_logistic_b2 <- function(params, data) {
 
 get_x_beta_logistic_b2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "get_x_beta_logistic_b2\n\n")
-  x_beta_b = data$x %*% params$betas_b
+  x_beta_b <- data$x %*% params$betas_b
 
   write_time <- proc.time()[3]
   save(x_beta_b, file = file.path(params$write_path, "xbetab.rdata"))
@@ -758,7 +758,7 @@ get_weights_logistic_a2 <- function(params, data) {
   read_size <- file.size(file.path(params$read_path, "xbetab.rdata"))
   read_time <- proc.time()[3] - read_time
 
-  x_beta_a = data$x %*% params$betas_a
+  x_beta_a <- data$x %*% params$betas_a
   x_beta = x_beta_a + x_beta_b
   pi_ = (1 + exp(-x_beta))^(-1)
   params$pi_ = pi_
@@ -807,7 +807,7 @@ get_v_logistic_b2 <- function(params, data) {
     n = stp - strt + 1
     g = params$blocks$g[i]
 
-    x_block  = data$x[strt:stp, ]
+    x_block  <- data$x[strt:stp, ]
     w_block  = w[strt:stp]
     wx_block = MultiplyDiagonalWTimesX(w_block, x_block)
 
@@ -850,7 +850,7 @@ get_v_logistic_b2 <- function(params, data) {
 get_ii_logistic_a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "get_ii_logistic_a2\n\n")
   p1 <- params$p1
-  p2 = params$p2
+  p2 <- params$p2
   sums_w_x_b = NULL
   xb_t_w_xb  = NULL
 
@@ -946,7 +946,7 @@ get_ii_logistic_a2 <- function(params, data) {
 get_coef_logistic_b2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "get_coef_logistic_b2\n\n")
   p1 <- params$p1
-  p2 = params$p2
+  p2 <- params$p2
   x_t_w_x  = NULL
   a21i1 = NULL
 
@@ -966,8 +966,8 @@ get_coef_logistic_b2 <- function(params, data) {
   a12i2 = ii[1:p1, (p1 + 1):(p1 + p2), drop = FALSE] %*% i_b
   params$a22i2 = a22i2
 
-  params$betas_b_old = params$betas_b
-  params$betas_b = params$betas_b + a21i1 + a22i2
+  params$betas_b_old <- params$betas_b
+  params$betas_b <- params$betas_b + a21i1 + a22i2
 
   delta_beta_b = max(abs(params$betas_b - params$betas_b_old) / (abs(params$betas_b) + 0.1))
 
@@ -1037,7 +1037,7 @@ get_converged_status_logistic_b2 <- function(params) {
 
 get_final_coef_logistic_b2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "get_final_coef_logistic_b2\n\n")
-  betas_b = params$betas_b / params$sdb
+  betas_b <- params$betas_b / params$sdb
   offset_b = sum(betas_b * params$means_b)
   b_final_fitted = t(params$sdb * t(data$x) + params$means_b) %*% betas_b
   write_time <- proc.time()[3]

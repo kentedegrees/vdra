@@ -345,7 +345,7 @@ prepare_blocks_linear_t3 <- function(params, blocksize) {
   # For now, assuming that p1 > 0 and p2 > 0
   n <- params$n
   p1 <- params$p1
-  p2 = params$p2
+  p2 <- params$p2
 
 
   minimum_block_size <- get_block_size(p1, p2)
@@ -562,7 +562,7 @@ get_rw_linear_b3 <- function(params, data) {
     n    = stp - strt + 1
     g = params$blocks$g[i]
 
-    xb = data$x[strt:stp, , drop = FALSE]
+    xb <- data$x[strt:stp, , drop = FALSE]
     read_time <- read_time - proc.time()[3]
     rz <- matrix(readBin(con = to_read, what = numeric(), n = n * n,
                         endian = "little"), nrow = n, ncol = n)
@@ -597,7 +597,7 @@ process_w_linear_t3 <- function(params) {
   write_time <- 0
   write_size <- 0
 
-  p2 = params$p2
+  p2 <- params$p2
 
   write_time <- proc.time()[3]
   save(p2, file = file.path(params$write_path, "p2.rdata"))
@@ -733,7 +733,7 @@ get_products_linear_t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "get_products_linear_t3\n\n")
   n <- params$n
   p1 <- params$p1
-  p2 = params$p2
+  p2 <- params$p2
   xa_t_xa = 0
   xb_t_xb <- 0
   xa_t_y  = 0
