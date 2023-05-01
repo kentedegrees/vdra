@@ -786,7 +786,7 @@ check_data_format <- function(params, data) {
   if ("data.frame" %in% class(data)) {
     data <- data.frame(data)
   } else if ("matrix" %in% class(data)) {
-    data = matrix(data)
+    data <- matrix(data)
   } else {
     warning("Data is not a matrix or a data frame.")
     return(TRUE)
@@ -1338,7 +1338,7 @@ CopyFile <- function(read_directory, write_directory, filename) {
 }
 
 
-MakeTrigger <- function(triggerName, triggerPath, message <- "Trigger File") {
+MakeTrigger <- function(triggerName, triggerPath, message = "Trigger File") {
 
   fn <- file.path(triggerPath, triggerName)
   if (file.exists(fn)) {

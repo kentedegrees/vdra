@@ -67,11 +67,11 @@ prepare_folder_linear_a2 <- function(params, monitor_folder) {
 prepare_folder_linear_b2 <- function(params, monitor_folder) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_folder_linear_b2\n\n")
 
-  params$dp_local_path   = file.path(monitor_folder, "dplocal")
-  params$r_programs_path = file.path(monitor_folder, "rprograms")
-  params$macros_path    = file.path(monitor_folder, "macros")
-  params$write_path     = file.path(monitor_folder, "msoc")
-  params$read_path      = file.path(monitor_folder, "inputfiles")
+  params$dp_local_path   <- file.path(monitor_folder, "dplocal")
+  params$r_programs_path <- file.path(monitor_folder, "rprograms")
+  params$macros_path     <- file.path(monitor_folder, "macros")
+  params$write_path      <- file.path(monitor_folder, "msoc")
+  params$read_path       <- file.path(monitor_folder, "inputfiles")
 
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.  Please use the same monitor_folder as the DataMart Client.")
@@ -768,7 +768,7 @@ party_a_process_2_linear <- function(data,
     warning(params$error_message)
     return(invisible(NULL))
   }
-  data = prepare_data_linear_a23(params, data, y_name)
+  data <- prepare_data_linear_a23(params, data, y_name)
 
   params <- PauseContinue.2p(params,  max_waiting_time)
   if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
@@ -852,7 +852,7 @@ party_b_process_2_linear <- function(data,
     warning(params$error_message)
     return(invisible(NULL))
   }
-  data = prepare_data_linear_b23(params, data)
+  data <- prepare_data_linear_b23(params, data)
 
   if (data$failed) { # Check for Error from prepare_data_cox_b2()
     params$completed = TRUE

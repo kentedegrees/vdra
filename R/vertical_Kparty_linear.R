@@ -613,10 +613,10 @@ DataPartnerKLinear <- function(data,
   }
 
   if (data_partner_id == 1) {
-    data = PrepareDataLinLog.DP1(params, data, y_name)
+    data <- PrepareDataLinLog.DP1(params, data, y_name)
     params <- add_to_log(params, "PrepareDataLinLog.DP1", 0, 0, 0, 0)
   } else {
-    data = PrepareDataLinLog.DPk(params, data)
+    data <- PrepareDataLinLog.DPk(params, data)
     params <- add_to_log(params, "PrepareDataLinLog.DP2", 0, 0, 0, 0)
   }
 

@@ -865,7 +865,7 @@ party_a_process_3_logistic <- function(data,
     warning(params$error_message)
     return(invisible(NULL))
   }
-  data = prepare_data_logistic_a23(params, data, y_name)
+  data <- prepare_data_logistic_a23(params, data, y_name)
   params <- add_to_log(params, "prepare_data_logistic_a23", 0, 0, 0, 0)
 
   if (data$failed) {
@@ -907,7 +907,7 @@ party_a_process_3_logistic <- function(data,
   }
 
   params <- update_params_logistic_a3(params)
-  data = update_data_logistic_a3(params, data)
+  data <- update_data_logistic_a3(params, data)
   params <- get_beta_a_logistic_a3(params)
 
   params$alg_iteration_counter <- 1
@@ -976,7 +976,7 @@ party_b_process_3_logistic <- function(data,
     return(invisible(NULL))
   }
 
-  data = prepare_data_logistic_B23(params, data)
+  data <- prepare_data_logistic_B23(params, data)
   params <- add_to_log(params, "prepare_data_logistic_B23", 0, 0, 0, 0)
 
   if (data$failed) {
@@ -1013,7 +1013,7 @@ party_b_process_3_logistic <- function(data,
   }
 
   params <- update_params_logistic_b3(params)
-  data = update_data_logistic_b3(params, data)
+  data <- update_data_logistic_b3(params, data)
   params <- get_beta_b_logistic_b3(params)
 
   params$alg_iteration_counter <- 1

@@ -1000,7 +1000,7 @@ party_a_process_3_linear <- function(data,
     warning(params$error_message)
     return(invisible(NULL))
   }
-  data = prepare_data_linear_a23(params, data, y_name)
+  data <- prepare_data_linear_a23(params, data, y_name)
   params <- add_to_log(params, "prepare_data_linear_a23", 0, 0, 0, 0)
 
   if (data$failed) {
@@ -1065,7 +1065,7 @@ party_b_process_3_linear <- function(data,
     return(invisible(NULL))
   }
 
-  data = prepare_data_linear_B23(params, data)
+  data <- prepare_data_linear_B23(params, data)
   params <- add_to_log(params, "prepare_data_linear_B23", 0, 0, 0, 0)
 
   if (data$failed) {

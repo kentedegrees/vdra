@@ -1426,7 +1426,7 @@ compute_cox_b3 <- function(params, data) {
   x_betas_old  <- matrix(0, n, 1)
   x_betas      <- matrix(0, n, 1)
   betas_b       <- matrix(0, p2, 1)
-  betas_b_old   = betas_b
+  betas_b_old   <- betas_b
   loglikelihood_old <- -Inf
   max_iterations = 25
   cutoff        = 10^-8
@@ -1511,7 +1511,7 @@ compute_cox_b3 <- function(params, data) {
       params$error_message <- "The matrix t(x)WX is singular.  This is probably due to divergence of the coefficients."
 
       betas <- rep(NA, length(params$Bcolnames_old))
-      betas[params$b_indicies_keep] = betas_b
+      betas[params$b_indicies_keep] <- betas_b
       betas <- data.frame(betas)
       rownames(betas) = params$Bcolnames_old
       # if (params$verbose) cat("Current Parameters:\n")
@@ -1522,9 +1522,9 @@ compute_cox_b3 <- function(params, data) {
     }
 
     delta_beta = m %*% t(data$x) %*% deltal
-    betas_b    = betas_b_old + (betas_b - betas_b_old) * step_size
-    betas_b_old = betas_b
-    betas_b    = betas_b + delta_beta
+    betas_b    <- betas_b_old + (betas_b - betas_b_old) * step_size
+    betas_b_old <- betas_b
+    betas_b    <- betas_b + delta_beta
     x_betas   <- data$x %*% betas_b
 
     converged <- abs(loglikelihood - loglikelihood_old) /
@@ -1540,7 +1540,7 @@ compute_cox_b3 <- function(params, data) {
     params$alg_iteration_counter <- params$alg_iteration_counter + 1
   }
   params$loglikelihood <- loglikelihood
-  params$betas_b = betas_b
+  params$betas_b <- betas_b
   params$x_betas <- x_betas
   params <- add_to_log(params, "compute_cox_b3", read_time, read_size, 0, 0)
   return(params)
@@ -1706,7 +1706,7 @@ party_a_process_3_cox <- function(data,
     warning(params$error_message)
     return(invisible(NULL))
   }
-  data = prepare_data_cox_23(params, data, y_name, strata, mask)
+  data <- prepare_data_cox_23(params, data, y_name, strata, mask)
   params <- add_to_log(params, "prepare_data_cox_23", 0, 0, 0, 0)
 
   if (data$failed) {
@@ -1754,7 +1754,7 @@ party_a_process_3_cox <- function(data,
     return(params$stats)
   }
 
-  data = sort_data_cox_a3(params, data)
+  data <- sort_data_cox_a3(params, data)
   params <- add_to_log(params, "sort_data_cox_a3", data$read_time, data$read_size, 0, 0)
   params <- prepare_blocks_linear_a3(params)
   params <- get_z_cox_a3(params, data)
@@ -1786,7 +1786,7 @@ party_a_process_3_cox <- function(data,
 
 
   params <- update_params_cox_a3(params)
-  data = update_data_cox_a3(params, data)
+  data <- update_data_cox_a3(params, data)
 
   params$alg_iteration_counter <- 1
   repeat {
@@ -1846,7 +1846,7 @@ party_b_process_3_cox <- function(data,
     warning(params$error_message)
     return(invisible(NULL))
   }
-  data = prepare_data_cox_23(params, data, NULL, strata, mask)
+  data <- prepare_data_cox_23(params, data, NULL, strata, mask)
   params <- add_to_log(params, "prepare_data_cox_23", 0, 0, 0, 0)
 
   if (data$failed) {
@@ -1881,7 +1881,7 @@ party_b_process_3_cox <- function(data,
 
   if (file.exists(file.path(params$read_path[["T"]], "transferControl.rdata"))) {
     params$alg_iteration_counter <- 1
-    data = sort_data_cox_b3(params, data)
+    data <- sort_data_cox_b3(params, data)
     params <- add_to_log(params, "sort_data_cox_b3", data$read_time, data$read_size, 0, 0)
     params <- check_colinearity_cox_b3(params, data)
 
@@ -1894,7 +1894,7 @@ party_b_process_3_cox <- function(data,
                                 job_failed = TRUE)
       return(params$stats)
     }
-    data = update_data_cox_b3(params, data)
+    data <- update_data_cox_b3(params, data)
     params <- add_to_log(params, "update_data_cox_b3", 0, 0, 0, 0)
     if (params$survival_installed) {
       params <- compute_cox_from_survival_b3(params, data)
@@ -1929,7 +1929,7 @@ party_b_process_3_cox <- function(data,
   }
 
 
-  data = sort_data_cox_b3(params, data)
+  data <- sort_data_cox_b3(params, data)
   params <- add_to_log(params, "sort_data_cox_b3", data$read_time, data$read_size, 0, 0)
   params <- prepare_blocks_linear_b3(params)
   params <- get_rw_linear_b3(params, data)
@@ -1949,7 +1949,7 @@ party_b_process_3_cox <- function(data,
   if (file.exists(file.path(params$read_path[["T"]], "transferControl.rdata"))) {
     params$alg_iteration_counter <- 1
     params <- update_params_cox_b3(params)
-    data = update_data_cox_b3(params, data)
+    data <- update_data_cox_b3(params, data)
     params <- add_to_log(params, "update_data_cox_b3", 0, 0, 0, 0)
     if (params$survival_installed) {
       params <- compute_cox_from_survival_b3(params, data)
@@ -1975,7 +1975,7 @@ party_b_process_3_cox <- function(data,
   }
 
   params <- update_params_cox_b3(params)
-  data = update_data_cox_b3(params, data)
+  data <- update_data_cox_b3(params, data)
   params$alg_iteration_counter <- 1
   repeat {
     params <- get_beta_b_cox_b3(params)

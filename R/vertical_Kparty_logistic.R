@@ -697,10 +697,10 @@ DataPartnerKLogistic <- function(data,
   }
 
   if (data_partner_id == 1) {
-    data = PrepareDataLinLog.DP1(params, data, y_name)
+    data <- PrepareDataLinLog.DP1(params, data, y_name)
     params <- add_to_log(params, "PrepareParamsLinLog.DP1", 0, 0, 0, 0)
   } else {
-    data = PrepareDataLinLog.DPk(params, data)
+    data <- PrepareDataLinLog.DPk(params, data)
     params <- add_to_log(params, "PrepareParamsLinLog.DPk", 0, 0, 0, 0)
   }
 
@@ -751,7 +751,7 @@ DataPartnerKLogistic <- function(data,
 
   params <- update_params_logistic_DP(params)
 
-  data = update_data_logistic_DP(params, data)
+  data <- update_data_logistic_DP(params, data)
   params <- add_to_log(params, "update_data_logistic_DP", 0, 0, 0, 0)
 
   params$alg_iteration_counter = 1

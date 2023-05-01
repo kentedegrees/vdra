@@ -1652,7 +1652,7 @@ compute_cox_b2 <- function(params, data) {
       warning(params$error_message)
 
       betas <- rep(NA, length(params$b_col_names_old))
-      betas[params$b_indicies_keep] = betas_b
+      betas[params$b_indicies_keep] <- betas_b
       betas <- data.frame(betas)
       rownames(betas) <- params$b_col_names_old
       params <- add_to_log(params, "compute_cox_b2", 0, 0, 0, 0)
@@ -2032,7 +2032,7 @@ party_b_process_2_cox <- function(data,
     warning(params$error_message)
     return(invisible(NULL))
   }
-  data = prepare_data_cox_23(params, data, NULL, strata, mask)
+  data <- prepare_data_cox_23(params, data, NULL, strata, mask)
 
   if (data$failed) { # Check for Error from prepare_data_cox_b2()
     params$complete <- TRUE
@@ -2067,7 +2067,7 @@ party_b_process_2_cox <- function(data,
     }
   }
 
-  data = sort_data_cox_b2(params, data)
+  data <- sort_data_cox_b2(params, data)
   params <- add_to_log(params, "sort_data_cox_b2", data$read_time,
                        data$read_size, 0, 0)
 
@@ -2082,7 +2082,7 @@ party_b_process_2_cox <- function(data,
       params <- send_pause_quit_2p(params, files, sleep_time = sleep_time, job_failed = TRUE)
       return(params$stats)
     }
-    data = update_data_cox_b2(params, data)
+    data <- update_data_cox_b2(params, data)
     params <- add_to_log(params, "update_data_cox_b2", 0, 0, 0, 0)
     if (params$survival_installed) {
       params <- compute_cox_from_survival_b2(params, data)
@@ -2114,7 +2114,7 @@ party_b_process_2_cox <- function(data,
 
   if (file.exists(file.path(params$read_path, "transferControl.rdata"))) {
     params <- update_params_cox_b2(params)
-    data = update_data_cox_b2(params, data)
+    data <- update_data_cox_b2(params, data)
     params <- add_to_log(params, "update_data_cox_b2", 0, 0, 0, 0)
     if (params$survival_installed) {
       params <- compute_cox_from_survival_b2(params, data)
@@ -2147,7 +2147,7 @@ party_b_process_2_cox <- function(data,
         return(params$stats)
       }
       params <- update_params_cox_b2(params)
-      data = update_data_cox_b2(params, data)
+      data <- update_data_cox_b2(params, data)
       params <- add_to_log(params, "update_data_cox_b2", 0, 0, 0, 0)
     } else {
       params <- get_converged_status_cox_b2(params)

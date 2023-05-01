@@ -1481,7 +1481,7 @@ DataPartnerKCox <- function(data,
     return(invisible(NULL))
   }
 
-  data = prepare_data_cox_DP(params, data, y_name, strata, mask)
+  data <- prepare_data_cox_DP(params, data, y_name, strata, mask)
   params <- add_to_log(params, "prepare_data_cox_DP", 0, 0, 0, 0)
 
   if (data$failed) {
@@ -1582,7 +1582,7 @@ DataPartnerKCox <- function(data,
   }
 
   params <- update_params_cox_DP(params)
-  data = update_data_cox_DP(params, data)
+  data <- update_data_cox_DP(params, data)
   params <- add_to_log(params, "update_data_cox_DP", 0, 0, 0, 0)
 
   params$alg_iteration_counter <- 1

@@ -1186,7 +1186,7 @@ party_a_process_2_logistic <- function(data,
     warning(params$error_message)
     return(invisible(NULL))
   }
-  data = prepare_data_logistic_a23(params, data, y_name)
+  data <- prepare_data_logistic_a23(params, data, y_name)
 
   params <- PauseContinue.2p(params,  max_waiting_time)
   if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
@@ -1252,7 +1252,7 @@ party_a_process_2_logistic <- function(data,
     SummarizeLog.2p(params)
     return(params$stats)
   }
-  data = update_data_logistic_a2(params, data)
+  data <- update_data_logistic_a2(params, data)
   params <- add_to_log(params, "update_data_logistic_a2", 0, 0, 0, 0)
   params <- compute_initial_betas_logistic_a2(params, data)
 
@@ -1314,7 +1314,7 @@ party_b_process_2_logistic <- function(data,
     warning(params$error_message)
     return(invisible(NULL))
   }
-  data = prepare_data_logistic_b23(params, data)
+  data <- prepare_data_logistic_b23(params, data)
 
   if (data$failed) { # Check for Error from prepare_data_logistic_b2()
     params$completed = TRUE
@@ -1352,7 +1352,7 @@ party_b_process_2_logistic <- function(data,
   }
 
   params <- update_params_logistic_b2(params)
-  data = update_data_logistic_b2(params, data)
+  data <- update_data_logistic_b2(params, data)
   params <- add_to_log(params, "update_data_logistic_b2", 0, 0, 0, 0)
 
   params$alg_iteration_counter <- 1
