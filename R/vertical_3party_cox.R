@@ -105,8 +105,8 @@ prepare_params_cox_t3 <- function(params, cutoff, max_iterations) {
   params$b_strata_from_a  = pb$strata_from_a
   params$b_strata_from_b  = pb$strata_from_b
 
-  params$Atags         = pa$tags
-  params$Btags         = pb$tags
+  params$a_tags         = pa$tags
+  params$b_tags         = pb$tags
 
   write_time <- proc.time()[3]
   save(cutoff, max_iterations, file = file.path(params$write_path, "max_iterations.rdata"))
@@ -557,7 +557,7 @@ check_colinearity_cox_t3 <- function(params) {
   write_size <- sum(file.size(file.path(params$write_path, c("Aindicies.rdata",
                                                           "Bindicies.rdata"))))
 
-  tags = params$Btags[b_indicies]
+  tags = params$b_tags[b_indicies]
 
   if (length(unique(tags)) == 0) {
     params$failed <- TRUE

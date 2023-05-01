@@ -304,8 +304,8 @@ prepare_params_logistic_a2 <- function(params, data, cutoff = 0.01, max_iteratio
   params$y_name     = colnames(data$Y)
   params$a_col_names_old = c("")
   params$b_col_names_old = c("")
-  params$Atags         = data$tags
-  params$Btags         = pb$tags
+  params$a_tags         = data$tags
+  params$b_tags         = pb$tags
 
   if (cutoff <= 0) cutoff = 0.01
   if (cutoff >= 1) cutoff = 0.05
@@ -452,8 +452,8 @@ finalize_params_logistic_b2 <- function(params, data) {
   params$cutoff        = pa$cutoff
   params$max_iterations = pa$max_iterations
   params$a_col_names     = pa$a_col_names
-  params$Atags         = pa$tags
-  params$Btags         = data$tags
+  params$a_tags         = pa$tags
+  params$b_tags         = data$tags
 
   params <- add_to_log(params, "finalize_params_logistic_b2", read_time, read_size, 0, 0)
   return(params)
@@ -634,7 +634,7 @@ check_colinearity_logistic_a2 <- function(params, data) {
   write_size <- sum(file.size(file.path(params$write_path, "indicies.rdata")))
   write_time <- write_time + proc.time()[3]
 
-  tags = params$Btags[params$b_indicies_keep]
+  tags = params$b_tags[params$b_indicies_keep]
 
   if (length(unique(tags)) < 2) {
     params$failed <- TRUE

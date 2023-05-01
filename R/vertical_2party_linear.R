@@ -306,8 +306,8 @@ prepare_params_linear_a2 <- function(params, data) {
   params$y_name     = colnames(data$Y)
   params$a_col_names_old = c("")
   params$b_col_names_old = c("")
-  params$Atags     = data$tags
-  params$Btags     = pb$tags
+  params$a_tags     = data$tags
+  params$b_tags     = pb$tags
 
   params$means_a = data$means
   params$sda    = data$sd

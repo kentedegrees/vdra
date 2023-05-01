@@ -495,8 +495,8 @@ prepare_params_cox_a2 <- function(params, data, cutoff = 0.01, max_iterations = 
   params$a_col_names_old <- c("")
   params$b_col_names_old <- c("")
 
-  params$Atags         <- data$tags
-  params$Btags         <- pb$tags
+  params$a_tags         <- data$tags
+  params$b_tags         <- pb$tags
 
   if (cutoff <= 0) cutoff <- 0.01
   if (cutoff >= 1) cutoff <- 0.05
@@ -815,7 +815,7 @@ check_colinearity_cox_a2 <- function(params, data) {
   save(a_indicies, b_indicies, file = file.path(params$write_path, "indicies.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, "indicies.rdata")))
   write_time <- write_time + proc.time()[3]
-  tags = params$Btags[b_indicies]
+  tags = params$b_tags[b_indicies]
 
   if (length(unique(tags)) == 0) {
     params$failed <- TRUE

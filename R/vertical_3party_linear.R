@@ -329,8 +329,8 @@ prepare_params_linear_t3 <- function(params, cutoff = 1e-8, max_iterations = 25)
   params$yty           = pa$yty
   params$colnamesA     = pa$colnames
   params$colnamesB     = pb$colnames
-  params$Atags         = pa$tags
-  params$Btags         = pb$tags
+  params$a_tags         = pa$tags
+  params$b_tags         = pb$tags
   params$y_name         = pa$y_name
   params$cutoff        = cutoff
   params$max_iterations = max_iterations
@@ -924,7 +924,7 @@ compute_results_linear_t3 <- function(params) {
 
   params$stats = stats
 
-  tags = params$Btags[b_indicies_keep]
+  tags = params$b_tags[b_indicies_keep]
 
   if (length(unique(tags)) < 2) {
     params$failed <- TRUE

@@ -52,16 +52,16 @@ check_colinearity_logistic_t3 <- function(params) {
                                                           "Bindicies.rdata"))))
   write_time <- proc.time()[3] - write_time
 
-  Btags = params$Btags[params$b_indicies_keep]
-  Atags = params$Atags[params$a_indicies_keep][-1]
+  b_tags = params$b_tags[params$b_indicies_keep]
+  a_tags = params$a_tags[params$a_indicies_keep][-1]
 
-  if ((length(unique(Atags)) == 1) | (length(unique(Atags)) >= 2 & !("numeric" %in% names(Atags)))) {
+  if ((length(unique(a_tags)) == 1) | (length(unique(a_tags)) >= 2 & !("numeric" %in% names(a_tags)))) {
     params$failed <- TRUE
     params$error_message <- "A must have no covariates or at least 2 covariates at least one of which is continuous."
-  } else if (length(unique(Btags)) < 2) {
+  } else if (length(unique(b_tags)) < 2) {
     params$failed <- TRUE
     params$error_message <- "After removing colinear covariates, Party B has 1 or fewer covariates."
-  } else if (!("numeric" %in% names(Btags))) {
+  } else if (!("numeric" %in% names(b_tags))) {
     params$failed <- TRUE
     params$error_message <- "After removing colinear covariates, Party B has no continuous covariates."
   }
