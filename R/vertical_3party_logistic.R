@@ -845,64 +845,64 @@ GetResultsLogistic.b3 = function(params) {
 
 
 PartyAProcess3Logistic = function(data,
-                                  yname          = NULL,
+                                  y_name          = NULL,
                                   monitor_folder  = NULL,
                                   sleep_time      = 10,
-                                  maxWaitingTime = 24 * 60 * 60,
+                                  max_waiting_time = 24 * 60 * 60,
                                   popmednet      = TRUE,
                                   trace          = FALSE,
                                   verbose        = TRUE) {
 
-  params <- PrepareParams.3p("logistic", "A",
+  params <- prepare_params_3p("logistic", "A",
                             popmednet = popmednet, trace = trace, verbose = verbose)
-  params <- InitializeLog.3p(params)
-  params <- InitializeStamps.3p(params)
-  params <- InitializeTrackingTable.3p(params)
+  params <- initialize_log_3p(params)
+  params <- initialize_time_stamps_3p(params)
+  params <- initialize_tracking_table_3p(params)
   Header(params)
 
-  params   = PrepareFolderLinear.a3(params, monitor_folder)
+  params   = prepare_folder_linear_a3(params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
   }
-  data = PrepareDataLogistic.A23(params, data, yname)
-  params <- add_to_log(params, "PrepareDataLogistic.A23", 0, 0, 0, 0)
+  data = PrepareDataLogistic.a23(params, data, y_name)
+  params <- add_to_log(params, "PrepareDataLogistic.a23", 0, 0, 0, 0)
 
   if (data$failed) {
     message = "Error in processing the data for Party A."
-    MakeErrorMessage(params$write_path, message)
+    make_error_message(params$write_path, message)
     files = c("error_message.rdata")
-    params <- SendPauseQuit.3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
+    params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
-  params <- PrepareParamsLinear.a3(params, data)
+  params <- prepare_params_linear_a3(params, data)
   files = "pa.rdata"
-  params <- SendPauseContinue.3p(params, filesT = files, from = "T",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- send_pause_continue_3p(params, filesT = files, from = "T",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
-    warning(ReadErrorMessage(params$read_path[["T"]]))
-    params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
+    warning(read_error_message(params$read_path[["T"]]))
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
   params$algIterationCounter = 1
-  params <- PrepareBlocksLinear.a3(params)
+  params <- prepare_blocks_linear_a3(params)
 
-  params <- GetZLinear.a3(params, data)
-  files = SeqZW("cz_", length(params$container$filebreak.Z))
-  params <- SendPauseContinue.3p(params, filesT = files, from = "T",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  params <- get_z_linear_a3(params, data)
+  files = seq_zw("cz_", length(params$container$file_break_z))
+  params <- send_pause_continue_3p(params, filesT = files, from = "T",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
-  params <- GetWRLinear.a3(params, data)
-  files = c("xatxa.rdata", SeqZW("cpr_", length(params$container$filebreak.PR)))
-  params <- SendPauseContinue.3p(params, filesT = files, from = "T",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  params <- get_wr_linear_a3(params, data)
+  files = c("xatxa.rdata", seq_zw("cpr_", length(params$container$filebreak.PR)))
+  params <- send_pause_continue_3p(params, filesT = files, from = "T",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
-    warning(ReadErrorMessage(params$read_path[["T"]]))
-    params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
+    warning(read_error_message(params$read_path[["T"]]))
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
@@ -915,24 +915,24 @@ PartyAProcess3Logistic = function(data,
     BeginningIteration(params)
     params <- GetXAbetaALogistic.a3(params, data)
     files = c("xabeta.rdata")
-    params <- SendPauseContinue.3p(params, filesT = files, from = "T",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+    params <- send_pause_continue_3p(params, filesT = files, from = "T",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
     params <- GetXRLogistic.a3(params, data)
-    files = c("xatwxa.rdata", SeqZW("cxr_", length(params$container$filebreak.XR)))
-    params <- SendPauseContinue.3p(params, filesT = files, from = "T",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+    files = c("xatwxa.rdata", seq_zw("cxr_", length(params$container$filebreak.XR)))
+    params <- send_pause_continue_3p(params, filesT = files, from = "T",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
     if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
-      warning(ReadErrorMessage(params$read_path[["T"]]))
-      params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
+      warning(read_error_message(params$read_path[["T"]]))
+      params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
       return(params$stats)
     }
 
     params <- UpdateBetaLogistic.a3(params, data)
     files = c("ai.rdata")
-    params <- SendPauseContinue.3p(params, filesT = files, from = "T",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+    params <- send_pause_continue_3p(params, filesT = files, from = "T",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
     params <- GetBetaALogistic.a3(params)
     EndingIteration(params)
@@ -941,17 +941,17 @@ PartyAProcess3Logistic = function(data,
 
   params <- GetFinalBetaLogistic.a3(params, data)
   files = "Afinalfitted.rdata"
-  params <- SendPauseContinue.3p(params, filesT = files, from = "T",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- send_pause_continue_3p(params, filesT = files, from = "T",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
   params <- ComputeResultsLogistic.a3(params, data)
   files = c("logisticstats.rdata")
-  params <- SendPauseContinue.3p(params, filesT = files, from = "T",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  params <- send_pause_continue_3p(params, filesT = files, from = "T",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- GetResultsLogistic.a3(params, data)
 
-  params <- SendPauseQuit.3p(params, sleep_time = sleep_time, waitForTurn = TRUE)
+  params <- send_pause_quit_3p(params, sleep_time = sleep_time, waitForTurn = TRUE)
   return(params$stats)
 }
 
@@ -959,18 +959,18 @@ PartyAProcess3Logistic = function(data,
 PartyBProcess3Logistic = function(data,
                                   monitor_folder  = NULL,
                                   sleep_time      = 10,
-                                  maxWaitingTime = 24 * 60 * 60,
+                                  max_waiting_time = 24 * 60 * 60,
                                   popmednet      = TRUE,
                                   trace          = FALSE,
                                   verbose        = TRUE) {
-  params <- PrepareParams.3p("logistic", "B",
+  params <- prepare_params_3p("logistic", "B",
                             popmednet = popmednet, trace = trace, verbose = verbose)
-  params <- InitializeLog.3p(params)
-  params <- InitializeStamps.3p(params)
-  params <- InitializeTrackingTable.3p(params)
+  params <- initialize_log_3p(params)
+  params <- initialize_time_stamps_3p(params)
+  params <- initialize_tracking_table_3p(params)
 
   Header(params)
-  params   = PrepareFolderLinear.b3(params, monitor_folder)
+  params   = prepare_folder_linear_b3(params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
@@ -981,34 +981,34 @@ PartyBProcess3Logistic = function(data,
 
   if (data$failed) {
     message = "Error in processing the data for Party B."
-    MakeErrorMessage(params$write_path, message)
+    make_error_message(params$write_path, message)
     files = c("error_message.rdata")
-    params <- SendPauseQuit.3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
+    params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
-  params <- PrepareParamsLinear.b3(params, data)
+  params <- prepare_params_linear_b3(params, data)
   files = "pb.rdata"
-  params <- SendPauseContinue.3p(params, filesT = files, from = "T",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- send_pause_continue_3p(params, filesT = files, from = "T",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
-    warning(ReadErrorMessage(params$read_path[["T"]]))
-    params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
+    warning(read_error_message(params$read_path[["T"]]))
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
   params$algIterationCounter = 1
-  params <- PrepareBlocksLinear.b3(params)
+  params <- prepare_blocks_linear_b3(params)
 
   params <- GetRWLinear.b3(params, data)
-  files = c("xbtxb.rdata", SeqZW("crw_", length(params$container$filebreak.RW)))
-  params <- SendPauseContinue.3p(params, filesT = files, from = "T",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  files = c("xbtxb.rdata", seq_zw("crw_", length(params$container$filebreak.RW)))
+  params <- send_pause_continue_3p(params, filesT = files, from = "T",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
-    warning(ReadErrorMessage(params$read_path[["T"]]))
-    params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
+    warning(read_error_message(params$read_path[["T"]]))
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
@@ -1021,24 +1021,24 @@ PartyBProcess3Logistic = function(data,
     BeginningIteration(params)
     params <- GetXBbetaBLogistic.b3(params, data)
     files = c("xbbeta.rdata")
-    params <- SendPauseContinue.3p(params, filesT = files, from = "T",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+    params <- send_pause_continue_3p(params, filesT = files, from = "T",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
     params <- GetRVLogistic.b3(params, data)
-    files = c("xbtwxb.rdata", SeqZW("crv_", length(params$container$filebreak.RV)))
-    params <- SendPauseContinue.3p(params, filesT = files, from = "T",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+    files = c("xbtwxb.rdata", seq_zw("crv_", length(params$container$filebreak.RV)))
+    params <- send_pause_continue_3p(params, filesT = files, from = "T",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
     if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
-      warning(ReadErrorMessage(params$read_path[["T"]]))
-      params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
+      warning(read_error_message(params$read_path[["T"]]))
+      params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
       return(params$stats)
     }
 
     params <- UpdateBetaLogistic.b3(params, data)
     files = c("bi.rdata")
-    params <- SendPauseContinue.3p(params, filesT = files, from = "T",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+    params <- send_pause_continue_3p(params, filesT = files, from = "T",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
     params <- GetBetaBLogistic.b3(params)
     EndingIteration(params)
@@ -1047,12 +1047,12 @@ PartyBProcess3Logistic = function(data,
 
   params <- GetFinalBetaLogistic.b3(params, data)
   files = "Bfinalfitted.rdata"
-  params <- SendPauseContinue.3p(params, filesT = files, from = "T",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- send_pause_continue_3p(params, filesT = files, from = "T",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
   params <- GetResultsLogistic.b3(params)
 
-  params <- SendPauseQuit.3p(params, sleep_time = sleep_time, waitForTurn = TRUE)
+  params <- send_pause_quit_3p(params, sleep_time = sleep_time, waitForTurn = TRUE)
   return(params$stats)
 }
 
@@ -1063,86 +1063,86 @@ PartyTProcess3Logistic = function(monitor_folder         = NULL,
                                   cutoff                = 1e-8,
                                   max_iterations         = 25,
                                   sleep_time             = 10,
-                                  maxWaitingTime        = 24 * 60 * 60,
+                                  max_waiting_time        = 24 * 60 * 60,
                                   popmednet             = TRUE,
                                   trace                 = FALSE,
                                   verbose               = TRUE) {
-  params <- PrepareParams.3p("logistic", "T", msreqid = msreqid,
+  params <- prepare_params_3p("logistic", "T", msreqid = msreqid,
                             popmednet = popmednet, trace = trace, verbose = verbose)
-  params <- InitializeLog.3p(params)
-  params <- InitializeStamps.3p(params)
-  params <- InitializeTrackingTable.3p(params)
+  params <- initialize_log_3p(params)
+  params <- initialize_time_stamps_3p(params)
+  params <- initialize_tracking_table_3p(params)
 
   Header(params)
-  params   = PrepareFolderLinear.t3(params, monitor_folder)
+  params   = prepare_folder_linear_t3(params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
   }
 
-  params <- PauseContinue.3p(params, from = c("A", "B"), maxWaitingTime = maxWaitingTime)
+  params <- PauseContinue.3p(params, from = c("A", "B"), max_waiting_time = max_waiting_time)
 
   if (file.exists(file.path(params$read_path[["A"]], "error_message.rdata")) &&
       file.exists(file.path(params$read_path[["B"]], "error_message.rdata"))) {
-    warning(ReadErrorMessage(params$read_path[["A"]]))
-    warning(ReadErrorMessage(params$read_path[["B"]]))
-    params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE)
+    warning(read_error_message(params$read_path[["A"]]))
+    warning(read_error_message(params$read_path[["B"]]))
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.3p(params)
     return(params$stats)
   }
   if (file.exists(file.path(params$read_path[["A"]], "error_message.rdata"))) {
-    warning(ReadErrorMessage(params$read_path[["A"]]))
+    warning(read_error_message(params$read_path[["A"]]))
     file.copy(file.path(params$read_path[["A"]], "error_message.rdata"),
               file.path(params$write_path, "error_message.rdata"))
     files = "error_message.rdata"
-    params <- SendPauseContinue.3p(params, filesB = files, from = "B",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-    params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_3p(params, filesB = files, from = "B",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.3p(params)
     return(params$stats)
   }
   if (file.exists(file.path(params$read_path[["B"]], "error_message.rdata"))) {
-    warning(ReadErrorMessage(params$read_path[["B"]]))
+    warning(read_error_message(params$read_path[["B"]]))
     file.copy(file.path(params$read_path[["B"]], "error_message.rdata"),
               file.path(params$write_path, "error_message.rdata"))
     files = "error_message.rdata"
-    params <- SendPauseContinue.3p(params, filesA = files, from = "A",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-    params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_3p(params, filesA = files, from = "A",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.3p(params)
     return(params$stats)
   }
 
-  params   = PrepareParamsLinear.t3(params, cutoff, max_iterations)
+  params   = prepare_params_linear_t3(params, cutoff, max_iterations)
 
-  if (!params$failed) params <- PrepareBlocksLinear.t3(params, blocksize)
+  if (!params$failed) params <- prepare_blocks_linear_t3(params, blocksize)
 
   if (params$failed) {
     warning(params$error_message)
-    MakeErrorMessage(params$write_path, params$error_message)
+    make_error_message(params$write_path, params$error_message)
     files = "error_message.rdata"
-    params <- SendPauseContinue.3p(params, filesA = files, filesB = files,
+    params <- send_pause_continue_3p(params, filesA = files, filesB = files,
                                   from = c("A", "B"),
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-    params <- SendPauseQuit.3p(params, sleep_time = sleep_time)
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time)
     SummarizeLog.3p(params)
     return(params$stats)
   }
 
   files = "blocks.rdata"
-  params <- SendPauseContinue.3p(params, filesA = files, from = "A",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  params <- send_pause_continue_3p(params, filesA = files, from = "A",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params$algIterationCounter = 1
   params <- ProcessZLinear.t3(params)
-  files = c("blocks.rdata", SeqZW("crz_", length(params$container$filebreak.RZ)))
-  params <- SendPauseContinue.3p(params, filesB = files, from  = "B",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  files = c("blocks.rdata", seq_zw("crz_", length(params$container$filebreak.RZ)))
+  params <- send_pause_continue_3p(params, filesB = files, from  = "B",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- ProcessWLinear.t3(params)
-  files = c("p2.rdata", SeqZW("cwr_", length(params$container$filebreak.WR)))
-  params <- SendPauseContinue.3p(params, filesA = files, from  = "A",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  files = c("p2.rdata", seq_zw("cwr_", length(params$container$filebreak.WR)))
+  params <- send_pause_continue_3p(params, filesA = files, from  = "A",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- GetProductsLinear.t3(params)
 
@@ -1150,12 +1150,12 @@ PartyTProcess3Logistic = function(monitor_folder         = NULL,
 
   if (params$failed) {
     warning(params$error_message)
-    MakeErrorMessage(params$write_path, params$error_message)
+    make_error_message(params$write_path, params$error_message)
     files = "error_message.rdata"
-    params <- SendPauseContinue.3p(params, filesA = files, filesB = files,
+    params <- send_pause_continue_3p(params, filesA = files, filesB = files,
                                   from = c("A", "B"),
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-    params <- SendPauseQuit.3p(params, sleep_time = sleep_time)
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time)
     SummarizeLog.3p(params)
     return(params$stats)
   }
@@ -1163,60 +1163,60 @@ PartyTProcess3Logistic = function(monitor_folder         = NULL,
   params <- ComputeInitialBetasLogistic.t3(params)
   filesA = c("Aindicies.rdata", "betasA.rdata", "Axty.rdata", "converged.rdata")
   filesB = c("Bindicies.rdata", "betasB.rdata", "Bxty.rdata", "converged.rdata")
-  params <- SendPauseContinue.3p(params, filesA = filesA, filesB = filesB, from  = c("A", "B"),
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  params <- send_pause_continue_3p(params, filesA = filesA, filesB = filesB, from  = c("A", "B"),
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params$algIterationCounter = 1
   while (!params$converged && !params$maxIterExceeded) {
     BeginningIteration(params)
     params <- GetWeightsLogistic.t3(params)
     files = "pi.rdata"
-    params <- SendPauseContinue.3p(params, filesB = files, from  = "B",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+    params <- send_pause_continue_3p(params, filesB = files, from  = "B",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
     params <- ProcessVLogistic.t3(params)
-    files = c("pi.rdata", SeqZW("cvr_", length(params$container$filebreak.RV)))
-    params <- SendPauseContinue.3p(params, filesA = files, from  = "A",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+    files = c("pi.rdata", seq_zw("cvr_", length(params$container$filebreak.RV)))
+    params <- send_pause_continue_3p(params, filesA = files, from  = "A",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
     params <- ProcessXtWXLogistic.t3(params)
 
     if (params$failed) {
       warning(params$error_message)
-      MakeErrorMessage(params$write_path, params$error_message)
+      make_error_message(params$write_path, params$error_message)
       files = "error_message.rdata"
-      params <- SendPauseContinue.3p(params, filesA = files, filesB = files,
+      params <- send_pause_continue_3p(params, filesA = files, filesB = files,
                                     from = c("A", "B"),
-                                    sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-      params <- SendPauseQuit.3p(params, sleep_time = sleep_time)
+                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+      params <- send_pause_quit_3p(params, sleep_time = sleep_time)
       SummarizeLog.3p(params)
       return(params$stats)
     }
     filesA = c("IIA.rdata")
     filesB = c("IIB.rdata")
-    params <- SendPauseContinue.3p(params, filesA = filesA, filesB = filesB, from  = c("A", "B"),
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+    params <- send_pause_continue_3p(params, filesA = filesA, filesB = filesB, from  = c("A", "B"),
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
     params <- UpdateBetaLogistic.t3(params)
     filesA = c("betasA.rdata", "converged.rdata")
     filesB = c("betasB.rdata", "converged.rdata")
-    params <- SendPauseContinue.3p(params, filesA = filesA, filesB = filesB, from  = c("A", "B"),
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+    params <- send_pause_continue_3p(params, filesA = filesA, filesB = filesB, from  = c("A", "B"),
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     EndingIteration(params)
     params$algIterationCounter = params$algIterationCounter + 1
   }
 
   params <- GetFinalFittedLogistic.t3(params)
   filesA = "finalfitted.rdata"
-  params <- SendPauseContinue.3p(params, filesA = filesA, from  = "A",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  params <- send_pause_continue_3p(params, filesA = filesA, from  = "A",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- ComputeResultsLogistic.t3(params)
   files = "stats.rdata"
-  params <- SendPauseContinue.3p(params, filesA = files, filesB = files, from  = c("A", "B"),
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  params <- send_pause_continue_3p(params, filesA = files, filesB = files, from  = c("A", "B"),
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
-  params <- SendPauseQuit.3p(params, sleep_time = sleep_time)
+  params <- send_pause_quit_3p(params, sleep_time = sleep_time)
   SummarizeLog.3p(params)
   return(params$stats)
 }

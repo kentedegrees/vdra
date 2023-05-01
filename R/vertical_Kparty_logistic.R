@@ -668,25 +668,25 @@ GetResultsLogistic.DP = function(params, data) {
 ############################## PARENT FUNCTIONS ###############################
 
 DataPartnerKLogistic = function(data,
-                                yname           = NULL,
+                                y_name           = NULL,
                                 numDataPartners = NULL,
                                 data_partner_id   = NULL,
                                 monitor_folder   = NULL,
                                 sleep_time       = 10,
-                                maxWaitingTime  = 24 * 60 * 60,
+                                max_waiting_time  = 24 * 60 * 60,
                                 popmednet       = TRUE,
                                 trace           = FALSE,
                                 verbose         = TRUE) {
 
-  params <- PrepareParams.kp("logistic", data_partner_id, numDataPartners, ac = FALSE,
+  params <- prepare_params_kp("logistic", data_partner_id, numDataPartners, ac = FALSE,
                             popmednet = popmednet, trace = trace, verbose = verbose)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
   }
-  params <- InitializeLog.kp(params)
-  params <- InitializeStamps.kp(params)
-  params <- InitializeTrackingTable.kp(params)
+  params <- initialize_log_kp(params)
+  params <- initialize_time_stamps_kp(params)
+  params <- initialize_tracking_table_kp(params)
   Header(params)
 
   params   = PrepareFolder.ACDP(params, monitor_folder)
@@ -697,55 +697,55 @@ DataPartnerKLogistic = function(data,
   }
 
   if (data_partner_id == 1) {
-    data = PrepareDataLinLog.DP1(params, data, yname)
+    data = PrepareDataLinLog.DP1(params, data, y_name)
     params <- add_to_log(params, "PrepareParamsLinLog.DP1", 0, 0, 0, 0)
   } else {
     data = PrepareDataLinLog.DPk(params, data)
     params <- add_to_log(params, "PrepareParamsLinLog.DPk", 0, 0, 0, 0)
   }
 
-  params <- add_to_log(params, "PrepareParamsLinear.DP", 0, 0, 0, 0)
+  params <- add_to_log(params, "prepare_params_linear_DP", 0, 0, 0, 0)
 
   if (data$failed) {
     params$error_message = paste("Error processing data for data partner", params$data_partner_id, "\n")
-    MakeErrorMessage(params$write_path, params$error_message)
+    make_error_message(params$write_path, params$error_message)
     files = "error_message.rdata"
-    params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
-    params$error_message = ReadErrorMessage(params$readPathAC)
+    params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+    params$error_message = read_error_message(params$readPathAC)
     warning(params$error_message)
-    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
   }
 
   params <- SendBasicInfo.DP(params, data)
   files = "n_analysis.rdata"
-  params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
     params$error_message = possibleError$message
     warning(possibleError$message)
-    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
   }
 
-  params <- PrepareParamsLinear.DP(params, data)
+  params <- prepare_params_linear_DP(params, data)
   files = "p_scaler_seed.rdata"
-  params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
   params <- PrepareSharesLinear.DP(params, data)
   files = c("products.rdata", "halfshare.rdata", "colstats.rdata")
-  params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
     params$error_message = possibleError$message
     warning(possibleError$message)
-    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
   }
 
@@ -760,26 +760,26 @@ DataPartnerKLogistic = function(data,
 
     params <- ComputeSbetaLogistic.DP(params, data)
     files = "Sbeta.rdata"
-    params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+    params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
     params <- ComputeStWSLogistic.DP(params, data)
     files = "stwsshare.rdata"
-    params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+    params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
     possibleError = ReceivedError.kp(params, from = "AC")
     if (possibleError$error) {
       params$error_message = possibleError$message
       warning(possibleError$message)
-      params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+      params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
       return(params$stats)
     }
 
     params <- UpdateBetaLogistic.DP(params)
     files = "u_converge.rdata"
-    params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+    params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
 
     params <- GetConvergeStatusLogistic.DP(params)
@@ -793,18 +793,18 @@ DataPartnerKLogistic = function(data,
   params <- SendFinalBetasLogistic.DP(params)
 
   files = c("sbeta.rdata", "finalbetas.rdata")
-  params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
   if (data_partner_id == 1) {
     params <- ComputeResultsLogistic.DP(params, data)
     files = "logisticstats.rdata"
-    params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+    params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
   }
 
   params <- GetResultsLogistic.DP(params, data)
-  params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+  params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
   return(params$stats)
 }
 
@@ -815,22 +815,22 @@ AnalysisCenterKLogistic = function(numDataPartners = NULL,
                                    cutoff          = 1E-8,
                                    max_iterations   = 25,
                                    sleep_time       = 10,
-                                   maxWaitingTime  = 24 * 60 * 60,
+                                   max_waiting_time  = 24 * 60 * 60,
                                    popmednet       = TRUE,
                                    trace           = FALSE,
                                    verbose         = TRUE) {
 
   filesList = rep(list(list()), numDataPartners)
 
-  params <- PrepareParams.kp("logistic", 0, numDataPartners, msreqid, cutoff, max_iterations, ac = TRUE,
+  params <- prepare_params_kp("logistic", 0, numDataPartners, msreqid, cutoff, max_iterations, ac = TRUE,
                             popmednet = popmednet, trace = trace, verbose = verbose)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
   }
-  params <- InitializeLog.kp(params)
-  params <- InitializeStamps.kp(params)
-  params <- InitializeTrackingTable.kp(params)
+  params <- initialize_log_kp(params)
+  params <- initialize_time_stamps_kp(params)
+  params <- initialize_tracking_table_kp(params)
   Header(params)
 
   params   = PrepareFolder.ACDP(params, monitor_folder)
@@ -840,17 +840,17 @@ AnalysisCenterKLogistic = function(numDataPartners = NULL,
     return(invisible(NULL))
   }
 
-  params <- PauseContinue.kp(params, from = "DP", maxWaitingTime = maxWaitingTime)
+  params <- PauseContinue.kp(params, from = "DP", max_waiting_time = max_waiting_time)
 
   possibleError = ReceivedError.kp(params, from = "DP")
   if (possibleError$error) {
     params$error_message = possibleError$message
     warning(possibleError$message)
-    MakeErrorMessage(params$write_path, possibleError$message)
+    make_error_message(params$write_path, possibleError$message)
     files = "error_message.rdata"
-    params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.kp(params)
     return(params$stats)
   }
@@ -858,19 +858,19 @@ AnalysisCenterKLogistic = function(numDataPartners = NULL,
   params <- CheckAgreement.AC(params)
 
   if (params$failed) {
-    MakeErrorMessage(params$write_path, params$error_message)
+    make_error_message(params$write_path, params$error_message)
     files = "error_message.rdata"
     warning(params$error_message)
-    params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.kp(params)
     return(params$stats)
   }
 
   files = "empty.rdata"
-  params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- GetProductsLogistic.AC(params)
 
@@ -878,12 +878,12 @@ AnalysisCenterKLogistic = function(numDataPartners = NULL,
   params <- CheckColinearityLogistic.AC(params)
 
   if (params$failed) {
-    MakeErrorMessage(params$write_path, params$error_message)
+    make_error_message(params$write_path, params$error_message)
     files = "error_message.rdata"
     warning(params$error_message)
-    params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.kp(params)
     return(params$stats)
   }
@@ -894,26 +894,26 @@ AnalysisCenterKLogistic = function(numDataPartners = NULL,
     filesList[[id]] = c(paste0("u_beta_", id, ".rdata"), "indicies.rdata")
   }
 
-  params <- SendPauseContinue.kp(params, filesDP = filesList, from = "DP",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params$algIterationCounter = 1
   while (!params$converged && !params$maxIterExceeded) {
     BeginningIteration(params)
     params <- ComputeWeightsLogistic.AC(params)
     files = "pi.rdata"
-    params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+    params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
     params <- ComputeStWSLogistic.AC(params)
 
     if (params$failed) {
-      MakeErrorMessage(params$write_path, params$error_message)
+      make_error_message(params$write_path, params$error_message)
       files = "error_message.rdata"
       warning(params$error_message)
-      params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                    sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-      params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
+      params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
+                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+      params <- send_pause_quit_kp(params, sleep_time = sleep_time, job_failed = TRUE)
       SummarizeLog.kp(params)
       return(params$stats)
     }
@@ -921,13 +921,13 @@ AnalysisCenterKLogistic = function(numDataPartners = NULL,
     for (id in 1:numDataPartners) {
       filesList[[id]] = paste0("id", id, ".rdata")
     }
-    params <- SendPauseContinue.kp(params, filesDP = filesList, from = "DP",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+    params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
     params <- ComputeConvergeStatusLogistic.AC(params)
     files = "u_converge.rdata"
-    params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+    params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     EndingIteration(params)
     params$algIterationCounter = params$algIterationCounter + 1
   }
@@ -935,14 +935,14 @@ AnalysisCenterKLogistic = function(numDataPartners = NULL,
   params <- ComputeFinalSBetaLogistic.AC(params)
   filesList = rep(list(list()), numDataPartners)
   filesList[[1]] = "sbeta.rdata"
-  params <- SendPauseContinue.kp(params, filesDP = filesList, from = "DP1",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP1",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- ComputeResultsLogistic.AC(params)
   files = "stats.rdata"
-  params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-  params <- SendPauseQuit.kp(params, sleep_time = sleep_time)
+  params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+  params <- send_pause_quit_kp(params, sleep_time = sleep_time)
   SummarizeLog.kp(params)
   return(params$stats)
 }

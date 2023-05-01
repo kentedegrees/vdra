@@ -16,46 +16,46 @@ PrepareFolder.ACDP = function(params, monitor_folder) {
     Sys.sleep(1)
   }
 
-  params$dplocalPath   = file.path(monitor_folder, "dplocal")
-  params$r_programs_path = file.path(monitor_folder, "rprograms")
-  params$macros_path    = file.path(monitor_folder, "macros")
+  params$dplocalPath     <- file.path(monitor_folder, "dplocal")
+  params$r_programs_path <- file.path(monitor_folder, "rprograms")
+  params$macros_path     <- file.path(monitor_folder, "macros")
   if (params$data_partner_id == 0) {
-    params$write_path   = file.path(monitor_folder, "inputfiles")
+    params$write_path   <- file.path(monitor_folder, "inputfiles")
   } else {
-    params$write_path   = file.path(monitor_folder, "msoc")
+    params$write_path   <- file.path(monitor_folder, "msoc")
   }
-  params$readPathAC    = file.path(monitor_folder, "inputfiles")
-  params$readPathDP    = file.path(monitor_folder, paste0("msoc", 1:params$numDataPartners))
+  params$readPathAC    <- file.path(monitor_folder, "inputfiles")
+  params$readPathDP    <- file.path(monitor_folder, paste0("msoc", 1:params$numDataPartners))
 
-  if (!CreateIOLocation(monitor_folder, "dplocal")) {
+  if (!create_io_location(monitor_folder, "dplocal")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$dplocalPath, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "rprograms")) {
+  if (!create_io_location(monitor_folder, "rprograms")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$r_programs_path, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "macros")) {
+  if (!create_io_location(monitor_folder, "macros")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$macros_path, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "inputfiles")) {
+  if (!create_io_location(monitor_folder, "inputfiles")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$readPathAC, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "msoc")) {
+  if (!create_io_location(monitor_folder, "msoc")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
@@ -63,7 +63,7 @@ PrepareFolder.ACDP = function(params, monitor_folder) {
                                 "Check the path and restart the program.")
   }
   for (id in 1:params$numDataPartners) {
-    if (!CreateIOLocation(monitor_folder, paste0("msoc", id))) {
+    if (!create_io_location(monitor_folder, paste0("msoc", id))) {
       params$failed <- TRUE
       params$error_message <- paste(params$error_message,
                                   "Could not create directory",
@@ -74,9 +74,9 @@ PrepareFolder.ACDP = function(params, monitor_folder) {
 
   if (params$data_partner_id != 0) {
     Sys.sleep(1)
-    DeleteTrigger("files_done.ok", params$readPathAC)
+    delete_trigger("files_done.ok", params$readPathAC)
     for (id in 1:params$numDataPartners) {
-      DeleteTrigger("files_done.ok", params$readpathDP[id])
+      delete_trigger("files_done.ok", params$readpathDP[id])
     }
   }
 
@@ -92,7 +92,7 @@ PrepareFolder.ACDP = function(params, monitor_folder) {
 
 
 #' @importFrom stats model.matrix
-PrepareDataLinLog.DP1 = function(params, data, yname = NULL) {
+PrepareDataLinLog.DP1 = function(params, data, y_name = NULL) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareDataLinLog.DP1\n\n")
 
   workdata = list()
@@ -106,7 +106,7 @@ PrepareDataLinLog.DP1 = function(params, data, yname = NULL) {
 
   data = data.frame(data) # convert to a clean data.frame
 
-  response_index = CheckResponse(params, data, yname)
+  response_index = CheckResponse(params, data, y_name)
 
   if (is.null(response_index)) {
     workdata$failed = TRUE
@@ -249,8 +249,8 @@ CheckAgreement.AC = function(params) {
 
 
 #' @importFrom stats runif
-PrepareParamsLinear.DP = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareParamsLinear.DP\n\n")
+prepare_params_linear_DP = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_DP\n\n")
   params$n          = nrow(data$X)
   params$p          = ncol(data$X)
   temp = as.numeric(Sys.time())
@@ -267,7 +267,7 @@ PrepareParamsLinear.DP = function(params, data) {
   write_size = file.size(file.path(params$write_path, "p_scaler_seed.rdata"))
   write_time <-proc.time()[3] - write_time
 
-  params <- add_to_log(params, "PrepareParamsLinear.DP", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "prepare_params_linear_DP", 0, 0, write_time, write_size)
   return(params)
 }
 
@@ -565,8 +565,8 @@ ComputeResultsLinear.AC = function(params) {
 }
 
 
-GetResultsLinear.DP = function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "GetResultsLinear.DP\n\n")
+get_results_linear_DP = function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "get_results_linear_DP\n\n")
   params$converged = TRUE
   stats = NULL
   read_time <- proc.time()[3]
@@ -575,7 +575,7 @@ GetResultsLinear.DP = function(params) {
   read_time <- proc.time()[3] - read_time
   params$stats = stats
 
-  params <- add_to_log(params, "GetResultsLinear.DP", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "get_results_linear_DP", read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -584,25 +584,25 @@ GetResultsLinear.DP = function(params) {
 
 
 DataPartnerKLinear = function(data,
-                              yname           = NULL,
+                              y_name           = NULL,
                               numDataPartners = NULL,
                               data_partner_id   = NULL,
                               monitor_folder   = NULL,
                               sleep_time       = 10,
-                              maxWaitingTime  = 24 * 60 * 60,
+                              max_waiting_time  = 24 * 60 * 60,
                               popmednet      = TRUE,
                               trace          = FALSE,
                               verbose        = TRUE) {
 
-  params <- PrepareParams.kp("linear", data_partner_id, numDataPartners, ac = FALSE,
+  params <- prepare_params_kp("linear", data_partner_id, numDataPartners, ac = FALSE,
                             popmednet = popmednet, trace = trace, verbose = verbose)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
   }
-  params <- InitializeLog.kp(params)
-  params <- InitializeStamps.kp(params)
-  params <- InitializeTrackingTable.kp(params)
+  params <- initialize_log_kp(params)
+  params <- initialize_time_stamps_kp(params)
+  params <- initialize_tracking_table_kp(params)
   Header(params)
 
   params   = PrepareFolder.ACDP(params, monitor_folder)
@@ -613,7 +613,7 @@ DataPartnerKLinear = function(data,
   }
 
   if (data_partner_id == 1) {
-    data = PrepareDataLinLog.DP1(params, data, yname)
+    data = PrepareDataLinLog.DP1(params, data, y_name)
     params <- add_to_log(params, "PrepareDataLinLog.DP1", 0, 0, 0, 0)
   } else {
     data = PrepareDataLinLog.DPk(params, data)
@@ -623,48 +623,48 @@ DataPartnerKLinear = function(data,
 
   if (data$failed) {
     params$error_message <- paste("Error processing data for data partner", params$data_partner_id, "\n")
-    MakeErrorMessage(params$write_path, params$error_message)
+    make_error_message(params$write_path, params$error_message)
     files = "error_message.rdata"
-    params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
-    params$error_message <- ReadErrorMessage(params$readPathAC)
+    params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+    params$error_message <- read_error_message(params$readPathAC)
     warning(params$error_message)
-    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
   }
 
   params <- SendBasicInfo.DP(params, data)
   files = "n_analysis.rdata"
-  params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
     params$error_message <- possibleError$message
     warning(possibleError$message)
-    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
   }
 
-  params <- PrepareParamsLinear.DP(params, data)
+  params <- prepare_params_linear_DP(params, data)
   files = "p_scaler_seed.rdata"
-  params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
   params <- PrepareSharesLinear.DP(params, data)
   files = c("products.rdata", "halfshare.rdata", "colstats.rdata")
-  params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
     params$error_message <- possibleError$message
     warning(possibleError$message)
-    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
   } else {
-    params <- GetResultsLinear.DP(params)
-    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+    params <- get_results_linear_DP(params)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
   }
 }
@@ -674,19 +674,19 @@ AnalysisCenterKLinear = function(numDataPartners = NULL,
                                  monitor_folder   = NULL,
                                  msreqid         = "v_default_0_000",
                                  sleep_time       = 10,
-                                 maxWaitingTime  = 24 * 60 * 60,
+                                 max_waiting_time  = 24 * 60 * 60,
                                  popmednet       = TRUE,
                                  trace           = FALSE,
                                  verbose         = TRUE) {
-  params <- PrepareParams.kp("linear", 0, numDataPartners, msreqid, ac = TRUE,
+  params <- prepare_params_kp("linear", 0, numDataPartners, msreqid, ac = TRUE,
                             popmednet = popmednet, trace = trace, verbose = verbose)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
   }
-  params <- InitializeLog.kp(params)
-  params <- InitializeStamps.kp(params)
-  params <- InitializeTrackingTable.kp(params)
+  params <- initialize_log_kp(params)
+  params <- initialize_time_stamps_kp(params)
+  params <- initialize_tracking_table_kp(params)
   Header(params)
 
   params   = PrepareFolder.ACDP(params, monitor_folder)
@@ -696,17 +696,17 @@ AnalysisCenterKLinear = function(numDataPartners = NULL,
     return(invisible(NULL))
   }
 
-  params <- PauseContinue.kp(params, from = "DP", maxWaitingTime = maxWaitingTime)
+  params <- PauseContinue.kp(params, from = "DP", max_waiting_time = max_waiting_time)
 
   possibleError = ReceivedError.kp(params, from = "DP")
   if (possibleError$error) {
     params$error_message <- possibleError$message
     warning(possibleError$message)
-    MakeErrorMessage(params$write_path, possibleError$message)
+    make_error_message(params$write_path, possibleError$message)
     files = "error_message.rdata"
-    params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.kp(params)
     return(params$stats)
   }
@@ -714,37 +714,37 @@ AnalysisCenterKLinear = function(numDataPartners = NULL,
   params <- CheckAgreement.AC(params)
 
   if (params$failed) {
-    MakeErrorMessage(params$write_path, params$error_message)
+    make_error_message(params$write_path, params$error_message)
     files = "error_message.rdata"
     warning(params$error_message)
-    params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.kp(params)
     return(params$stats)
   }
 
   files = "empty.rdata"
-  params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- GetProductsLinear.AC(params)
   params <- ComputeResultsLinear.AC(params)
 
   if (params$failed) {
-    MakeErrorMessage(params$write_path, params$error_message)
+    make_error_message(params$write_path, params$error_message)
     files = "error_message.rdata"
     warning(params$error_message)
-    params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.kp(params)
     return(params$stats)
   } else {
     files = "stats.rdata"
-    params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-    params <- SendPauseQuit.kp(params, sleep_time = sleep_time)
+    params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time)
     SummarizeLog.kp(params)
     return(params$stats)
   }

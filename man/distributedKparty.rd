@@ -16,7 +16,7 @@ DataPartner.KParty(
   dataPartnerID = NULL,
   monitor_folder = NULL,
   sleepTime = 10,
-  maxWaitingTime = 86400,
+  max_waiting_time = 86400,
   popmednet = TRUE,
   trace = FALSE,
   verbose = TRUE
@@ -30,7 +30,7 @@ AnalysisCenter.KParty(
   tol = 1e-08,
   max_iterations = 25,
   sleepTime = 10,
-  maxWaitingTime = 86400,
+  max_waiting_time = 86400,
   popmednet = TRUE,
   trace = FALSE,
   verbose = TRUE
@@ -85,7 +85,7 @@ located.}
 disk before signalling the PMN Datamart Client that files are ready to be
 transferred.}
 
-\item{maxWaitingTime}{the number of seconds to wait to receive files before a
+\item{max_waiting_time}{the number of seconds to wait to receive files before a
 transfer error is declared and the program halts execution. Should be the
 same for all parties when \code{delayOffset = TRUE}.}
 

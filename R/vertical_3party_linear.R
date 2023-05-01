@@ -1,68 +1,68 @@
 ################### DISTRIBUTED LINEAR REGRESSION FUNCTIONS ###################
 
-PrepareFolderLinear.a3 = function(params, monitor_folder = NULL) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareFolderLinear.a3\n\n")
+prepare_folder_linear_a3 = function(params, monitor_folder = NULL) {
+  if (params$trace) cat(as.character(Sys.time()), "prepare_folder_linear_a3\n\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.  Please use the same monitor_folder as the DataMart Client.")
     params$failed <- TRUE
-    params <- add_to_log(params, "PrepareFolderLinear.a3", 0, 0, 0, 0)
+    params <- add_to_log(params, "prepare_folder_linear_a3", 0, 0, 0, 0)
     return(params)
   }
   if (class(monitor_folder) != "character") {
     warning("monitor_folder directory is not valid.  Please use the same monitor_folder as the DataMart Client.")
     params$failed <- TRUE
-    params <- add_to_log(params, "PrepareFolderLinear.a3", 0, 0, 0, 0)
+    params <- add_to_log(params, "prepare_folder_linear_a3", 0, 0, 0, 0)
     return(params)
   }
   while (!dir.exists(monitor_folder)) {
     Sys.sleep(1)
   }
 
-  params$dp_local_path   = file.path(monitor_folder, "dplocal")
-  params$r_programs_path = file.path(monitor_folder, "rprograms")
-  params$macros_path    = file.path(monitor_folder, "macros")
-  params$write_path     = file.path(monitor_folder, "msoc")
-  params$read_path      = c(file.path(monitor_folder, "inputfiles"),
+  params$dp_local_path   <- file.path(monitor_folder, "dplocal")
+  params$r_programs_path <- file.path(monitor_folder, "rprograms")
+  params$macros_path     <- file.path(monitor_folder, "macros")
+  params$write_path      <- file.path(monitor_folder, "msoc")
+  params$read_path       <- c(file.path(monitor_folder, "inputfiles"),
                            NA,
                            file.path(monitor_folder, "msoc2"))
-  names(params$read_path) = c("T", "A", "B")
+  names(params$read_path) <- c("T", "A", "B")
 
-  if (!CreateIOLocation(monitor_folder, "dplocal")) {
+  if (!create_io_location(monitor_folder, "dplocal")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$dp_local_path, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "rprograms")) {
+  if (!create_io_location(monitor_folder, "rprograms")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$r_programs_path, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "macros")) {
+  if (!create_io_location(monitor_folder, "macros")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$macros_path, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "inputfiles")) {
+  if (!create_io_location(monitor_folder, "inputfiles")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$read_path[["T"]], "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "msoc2")) {
+  if (!create_io_location(monitor_folder, "msoc2")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$read_path[["B"]], "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "msoc")) {
+  if (!create_io_location(monitor_folder, "msoc")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
@@ -71,78 +71,78 @@ PrepareFolderLinear.a3 = function(params, monitor_folder = NULL) {
   }
 
   Sys.sleep(1)
-  DeleteTrigger("files_done.ok", params$read_path[1])
-  DeleteTrigger("files_done.ok", params$read_path[3])
+  delete_trigger("files_done.ok", params$read_path[1])
+  delete_trigger("files_done.ok", params$read_path[3])
 
-  params <- add_to_log(params, "PrepareFolderLinear.a3", 0, 0, 0, 0)
+  params <- add_to_log(params, "prepare_folder_linear_a3", 0, 0, 0, 0)
 
   return(params)
 }
 
 
-PrepareFolderLinear.b3 = function(params, monitor_folder = NULL) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareFolderLinear.b3\n\n")
+prepare_folder_linear_b3 = function(params, monitor_folder = NULL) {
+  if (params$trace) cat(as.character(Sys.time()), "prepare_folder_linear_b3\n\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.  Please use the same monitor_folder as the DataMart Client.")
     params$failed <- TRUE
-    params <- add_to_log(params, "PrepareFolderLinear.b3", 0, 0, 0, 0)
+    params <- add_to_log(params, "prepare_folder_linear_b3", 0, 0, 0, 0)
     return(params)
   }
   if (class(monitor_folder) != "character") {
     warning("monitor_folder directory is not valid.  Please use the same monitor_folder as the DataMart Client.")
     params$failed <- TRUE
-    params <- add_to_log(params, "PrepareFolderLinear.b3", 0, 0, 0, 0)
+    params <- add_to_log(params, "prepare_folder_linear_b3", 0, 0, 0, 0)
     return(params)
   }
   while (!dir.exists(monitor_folder)) {
     Sys.sleep(1)
   }
 
-  params$dp_local_path   = file.path(monitor_folder, "dplocal")
-  params$r_programs_path = file.path(monitor_folder, "rprograms")
-  params$macros_path    = file.path(monitor_folder, "macros")
-  params$write_path     = file.path(monitor_folder, "msoc")
-  params$read_path      = c(file.path(monitor_folder, "inputfiles"),
+  params$dp_local_path   <- file.path(monitor_folder, "dplocal")
+  params$r_programs_path <- file.path(monitor_folder, "rprograms")
+  params$macros_path     <- file.path(monitor_folder, "macros")
+  params$write_path      <- file.path(monitor_folder, "msoc")
+  params$read_path       <- c(file.path(monitor_folder, "inputfiles"),
                            file.path(monitor_folder, "msoc1"),
                            NA)
-  names(params$read_path) = c("T", "A", "B")
+  names(params$read_path) <- c("T", "A", "B")
 
-  if (!CreateIOLocation(monitor_folder, "dplocal")) {
+  if (!create_io_location(monitor_folder, "dplocal")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$dp_local_path, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "rprograms")) {
+  if (!create_io_location(monitor_folder, "rprograms")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$r_programs_path, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "macros")) {
+  if (!create_io_location(monitor_folder, "macros")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$macros_path, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "inputfiles")) {
+  if (!create_io_location(monitor_folder, "inputfiles")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$read_path[["T"]], "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "msoc1")) {
+  if (!create_io_location(monitor_folder, "msoc1")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$read_path[["A"]], "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "msoc")) {
+  if (!create_io_location(monitor_folder, "msoc")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
@@ -151,78 +151,78 @@ PrepareFolderLinear.b3 = function(params, monitor_folder = NULL) {
   }
 
   Sys.sleep(1)
-  DeleteTrigger("files_done.ok", params$read_path[1])
-  DeleteTrigger("files_done.ok", params$read_path[2])
+  delete_trigger("files_done.ok", params$read_path[1])
+  delete_trigger("files_done.ok", params$read_path[2])
 
-  params <- add_to_log(params, "PrepareFolderLinear.b3", 0, 0, 0, 0)
+  params <- add_to_log(params, "prepare_folder_linear_b3", 0, 0, 0, 0)
 
   return(params)
 }
 
 
-PrepareFolderLinear.t3 = function(params, monitor_folder = NULL) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareFolderLinear.t3\n\n")
+prepare_folder_linear_t3 = function(params, monitor_folder = NULL) {
+  if (params$trace) cat(as.character(Sys.time()), "prepare_folder_linear_t3\n\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.  Please use the same monitor_folder as the DataMart Client.")
     params$failed <- TRUE
-    params <- add_to_log(params, "PrepareFolderLinear.a3", 0, 0, 0, 0)
+    params <- add_to_log(params, "prepare_folder_linear_a3", 0, 0, 0, 0)
     return(params)
   }
   if (class(monitor_folder) != "character") {
     warning("monitor_folder directory is not valid.  Please use the same monitor_folder as the DataMart Client.")
     params$failed <- TRUE
-    params <- add_to_log(params, "PrepareFolderLinear.a3", 0, 0, 0, 0)
+    params <- add_to_log(params, "prepare_folder_linear_a3", 0, 0, 0, 0)
     return(params)
   }
   while (!dir.exists(monitor_folder)) {
     Sys.sleep(1)
   }
 
-  params$dp_local_path   = file.path(monitor_folder, "dplocal")
-  params$r_programs_path = file.path(monitor_folder, "rprograms")
-  params$macros_path    = file.path(monitor_folder, "macros")
-  params$write_path     = file.path(monitor_folder, "inputfiles")
-  params$read_path      = c(NA,
+  params$dp_local_path   <- file.path(monitor_folder, "dplocal")
+  params$r_programs_path <- file.path(monitor_folder, "rprograms")
+  params$macros_path     <- file.path(monitor_folder, "macros")
+  params$write_path      <- file.path(monitor_folder, "inputfiles")
+  params$read_path       <- c(NA,
                            file.path(monitor_folder, "msoc1"),
                            file.path(monitor_folder, "msoc2"))
-  names(params$read_path) = c("T", "A", "B")
+  names(params$read_path) <- c("T", "A", "B")
 
-  if (!CreateIOLocation(monitor_folder, "dplocal")) {
+  if (!create_io_location(monitor_folder, "dplocal")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$dp_local_path, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "rprograms")) {
+  if (!create_io_location(monitor_folder, "rprograms")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$r_programs_path, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "macros")) {
+  if (!create_io_location(monitor_folder, "macros")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$macros_path, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "msoc1")) {
+  if (!create_io_location(monitor_folder, "msoc1")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$read_path[["A"]], "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "msoc2")) {
+  if (!create_io_location(monitor_folder, "msoc2")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$read_path[["B"]], "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "msoc")) {
+  if (!create_io_location(monitor_folder, "msoc")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                 "Could not create directory",
@@ -230,14 +230,14 @@ PrepareFolderLinear.t3 = function(params, monitor_folder = NULL) {
                                 "Check the path and restart the program.")
   }
 
-  params <- add_to_log(params, "PrepareFolderLinear.t3", 0, 0, 0, 0)
+  params <- add_to_log(params, "prepare_folder_linear_t3", 0, 0, 0, 0)
 
   return(params)
 }
 
 
-PrepareParamsLinear.a3 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareParamsLinear.a3\n\n")
+prepare_params_linear_a3 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_a3\n\n")
   params$n     = nrow(data$X)
   params$p     = ncol(data$X)
   params$means = data$means
@@ -252,7 +252,7 @@ PrepareParamsLinear.a3 = function(params, data) {
   pa$yty      = data$yty
   pa$meansy   = data$meansy
   pa$sdy      = data$sdy
-  pa$yname    = data$yname
+  pa$y_name    = data$y_name
   pa$colnames = colnames(data$X)
   pa$tags     = data$tags
 
@@ -260,13 +260,13 @@ PrepareParamsLinear.a3 = function(params, data) {
   save(pa, file = file.path(params$write_path, "pa.rdata"))
   write_size <- file.size(file.path(params$write_path, "pa.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "PrepareParamsLinear.a3", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "prepare_params_linear_a3", 0, 0, write_time, write_size)
   return(params)
 }
 
 
-PrepareParamsLinear.b3 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareParamsLinear.b3\n\n")
+prepare_params_linear_b3 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_b3\n\n")
   params$n     = nrow(data$X)
   params$p     = ncol(data$X)
   params$means = data$means
@@ -285,13 +285,13 @@ PrepareParamsLinear.b3 = function(params, data) {
   save(pb, file = file.path(params$write_path, "pb.rdata"))
   write_size <- file.size(file.path(params$write_path, "pb.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "PrepareParamsLinear.b3", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "prepare_params_linear_b3", 0, 0, write_time, write_size)
   return(params)
 }
 
 
-PrepareParamsLinear.t3 = function(params, cutoff = 1e-8, max_iterations = 25) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareParamsLinear.t3\n\n")
+prepare_params_linear_t3 = function(params, cutoff = 1e-8, max_iterations = 25) {
+  if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_t3\n\n")
   pa = NULL
   pb = NULL
   read_time <- proc.time()[3]
@@ -331,17 +331,17 @@ PrepareParamsLinear.t3 = function(params, cutoff = 1e-8, max_iterations = 25) {
   params$colnamesB     = pb$colnames
   params$Atags         = pa$tags
   params$Btags         = pb$tags
-  params$yname         = pa$yname
+  params$y_name         = pa$y_name
   params$cutoff        = cutoff
   params$max_iterations = max_iterations
 
-  params <- add_to_log(params, "PrepareParamsLinear.t3", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "prepare_params_linear_t3", read_time, read_size, 0, 0)
   return(params)
 }
 
 
-PrepareBlocksLinear.t3 = function(params, blocksize) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareBlocksLinear.t3\n\n")
+prepare_blocks_linear_t3 = function(params, blocksize) {
+  if (params$trace) cat(as.character(Sys.time()), "prepare_blocks_linear_t3\n\n")
   # For now, assuming that p1 > 0 and p2 > 0
   n  = params$n
   p1 = params$p1
@@ -372,7 +372,7 @@ PrepareBlocksLinear.t3 = function(params, blocksize) {
     }
     warning(params$error_message)
     params$failed <- TRUE
-    params <- add_to_log(params, "PrepareBlocksLinear.t3", 0, 0, 0, 0)
+    params <- add_to_log(params, "prepare_blocks_linear_t3", 0, 0, 0, 0)
     return(params)
   }
 
@@ -398,13 +398,13 @@ PrepareBlocksLinear.t3 = function(params, blocksize) {
   save(blocks, containers, file = file.path(params$write_path, "blocks.rdata"))
   write_size <- file.size(file.path(params$write_path, "blocks.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "PrepareBlocksLinear.t3", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "prepare_blocks_linear_t3", 0, 0, write_time, write_size)
   return(params)
 }
 
 
-PrepareBlocksLinear.a3 = function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareBlocksLinear.a3\n\n")
+prepare_blocks_linear_a3 = function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "prepare_blocks_linear_a3\n\n")
   blocks     = NULL
   containers = NULL
   read_time <- proc.time()[3]
@@ -414,13 +414,13 @@ PrepareBlocksLinear.a3 = function(params) {
 
   params$blocks = blocks
   params$containers = containers
-  params <- add_to_log(params, "PrepareBlocksLinear.a3", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "prepare_blocks_linear_a3", read_time, read_size, 0, 0)
   return(params)
 }
 
 
-GetZLinear.a3 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "GetZLinear.a3\n\n")
+get_z_linear_a3 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "get_z_linear_a3\n\n")
   write_time <- 0
   write_size <- 0
 
@@ -428,7 +428,7 @@ GetZLinear.a3 = function(params, data) {
   pbar = MakeProgressBar1(num_blocks, "Z", params$verbose)
   container_ct_z <- 0
   for (i in 1:num_blocks) {
-    if (i %in% params$container$filebreak.Z) {
+    if (i %in% params$container$file_break_z) {
       container_ct_z <- container_ct_z + 1
       filename = paste0("cz_", container_ct_z, ".rdata")
       to_write <- file(file.path(params$write_path, filename), "wb")
@@ -442,13 +442,13 @@ GetZLinear.a3 = function(params, data) {
     write_time <-write_time - proc.time()[3]
     writeBin(as.vector(Z), con = to_write, endian = "little")
     write_time <-write_time + proc.time()[3]
-    if ((i + 1) %in% params$container$filebreak.Z || i == num_blocks) {
+    if ((i + 1) %in% params$container$file_break_z || i == num_blocks) {
       close(to_write)
       write_size <- write_size + file.size(file.path(params$write_path, filename))
     }
     pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
-  params <- add_to_log(params, "GetZLinear.a3", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "get_z_linear_a3", 0, 0, write_time, write_size)
   return(params)
 }
 
@@ -464,7 +464,7 @@ ProcessZLinear.t3 = function(params) {
   container_ct_z <- 0
   container_ct_RZ = 0
   for (i in 1:num_blocks) {
-    if (i %in% params$container$filebreak.Z) {
+    if (i %in% params$container$file_break_z) {
       container_ct_z <- container_ct_z + 1
       filename1 <- paste0("cz_", container_ct_z, ".rdata")
       toRead = file(file.path(params$read_path[["A"]], filename1), "rb")
@@ -496,7 +496,7 @@ ProcessZLinear.t3 = function(params) {
     write_size <- write_size + file.size(file.path(params$dp_local_path, filename3))
     write_time <-write_time + proc.time()[3]
 
-    if ((i + 1) %in% params$container$filebreak.Z || i == num_blocks) {
+    if ((i + 1) %in% params$container$file_break_z || i == num_blocks) {
       close(toRead)
       read_size <- read_size + file.size(file.path(params$read_path[["A"]], filename1))
     }
@@ -513,8 +513,8 @@ ProcessZLinear.t3 = function(params) {
 }
 
 
-PrepareBlocksLinear.b3 = function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareBlocksLinear.b3\n\n")
+prepare_blocks_linear_b3 = function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "prepare_blocks_linear_b3\n\n")
   blocks     = NULL
   containers = NULL
   read_time <- proc.time()[3]
@@ -524,7 +524,7 @@ PrepareBlocksLinear.b3 = function(params) {
 
   params$blocks = blocks
   params$containers = containers
-  params <- add_to_log(params, "PrepareBlocksLinear.b3", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "prepare_blocks_linear_b3", read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -666,8 +666,8 @@ ProcessWLinear.t3 = function(params) {
 }
 
 
-GetWRLinear.a3 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "GetWRLinear.a3\n\n")
+get_wr_linear_a3 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "get_wr_linear_a3\n\n")
   XATXA = t(data$X) %*% data$X
   XATY  = t(data$X) %*% data$Y
   write_time <- proc.time()[3]
@@ -724,7 +724,7 @@ GetWRLinear.a3 = function(params, data) {
 
     pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
-  params <- add_to_log(params, "GetWRLinear.a3", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "get_wr_linear_a3", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -946,8 +946,8 @@ ComputeResultsLinear.t3 = function(params) {
 }
 
 
-GetResultsLinear.a3 = function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "GetResultsLinear.a3\n\n")
+get_results_linear_a3 = function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "get_results_linear_a3\n\n")
   params$converged = TRUE
   stats = NULL
   read_time <- proc.time()[3]
@@ -956,13 +956,13 @@ GetResultsLinear.a3 = function(params) {
   read_time <- proc.time()[3] - read_time
   params$stats = stats
 
-  params <- add_to_log(params, "GetResultsLinear.a3", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "get_results_linear_a3", read_time, read_size, 0, 0)
   return(params)
 }
 
 
-GetResultsLinear.b3 = function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "GetResultsLinear.b3\n\n")
+get_results_linear_b3 = function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "get_results_linear_b3\n\n")
   params$converged = TRUE
   stats = NULL
   read_time <- proc.time()[3]
@@ -971,7 +971,7 @@ GetResultsLinear.b3 = function(params) {
   read_time <- proc.time()[3] - read_time
   params$stats = stats
 
-  params <- add_to_log(params, "GetResultsLinear.b3", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "get_results_linear_b3", read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -979,68 +979,68 @@ GetResultsLinear.b3 = function(params) {
 ############################## PARENT FUNCTIONS ###############################
 
 
-PartyAProcess3Linear = function(data,
-                                yname          = NULL,
+party_a_process_3_linear = function(data,
+                                y_name          = NULL,
                                 monitor_folder  = NULL,
                                 sleep_time      = 10,
-                                maxWaitingTime = 24 * 60 * 60,
+                                max_waiting_time = 24 * 60 * 60,
                                 popmednet      = TRUE,
                                 trace          = FALSE,
                                 verbose        = TRUE) {
 
-  params <- PrepareParams.3p("linear", "A",
+  params <- prepare_params_3p("linear", "A",
                             popmednet = popmednet, trace = trace, verbose = verbose)
-  params <- InitializeLog.3p(params)
-  params <- InitializeStamps.3p(params)
-  params <- InitializeTrackingTable.3p(params)
+  params <- initialize_log_3p(params)
+  params <- initialize_time_stamps_3p(params)
+  params <- initialize_tracking_table_3p(params)
   Header(params)
 
-  params   = PrepareFolderLinear.a3(params, monitor_folder)
+  params   = prepare_folder_linear_a3(params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
   }
-  data = PrepareDataLinear.A23(params, data, yname)
-  params <- add_to_log(params, "PrepareDataLinear.A23", 0, 0, 0, 0)
+  data = prepare_data_linear_a23(params, data, y_name)
+  params <- add_to_log(params, "prepare_data_linear_a23", 0, 0, 0, 0)
 
   if (data$failed) {
     message = "Error in processing the data for Party A."
-    MakeErrorMessage(params$write_path, message)
+    make_error_message(params$write_path, message)
     files = c("error_message.rdata")
-    params <- SendPauseQuit.3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
+    params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
-  params <- PrepareParamsLinear.a3(params, data)
+  params <- prepare_params_linear_a3(params, data)
   files = "pa.rdata"
-  params <- SendPauseContinue.3p(params, filesT = files, from = "T",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- send_pause_continue_3p(params, filesT = files, from = "T",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
-    warning(ReadErrorMessage(params$read_path[["T"]]))
-    params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
+    warning(read_error_message(params$read_path[["T"]]))
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
-  params <- PrepareBlocksLinear.a3(params)
-  params <- GetZLinear.a3(params, data)
-  files = SeqZW("cz_", length(params$container$filebreak.Z))
-  params <- SendPauseContinue.3p(params, filesT = files, from = "T",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  params <- prepare_blocks_linear_a3(params)
+  params <- get_z_linear_a3(params, data)
+  files = seq_zw("cz_", length(params$container$file_break_z))
+  params <- send_pause_continue_3p(params, filesT = files, from = "T",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
-  params <- GetWRLinear.a3(params, data)
-  files = c("xatxa.rdata", SeqZW("cpr_", length(params$container$filebreak.PR)))
-  params <- SendPauseContinue.3p(params, filesT = files, from = "T",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  params <- get_wr_linear_a3(params, data)
+  files = c("xatxa.rdata", seq_zw("cpr_", length(params$container$filebreak.PR)))
+  params <- send_pause_continue_3p(params, filesT = files, from = "T",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
-    warning(ReadErrorMessage(params$read_path[["T"]]))
-    params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
+    warning(read_error_message(params$read_path[["T"]]))
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
-  params <- GetResultsLinear.a3(params)
-  params <- SendPauseQuit.3p(params, sleep_time = sleep_time, waitForTurn = TRUE)
+  params <- get_results_linear_a3(params)
+  params <- send_pause_quit_3p(params, sleep_time = sleep_time, waitForTurn = TRUE)
   return(params$stats)
 }
 
@@ -1048,60 +1048,60 @@ PartyAProcess3Linear = function(data,
 PartyBProcess3Linear = function(data,
                                 monitor_folder  = NULL,
                                 sleep_time      = 10,
-                                maxWaitingTime = 24 * 60 * 60,
+                                max_waiting_time = 24 * 60 * 60,
                                 popmednet      = TRUE,
                                 trace          = FALSE,
                                 verbose        = TRUE) {
-  params <- PrepareParams.3p("linear", "B",
+  params <- prepare_params_3p("linear", "B",
                             popmednet = popmednet, trace = trace, verbose = verbose)
-  params <- InitializeLog.3p(params)
-  params <- InitializeStamps.3p(params)
-  params <- InitializeTrackingTable.3p(params)
+  params <- initialize_log_3p(params)
+  params <- initialize_time_stamps_3p(params)
+  params <- initialize_tracking_table_3p(params)
 
   Header(params)
-  params   = PrepareFolderLinear.b3(params, monitor_folder)
+  params   = prepare_folder_linear_b3(params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
   }
 
-  data = PrepareDataLinear.B23(params, data)
-  params <- add_to_log(params, "PrepareDataLinear.B23", 0, 0, 0, 0)
+  data = prepare_data_linear_B23(params, data)
+  params <- add_to_log(params, "prepare_data_linear_B23", 0, 0, 0, 0)
 
   if (data$failed) {
     message = "Error in processing the data for Party B."
-    MakeErrorMessage(params$write_path, message)
+    make_error_message(params$write_path, message)
     files = c("error_message.rdata")
-    params <- SendPauseQuit.3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
+    params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
-  params <- PrepareParamsLinear.b3(params, data)
+  params <- prepare_params_linear_b3(params, data)
   files = "pb.rdata"
-  params <- SendPauseContinue.3p(params, filesT = files, from = "T",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- send_pause_continue_3p(params, filesT = files, from = "T",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
-    warning(ReadErrorMessage(params$read_path[["T"]]))
-    params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
+    warning(read_error_message(params$read_path[["T"]]))
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
-  params <- PrepareBlocksLinear.b3(params)
+  params <- prepare_blocks_linear_b3(params)
   params <- GetRWLinear.b3(params, data)
-  files = c("xbtxb.rdata", SeqZW("crw_", length(params$container$filebreak.RW)))
-  params <- SendPauseContinue.3p(params, filesT = files, from = "T",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  files = c("xbtxb.rdata", seq_zw("crw_", length(params$container$filebreak.RW)))
+  params <- send_pause_continue_3p(params, filesT = files, from = "T",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
-    warning(ReadErrorMessage(params$read_path[["T"]]))
-    params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
+    warning(read_error_message(params$read_path[["T"]]))
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
-  params <- GetResultsLinear.b3(params)
-  params <- SendPauseQuit.3p(params, sleep_time = sleep_time, waitForTurn = TRUE)
+  params <- get_results_linear_b3(params)
+  params <- send_pause_quit_3p(params, sleep_time = sleep_time, waitForTurn = TRUE)
   return(params$stats)
 }
 
@@ -1110,105 +1110,105 @@ PartyTProcess3Linear = function(monitor_folder         = NULL,
                                 msreqid               = "v_default_0_000",
                                 blocksize             = 500,
                                 sleep_time             = 10,
-                                maxWaitingTime        = 24 * 60 * 60,
+                                max_waiting_time        = 24 * 60 * 60,
                                 popmednet             = TRUE,
                                 trace                 = FALSE,
                                 verbose               = TRUE) {
-  params <- PrepareParams.3p("linear", "T", msreqid = msreqid,
+  params <- prepare_params_3p("linear", "T", msreqid = msreqid,
                             popmednet = popmednet, trace = trace, verbose = verbose)
-  params <- InitializeLog.3p(params)
-  params <- InitializeStamps.3p(params)
-  params <- InitializeTrackingTable.3p(params)
+  params <- initialize_log_3p(params)
+  params <- initialize_time_stamps_3p(params)
+  params <- initialize_tracking_table_3p(params)
 
   Header(params)
-  params   = PrepareFolderLinear.t3(params, monitor_folder)
+  params   = prepare_folder_linear_t3(params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
   }
 
-  params <- PauseContinue.3p(params, from = c("A", "B"), maxWaitingTime = maxWaitingTime)
+  params <- PauseContinue.3p(params, from = c("A", "B"), max_waiting_time = max_waiting_time)
 
   if (file.exists(file.path(params$read_path[["A"]], "error_message.rdata")) &&
       file.exists(file.path(params$read_path[["B"]], "error_message.rdata"))) {
-    warning(paste(ReadErrorMessage(params$read_path[["A"]]), "\n",
-                  ReadErrorMessage(params$read_path[["B"]])))
-    params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE)
+    warning(paste(read_error_message(params$read_path[["A"]]), "\n",
+                  read_error_message(params$read_path[["B"]])))
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.3p(params)
     return(params$stats)
   }
   if (file.exists(file.path(params$read_path[["A"]], "error_message.rdata"))) {
-    warning(ReadErrorMessage(params$read_path[["A"]]))
+    warning(read_error_message(params$read_path[["A"]]))
     file.copy(file.path(params$read_path[["A"]], "error_message.rdata"),
               file.path(params$write_path, "error_message.rdata"))
     files = "error_message.rdata"
-    params <- SendPauseContinue.3p(params, filesB = files, from = "B",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-    params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_3p(params, filesB = files, from = "B",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.3p(params)
     return(params$stats)
   }
   if (file.exists(file.path(params$read_path[["B"]], "error_message.rdata"))) {
-    warning(ReadErrorMessage(params$read_path[["B"]]))
+    warning(read_error_message(params$read_path[["B"]]))
     file.copy(file.path(params$read_path[["B"]], "error_message.rdata"),
               file.path(params$write_path, "error_message.rdata"))
     files = "error_message.rdata"
-    params <- SendPauseContinue.3p(params, filesA = files, from = "A",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-    params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_3p(params, filesA = files, from = "A",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.3p(params)
     return(params$stats)
   }
 
-  params   = PrepareParamsLinear.t3(params)
-  if (!params$failed) params <- PrepareBlocksLinear.t3(params, blocksize)
+  params   = prepare_params_linear_t3(params)
+  if (!params$failed) params <- prepare_blocks_linear_t3(params, blocksize)
 
   if (params$failed) {
     warning(params$error_message)
-    MakeErrorMessage(params$write_path, params$error_message)
+    make_error_message(params$write_path, params$error_message)
     files = "error_message.rdata"
-    params <- SendPauseContinue.3p(params, filesA = files, filesB = files,
+    params <- send_pause_continue_3p(params, filesA = files, filesB = files,
                                   from = c("A", "B"),
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-    params <- SendPauseQuit.3p(params, sleep_time = sleep_time)
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time)
     SummarizeLog.3p(params)
     return(params$stats)
   }
 
   files = "blocks.rdata"
-  params <- SendPauseContinue.3p(params, filesA = files, from = "A",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  params <- send_pause_continue_3p(params, filesA = files, from = "A",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- ProcessZLinear.t3(params)
-  files = c("blocks.rdata", SeqZW("crz_", length(params$container$filebreak.RZ)))
-  params <- SendPauseContinue.3p(params, filesB = files, from  = "B",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  files = c("blocks.rdata", seq_zw("crz_", length(params$container$filebreak.RZ)))
+  params <- send_pause_continue_3p(params, filesB = files, from  = "B",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- ProcessWLinear.t3(params)
-  files = c("p2.rdata", SeqZW("cwr_", length(params$container$filebreak.WR)))
-  params <- SendPauseContinue.3p(params, filesA = files, from  = "A",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  files = c("p2.rdata", seq_zw("cwr_", length(params$container$filebreak.WR)))
+  params <- send_pause_continue_3p(params, filesA = files, from  = "A",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- GetProductsLinear.t3(params)
   params <- ComputeResultsLinear.t3(params)
 
   if (params$failed) {
     warning(params$error_message)
-    MakeErrorMessage(params$write_path, params$error_message)
+    make_error_message(params$write_path, params$error_message)
     files = "error_message.rdata"
-    params <- SendPauseContinue.3p(params, filesA = files, filesB = files,
+    params <- send_pause_continue_3p(params, filesA = files, filesB = files,
                                   from = c("A", "B"),
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-    params <- SendPauseQuit.3p(params, sleep_time = sleep_time)
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time)
     SummarizeLog.3p(params)
     return(params$stats)
   }
 
   files = "stats.rdata"
-  params <- SendPauseContinue.3p(params, filesA = files, filesB = files, from  = c("A", "B"),
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  params <- send_pause_continue_3p(params, filesA = files, filesB = files, from  = c("A", "B"),
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
-  params <- SendPauseQuit.3p(params, sleep_time = sleep_time)
+  params <- send_pause_quit_3p(params, sleep_time = sleep_time)
   SummarizeLog.3p(params)
   return(params$stats)
 }

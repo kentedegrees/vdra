@@ -22,35 +22,35 @@ prepare_folder_cox_a2 = function(params, monitor_folder) {
     Sys.sleep(1)
   }
   params$error_message <- NULL
-  if (!CreateIOLocation(monitor_folder, "dplocal")) {
+  if (!create_io_location(monitor_folder, "dplocal")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                   "Could not create directory",
                                   paste0(params$dp_local_path, "."),
                                   "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "rprograms")) {
+  if (!create_io_location(monitor_folder, "rprograms")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                   "Could not create directory",
                                   paste0(params$r_programs_path, "."),
                                   "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "macros")) {
+  if (!create_io_location(monitor_folder, "macros")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                   "Could not create directory",
                                   paste0(params$macros_path, "."),
                                   "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "inputfiles")) {
+  if (!create_io_location(monitor_folder, "inputfiles")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                   "Could not create directory",
                                   paste0(params$write_path, "."),
                                   "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "msoc1")) {
+  if (!create_io_location(monitor_folder, "msoc1")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                   "Could not create directory",
@@ -87,35 +87,35 @@ prepare_folder_cox_b2 = function(params, monitor_folder) {
   }
 
   params$error_message <- NULL
-  if (!CreateIOLocation(monitor_folder, "dplocal")) {
+  if (!create_io_location(monitor_folder, "dplocal")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                   "Could not create directory",
                                   paste0(params$dp_local_path, "."),
                                   "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "rprograms")) {
+  if (!create_io_location(monitor_folder, "rprograms")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                   "Could not create directory",
                                   paste0(params$r_programs_path, "."),
                                   "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "macros")) {
+  if (!create_io_location(monitor_folder, "macros")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                   "Could not create directory",
                                   paste0(params$macros_path, "."),
                                   "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "msoc")) {
+  if (!create_io_location(monitor_folder, "msoc")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                   "Could not create directory",
                                   paste0(params$write_path, "."),
                                   "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitor_folder, "inputfiles")) {
+  if (!create_io_location(monitor_folder, "inputfiles")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
                                   "Could not create directory",
@@ -124,7 +124,7 @@ prepare_folder_cox_b2 = function(params, monitor_folder) {
   }
 
   Sys.sleep(1)
-  DeleteTrigger("files_done.ok", params$read_path)
+  delete_trigger("files_done.ok", params$read_path)
 
   params <- add_to_log(params, "prepare_data_cox_b23, prepare_folder_cox_b2", 0, 0, 0, 0)
 
@@ -181,7 +181,7 @@ extract_strata <- function(params, data, stratas, mask) {
 
 
 #' @importFrom stats model.matrix
-prepare_data_cox_23 = function(params, data, yname, strata, mask) {
+prepare_data_cox_23 = function(params, data, y_name, strata, mask) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_data_cox_23\n\n")
 
   workdata = list()
@@ -202,7 +202,7 @@ prepare_data_cox_23 = function(params, data, yname, strata, mask) {
   response_index = numeric()
 
   if (params$party_name == "A") {
-    response_index = CheckResponse(params, data, yname)
+    response_index = CheckResponse(params, data, y_name)
 
     if (is.null(response_index)) {
       workdata$failed = TRUE
@@ -446,7 +446,7 @@ prepare_strata_cox_a2 <- function(params, data) {
   write_time <- proc.time()[3] - write_time
   data$read_time <- read_time
   data$read_size <- read_size
-  data$write_time <-write_time
+  data$write_time <- write_time
   data$write_size <- write_size
 
   return(data)
@@ -597,7 +597,7 @@ get_z_cox_a2 = function(params, data) {
   pbar <- MakeProgressBar1(num_blocks, "Z Files", params$verbose)
   container_ct_z <- 0
   for (i in 1:num_blocks) {
-    if (i %in% params$container$filebreak.Z) {
+    if (i %in% params$container$file_break_z) {
       container_ct_z <- container_ct_z + 1
       filename = paste0("cz_", container_ct_z, ".rdata")
       to_write <- file(file.path(params$write_path, filename), "wb")
@@ -606,10 +606,10 @@ get_z_cox_a2 = function(params, data) {
     stp <- params$blocks$stops[i]
     g = params$blocks$g[i]
     Z = FindOrthogonalVectors(data$X[strt:stp, ], g)
-    write_time <-write_time - proc.time()[3]
+    write_time <- write_time - proc.time()[3]
     writeBin(as.vector(Z), con = to_write, endian = "little")
-    write_time <-write_time + proc.time()[3]
-    if ((i + 1) %in% params$container$filebreak.Z || i == num_blocks) {
+    write_time <- write_time + proc.time()[3]
+    if ((i + 1) %in% params$container$file_break_z || i == num_blocks) {
       close(to_write)
       write_size <- write_size + file.size(file.path(params$write_path, filename))
     }
@@ -683,7 +683,7 @@ get_w_cox_b2 <- function(params, data) {
   container_ct_w <- 0
 
   for (i in 1:params$blocks$num_blocks) {
-    if (i %in% params$container$filebreak.Z) {
+    if (i %in% params$container$file_break_z) {
       container_ct_z <- container_ct_z + 1
       filename1 <- paste0("cz_", container_ct_z, ".rdata")
       to_read <- file(file.path(params$read_path, filename1), "rb")
@@ -706,11 +706,11 @@ get_w_cox_b2 <- function(params, data) {
 
     W = data$X[strt:stp, ] - Z %*% (t(Z) %*% data$X[strt:stp, ])
 
-    write_time <-write_time - proc.time()[3]
+    write_time <- write_time - proc.time()[3]
     writeBin(as.vector(W), con = to_write, endian = "little")
-    write_time <-write_time + proc.time()[3]
+    write_time <- write_time + proc.time()[3]
 
-    if ((i + 1) %in% params$container$filebreak.Z || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$file_break_z || i == params$blocks$num_blocks) {
       close(to_read)
     }
     if ((i + 1) %in% params$container$filebreak.W || i == params$blocks$num_blocks) {
@@ -721,10 +721,10 @@ get_w_cox_b2 <- function(params, data) {
     pbar <- MakeProgressBar2(i, pbar, params$verbose)
   }
 
-  write_time <-write_time - proc.time()[3]
+  write_time <- write_time - proc.time()[3]
   save(xb_t_xb, file = file.path(params$write_path, "xbtxb.rdata"))
   write_size <- write_size + file.size(file.path(params$write_path, "xbtxb.rdata"))
-  write_time <-write_time + proc.time()[3]
+  write_time <- write_time + proc.time()[3]
 
   params <- add_to_log(params, "get_w_cox_b2", read_time, read_size, write_time, write_size)
 
@@ -811,10 +811,10 @@ check_colinearity_cox_a2 = function(params, data) {
   Bindicies <- params$b_indicies_keep
 
 
-  write_time <-write_time - proc.time()[3]
+  write_time <- write_time - proc.time()[3]
   save(Aindicies, Bindicies, file = file.path(params$write_path, "indicies.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, "indicies.rdata")))
-  write_time <-write_time + proc.time()[3]
+  write_time <- write_time + proc.time()[3]
   tags = params$Btags[Bindicies]
 
   if (length(unique(tags)) == 0) {
@@ -1013,7 +1013,7 @@ ComputeLogLikelihoodCox.b2 = function(params, data) {
   container_ct_Cox = 0
 
   for (i in 1:params$blocks$num_blocks) {
-    if (i %in% params$container$filebreak.Z) {
+    if (i %in% params$container$file_break_z) {
       container_ct_z <- container_ct_z + 1
       filename1 <- paste0("cz_", container_ct_z, ".rdata")
       to_read <- file(file.path(params$read_path, filename1), "rb")
@@ -1035,11 +1035,11 @@ ComputeLogLikelihoodCox.b2 = function(params, data) {
 
     IZ.tZ.W.XBtemp = W.XB[strt:stp, , drop = FALSE] - Z %*% (t(Z) %*% W.XB[strt:stp, , drop = FALSE])
 
-    write_time <-write_time - proc.time()[3]
+    write_time <- write_time - proc.time()[3]
     writeBin(as.vector(IZ.tZ.W.XBtemp), con = to_write, endian = "little")
-    write_time <-write_time + proc.time()[3]
+    write_time <- write_time + proc.time()[3]
 
-    if ((i + 1) %in% params$container$filebreak.Z || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$file_break_z || i == params$blocks$num_blocks) {
       close(to_read)
       read_size <- read_size + file.size(file.path(params$read_path, filename1))
     }
@@ -1058,10 +1058,10 @@ ComputeLogLikelihoodCox.b2 = function(params, data) {
   }
 
   tXB.W.XB = params$tXB.W.XB
-  write_time <-write_time - proc.time()[3]
+  write_time <- write_time - proc.time()[3]
   save(tXB.W.XB, file = file.path(params$write_path, "tXB_w_XB.rdata"))
   write_size <- write_size + file.size(file.path(params$write_path, "tXB_w_XB.rdata"))
-  write_time <-write_time + proc.time()[3]
+  write_time <- write_time + proc.time()[3]
   params <- add_to_log(params, "ComputeLogLikelihoodCox.b2", read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -1140,10 +1140,10 @@ ComputeInverseCox.a2 = function(params, data) {
   params$m = m
   params$M3.tXA.deltal = M3 %*% params$tXA.deltal
   M3.tXA.deltal = params$M3.tXA.deltal
-  write_time <-write_time - proc.time()[3]
+  write_time <- write_time - proc.time()[3]
   save(m, M3.tXA.deltal, file = file.path(params$write_path, "M.rdata"))
   write_size <- write_size + sum(file.size(file.path(params$write_path, "M.rdata")))
-  write_time <-write_time + proc.time()[3]
+  write_time <- write_time + proc.time()[3]
   params <- add_to_log(params, "ComputeInverseCox.a2", read_time, read_size, write_time, write_size)
 
   return(params)
@@ -1820,7 +1820,7 @@ GetResultsCox.a2 = function(params) {
 
 
 PartyAProcess2Cox = function(data,
-                             yname          = NULL,
+                             y_name          = NULL,
                              strata         = NULL,
                              mask           = TRUE,
                              monitor_folder  = NULL,
@@ -1829,29 +1829,29 @@ PartyAProcess2Cox = function(data,
                              cutoff         = 1e-8,
                              max_iterations  = 25,
                              sleep_time     = 10,
-                             maxWaitingTime = 24 * 60 * 60,
+                             max_waiting_time = 24 * 60 * 60,
                              popmednet      = TRUE,
                              trace          = FALSE,
                              verbose        = TRUE) {
-  params <- PrepareParams.2p("cox", "A", msreqid = msreqid,
+  params <- prepare_params_2p("cox", "A", msreqid = msreqid,
                              popmednet = popmednet, trace = trace, verbose = verbose)
-  params <- InitializeLog.2p(params)
-  params <- InitializeStamps.2p(params)
-  params <- InitializeTrackingTable.2p(params)
+  params <- initialize_log_2p(params)
+  params <- initialize_time_stamps_2p(params)
+  params <- initialize_tracking_table_2p(params)
   Header(params)
   params   = prepare_folder_cox_a2(params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
   }
-  data = prepare_data_cox_23(params, data, yname, strata, mask)
+  data = prepare_data_cox_23(params, data, y_name, strata, mask)
 
-  params <- PauseContinue.2p(params, maxWaitingTime)
+  params <- PauseContinue.2p(params, max_waiting_time)
   if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
     params$complete = TRUE
-    warning(ReadErrorMessage(params$read_path))
+    warning(read_error_message(params$read_path))
     params$pmnStepCounter = 1
-    params <- SendPauseQuit.2p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.2p(params)
     return(params$stats)
   }
@@ -1859,11 +1859,11 @@ PartyAProcess2Cox = function(data,
   if (data$failed) {
     params$complete = TRUE
     message = "Error in processing the data for Party A."
-    MakeErrorMessage(params$write_path, message)
+    make_error_message(params$write_path, message)
     files = c("error_message.rdata")
     params$pmnStepCounter = 1
-    params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
-    params <- SendPauseQuit.2p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
+    params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.2p(params)
     return(params$stats)
   }
@@ -1871,17 +1871,17 @@ PartyAProcess2Cox = function(data,
   params <- check_strata_cox_a2(params, data)
   if (params$get_strata_from_b) {
     files = c()
-    params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
+    params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
   }
 
   params <- prepare_params_cox_a2(params, data, cutoff, max_iterations)
 
   if (params$failed) {   # Check for failed from prepare_params_cox_a2()
     params$complete = TRUE
-    MakeErrorMessage(params$write_path, params$error_message)
+    make_error_message(params$write_path, params$error_message)
     files = c("error_message.rdata")
-    params <- SendPauseContinue.2p(params, files, sleep_time = sleep_time)
-    params <- SendPauseQuit.2p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
+    params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.2p(params)
     return(params$stats)
   }
@@ -1894,16 +1894,16 @@ PartyAProcess2Cox = function(data,
   if (params$p1 == 0) { # Check for $p1 == 0 => no covariates, only strata
     MakeTransferMessage(params$write_path)
     files = c("transferControl.rdata", "pa.rdata", "survival.rdata")
-    params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
+    params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
     if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
       params$complete = TRUE
-      warning(ReadErrorMessage(params$read_path))
-      params <- SendPauseQuit.2p(params, sleep_time = sleep_time, job_failed = TRUE)
+      warning(read_error_message(params$read_path))
+      params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
       SummarizeLog.2p(params)
       return(params$stats)
     }
     params <- GetResultsCox.a2(params)
-    params <- SendPauseQuit.2p(params, sleep_time = sleep_time)
+    params <- send_pause_quit_2p(params, sleep_time = sleep_time)
     SummarizeLog.2p(params)
     return(params$stats)
   }
@@ -1912,10 +1912,10 @@ PartyAProcess2Cox = function(data,
 
   if (params$failed) { # Check for failed from prepare_blocks_cox_a2()
     params$complete = TRUE
-    MakeErrorMessage(params$write_path, params$error_message)
+    make_error_message(params$write_path, params$error_message)
     files = c("error_message.rdata")
-    params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
-    params <- SendPauseQuit.2p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
+    params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.2p(params)
     return(params$stats)
   }
@@ -1923,20 +1923,20 @@ PartyAProcess2Cox = function(data,
   params <- get_z_cox_a2(params, data)
 
   # This works even in the case that we send no blocks over.  Just set
-  # Filebreak.Z = c()
+  # file_break_z = c()
   files = c("pa.rdata", "blocksize.rdata", "survival.rdata",
-            SeqZW("cz_", length(params$container$filebreak.Z)))
-  params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
+            seq_zw("cz_", length(params$container$file_break_z)))
+  params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   params <- check_colinearity_cox_a2(params, data)
 
   if (params$failed) { # Check for check_colinearity_cox_a2() failed
     params$complete = TRUE
     warning(params$error_message)
-    MakeErrorMessage(params$write_path, params$error_message)
+    make_error_message(params$write_path, params$error_message)
     files = c("error_message.rdata")
-    params <- SendPauseContinue.2p(params, files, sleep_time = sleep_time)
-    params <- SendPauseQuit.2p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
+    params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.2p(params)
     return(params$stats)
   }
@@ -1944,16 +1944,16 @@ PartyAProcess2Cox = function(data,
   if (params$p1 == 0) { # No covariates left.  All colinear with Strata
     MakeTransferMessage(params$write_path)
     files = c("transferControl.rdata", "indicies.rdata")
-    params <- SendPauseContinue.2p(params, files, sleep_time = sleep_time)
+    params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
     if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
       params$complete = TRUE
-      warning(ReadErrorMessage(params$read_path))
-      params <- SendPauseQuit.2p(params, sleep_time = sleep_time, job_failed = TRUE)
+      warning(read_error_message(params$read_path))
+      params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
       SummarizeLog.2p(params)
       return(params$stats)
     }
     params <- GetResultsCox.a2(params)
-    params <- SendPauseQuit.2p(params, sleep_time = sleep_time)
+    params <- send_pause_quit_2p(params, sleep_time = sleep_time)
     SummarizeLog.2p(params)
     return(params$stats)
   }
@@ -1974,22 +1974,22 @@ PartyAProcess2Cox = function(data,
       files = c("converged.rdata", files)
     }
 
-    params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
+    params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
     params <- ComputeInverseCox.a2(params, data)
 
     if (params$failed) { # Check for failed from ComputeInverseCox.a2()
       params$complete = TRUE
-      MakeErrorMessage(params$write_path, params$error_message)
+      make_error_message(params$write_path, params$error_message)
       files = c("error_message.rdata")
-      params <- SendPauseContinue.2p(params, files, sleep_time = sleep_time)
-      params <- SendPauseQuit.2p(params, sleep_time = sleep_time, job_failed = TRUE)
+      params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
+      params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
       SummarizeLog.2p(params)
       return(params$stats)
     }
 
     files = c("M.rdata")
-    params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
+    params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
     params <- ComputeBetaCox.a2(params, data)
 
@@ -1998,13 +1998,13 @@ PartyAProcess2Cox = function(data,
   }
   params$complete = TRUE
   files = c("converged.rdata")
-  params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
+  params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   params <- ComputeResultsCox.a2(params, data)
 
   files = c("stats.rdata")
-  params <- SendPauseContinue.2p(params, files, sleep_time = sleep_time)
-  params <- SendPauseQuit.2p(params, sleep_time = sleep_time)
+  params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
+  params <- send_pause_quit_2p(params, sleep_time = sleep_time)
   SummarizeLog.2p(params)
   return(params$stats)
 }
@@ -2015,15 +2015,15 @@ PartyBProcess2Cox = function(data,
                              mask                = TRUE,
                              monitor_folder       = NULL,
                              sleep_time           = 10,
-                             maxWaitingTime      = 24 * 60 * 60,
+                             max_waiting_time      = 24 * 60 * 60,
                              popmednet           = TRUE,
                              trace               = FALSE,
                              verbose             = TRUE) {
-  params <- PrepareParams.2p("cox", "B", popmednet = popmednet, trace = trace,
+  params <- prepare_params_2p("cox", "B", popmednet = popmednet, trace = trace,
                              verbose = verbose)
-  params <- InitializeLog.2p(params)
-  params <- InitializeStamps.2p(params)
-  params <- InitializeTrackingTable.2p(params)
+  params <- initialize_log_2p(params)
+  params <- initialize_time_stamps_2p(params)
+  params <- initialize_tracking_table_2p(params)
   Header(params)
   params <- prepare_folder_cox_b2(params, monitor_folder)
   if (params$failed) {
@@ -2035,32 +2035,32 @@ PartyBProcess2Cox = function(data,
   if (data$failed) { # Check for Error from prepare_data_cox_b2()
     params$complete = TRUE
     message = "Error in processing the data for Party B."
-    MakeErrorMessage(params$write_path, message)
+    make_error_message(params$write_path, message)
     files = c("error_message.rdata")
-    params <- SendPauseQuit.2p(params, files, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_quit_2p(params, files, sleep_time = sleep_time, job_failed = TRUE)
     return(params$stats)
   }
 
   params <- prepare_params_cox_b2(params, data)
   files = c("pb.rdata")
-  params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
+  params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
     params$complete = TRUE
-    warning(ReadErrorMessage(params$read_path))
-    params <- SendPauseQuit.2p(params, sleep_time = sleep_time, job_failed = TRUE)
+    warning(read_error_message(params$read_path))
+    params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
     return(params$stats)
   }
 
   if (!is.null(data$strata$strata_from_b)) {
     params <- send_strata_cox_b2(params, data)
     files = c("strata.rdata")
-    params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
+    params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
     if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
       params$complete = TRUE
-      warning(ReadErrorMessage(params$read_path))
-      params <- SendPauseQuit.2p(params, sleep_time = sleep_time, job_failed = TRUE)
+      warning(read_error_message(params$read_path))
+      params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
       return(params$stats)
     }
   }
@@ -2075,9 +2075,9 @@ PartyBProcess2Cox = function(data,
 
     if (params$failed) {  # Happens if pB.new == 0
       params$complete = TRUE
-      MakeErrorMessage(params$write_path, params$error_message)
+      make_error_message(params$write_path, params$error_message)
       files = c("error_message.rdata")
-      params <- SendPauseQuit.2p(params, files, sleep_time = sleep_time, job_failed = TRUE)
+      params <- send_pause_quit_2p(params, files, sleep_time = sleep_time, job_failed = TRUE)
       return(params$stats)
     }
     data = UpdateDataCox.b2(params, data)
@@ -2090,16 +2090,16 @@ PartyBProcess2Cox = function(data,
 
     if (params$failed) {      # We could get a job_failed here from coefficient explosion
       params$complete = TRUE
-      MakeErrorMessage(params$write_path, params$error_message)
+      make_error_message(params$write_path, params$error_message)
       files = c("error_message.rdata")
-      params <- SendPauseQuit.2p(params, files, sleep_time = sleep_time, job_failed = TRUE)
+      params <- send_pause_quit_2p(params, files, sleep_time = sleep_time, job_failed = TRUE)
       return(params$stats)
     }
     params <- ComputeResultsCox.b2(params, data)
     stats = params$stats
     save(stats, file = file.path(params$write_path, "stats.rdata"))
     files = c("stats.rdata")
-    params <- SendPauseQuit.2p(params, files, sleep_time = sleep_time)
+    params <- send_pause_quit_2p(params, files, sleep_time = sleep_time)
     return(params$stats)
   }
 
@@ -2107,8 +2107,8 @@ PartyBProcess2Cox = function(data,
   params <- prepare_blocks_cox_b2(params)
   params <- get_w_cox_b2(params, data)
 
-  files = c("xbtxb.rdata", SeqZW("cw_", length(params$container$filebreak.W)))
-  params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
+  files = c("xbtxb.rdata", seq_zw("cw_", length(params$container$filebreak.W)))
+  params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   if (file.exists(file.path(params$read_path, "transferControl.rdata"))) {
     params <- UpdateParamsCox.b2(params)
@@ -2122,16 +2122,16 @@ PartyBProcess2Cox = function(data,
 
     if (params$failed) {      # We could get a job_failed here from coefficient explosion
       params$complete = TRUE
-      MakeErrorMessage(params$write_path, params$error_message)
+      make_error_message(params$write_path, params$error_message)
       files = c("error_message.rdata")
-      params <- SendPauseQuit.2p(params, files, sleep_time = sleep_time, job_failed = TRUE)
+      params <- send_pause_quit_2p(params, files, sleep_time = sleep_time, job_failed = TRUE)
       return(params$stats)
     }
     params <- ComputeResultsCox.b2(params, data)
     stats = params$stats
     save(stats, file = file.path(params$write_path, "stats.rdata"))
     files = c("stats.rdata")
-    params <- SendPauseQuit.2p(params, files, sleep_time = sleep_time)
+    params <- send_pause_quit_2p(params, files, sleep_time = sleep_time)
     return(params$stats)
   }
 
@@ -2140,8 +2140,8 @@ PartyBProcess2Cox = function(data,
     if (params$algIterationCounter == 1) {
       if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
         params$complete = TRUE
-        warning(ReadErrorMessage(params$read_path))
-        params <- SendPauseQuit.2p(params, sleep_time = sleep_time, job_failed = TRUE)
+        warning(read_error_message(params$read_path))
+        params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
         return(params$stats)
       }
       params <- UpdateParamsCox.b2(params)
@@ -2158,20 +2158,20 @@ PartyBProcess2Cox = function(data,
 
     params <- ComputeLogLikelihoodCox.b2(params, data)
 
-    files = c("tXB_w_XB.rdata", SeqZW("cCox_", length(params$container$filebreak.Cox)))
-    params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
+    files = c("tXB_w_XB.rdata", seq_zw("cCox_", length(params$container$filebreak.Cox)))
+    params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
     if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
       params$complete = TRUE
-      warning(ReadErrorMessage(params$read_path))
-      params <- SendPauseQuit.2p(params, sleep_time = sleep_time, job_failed = TRUE)
+      warning(read_error_message(params$read_path))
+      params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
       return(params$stats)
     }
 
     params <- ComputeBetaCox.b2(params, data)
 
     files = c("XB_betasB.rdata", "M2_tXB_deltal.rdata")
-    params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
+    params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
     EndingIteration(params)
 
@@ -2180,10 +2180,10 @@ PartyBProcess2Cox = function(data,
   params$complete = TRUE
 
   files = c("B_betas_ns.rdata")
-  params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
+  params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   params <- GetResultsCox.b2(params)
 
-  params <- SendPauseQuit.2p(params, sleep_time = sleep_time)
+  params <- send_pause_quit_2p(params, sleep_time = sleep_time)
   return(params$stats)
 }

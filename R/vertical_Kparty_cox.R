@@ -1,7 +1,7 @@
 ################### DISTRIBUTED COX REGRESSION FUNCTIONS ##################
 
 #' @importFrom stats model.matrix
-prepare_data_cox_DP = function(params, data, yname, strata, mask) {
+prepare_data_cox_DP = function(params, data, y_name, strata, mask) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_data_cox_23\n\n")
 
   workdata = list()
@@ -18,7 +18,7 @@ prepare_data_cox_DP = function(params, data, yname, strata, mask) {
   strata_index = workdata$strata$strata_index
   response_index = numeric()
   if (params$data_partner_id == 1) {
-    response_index = CheckResponse(params, data, yname)
+    response_index = CheckResponse(params, data, y_name)
     if (is.null(response_index)) {
       workdata$failed = TRUE
       return(workdata)
@@ -1451,27 +1451,27 @@ DoNothing.ACDP = function(params) {
 
 
 DataPartnerKCox = function(data,
-                           yname           = NULL,
+                           y_name           = NULL,
                            strata          = NULL,
                            mask            = TRUE,
                            numDataPartners = NULL,
                            data_partner_id   = NULL,
                            monitor_folder   = NULL,
                            sleep_time       = 10,
-                           maxWaitingTime  = 24 * 60 * 60,
+                           max_waiting_time  = 24 * 60 * 60,
                            popmednet       = TRUE,
                            trace           = FALSE,
                            verbose         = TRUE) {
 
-  params <- PrepareParams.kp("cox", data_partner_id, numDataPartners, ac = FALSE,
+  params <- prepare_params_kp("cox", data_partner_id, numDataPartners, ac = FALSE,
                             popmednet = popmednet, trace = trace, verbose = verbose)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
   }
-  params <- InitializeLog.kp(params)
-  params <- InitializeStamps.kp(params)
-  params <- InitializeTrackingTable.kp(params)
+  params <- initialize_log_kp(params)
+  params <- initialize_time_stamps_kp(params)
+  params <- initialize_tracking_table_kp(params)
   Header(params)
 
   params   = PrepareFolder.ACDP(params, monitor_folder)
@@ -1481,59 +1481,59 @@ DataPartnerKCox = function(data,
     return(invisible(NULL))
   }
 
-  data = prepare_data_cox_DP(params, data, yname, strata, mask)
+  data = prepare_data_cox_DP(params, data, y_name, strata, mask)
   params <- add_to_log(params, "prepare_data_cox_DP", 0, 0, 0, 0)
 
   if (data$failed) {
     params$error_message <- paste("Error processing data for data partner", params$data_partner_id)
-    MakeErrorMessage(params$write_path, params$error_message)
+    make_error_message(params$write_path, params$error_message)
     files = "error_message.rdata"
-    params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
-    params$error_message <- ReadErrorMessage(params$readPathAC)
+    params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+    params$error_message <- read_error_message(params$readPathAC)
     warning(params$error_message)
-    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
   }
 
   params <- SendBasicInfo.DP(params, data)
   files = "n_analysis.rdata"
-  params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
     params$error_message <- possibleError$message
     warning(possibleError$message)
-    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
   }
 
   if (params$data_partner_id == 1) {
     params <- DoNothing.ACDP(params)
-    params <- SendPauseContinue.kp(params, filesAC = "empty.rdata", from = "DP",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+    params <- send_pause_continue_kp(params, filesAC = "empty.rdata", from = "DP",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
     params <- check_strata_cox_DP(params, data)
 
     if (params$failed) {
-      MakeErrorMessage(params$write_path, params$error_message)
+      make_error_message(params$write_path, params$error_message)
       files = "error_message.rdata"
     } else {
       files = "empty.rdata"
     }
-    params <- SendPauseContinue.kp(params, filesDP = files, from = "AC",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+    params <- send_pause_continue_kp(params, filesDP = files, from = "AC",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
     params <- DoNothing.ACDP(params)
 
     if (params$failed) {
       warning(params$error_message)
-      SendPauseQuit.kp(params, filesAC = "error_message.rdata", sleep_time = sleep_time)
+      send_pause_quit_kp(params, filesAC = "error_message.rdata", sleep_time = sleep_time)
       return(params$stats)
     } else {
-      params <- SendPauseContinue.kp(params, filesDP = "empty.rdata", from = "DP",
-                                    sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+      params <- send_pause_continue_kp(params, filesDP = "empty.rdata", from = "DP",
+                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     }
     params <- prepare_strata_cox_DP(params, data)
     data   = AddStrataToDataCox.DP(params, data)
@@ -1542,42 +1542,42 @@ DataPartnerKCox = function(data,
     params <- SendStrataNamesCox.DP(params, data)
     filesList = rep(list(list()), numDataPartners)
     filesList[[1]] = "strata_names.rdata"
-    params <- SendPauseContinue.kp(params, filesDP = filesList, from = "DP1",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+    params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP1",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
 
     possibleError = ReceivedError.kp(params, from = "DP1")
     if (possibleError$error) {
       params$error_message <- possibleError$message
       warning(possibleError$message)
-      params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+      params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
       return(params$stats)
     }
 
     params <- send_strata_cox_DP(params, data)
     filesList = rep(list(list()), numDataPartners)
     filesList[[1]] = "strata.rdata"
-    params <- SendPauseContinue.kp(params, filesDP = filesList, from = "DP1",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+    params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP1",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
   }
 
   params <- prepare_params_cox_DP(params, data)
-  params <- SendPauseContinue.kp(params, filesDP = "p_scaler_seed.rdata", from = "DP",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- send_pause_continue_kp(params, filesDP = "p_scaler_seed.rdata", from = "DP",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
   params <- PrepareSharesCox.DP(params, data)
   files = c("products.rdata", "halfshare.rdata", "colstats.rdata")
   if (params$data_partner_id == 1) {
     files = c(files, "survival.rdata")
   }
-  params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
     params$error_message <- possibleError$message
     warning(possibleError$message)
-    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
   }
 
@@ -1592,35 +1592,35 @@ DataPartnerKCox = function(data,
 
     if (params$data_partner_id == 1) {
       files = "sbeta.rdata"
-      params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
-                                    sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+      params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
+                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
       params <- ComputeLogLikelihoodCox.DP(params, data)
 
       files = "sbeta.rdata"
-      params <- SendPauseContinue.kp(params, filesAC = files, from = "DP2",
-                                    sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+      params <- send_pause_continue_kp(params, filesAC = files, from = "DP2",
+                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
       params <- ComputeSDelLCox.DP(params, data)
 
       files = c("tsdeltal.rdata", "scaledwsll.rdata", "converged.rdata")
-      params <- SendPauseContinue.kp(params, filesDP = files, from = "AC",
-                                    sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+      params <- send_pause_continue_kp(params, filesDP = files, from = "AC",
+                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
     } else if (params$data_partner_id == 2) {
       files = "sbeta.rdata"
-      params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
-                                    sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+      params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
+                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
       params <- DoNothing.ACDP(params)
 
       filesList = rep(list(list()), numDataPartners)
       filesList[[1]] = "empty.rdata"
-      params <- SendPauseContinue.kp(params, filesDP = filesList, from = "DP1",
-                                    sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+      params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP1",
+                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
     } else {
       files = "sbeta.rdata"
-      params <- SendPauseContinue.kp(params, filesAC = files, from = "DP1",
-                                    sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+      params <- send_pause_continue_kp(params, filesAC = files, from = "DP1",
+                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     }
 
     params <- ComputeProductsCox.DP(params, data)
@@ -1629,14 +1629,14 @@ DataPartnerKCox = function(data,
     } else {
       files = c("products.rdata")
     }
-    params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+    params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
     possibleError = ReceivedError.kp(params, from = "AC")
     if (possibleError$error) {
       params$error_message <- possibleError$message
       warning(possibleError$message)
-      params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+      params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
       return(params$stats)
     }
 
@@ -1648,8 +1648,8 @@ DataPartnerKCox = function(data,
     } else {
       files = "u.rdata"
     }
-    params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+    params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
     EndingIteration(params)
     params$algIterationCounter = params$algIterationCounter + 1
   }
@@ -1657,7 +1657,7 @@ DataPartnerKCox = function(data,
   params$completed = TRUE
 
   params <- GetResultsCox.DP(params)
-  SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+  send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
   return(params$stats)
 }
 
@@ -1668,22 +1668,22 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
                               cutoff          = 1E-8,
                               max_iterations   = 25,
                               sleep_time       = 10,
-                              maxWaitingTime  = 24 * 60 * 60,
+                              max_waiting_time  = 24 * 60 * 60,
                               popmednet       = TRUE,
                               trace           = FALSE,
                               verbose         = TRUE) {
 
   filesList = rep(list(list()), numDataPartners)
 
-  params <- PrepareParams.kp("cox", 0, numDataPartners, msreqid, cutoff, max_iterations, ac = TRUE,
+  params <- prepare_params_kp("cox", 0, numDataPartners, msreqid, cutoff, max_iterations, ac = TRUE,
                             popmednet = popmednet, trace = trace, verbose = verbose)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
   }
-  params <- InitializeLog.kp(params)
-  params <- InitializeStamps.kp(params)
-  params <- InitializeTrackingTable.kp(params)
+  params <- initialize_log_kp(params)
+  params <- initialize_time_stamps_kp(params)
+  params <- initialize_tracking_table_kp(params)
   Header(params)
 
   params   = PrepareFolder.ACDP(params, monitor_folder)
@@ -1693,17 +1693,17 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
     return(invisible(NULL))
   }
 
-  params <- PauseContinue.kp(params, from = "DP", maxWaitingTime = maxWaitingTime)
+  params <- PauseContinue.kp(params, from = "DP", max_waiting_time = max_waiting_time)
 
   possibleError = ReceivedError.kp(params, from = "DP")
   if (possibleError$error) {
     params$error_message <- possibleError$message
     warning(possibleError$message)
-    MakeErrorMessage(params$write_path, possibleError$message)
+    make_error_message(params$write_path, possibleError$message)
     files = "error_message.rdata"
-    params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.kp(params)
     return(params$stats)
   }
@@ -1711,32 +1711,32 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
   params <- CheckAgreement.AC(params)
 
   if (params$failed) {
-    MakeErrorMessage(params$write_path, params$error_message)
+    make_error_message(params$write_path, params$error_message)
     files = "error_message.rdata"
     warning(params$error_message)
-    params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.kp(params)
     return(params$stats)
   }
 
   files = "empty.rdata"
-  params <- SendPauseContinue.kp(params, filesDP = files, from = "DP1",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  params <- send_pause_continue_kp(params, filesDP = files, from = "DP1",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
 
   params <- DoNothing.ACDP(params)
   filesList = rep(list(list()), numDataPartners)
   filesList[[1]] = "empty.rdata"
-  params <- SendPauseContinue.kp(params, filesDP = filesList, from = "DP",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+  params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   possibleError = ReceivedError.kp(params, from = "DP")
   if (possibleError$error) {
     params$error_message <- possibleError$message
     warning(possibleError$message)
-    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.kp(params)
     return(params$stats)
   }
@@ -1746,12 +1746,12 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
   params <- check_colinearity_cox_AC(params)
 
   if (params$failed) {
-    MakeErrorMessage(params$write_path, params$error_message)
+    make_error_message(params$write_path, params$error_message)
     files = "error_message.rdata"
     warning(params$error_message)
-    params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.kp(params)
     return(params$stats)
   }
@@ -1766,32 +1766,32 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
     } else {
       files = "u.rdata"
     }
-    params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+    params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
     params <- GetSBetaCox.AC(params)
     filesList = rep(list(list()), numDataPartners)
     filesList[[1]] = "sbeta.rdata"
     filesList[[2]] = "empty.rdata"
-    params <- SendPauseContinue.kp(params, filesDP = filesList, from = "DP1",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+    params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP1",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
     params <- ComputeSDelLCox.AC(params)
     filesList = rep(list(list()), numDataPartners)
     filesList[[1]] = "wsr1.rdata"
-    params <- SendPauseContinue.kp(params, filesDP = filesList, from = "DP",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+    params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 
     params <- UpdateConvergeStatus.AC(params)
     params <- ComputeStWSCox.AC(params)
 
     if (params$failed) {
-      MakeErrorMessage(params$write_path, params$error_message)
+      make_error_message(params$write_path, params$error_message)
       files = "error_message.rdata"
       warning(params$error_message)
-      params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                    sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-      params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
+      params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
+                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+      params <- send_pause_quit_kp(params, sleep_time = sleep_time, job_failed = TRUE)
       SummarizeLog.kp(params)
       return(params$stats)
     }
@@ -1800,8 +1800,8 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
     for (id in 1:params$numDataPartners) {
       filesList[[id]] = c(paste0("update", id, ".rdata"), "maxiterexceeded.rdata")
     }
-    params <- SendPauseContinue.kp(params, filesDP = filesList, from = "DP",
-                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+    params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP",
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     EndingIteration(params)
     params$algIterationCounter = params$algIterationCounter + 1
   }
@@ -1810,9 +1810,9 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
 
   params <- ComputeResultsCox.AC(params)
   files = "stats.rdata"
-  params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-  SendPauseQuit.kp(params, sleep_time = sleep_time)
+  params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+  send_pause_quit_kp(params, sleep_time = sleep_time)
   SummarizeLog.kp(params)
   return(params$stats)
 }

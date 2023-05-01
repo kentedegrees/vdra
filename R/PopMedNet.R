@@ -52,7 +52,7 @@ pmn = function(num_party, directory = NULL, verbose = TRUE) {
     return(invisible(NULL))
   }
   party_name <- paste0("dp", 0:(num_party - 1))
-  paths = file.path(directory, party_name)
+  paths <- file.path(directory, party_name)
 
   if (is.null(directory) || !dir.exists(directory)) {
     warning(
@@ -77,10 +77,10 @@ pmn = function(num_party, directory = NULL, verbose = TRUE) {
   colnames(read_directory) = party_name
   rownames(read_directory) = party_name
   for (i in 1:num_party) {
-    write_directory[i] = file.path(paths[i], ifelse(i == 1, "inputfiles", "msoc"))
+    write_directory[i] <- file.path(paths[i], ifelse(i == 1, "inputfiles", "msoc"))
     if (!dir.exists(write_directory[i])) dir.create(write_directory[i])
     for (j in 1:num_party) {
-      read_directory[i, j] = file.path(paths[j], ifelse(i == 1, "inputfiles", paste0("msoc", i - 1)))
+      read_directory[i, j] <- file.path(paths[j], ifelse(i == 1, "inputfiles", paste0("msoc", i - 1)))
       if (!dir.exists(read_directory[i, j])) dir.create(read_directory[i, j])
     }
     read_directory[i, i] = NA
