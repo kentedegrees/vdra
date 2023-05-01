@@ -1,7 +1,7 @@
 ################### DISTRIBUTED LOGISTIC REGRESSION FUNCTIONS ##################
 
-PrepareFolderLogistic.A2 = function(params, monitor_folder) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareFolderLogistic.A2\n\n")
+PrepareFolderLogistic.a2 = function(params, monitor_folder) {
+  if (params$trace) cat(as.character(Sys.time()), "PrepareFolderLogistic.a2\n\n")
   params$dp_local_path   = file.path(monitor_folder, "dplocal")
   params$r_programs_path = file.path(monitor_folder, "rprograms")
   params$macros_path    = file.path(monitor_folder, "macros")
@@ -58,13 +58,13 @@ PrepareFolderLogistic.A2 = function(params, monitor_folder) {
                                 "Check the path and restart the program.")
   }
 
-  params <- add_to_log(params, "PrepareDataLogistic.A23, PrepareFolderLogistic.A2", 0, 0, 0, 0)
+  params <- add_to_log(params, "PrepareDataLogistic.a23, PrepareFolderLogistic.a2", 0, 0, 0, 0)
   return(params)
 }
 
 
-PrepareFolderLogistic.B2 = function(params, monitor_folder) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareFolderLogistic.B2\n\n")
+PrepareFolderLogistic.b2 = function(params, monitor_folder) {
+  if (params$trace) cat(as.character(Sys.time()), "PrepareFolderLogistic.b2\n\n")
 
   params$dp_local_path   = file.path(monitor_folder, "dplocal")
   params$r_programs_path = file.path(monitor_folder, "rprograms")
@@ -125,15 +125,15 @@ PrepareFolderLogistic.B2 = function(params, monitor_folder) {
   Sys.sleep(1)
   DeleteTrigger("files_done.ok", params$read_path)
 
-  params <- add_to_log(params, "PrepareDataLogisitc.B23, PrepareFolderLogistic.B2", 0, 0, 0, 0)
+  params <- add_to_log(params, "PrepareDataLogisitc.b23, PrepareFolderLogistic.b2", 0, 0, 0, 0)
 
   return(params)
 }
 
 
 #' @importFrom stats model.matrix
-PrepareDataLogistic.A23 = function(params, data, yname = NULL) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareDataLogistic.A23\n\n")
+PrepareDataLogistic.a23 = function(params, data, yname = NULL) {
+  if (params$trace) cat(as.character(Sys.time()), "PrepareDataLogistic.a23\n\n")
 
   workdata = list()
   workdata$failed = FALSE
@@ -182,8 +182,8 @@ PrepareDataLogistic.A23 = function(params, data, yname = NULL) {
 }
 
 #' @importFrom stats model.matrix sd
-PrepareDataLogistic.B23 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareDataLogistic.B23\n\n")
+PrepareDataLogistic.b23 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "PrepareDataLogistic.b23\n\n")
 
   workdata = list()
   workdata$failed = FALSE
@@ -219,8 +219,8 @@ PrepareDataLogistic.B23 = function(params, data) {
   return(workdata)
 }
 
-PrepareParamsLogistic.B2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareParamsLogistic.B2\n\n")
+PrepareParamsLogistic.b2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "PrepareParamsLogistic.b2\n\n")
   params$failed         = FALSE
   params$converged      = FALSE
   params$halted         = FALSE
@@ -259,13 +259,13 @@ PrepareParamsLogistic.B2 = function(params, data) {
   save(pb, file = file.path(params$write_path, "pb.rdata"))
   write_size = sum(file.size(file.path(params$write_path, "pb.rdata")))
   write_time = proc.time()[3] - write_time
-  params <- add_to_log(params, "PrepareParamsLogistic.B2", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "PrepareParamsLogistic.b2", 0, 0, write_time, write_size)
   return(params)
 }
 
 
-PrepareParamsLogistic.A2 = function(params, data, cutoff = 0.01, maxIterations = 25) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareParamsLogistic.A2\n\n")
+PrepareParamsLogistic.a2 = function(params, data, cutoff = 0.01, maxIterations = 25) {
+  if (params$trace) cat(as.character(Sys.time()), "PrepareParamsLogistic.a2\n\n")
 
   params$converged       = FALSE
   params$halted          = FALSE
@@ -335,15 +335,15 @@ PrepareParamsLogistic.A2 = function(params, data, cutoff = 0.01, maxIterations =
   save(pa, file = file.path(params$write_path, "pa.rdata"))
   write_size = sum(file.size(file.path(params$write_path, "pa.rdata")))
   write_time = proc.time()[3] - write_time
-  params <- add_to_log(params, "PrepareParamsLogistic.A2", read_time, read_size,
+  params <- add_to_log(params, "PrepareParamsLogistic.a2", read_time, read_size,
                     write_time, write_size)
 
   return(params)
 }
 
 
-PrepareBlocksLogistic.A2 = function(params, blocksize) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareBlocksLogistic.A2\n\n")
+PrepareBlocksLogistic.a2 = function(params, blocksize) {
+  if (params$trace) cat(as.character(Sys.time()), "PrepareBlocksLogistic.a2\n\n")
   # For now, assuming that p1 > 0 and p2 > 0
   n  = params$n
   p1 = params$p1
@@ -373,7 +373,7 @@ PrepareBlocksLogistic.A2 = function(params, blocksize) {
     }
     warning(params$error_message)
     params$failed <- TRUE
-    params <- add_to_log(params, "PrepareBlocksLogistic.A2", 0, 0, 0, 0)
+    params <- add_to_log(params, "PrepareBlocksLogistic.a2", 0, 0, 0, 0)
     return(params)
   }
 
@@ -397,13 +397,13 @@ PrepareBlocksLogistic.A2 = function(params, blocksize) {
   save(blocksize, file = file.path(params$write_path, "blocksize.rdata"))
   write_size = file.size(file.path(params$write_path, "blocksize.rdata"))
   write_time = proc.time()[3] - write_time
-  params <- add_to_log(params, "PrepareBlocksLogistic.A2", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "PrepareBlocksLogistic.a2", 0, 0, write_time, write_size)
   return(params)
 }
 
 
-GetZLogistic.A2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "GetZLogistic.A2\n\n")
+GetZLogistic.a2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "GetZLogistic.a2\n\n")
   write_time = 0
   write_size = 0
 
@@ -431,13 +431,13 @@ GetZLogistic.A2 = function(params, data) {
     }
     pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
-  params <- add_to_log(params, "GetZLogistic.A2", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "GetZLogistic.a2", 0, 0, write_time, write_size)
   return(params)
 }
 
 
-FinalizeParamsLogistic.B2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "FinalizeParamsLogistic.B2\n\n")
+FinalizeParamsLogistic.b2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "FinalizeParamsLogistic.b2\n\n")
   pa = NULL
   read_time = proc.time()[3]
   load(file.path(params$read_path, "pa.rdata")) # Load pa, Acolnames
@@ -455,13 +455,13 @@ FinalizeParamsLogistic.B2 = function(params, data) {
   params$Atags         = pa$tags
   params$Btags         = data$tags
 
-  params <- add_to_log(params, "FinalizeParamsLogistic.B2", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "FinalizeParamsLogistic.b2", read_time, read_size, 0, 0)
   return(params)
 }
 
 
-PrepareBlocksLogistic.B2 = function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareBlocksLogistic.B2\n\n")
+PrepareBlocksLogistic.b2 = function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "PrepareBlocksLogistic.b2\n\n")
   blocksize = NULL
   # For now, assuming that p1 > 0 and p2 > 0
   read_time = proc.time()[3]
@@ -470,13 +470,13 @@ PrepareBlocksLogistic.B2 = function(params) {
   read_time = proc.time()[3] - read_time
   params$blocks    = CreateBlocks(params$p1, params$p2, params$n, blocksize)
   params$container = CreateContainers(params$p1, params$p2, params$blocks)
-  params <- add_to_log(params, "PrepareBlocksLogistic.B2", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "PrepareBlocksLogistic.b2", read_time, read_size, 0, 0)
   return(params)
 }
 
 
-GetWLogistic.B2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "GetWLogistic.B2\n\n")
+GetWLogistic.b2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "GetWLogistic.b2\n\n")
   read_time  = 0
   read_size  = 0
   write_time = 0
@@ -533,14 +533,14 @@ GetWLogistic.B2 = function(params, data) {
   write_size = write_size + file.size(file.path(params$write_path, "xbtxb.rdata"))
   write_time = write_time + proc.time()[3]
 
-  params <- add_to_log(params, "GetWLogistic.B2", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "GetWLogistic.b2", read_time, read_size, write_time, write_size)
 
   return(params)
 }
 
 
-CheckColinearityLogistic.A2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "CheckColinearityLogistic.A2\n\n")
+CheckColinearityLogistic.a2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "CheckColinearityLogistic.a2\n\n")
   p2 = params$p2
   read_time  = 0
   read_size  = 0
@@ -644,20 +644,20 @@ CheckColinearityLogistic.A2 = function(params, data) {
     params$error_message <- "After removing colinear covariates, Party B has no continuous covariates.\n\n"
   }
 
-  params <- add_to_log(params, "CheckColinearityLogistic.A2", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "CheckColinearityLogistic.a2", read_time, read_size, write_time, write_size)
   return(params)
 }
 
 
-UpdateDataLogistic.A2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "UpdateDataLogistic.A2\n\n")
+UpdateDataLogistic.a2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "UpdateDataLogistic.a2\n\n")
   data$X = as.matrix(data$X[, params$AIndiciesKeep, drop = FALSE])
   return(data)
 }
 
 
-ComputeInitialBetasLogistic.A2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "ComputeInitialBetasLogistic.A2\n\n")
+ComputeInitialBetasLogistic.a2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "ComputeInitialBetasLogistic.a2\n\n")
   # de-standardize xty
   p1     = params$p1
   p2     = params$p2
@@ -686,14 +686,14 @@ ComputeInitialBetasLogistic.A2 = function(params, data) {
   write_size = sum(file.size(file.path(params$write_path, "Bbetas_xty.rdata")))
   write_time = proc.time()[3] - write_time
 
-  params <- add_to_log(params, "ComputeInitialBetasLogistic.A2", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "ComputeInitialBetasLogistic.a2", 0, 0, write_time, write_size)
 
   return(params)
 }
 
 
-UpdateParamsLogistic.B2 = function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "UpdateParamsLogistic.B2\n\n")
+UpdateParamsLogistic.b2 = function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "UpdateParamsLogistic.b2\n\n")
   Aindicies = NULL
   Bindicies = NULL
   Bbetas    = NULL
@@ -721,20 +721,20 @@ UpdateParamsLogistic.B2 = function(params) {
   params$meansB = params$meansB[Bindicies]
   params$sdB    = params$sdB[Bindicies]
   params$Bxty   = Bxty
-  params <- add_to_log(params, "UpdateParamsLogistic.B2", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "UpdateParamsLogistic.b2", read_time, read_size, 0, 0)
   return(params)
 }
 
 
-UpdateDataLogistic.B2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "UpdateDataLogistic.B2\n\n")
+UpdateDataLogistic.b2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "UpdateDataLogistic.b2\n\n")
   data$X = as.matrix(data$X[, params$BIndiciesKeep, drop = FALSE])
   return(data)
 }
 
 
-GetXBetaLogistic.B2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "GetXBetaLogistic.B2\n\n")
+GetXBetaLogistic.b2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "GetXBetaLogistic.b2\n\n")
   XbetaB = data$X %*% params$betasB
 
   write_time = proc.time()[3]
@@ -742,13 +742,13 @@ GetXBetaLogistic.B2 = function(params, data) {
   write_size = file.size(file.path(params$write_path, "xbetab.rdata"))
   write_time = proc.time()[3] - write_time
 
-  params <- add_to_log(params, "GetXBetaLogistic.B2", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "GetXBetaLogistic.b2", 0, 0, write_time, write_size)
   return(params)
 }
 
 
-GetWeightsLogistic.A2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "GetWeightsLogistic.A2\n\n")
+GetWeightsLogistic.a2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "GetWeightsLogistic.a2\n\n")
   n      = params$n
   p1     = params$p1
   XbetaB = NULL
@@ -767,13 +767,13 @@ GetWeightsLogistic.A2 = function(params, data) {
   save(pi_, file = file.path(params$write_path, "pi_.rdata"))
   write_size = file.size(file.path(params$write_path, "pi_.rdata"))
   write_time = proc.time()[3] - write_time
-  params <- add_to_log(params, "GetWeightsLogistic.A2", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "GetWeightsLogistic.a2", read_time, read_size, write_time, write_size)
   return(params)
 }
 
 
-GetVLogistic.B2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "GetVLogistic.B2\n\n")
+GetVLogistic.b2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "GetVLogistic.b2\n\n")
   pi_       = NULL
   write_time = 0
   write_size = 0
@@ -842,13 +842,13 @@ GetVLogistic.B2 = function(params, data) {
   write_size = write_size + sum(file.size(c(file.path(params$write_path, "sumswx_xbtwxb.rdata"))))
   write_time = write_time + proc.time()[3]
 
-  params <- add_to_log(params, "GetVLogistic.B2", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "GetVLogistic.b2", read_time, read_size, write_time, write_size)
   return(params)
 }
 
 
-GetIILogistic.A2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "GetIILogistic.A2\n\n")
+GetIILogistic.a2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "GetIILogistic.a2\n\n")
   p1 = params$p1
   p2 = params$p2
   sumsWXB = NULL
@@ -937,14 +937,14 @@ GetIILogistic.A2 = function(params, data) {
     write_size = sum(file.size(file.path(params$write_path, "a21i1_xtwx.rdata")))
     write_time = proc.time()[3] - write_time
   }
-  params <- add_to_log(params, "GetIILogistic.A2", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "GetIILogistic.a2", read_time, read_size, write_time, write_size)
 
   return(params)
 }
 
 
-GetCoefLogistic.B2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "GetCoefLogistic.B2\n\n")
+GetCoefLogistic.b2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "GetCoefLogistic.b2\n\n")
   p1 = params$p1
   p2 = params$p2
   XTWX  = NULL
@@ -976,13 +976,13 @@ GetCoefLogistic.B2 = function(params, data) {
   write_size = sum(file.size(file.path(params$write_path, "a12_deltabetaB.rdata")))
   write_time = proc.time()[3] - write_time
 
-  params <- add_to_log(params, "GetCoefLogistic.B2", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "GetCoefLogistic.b2", read_time, read_size, write_time, write_size)
   return(params)
 }
 
 
-GetCoefLogistic.A2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "GetCoefLogistic.A2\n\n")
+GetCoefLogistic.a2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "GetCoefLogistic.a2\n\n")
   a12i2      = NULL
   deltabetaB = NULL
   read_time = proc.time()[3]
@@ -1007,15 +1007,15 @@ GetCoefLogistic.A2 = function(params, data) {
   write_size = file.size(file.path(params$write_path, "deltabeta.rdata"))
   write_time = proc.time()[3] - write_time
 
-  params <- add_to_log(params, "GetCoefLogistic.A2", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "GetCoefLogistic.a2", read_time, read_size, write_time, write_size)
 
 
   return(params)
 }
 
 
-GetConvergedStatusLogistic.B2 = function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "GetconvergedStatusLogistic.B2\n\n")
+GetConvergedStatusLogistic.b2 = function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "GetconvergedStatusLogistic.b2\n\n")
   deltabeta = NULL
 
   read_time = proc.time()[3]
@@ -1030,13 +1030,13 @@ GetConvergedStatusLogistic.B2 = function(params) {
     warning(paste("Failed to converged in", params$maxIterations, "iterations."))
   }
 
-  params <- add_to_log(params, "GetConvergedStatusLogistic.B2", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "GetConvergedStatusLogistic.b2", read_time, read_size, 0, 0)
   return(params)
 }
 
 
-GetFinalCoefLogistic.B2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "GetFinalCoefLogistic.B2\n\n")
+GetFinalCoefLogistic.b2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "GetFinalCoefLogistic.b2\n\n")
   betasB = params$betasB / params$sdB
   offsetB = sum(betasB * params$meansB)
   BFinalFitted = t(params$sdB * t(data$X) + params$meansB) %*% betasB
@@ -1044,13 +1044,13 @@ GetFinalCoefLogistic.B2 = function(params, data) {
   save(betasB, BFinalFitted, offsetB, file = file.path(params$write_path, "b_final.rdata"))
   write_size = sum(file.size(file.path(params$write_path, "b_final.rdata")))
   write_time = proc.time()[3] - write_time
-  params <- add_to_log(params, "GetFinalCoefLogistic.B2", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "GetFinalCoefLogistic.b2", 0, 0, write_time, write_size)
   return(params)
 }
 
 #' @importFrom stats pnorm
-ComputeResultsLogistic.A2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLogistic.A2\n\n")
+ComputeResultsLogistic.a2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLogistic.a2\n\n")
   stats = params$stats
   stats$failed         = FALSE
   stats$converged      = params$converged
@@ -1092,7 +1092,7 @@ ComputeResultsLogistic.A2 = function(params, data) {
   resdev  = -2 * (sum(data$Y * FinalFitted) - sum(log(1 + exp(FinalFitted))))
   nulldev = -2 * (ct * log(ct / n) + (n - ct) * log(1 - ct / n))
 
-  # If xtwx were singular, it would have been caught in GetII.A2(), so we may
+  # If xtwx were singular, it would have been caught in GetII.a2(), so we may
   # assume that xtwx is NOT singular and so we do not have to do a check.
   cov1 = solve(params$xtwx)
   secoef = sqrt(diag(cov1)) / c(sdA, sdB)
@@ -1141,20 +1141,20 @@ ComputeResultsLogistic.A2 = function(params, data) {
   stats$FinalFitted = FinalFitted
   params$stats      = stats
 
-  params <- add_to_log(params, "ComputeResultsLogistic.B2", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "ComputeResultsLogistic.b2", read_time, read_size, write_time, write_size)
   return(params)
 }
 
 
-GetResultsLogistic.B2 = function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "GetResultsLogistic.B2\n\n")
+GetResultsLogistic.b2 = function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "GetResultsLogistic.b2\n\n")
   stats = NULL
   read_time = proc.time()[3]
   load(file.path(params$read_path, "stats.rdata"))
   read_size = file.size(file.path(params$read_path, "stats.rdata"))
   read_time = proc.time()[3] - read_time
   params$stats = stats
-  params <- add_to_log(params, "GetResultsLogistic.B2", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "GetResultsLogistic.b2", read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -1181,12 +1181,12 @@ PartyAProcess2Logistic = function(data,
   params <- InitializeStamps.2p(params)
   params <- InitializeTrackingTable.2p(params)
   Header(params)
-  params   = PrepareFolderLogistic.A2(params, monitor_folder)
+  params   = PrepareFolderLogistic.a2(params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
   }
-  data = PrepareDataLogistic.A23(params, data, yname)
+  data = PrepareDataLogistic.a23(params, data, yname)
 
   params <- PauseContinue.2p(params,  maxWaitingTime)
   if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
@@ -1210,9 +1210,9 @@ PartyAProcess2Logistic = function(data,
     return(params$stats)
   }
 
-  params <- PrepareParamsLogistic.A2(params, data, cutoff, maxIterations)
+  params <- PrepareParamsLogistic.a2(params, data, cutoff, maxIterations)
 
-  if (params$failed) {   # Check for failed from PrepareParamsLogistic.A2()
+  if (params$failed) {   # Check for failed from PrepareParamsLogistic.a2()
     params$completed = TRUE
     MakeErrorMessage(params$write_path, params$error_message)
     files = c("error_message.rdata")
@@ -1222,9 +1222,9 @@ PartyAProcess2Logistic = function(data,
     return(params$stats)
   }
 
-  params <- PrepareBlocksLogistic.A2(params, blocksize)
+  params <- PrepareBlocksLogistic.a2(params, blocksize)
 
-  if (params$failed) { # Check for failed from PrepareBlocksLogistic.A2()
+  if (params$failed) { # Check for failed from PrepareBlocksLogistic.a2()
     params$completed = TRUE
     MakeErrorMessage(params$write_path, params$error_message)
     files = c("error_message.rdata")
@@ -1234,15 +1234,15 @@ PartyAProcess2Logistic = function(data,
     return(params$stats)
   }
 
-  params <- GetZLogistic.A2(params, data)
+  params <- GetZLogistic.a2(params, data)
 
   files = c("pa.rdata", "blocksize.rdata",
             SeqZW("cz_", length(params$container$filebreak.Z)))
   params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
 
-  params <- CheckColinearityLogistic.A2(params, data)
+  params <- CheckColinearityLogistic.a2(params, data)
 
-  if (params$failed) { # Check for CheckColinearityLogistic.A2() failed
+  if (params$failed) { # Check for CheckColinearityLogistic.a2() failed
     params$completed = TRUE
     warning(params$error_message)
     MakeErrorMessage(params$write_path, params$error_message)
@@ -1252,21 +1252,21 @@ PartyAProcess2Logistic = function(data,
     SummarizeLog.2p(params)
     return(params$stats)
   }
-  data = UpdateDataLogistic.A2(params, data)
-  params <- add_to_log(params, "UpdateDataLogistic.A2", 0, 0, 0, 0)
-  params <- ComputeInitialBetasLogistic.A2(params, data)
+  data = UpdateDataLogistic.a2(params, data)
+  params <- add_to_log(params, "UpdateDataLogistic.a2", 0, 0, 0, 0)
+  params <- ComputeInitialBetasLogistic.a2(params, data)
 
   files = c("indicies.rdata", "Bbetas_xty.rdata")
   params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
 
   while (!params$converged && !params$maxIterExceeded) {
     BeginningIteration(params)
-    params <- GetWeightsLogistic.A2(params, data)
+    params <- GetWeightsLogistic.a2(params, data)
     files = c("pi_.rdata")
     params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
-    params <- GetIILogistic.A2(params, data)
+    params <- GetIILogistic.a2(params, data)
 
-    if (params$failed) { # Check for failed from ComputeInverseLogistic.A2()
+    if (params$failed) { # Check for failed from ComputeInverseLogistic.a2()
       params$completed = TRUE
       MakeErrorMessage(params$write_path, params$error_message)
       files = c("error_message.rdata")
@@ -1278,7 +1278,7 @@ PartyAProcess2Logistic = function(data,
     files = c("a21i1_xtwx.rdata")
     params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
 
-    params <- GetCoefLogistic.A2(params, data)
+    params <- GetCoefLogistic.a2(params, data)
     files = "deltabeta.rdata"
     params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
 
@@ -1287,7 +1287,7 @@ PartyAProcess2Logistic = function(data,
   }
   params$completed = TRUE
 
-  params <- ComputeResultsLogistic.A2(params, data)
+  params <- ComputeResultsLogistic.a2(params, data)
 
   files = c("stats.rdata")
   params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
@@ -1309,14 +1309,14 @@ PartyBProcess2Logistic = function(data,
   params <- InitializeStamps.2p(params)
   params <- InitializeTrackingTable.2p(params)
   Header(params)
-  params   = PrepareFolderLogistic.B2(params, monitor_folder)
+  params   = PrepareFolderLogistic.b2(params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
   }
-  data = PrepareDataLogistic.B23(params, data)
+  data = PrepareDataLogistic.b23(params, data)
 
-  if (data$failed) { # Check for Error from PrepareDataLogistic.B2()
+  if (data$failed) { # Check for Error from PrepareDataLogistic.b2()
     params$completed = TRUE
     message = "Error in processing the data for Party B."
     MakeErrorMessage(params$write_path, message)
@@ -1325,7 +1325,7 @@ PartyBProcess2Logistic = function(data,
     return(params$stats)
   }
 
-  params   = PrepareParamsLogistic.B2(params, data)
+  params   = PrepareParamsLogistic.b2(params, data)
 
   files = c("pb.rdata")
   params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
@@ -1337,9 +1337,9 @@ PartyBProcess2Logistic = function(data,
     return(params$stats)
   }
 
-  params <- FinalizeParamsLogistic.B2(params, data)
-  params <- PrepareBlocksLogistic.B2(params)
-  params <- GetWLogistic.B2(params, data)
+  params <- FinalizeParamsLogistic.b2(params, data)
+  params <- PrepareBlocksLogistic.b2(params)
+  params <- GetWLogistic.b2(params, data)
 
   files = c("xbtxb.rdata", SeqZW("cw_", length(params$container$filebreak.W)))
   params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
@@ -1351,19 +1351,19 @@ PartyBProcess2Logistic = function(data,
     return(params$stats)
   }
 
-  params <- UpdateParamsLogistic.B2(params)
-  data = UpdateDataLogistic.B2(params, data)
-  params <- add_to_log(params, "UpdateDataLogistic.B2", 0, 0, 0, 0)
+  params <- UpdateParamsLogistic.b2(params)
+  data = UpdateDataLogistic.b2(params, data)
+  params <- add_to_log(params, "UpdateDataLogistic.b2", 0, 0, 0, 0)
 
   params$algIterationCounter = 1
   while (!params$converged && !params$maxIterExceeded) {
     BeginningIteration(params)
-    params <- GetXBetaLogistic.B2(params, data)
+    params <- GetXBetaLogistic.b2(params, data)
 
     files = c("xbetab.rdata")
     params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
 
-    params <- GetVLogistic.B2(params, data)
+    params <- GetVLogistic.b2(params, data)
     files = c("sumswx_xbtwxb.rdata",
               SeqZW("cv_", length(params$container$filebreak.V)))
     params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
@@ -1375,22 +1375,22 @@ PartyBProcess2Logistic = function(data,
       return(params$stats)
     }
 
-    params <- GetCoefLogistic.B2(params, data)
+    params <- GetCoefLogistic.b2(params, data)
     files = c("a12_deltabetaB.rdata")
     params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
 
-    params <- GetConvergedStatusLogistic.B2(params)
+    params <- GetConvergedStatusLogistic.b2(params)
 
     EndingIteration(params)
     params$algIterationCounter = params$algIterationCounter + 1
   }
   params$completed = TRUE
 
-  params <- GetFinalCoefLogistic.B2(params, data)
+  params <- GetFinalCoefLogistic.b2(params, data)
   files = c("b_final.rdata")
   params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
 
-  params <- GetResultsLogistic.B2(params)
+  params <- GetResultsLogistic.b2(params)
   params <- SendPauseQuit.2p(params, sleep_time = sleep_time)
   return(invisible(params$stats))
 }

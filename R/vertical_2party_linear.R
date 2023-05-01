@@ -1,7 +1,7 @@
 ################### DISTRIBUTED LINEAR REGRESSION FUNCTIONS ###################
 
-PrepareFolderLinear.A2 = function(params, monitor_folder) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareFolderLinear.A2\n\n")
+PrepareFolderLinear.a2 = function(params, monitor_folder) {
+  if (params$trace) cat(as.character(Sys.time()), "PrepareFolderLinear.a2\n\n")
   params$dp_local_path   = file.path(monitor_folder, "dplocal")
   params$r_programs_path = file.path(monitor_folder, "rprograms")
   params$macros_path    = file.path(monitor_folder, "macros")
@@ -59,13 +59,13 @@ PrepareFolderLinear.A2 = function(params, monitor_folder) {
                                 "Check the path and restart the program.")
   }
 
-  params <- add_to_log(params, "PrepareDataLinear.A23, PrepareFolderLinear.A2", 0, 0, 0, 0)
+  params <- add_to_log(params, "PrepareDataLinear.a23, PrepareFolderLinear.a2", 0, 0, 0, 0)
   return(params)
 }
 
 
-PrepareFolderLinear.B2 = function(params, monitor_folder) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareFolderLinear.B2\n\n")
+PrepareFolderLinear.b2 = function(params, monitor_folder) {
+  if (params$trace) cat(as.character(Sys.time()), "PrepareFolderLinear.b2\n\n")
 
   params$dp_local_path   = file.path(monitor_folder, "dplocal")
   params$r_programs_path = file.path(monitor_folder, "rprograms")
@@ -127,13 +127,13 @@ PrepareFolderLinear.B2 = function(params, monitor_folder) {
   Sys.sleep(1)
   DeleteTrigger("files_done.ok", params$read_path)
 
-  params <- add_to_log(params, "PrepareDataLinear.B23, PrepareFolderLinear.B2", 0, 0, 0, 0)
+  params <- add_to_log(params, "PrepareDataLinear.b23, PrepareFolderLinear.b2", 0, 0, 0, 0)
   return(params)
 }
 
 #' @importFrom stats model.matrix sd
-PrepareDataLinear.A23 = function(params, data, yname = NULL) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareDataLinear.A23\n\n")
+PrepareDataLinear.a23 = function(params, data, yname = NULL) {
+  if (params$trace) cat(as.character(Sys.time()), "PrepareDataLinear.a23\n\n")
 
   workdata = list()
   workdata$failed = FALSE
@@ -184,8 +184,8 @@ PrepareDataLinear.A23 = function(params, data, yname = NULL) {
 }
 
 #' @importFrom stats model.matrix sd
-PrepareDataLinear.B23 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareDataLinear.B23\n\n")
+PrepareDataLinear.b23 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "PrepareDataLinear.b23\n\n")
 
   workdata = list()
   workdata$failed = FALSE
@@ -223,8 +223,8 @@ PrepareDataLinear.B23 = function(params, data) {
   return(workdata)
 }
 
-PrepareParamsLinear.B2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareParamsLinear.B2\n\n")
+PrepareParamsLinear.b2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "PrepareParamsLinear.b2\n\n")
   params$failed         = FALSE
   params$halted         = FALSE
   params$singular_matrix = FALSE
@@ -261,13 +261,13 @@ PrepareParamsLinear.B2 = function(params, data) {
   save(pb, file = file.path(params$write_path, "pb.rdata"))
   write_size = sum(file.size(file.path(params$write_path, "pb.rdata")))
   write_time = proc.time()[3] - write_time
-  params <- add_to_log(params, "PrepareParamsLinear.B2", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "PrepareParamsLinear.b2", 0, 0, write_time, write_size)
   return(params)
 }
 
 
-PrepareParamsLinear.A2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareParamsLinear.A2\n\n")
+PrepareParamsLinear.a2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "PrepareParamsLinear.a2\n\n")
 
   params$halted          = FALSE
   params$singular_matrix  = FALSE
@@ -328,15 +328,15 @@ PrepareParamsLinear.A2 = function(params, data) {
   save(pa, file = file.path(params$write_path, "pa.rdata"))
   write_size = sum(file.size(file.path(params$write_path, "pa.rdata")))
   write_time = proc.time()[3] - write_time
-  params <- add_to_log(params, "PrepareParamsLinear.A2", read_time, read_size,
+  params <- add_to_log(params, "PrepareParamsLinear.a2", read_time, read_size,
                     write_time, write_size)
 
   return(params)
 }
 
 
-PrepareBlocksLinear.A2 = function(params, blocksize) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareBlocksLinear.A2\n\n")
+PrepareBlocksLinear.a2 = function(params, blocksize) {
+  if (params$trace) cat(as.character(Sys.time()), "PrepareBlocksLinear.a2\n\n")
   # For now, assuming that p1 > 0 and p2 > 0
   n  = params$n
   p1 = params$p1
@@ -366,7 +366,7 @@ PrepareBlocksLinear.A2 = function(params, blocksize) {
     }
     warning(params$error_message)
     params$failed <- TRUE
-    params <- add_to_log(params, "PrepareBlocksCox.A2", 0, 0, 0, 0)
+    params <- add_to_log(params, "PrepareBlocksCox.a2", 0, 0, 0, 0)
     return(params)
   }
 
@@ -390,13 +390,13 @@ PrepareBlocksLinear.A2 = function(params, blocksize) {
   save(blocksize, file = file.path(params$write_path, "blocksize.rdata"))
   write_size = file.size(file.path(params$write_path, "blocksize.rdata"))
   write_time = proc.time()[3] - write_time
-  params <- add_to_log(params, "PrepareBlocksLinear.A2", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "PrepareBlocksLinear.a2", 0, 0, write_time, write_size)
   return(params)
 }
 
 
-GetZLinear.A2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "GetZLinear.A2\n\n")
+GetZLinear.a2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "GetZLinear.a2\n\n")
   write_time = 0
   write_size = 0
 
@@ -424,13 +424,13 @@ GetZLinear.A2 = function(params, data) {
     }
     pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
-  params <- add_to_log(params, "GetZLinear.A2", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "GetZLinear.a2", 0, 0, write_time, write_size)
   return(params)
 }
 
 
-FinalizeParamsLinear.B2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "FinalizeParamsLinear.B2\n\n")
+FinalizeParamsLinear.b2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "FinalizeParamsLinear.b2\n\n")
   pa = NULL
   read_time = proc.time()[3]
   load(file.path(params$read_path, "pa.rdata")) # read pa
@@ -445,13 +445,13 @@ FinalizeParamsLinear.B2 = function(params, data) {
   params$yname  = pa$yname
 
   params$Acolnames = pa$Acolnames
-  params <- add_to_log(params, "FinalizeParamsLinear.B2", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "FinalizeParamsLinear.b2", read_time, read_size, 0, 0)
   return(params)
 }
 
 
-PrepareBlocksLinear.B2 = function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareBlocksLinear.B2\n\n")
+PrepareBlocksLinear.b2 = function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "PrepareBlocksLinear.b2\n\n")
   blocksize = NULL
   # For now, assuming that p1 > 0 and p2 > 0
   read_time = proc.time()[3]
@@ -460,13 +460,13 @@ PrepareBlocksLinear.B2 = function(params) {
   read_time = proc.time()[3] - read_time
   params$blocks    = CreateBlocks(params$p1, params$p2, params$n, blocksize)
   params$container = CreateContainers(params$p1, params$p2, params$blocks)
-  params <- add_to_log(params, "PrepareBlocksLinear.B2", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "PrepareBlocksLinear.b2", read_time, read_size, 0, 0)
   return(params)
 }
 
 
-GetWLinear.B2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "GetWLinear.B2\n\n")
+GetWLinear.b2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "GetWLinear.b2\n\n")
   read_time  = 0
   read_size  = 0
   write_time = 0
@@ -523,14 +523,14 @@ GetWLinear.B2 = function(params, data) {
   write_size = write_size + file.size(file.path(params$write_path, "xbtxb.rdata"))
   write_time = write_time + proc.time()[3]
 
-  params <- add_to_log(params, "GetWLinear.B2", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "GetWLinear.b2", read_time, read_size, write_time, write_size)
 
   return(params)
 }
 
 
-GetProductsLinear.A2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "GetProductsLinear.A2\n\n")
+GetProductsLinear.a2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "GetProductsLinear.a2\n\n")
   n  = params$n
   p1 = params$p1
   p2 = params$p2
@@ -589,13 +589,13 @@ GetProductsLinear.A2 = function(params, data) {
 
   params$converged = TRUE
 
-  params <- add_to_log(params, "GetProductsLinear.A2", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "GetProductsLinear.a2", read_time, read_size, 0, 0)
   return(params)
 }
 
 #' @importFrom  stats pf pt
-ComputeResultsLinear.A2 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLinear.A2\n\n")
+ComputeResultsLinear.a2 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLinear.a2\n\n")
   stats    = params$stats
   stats$converged = params$converged
   stats$failed    = FALSE
@@ -721,13 +721,13 @@ ComputeResultsLinear.A2 = function(params, data) {
   write_size = file.size(file.path(params$write_path, "stats.rdata"))
   write_time = proc.time()[3] - write_time
 
-  params <- add_to_log(params, "ComputeResultsLinear.A2", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "ComputeResultsLinear.a2", 0, 0, write_time, write_size)
   return(params)
 }
 
 
-GetResultsLinear.B2 = function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "GetResultsLinear.B2\n\n")
+GetResultsLinear.b2 = function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "GetResultsLinear.b2\n\n")
   params$converged = TRUE
   stats = NULL
   read_time = proc.time()[3]
@@ -735,7 +735,7 @@ GetResultsLinear.B2 = function(params) {
   read_size = file.size(file.path(params$read_path, "stats.rdata"))
   read_time = proc.time()[3] - read_time
   params$stats = stats
-  params <- add_to_log(params, "GetResultsLinear.B2", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "GetResultsLinear.b2", read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -763,12 +763,12 @@ PartyAProcess2Linear = function(data,
   params <- InitializeTrackingTable.2p(params)
   Header(params)
 
-  params   = PrepareFolderLinear.A2(params, monitor_folder)
+  params   = PrepareFolderLinear.a2(params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
   }
-  data = PrepareDataLinear.A23(params, data, yname)
+  data = PrepareDataLinear.a23(params, data, yname)
 
   params <- PauseContinue.2p(params,  maxWaitingTime)
   if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
@@ -792,9 +792,9 @@ PartyAProcess2Linear = function(data,
     return(params$stats)
   }
 
-  params <- PrepareParamsLinear.A2(params, data)
+  params <- PrepareParamsLinear.a2(params, data)
 
-  if (params$failed) {   # Check for failed from PrepareParamsLinear.A2()
+  if (params$failed) {   # Check for failed from PrepareParamsLinear.a2()
     params$completed = TRUE
     MakeErrorMessage(params$write_path, params$error_message)
     files = c("error_message.rdata")
@@ -804,9 +804,9 @@ PartyAProcess2Linear = function(data,
     return(params$stats)
   }
 
-  params <- PrepareBlocksLinear.A2(params, blocksize)
+  params <- PrepareBlocksLinear.a2(params, blocksize)
 
-  if (params$failed) { # Check for failed from PrepareBlocksCox.A2()
+  if (params$failed) { # Check for failed from PrepareBlocksCox.a2()
     params$completed = TRUE
     MakeErrorMessage(params$write_path, params$error_message)
     files = c("error_message.rdata")
@@ -816,15 +816,15 @@ PartyAProcess2Linear = function(data,
     return(params$stats)
   }
 
-  params <- GetZLinear.A2(params, data)
+  params <- GetZLinear.a2(params, data)
 
   files = c("pa.rdata", "blocksize.rdata",
             SeqZW("cz_", length(params$container$filebreak.Z)))
   params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
 
   params$completed = TRUE
-  params <- GetProductsLinear.A2(params, data)
-  params <- ComputeResultsLinear.A2(params, data)
+  params <- GetProductsLinear.a2(params, data)
+  params <- ComputeResultsLinear.a2(params, data)
   files = c("stats.rdata")
   params <- SendPauseContinue.2p(params, files, sleep_time = sleep_time)
   params <- SendPauseQuit.2p(params, sleep_time = sleep_time)
@@ -847,14 +847,14 @@ PartyBProcess2Linear = function(data,
   params <- InitializeTrackingTable.2p(params)
 
   Header(params)
-  params   = PrepareFolderLinear.B2(params, monitor_folder)
+  params   = PrepareFolderLinear.b2(params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
   }
-  data = PrepareDataLinear.B23(params, data)
+  data = PrepareDataLinear.b23(params, data)
 
-  if (data$failed) { # Check for Error from prepare_data_cox_B2()
+  if (data$failed) { # Check for Error from prepare_data_cox_b2()
     params$completed = TRUE
     message = "Error in processing the data for Party B."
     MakeErrorMessage(params$write_path, message)
@@ -863,7 +863,7 @@ PartyBProcess2Linear = function(data,
     return(params$stats)
   }
 
-  params   = PrepareParamsLinear.B2(params, data)
+  params   = PrepareParamsLinear.b2(params, data)
 
   files = c("pb.rdata")
   params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
@@ -875,14 +875,14 @@ PartyBProcess2Linear = function(data,
     return(params$stats)
   }
 
-  params <- FinalizeParamsLinear.B2(params, data)
-  params <- PrepareBlocksLinear.B2(params)
-  params <- GetWLinear.B2(params, data)
+  params <- FinalizeParamsLinear.b2(params, data)
+  params <- PrepareBlocksLinear.b2(params)
+  params <- GetWLinear.b2(params, data)
 
   files = c("xbtxb.rdata", SeqZW("cw_", length(params$container$filebreak.W)))
   params <- SendPauseContinue.2p(params, files, sleep_time, maxWaitingTime)
 
-  params <- GetResultsLinear.B2(params)
+  params <- GetResultsLinear.b2(params)
   params$completed = TRUE
 
   params <- SendPauseQuit.2p(params, sleep_time = sleep_time)

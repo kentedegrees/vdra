@@ -77,8 +77,8 @@ SendStrataNamesCox.DP = function(params, data) {
 }
 
 
-CheckStrataCox.DP = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "CheckStrataCox.DP\n\n")
+check_strata_cox_DP = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "check_strata_cox_DP\n\n")
   read_time = 0
   read_size = 0
   strataNames          = NULL
@@ -144,7 +144,7 @@ CheckStrataCox.DP = function(params, data) {
       params$error_message <- paste0(params$error_message,
                                    paste("Data Partner", i, "specified strata:", temp, "\n"))
     }
-    params <- add_to_log(params, "CheckStrataCox.DP", read_time, read_size, 0, 0)
+    params <- add_to_log(params, "check_strata_cox_DP", read_time, read_size, 0, 0)
     return(params)
   }
   passed = TRUE
@@ -158,7 +158,7 @@ CheckStrataCox.DP = function(params, data) {
     params$error_message <- "The following strata are claimed by two or more data partners: "
     params$error_message <- paste0(params$error_message, paste0(names(tab[which(tab > 1)]), collapse = ", "), "\n")
     params$error_message <- paste0(params$error_message, "Make Sure that strata covariate names are unique to each data partner.")
-    params <- add_to_log(params, "CheckStrataCox.DP", read_time, read_size, 0, 0)
+    params <- add_to_log(params, "check_strata_cox_DP", read_time, read_size, 0, 0)
     return(params)
   }
 
@@ -170,17 +170,17 @@ CheckStrataCox.DP = function(params, data) {
     params$failed <- TRUE
     params$error_message <- "No data partner has the following specified strata: "
     params$error_message <- paste0(params$error_message, paste0(unclaimed[which(!(unclaimed %in% claimed1))], collapse = ", "), ".")
-    params <- add_to_log(params, "CheckStrataCox.DP", read_time, read_size, 0, 0)
+    params <- add_to_log(params, "check_strata_cox_DP", read_time, read_size, 0, 0)
     return(params)
   }
 
-  params <- add_to_log(params, "CheckStrataCox.DP", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "check_strata_cox_DP", read_time, read_size, 0, 0)
   return(params)
 }
 
 
-SendStrataCox.DP = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "SendStrataCox.DP\n\n")
+send_strata_cox_DP = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "send_strata_cox_DP\n\n")
   strata = list()
   strata$X = data$strata$X
   strata$legend = data$strata$legend
@@ -188,13 +188,13 @@ SendStrataCox.DP = function(params, data) {
   save(strata, file = file.path(params$write_path, "strata.rdata"))
   write_size = file.size(file.path(params$write_path, "strata.rdata"))
   write_time = proc.time()[3] - write_time
-  params <- add_to_log(params, "SendStrataCox.DP", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "send_strata_cox_DP", 0, 0, write_time, write_size)
   return(params)
 }
 
 
-PrepareStrataCox.DP = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareStrataCox.DP\n\n")
+prepare_strata_cox_DP = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "prepare_strata_cox_DP\n\n")
   strata = NULL
   survival = data$survival
   strataTemp   = list()
@@ -332,7 +332,7 @@ PrepareStrataCox.DP = function(params, data) {
   write_size = file.size(file.path(params$write_path, "survival.rdata"))
   write_time = proc.time()[3] - write_time
 
-  params <- add_to_log(params, "PrepareStrataCox.DP", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "prepare_strata_cox_DP", read_time, read_size, write_time, write_size)
 
   return(params)
 }
@@ -1514,7 +1514,7 @@ DataPartnerKCox = function(data,
     params <- SendPauseContinue.kp(params, filesAC = "empty.rdata", from = "DP",
                                   sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
 
-    params <- CheckStrataCox.DP(params, data)
+    params <- check_strata_cox_DP(params, data)
 
     if (params$failed) {
       MakeErrorMessage(params$write_path, params$error_message)
@@ -1535,7 +1535,7 @@ DataPartnerKCox = function(data,
       params <- SendPauseContinue.kp(params, filesDP = "empty.rdata", from = "DP",
                                     sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
     }
-    params <- PrepareStrataCox.DP(params, data)
+    params <- prepare_strata_cox_DP(params, data)
     data   = AddStrataToDataCox.DP(params, data)
     params <- add_to_log(params, "AddStrataToDataCox.DP", 0, 0, 0, 0)
   } else {
@@ -1554,7 +1554,7 @@ DataPartnerKCox = function(data,
       return(params$stats)
     }
 
-    params <- SendStrataCox.DP(params, data)
+    params <- send_strata_cox_DP(params, data)
     filesList = rep(list(list()), numDataPartners)
     filesList[[1]] = "strata.rdata"
     params <- SendPauseContinue.kp(params, filesDP = filesList, from = "DP1",
