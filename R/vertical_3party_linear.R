@@ -293,7 +293,7 @@ prepare_params_linear_b3 <- function(params, data) {
 prepare_params_linear_t3 <- function(params, cutoff = 1e-8, max_iterations = 25) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_t3\n\n")
   pa = NULL
-  pb = NULL
+  pb <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["A"]], "pa.rdata"))
   load(file.path(params$read_path[["B"]], "pb.rdata"))

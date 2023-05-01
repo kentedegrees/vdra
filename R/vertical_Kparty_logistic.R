@@ -466,8 +466,8 @@ update_beta_logistic_DP <- function(params) {
 }
 
 
-ComputeConvergeStatusLogistic.AC <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "ComputeConvergeStatusLogistic.AC\n\n")
+compute_converged_status_logistic_ac <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "compute_converged_status_logistic_ac\n\n")
   read_time <- 0
   read_size <- 0
   u = 0
@@ -490,7 +490,7 @@ ComputeConvergeStatusLogistic.AC <- function(params) {
   save(u, converged, maxIterExceeded, file = file.path(params$write_path, "u_converge.rdata"))
   write_size <- file.size(file.path(params$write_path, "u_converge.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "ComputeConvergeStatusLogistic.AC", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "compute_converged_status_logistic_ac", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -924,7 +924,7 @@ AnalysisCenterKLogistic <- function(numDataPartners = NULL,
     params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
-    params <- ComputeConvergeStatusLogistic.AC(params)
+    params <- compute_converged_status_logistic_ac(params)
     files <- "u_converge.rdata"
     params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)

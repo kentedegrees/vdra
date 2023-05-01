@@ -17,8 +17,8 @@ prepare_params_cox_a3 <- function(params, data) {
   pa$n         = params$n
   pa$analysis  = params$analysis
   pa$colnames  = params$colnames
-  pa$strata_from_a = data$strata$strata_from_a
-  pa$strata_from_b = data$strata$strata_from_b
+  pa$strata_from_a <- data$strata$strata_from_a
+  pa$strata_from_b <- data$strata$strata_from_b
   pa$tags      = data$tags
 
   write_time <- proc.time()[3]
@@ -47,8 +47,8 @@ prepare_params_cox_b3 <- function(params, data) {
   pb$n         = params$n
   pb$analysis  = params$analysis
   pb$colnames  = params$colnames
-  pb$strata_from_a = data$strata$strata_from_a
-  pb$strata_from_b = data$strata$strata_from_b
+  pb$strata_from_a <- data$strata$strata_from_a
+  pb$strata_from_b <- data$strata$strata_from_b
   pb$tags      = data$tags
 
   write_time <- proc.time()[3]
@@ -63,7 +63,7 @@ prepare_params_cox_b3 <- function(params, data) {
 prepare_params_cox_t3 <- function(params, cutoff, max_iterations) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_cox_t3\n\n")
   pa = NULL
-  pb = NULL
+  pb <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["A"]], "pa.rdata"))
   load(file.path(params$read_path[["B"]], "pb.rdata"))
@@ -132,8 +132,8 @@ check_strata_cox_t3 <- function(params) {
     params$getStrata = TRUE
   } else {
     params$getStrata = FALSE
-    a_cap_b = intersect(params$Astrata_from_a, params$b_strata_from_b)
-    b_cap_a = intersect(params$b_strata_from_a, params$Astrata_from_b)
+    a_cap_b <- intersect(params$Astrata_from_a, params$b_strata_from_b)
+    b_cap_a <- intersect(params$b_strata_from_a, params$Astrata_from_b)
     if (length(a_cap_b) > 0) {
       params$error_message <-
         paste("Party A and Party B have", length(a_cap_b), "variable(s) with the same name which are used in the strata.",
@@ -160,7 +160,7 @@ check_strata_cox_t3 <- function(params) {
 
 send_strata_cox_a3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "send_strata_cox_a3\n\n")
-  a_strata = data$strata
+  a_strata <- data$strata
   survival = data$survival
   write_time <- proc.time()[3]
   save(a_strata, survival, file = file.path(params$write_path, "Astrata.rdata"))
@@ -173,7 +173,7 @@ send_strata_cox_a3 <- function(params, data) {
 
 send_strata_cox_b3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "send_strata_cox_b3\n\n")
-  b_strata = data$strata
+  b_strata <- data$strata
   write_time <- proc.time()[3]
   save(b_strata, file = file.path(params$write_path, "Bstrata.rdata"))
   write_size <- file.size(file.path(params$write_path, "Bstrata.rdata"))
@@ -200,20 +200,20 @@ prepare_strata_cox_t3 <- function(params) {
 
   if (length(params$strata_from_a) == 0 && length(params$strata_from_b) == 0) {
     strata_temp$x <- data.frame(const__ = rep(1, params$n))
-    strata_temp$legend = FALSE
+    strata_temp$legend <- FALSE
   } else if (length(params$strata_from_a) == 0) {
-    strata_temp$x = b_strata$x
-    strata_temp$legend = b_strata$legend
+    strata_temp$x <- b_strata$x
+    strata_temp$legend <- b_strata$legend
   } else if (length(params$strata_from_b) == 0) {
-    strata_temp$x = a_strata$x
-    strata_temp$legend = a_strata$legend
+    strata_temp$x <- a_strata$x
+    strata_temp$legend <- a_strata$legend
   } else {
-    strata_temp$x = cbind(a_strata$x, b_strata$x)
-    strata_temp$legend = c(a_strata$legend, b_strata$legend)
+    strata_temp$x <- cbind(a_strata$x, b_strata$x)
+    strata_temp$legend <- c(a_strata$legend, b_strata$legend)
   }
 
   sorted = do.call("order", cbind(strata_temp$x, survival$rank, survival$status))
-  strata_temp$x = strata_temp$x[sorted, , drop = FALSE]
+  strata_temp$x <- strata_temp$x[sorted, , drop = FALSE]
   survival$rank   = survival$rank[sorted]
   survival$status = survival$status[sorted]
   survival$sorted = sorted

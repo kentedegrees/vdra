@@ -821,7 +821,7 @@ check_data_format <- function(params, data) {
   return(FALSE)
 }
 
-CheckResponse <- function(params, data, y_name) {
+check_response <- function(params, data, y_name) {
   if (is.null(y_name)) {
     warning("Response is not specified.")
     return(NULL)
@@ -893,7 +893,7 @@ CheckResponse <- function(params, data, y_name) {
   return(responseColIndex)
 }
 
-CreateModelMatrixTags <- function(data) {
+create_model_matrix_tags <- function(data) {
   if (ncol(data) == 0) {
     return(c())
   }
@@ -2319,7 +2319,7 @@ formatStatList <- function(vals) {
   # width = 10, justify = right => standard output, so no worries about justify nor width
   notNA <- which(!is.na(vals))
   notZero <- which(vals != 0)
-  keep = intersect(notNA, notZero)
+  keep <- intersect(notNA, notZero)
   if (length(keep) == 0) {
     f = c()
     for (x in vals) {

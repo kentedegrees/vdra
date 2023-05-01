@@ -136,7 +136,7 @@ prepare_data_logistic_a23 <- function(params, data, y_name = NULL) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_data_logistic_a23\n\n")
 
   workdata <- list()
-  workdata$failed = FALSE
+  workdata$failed <- FALSE
 
   workdata$failed <- check_data_format(params, data)
 
@@ -146,20 +146,20 @@ prepare_data_logistic_a23 <- function(params, data, y_name = NULL) {
 
   data <- data.frame(data) # convert to a clean data.frame
 
-  response_index = CheckResponse(params, data, y_name)
+  response_index <- check_response(params, data, y_name)
 
   if (is.null(response_index)) {
-    workdata$failed = TRUE
+    workdata$failed <- TRUE
     return(workdata)
   }
-  covariate_index = setdiff(1:ncol(data), response_index)
-  workdata$tags = CreateModelMatrixTags(data[, covariate_index, drop = FALSE])
+  covariate_index <- setdiff(1:ncol(data), response_index)
+  workdata$tags <- create_model_matrix_tags(data[, covariate_index, drop = FALSE])
   workdata$tags = c("(Intercept)", workdata$tags)
   names(workdata$tags)[1] = "numeric"
 
   x = model.matrix(~ ., data[, c(response_index, covariate_index), drop = FALSE])
   rownames(x) = NULL
-  covariate_index = setdiff(1:ncol(x), 2)
+  covariate_index <- setdiff(1:ncol(x), 2)
 
   means = apply(x, 2, mean)
   sd    = apply(x, 2, sd)
@@ -186,7 +186,7 @@ prepare_data_logistic_b23 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_data_logistic_b23\n\n")
 
   workdata <- list()
-  workdata$failed = FALSE
+  workdata$failed <- FALSE
 
   workdata$failed <- check_data_format(params, data)
 
@@ -196,10 +196,10 @@ prepare_data_logistic_b23 <- function(params, data) {
 
   data <- data.frame(data) # convert to a clean data.frame
 
-  workdata$tags = CreateModelMatrixTags(data)
+  workdata$tags <- create_model_matrix_tags(data)
   if (ncol(data) < 2 | !("numeric" %in% names(workdata$tags))) {
     warning("The data partner that does not have the response must have at least 2 covariates at least one of which must be numeric.")
-    workdata$failed = TRUE
+    workdata$failed <- TRUE
     return(workdata)
   }
   workdata$x = model.matrix(~ ., data)

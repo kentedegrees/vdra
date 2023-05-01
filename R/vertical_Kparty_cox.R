@@ -12,15 +12,15 @@ prepare_data_cox_DP <- function(params, data, y_name, strata, mask) {
   data <- data.frame(data) # convert to a clean data.frame
   workdata$strata <- extract_strata(params, data, strata, mask)
   if (workdata$strata$failed) {
-    workdata$failed = TRUE
+    workdata$failed <- TRUE
     return(workdata)
   }
   strata_index <- workdata$strata$strata_index
   response_index <- numeric()
   if (params$data_partner_id == 1) {
-    response_index = CheckResponse(params, data, y_name)
+    response_index <- check_response(params, data, y_name)
     if (is.null(response_index)) {
-      workdata$failed = TRUE
+      workdata$failed <- TRUE
       return(workdata)
     }
     workdata$survival        <- list()
@@ -28,22 +28,22 @@ prepare_data_cox_DP <- function(params, data, y_name, strata, mask) {
     workdata$survival$status <- data[, response_index[2]]
     if (length(intersect(strata_index, response_index)) > 0) {
       warning("Response and strata share a variable.")
-      workdata$failed = TRUE
+      workdata$failed <- TRUE
       return(workdata)
     }
   }
-  covariate_index = setdiff(1:ncol(data), union(strata_index, response_index))
+  covariate_index <- setdiff(1:ncol(data), union(strata_index, response_index))
   workdata$n = nrow(data)
   if (length(covariate_index) == 0) {
     if (params$data_partner_id == 1) {
       workdata$x  <- matrix(0, nrow = nrow(data), ncol = 0)
     } else {
       warning("After removing strata, data is empty.  Party B must supply at least one non-strata covariate.")
-      workdata$failed = TRUE
+      workdata$failed <- TRUE
       return(workdata)
     }
   } else {
-    workdata$tags = CreateModelMatrixTags(data[, covariate_index, drop = FALSE])
+    workdata$tags <- create_model_matrix_tags(data[, covariate_index, drop = FALSE])
     workdata$x = model.matrix(~ ., data[, covariate_index, drop = FALSE])
     workdata$x <- workdata$x[, -1, drop = FALSE]
     workdata$colmin   = apply(workdata$x, 2, min)
@@ -66,8 +66,8 @@ prepare_data_cox_DP <- function(params, data, y_name, strata, mask) {
 SendStrataNamesCox.DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "SendStrataNamesCox.DP\n\n")
   strataNames <- list()
-  strataNames$strataFromMe = data$strata$strataFromMe
-  strataNames$strataFromOthers = data$strata$strataFromOthers
+  strataNames$strataFromMe <- data$strata$strataFromMe
+  strataNames$strataFromOthers <- data$strata$strataFromOthers
   write_time <- proc.time()[3]
   save(strataNames, file = file.path(params$write_path, "strata_names.rdata"))
   write_size <- file.size(file.path(params$write_path, "strata_names.rdata"))
@@ -85,10 +85,10 @@ check_strata_cox_DP <- function(params, data) {
   strataClaimed        = rep(list(list()), params$numDataPartners)
   strataUnclaimed      = rep(list(list()), params$numDataPartners)
   if (length(data$strata$strataFromMe) > 0) {
-    strataClaimed[[1]]   = data$strata$strataFromMe
+    strataClaimed[[1]]   <- data$strata$strataFromMe
   }
   if (length(data$strata$strataFromOthers) > 0) {
-    strataUnclaimed[[1]] = data$strata$strataFromOthers
+    strataUnclaimed[[1]] <- data$strata$strataFromOthers
   }
   for (i in 2:params$numDataPartners) {
     read_time <- read_time - proc.time()[3]
@@ -182,8 +182,8 @@ check_strata_cox_DP <- function(params, data) {
 send_strata_cox_DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "send_strata_cox_DP\n\n")
   strata <- list()
-  strata$x = data$strata$x
-  strata$legend = data$strata$legend
+  strata$x <- data$strata$x
+  strata$legend <- data$strata$legend
   write_time <- proc.time()[3]
   save(strata, file = file.path(params$write_path, "strata.rdata"))
   write_size <- file.size(file.path(params$write_path, "strata.rdata"))
@@ -214,8 +214,8 @@ prepare_strata_cox_DP <- function(params, data) {
     for (id in 1:params$numDataPartners) {
       if (length(params$strataClaimed[[id]]) > 0) {
         if (id == 1) {
-          strataTemp$x = data$strata$x
-          strataTemp$legend = data$strata$legend
+          strataTemp$x <- data$strata$x
+          strataTemp$legend <- data$strata$legend
           first = FALSE
         } else {
           read_time <- read_time - proc.time()[3]
@@ -811,7 +811,7 @@ compute_log_likelihood_cox_DP <- function(params, data) {
     }
     if (loglikelihood < loglikelihood_old && scale > 0.5^6) {
       sBeta = 0.5 * (sBeta + params$sBeta)
-      scale = scale / 2
+      scale <- scale / 2
       if (params$verbose) cat("Step Halving\n\n")
     } else {
       stephalving = FALSE
@@ -824,7 +824,7 @@ compute_log_likelihood_cox_DP <- function(params, data) {
 
   converged = abs(loglikelihood - loglikelihood_old) / (abs(loglikelihood) + 0.1) < params$cutoff
   params$converged = converged
-  params$scale     = scale
+  params$scale     <- scale
   params$sBeta     = sBeta
   params$loglikelihood = loglikelihood
 
@@ -922,11 +922,11 @@ ComputeSDelLCox.DP <- function(params, data) {
   temp = as.numeric(Sys.time())
   set.seed((temp - trunc(temp)) * .Machine$integer.max)
   scaled.w_s_l.L  <- matrix(rnorm(n * p, sd = 20), nrow = n, ncol = p)
-  scaled.w_s_l.R = scaled.w_s_l - scaled.w_s_l.L
+  scaled.w_s_l.R <- scaled.w_s_l - scaled.w_s_l.L
 
   params$colmin.w_s_l = colmin.w_s_l
   params$colrange.w_s_l = colrange.w_s_l
-  params$scaled.w_s_l.L = scaled.w_s_l.L
+  params$scaled.w_s_l.L <- scaled.w_s_l.L
 
   write_time <- proc.time()[3]
   save(colmin.w_s_l, colrange.w_s_l, scaled.w_s_l.R,
@@ -1178,7 +1178,7 @@ UpdateConvergeStatus.DP <- function(params) {
     read_size <- file.size(file.path(params$readPathDP[1], "converged.rdata"))
     read_time <- proc.time()[3] - read_time
     params$converged = converged
-    params$scale     = scale
+    params$scale     <- scale
   }
   read_time <- read_time - proc.time()[3]
   load(file.path(params$readPathAC, "maxiterexceeded.rdata"))

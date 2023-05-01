@@ -96,7 +96,7 @@ PrepareDataLinLog.DP1 <- function(params, data, y_name = NULL) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareDataLinLog.DP1\n\n")
 
   workdata <- list()
-  workdata$failed = FALSE
+  workdata$failed <- FALSE
 
   workdata$failed <- check_data_format(params, data)
 
@@ -106,19 +106,19 @@ PrepareDataLinLog.DP1 <- function(params, data, y_name = NULL) {
 
   data <- data.frame(data) # convert to a clean data.frame
 
-  response_index = CheckResponse(params, data, y_name)
+  response_index <- check_response(params, data, y_name)
 
   if (is.null(response_index)) {
-    workdata$failed = TRUE
+    workdata$failed <- TRUE
     return(workdata)
   }
-  covariate_index = setdiff(1:ncol(data), response_index)
-  workdata$tags = CreateModelMatrixTags(data[, covariate_index, drop = FALSE])
+  covariate_index <- setdiff(1:ncol(data), response_index)
+  workdata$tags <- create_model_matrix_tags(data[, covariate_index, drop = FALSE])
   workdata$tags = c("(Intercept)", workdata$tags)
   names(workdata$tags)[1] = "numeric"
   x = model.matrix(~ ., data[, c(response_index, covariate_index), drop = FALSE])
   rownames(x) = NULL
-  covariate_index = setdiff(1:ncol(x), 2)
+  covariate_index <- setdiff(1:ncol(x), 2)
   workdata$x = x[, c(2, covariate_index), drop = FALSE]
 
   workdata$n        = nrow(workdata$x)
@@ -142,7 +142,7 @@ PrepareDataLinLog.DPk <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareDataLinLog.DPk\n\n")
 
   workdata <- list()
-  workdata$failed = FALSE
+  workdata$failed <- FALSE
 
   workdata$failed <- check_data_format(params, data)
 
@@ -152,7 +152,7 @@ PrepareDataLinLog.DPk <- function(params, data) {
 
   data <- data.frame(data) # convert to a clean data.frame
 
-  workdata$tags = CreateModelMatrixTags(data)
+  workdata$tags <- create_model_matrix_tags(data)
   workdata$x = model.matrix(~ ., data)
   rownames(workdata$x) = NULL
   workdata$x <- workdata$x[, -1, drop = FALSE]
@@ -277,7 +277,7 @@ PrepareSharesLinear.DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareSharesLinear.DP\n\n")
   read_time <- 0
   read_size = 0
-  p = seed = scaler = NULL
+  p = seed <- scaler = NULL
 
   set.seed(params$seed, kind = "Mersenne-Twister")
   halfshare = matrix(rnorm(params$n * params$p, sd = 20), nrow = params$n, ncol = params$p)

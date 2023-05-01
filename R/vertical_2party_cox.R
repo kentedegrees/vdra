@@ -202,10 +202,10 @@ prepare_data_cox_23 <- function(params, data, y_name, strata, mask) {
   response_index <- numeric()
 
   if (params$party_name == "A") {
-    response_index = CheckResponse(params, data, y_name)
+    response_index <- check_response(params, data, y_name)
 
     if (is.null(response_index)) {
-      workdata$failed = TRUE
+      workdata$failed <- TRUE
       return(workdata)
     }
 
@@ -214,29 +214,29 @@ prepare_data_cox_23 <- function(params, data, y_name, strata, mask) {
     workdata$survival$status <- data[, response_index[2]]
     if (length(intersect(strata_index, response_index)) > 0) {
       warning("Response and strata share a variable.")
-      workdata$failed = TRUE
+      workdata$failed <- TRUE
       return(workdata)
     }
   }
 
-  covariate_index = setdiff(1:ncol(data), union(strata_index, response_index))
+  covariate_index <- setdiff(1:ncol(data), union(strata_index, response_index))
 
   if (length(covariate_index) == 0) {
     if (params$party_name == "A") {
       workdata$x  <- matrix(0, nrow = nrow(data), ncol = 0)
     } else {
       warning("After removing strata, data is empty.  Party B must supply at least one non-strata covariate.")
-      workdata$failed = TRUE
+      workdata$failed <- TRUE
       return(workdata)
     }
   } else {
-    workdata$tags = CreateModelMatrixTags(data[, covariate_index, drop = FALSE])
+    workdata$tags <- create_model_matrix_tags(data[, covariate_index, drop = FALSE])
     if (params$party_name == "B" & (ncol(data) < 2 | !("numeric" %in% names(workdata$tags)))) {
       warning("The data partner that does not have the response must have at least 2 covariates at least one of which must be numeric.")
-      workdata$failed = TRUE
+      workdata$failed <- TRUE
       return(workdata)
     }
-    workdata$x = scale(model.matrix(~ ., data[, covariate_index, drop = FALSE]),
+    workdata$x <- scale(model.matrix(~ ., data[, covariate_index, drop = FALSE]),
                        center = TRUE, scale = FALSE)
     workdata$x <- workdata$x[, -1, drop = FALSE]
   }
@@ -291,7 +291,7 @@ prepare_params_cox_b2 <- function(params, data) {
 
 check_strata_cox_a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "check_strata_cox_a2\n\n")
-  pb = NULL
+  pb <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "pb.rdata")) # load pb
   read_size <- sum(file.size(file.path(params$read_path, "pb.rdata")))
@@ -303,11 +303,11 @@ check_strata_cox_a2 <- function(params, data) {
              order(pb$strata_b$strata_from_a) == order(data$strata$strata_from_a)) &&
       ifelse(length(pb$strata_b$strata_from_b) == 0, TRUE,
              order(pb$strata_b$strata_from_b) == order(data$strata$strata_from_b))) {
-    params$get_strata_from_b = length(data$strata$strata_from_b) > 0
+    params$get_strata_from_b <- length(data$strata$strata_from_b) > 0
   } else {
-    params$get_strata_from_b = FALSE
-    a_cap_b = intersect(data$strata$strata_from_a, pb$strata_b$strata_from_b)
-    b_cap_a = intersect(data$strata$strata_from_b, pb$strata_b$strata_from_a)
+    params$get_strata_from_b <- FALSE
+    a_cap_b <- intersect(data$strata$strata_from_a, pb$strata_b$strata_from_b)
+    b_cap_a <- intersect(data$strata$strata_from_b, pb$strata_b$strata_from_a)
     if (length(a_cap_b) > 0) {
       params$error_message <-
         paste("Party A and Party B have", length(a_cap_b), "variable(s) with the same name which are used in the strata.",
@@ -333,7 +333,7 @@ check_strata_cox_a2 <- function(params, data) {
 
 send_strata_cox_b2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "send_strata_cox_b2\n\n")
-  strata_temp = data$strata
+  strata_temp <- data$strata
   write_time <- proc.time()[3]
   save(strata_temp, file = file.path(params$write_path, "strata.rdata"))
   write_size <- file.size(file.path(params$write_path, "strata.rdata"))
@@ -350,7 +350,7 @@ prepare_strata_cox_a2 <- function(params, data) {
   read_size <- 0
   write_time <- 0
   write_size <- 0
-  strata_temp = NULL
+  strata_temp <- NULL
 
   if (params$get_strata_from_b) {
     read_time <- proc.time()[3]
@@ -360,44 +360,44 @@ prepare_strata_cox_a2 <- function(params, data) {
   }
   if (length(data$strata$strata_from_a) == 0 && length(data$strata$strata_from_b) == 0) {
     strata_temp$x <- data.frame(const__ = rep(1, params$n))
-    strata_temp$legend = FALSE
+    strata_temp$legend <- FALSE
   } else if (length(data$strata$strata_from_a) > 0 && length(data$strata$strata_from_b) == 0) {
-    strata_temp$x = data$strata$x
-    strata_temp$legend = data$strata$legend
+    strata_temp$x <- data$strata$x
+    strata_temp$legend <- data$strata$legend
   } else if (length(data$strata$strata_from_a) > 0 && length(data$strata$strata_from_b) > 0) {
-    strata_temp$x = cbind(data$strata$x, strata_temp$x)
-    strata_temp$legend = c(data$strata$legend, strata_temp$legend)
+    strata_temp$x <- cbind(data$strata$x, strata_temp$x)
+    strata_temp$legend <- c(data$strata$legend, strata_temp$legend)
   }
 
   sorted = do.call("order", cbind(strata_temp$x, data$survival$rank, data$survival$status))
-  strata_temp$x = strata_temp$x[sorted, , drop = FALSE]
-  data$survival$rank   = data$survival$rank[sorted]
-  data$survival$status = data$survival$status[sorted]
+  strata_temp$x <- strata_temp$x[sorted, , drop = FALSE]
+  data$survival$rank   <- data$survival$rank[sorted]
+  data$survival$status <- data$survival$status[sorted]
   data$x = data$x[sorted, , drop = FALSE]
-  data$survival$sorted = sorted
+  data$survival$sorted <- sorted
   ranks <- which(apply(abs(apply(strata_temp$x, 2, diff)), 1, sum) > 0)
-  ranks = c(ranks, nrow(strata_temp$x))
-  names(ranks) = NULL
-  strata = rep(list(list()), length(ranks))
+  ranks <- c(ranks, nrow(strata_temp$x))
+  names(ranks) <- NULL
+  strata <- rep(list(list()), length(ranks))
   if (length(ranks) == 1 && colnames(strata_temp$x)[1] == "const__") {
-    strata[[1]]$start = 1
-    strata[[1]]$end   = as.integer(nrow(data$x))
-    strata[[1]]$label = ""
+    strata[[1]]$start <- 1
+    strata[[1]]$end   <- as.integer(nrow(data$x))
+    strata[[1]]$label <- ""
   } else {
-    start = 1
+    start <- 1
     for (i in  1:length(ranks)) {
-      strata[[i]]$start = start
-      strata[[i]]$end   = as.integer(ranks[i])
+      strata[[i]]$start <- start
+      strata[[i]]$end   <- as.integer(ranks[i])
       label = ""
       for (j in 1:ncol(strata_temp$x)) {
-        temp = colnames(strata_temp$x)[j]
-        label = paste0(label, temp, "=", strata_temp$legend[[temp]][strata_temp$x[start, j]])
+        temp  <- colnames(strata_temp$x)[j]
+        label <- paste0(label, temp, "=", strata_temp$legend[[temp]][strata_temp$x[start, j]])
         if (j < ncol(strata_temp$x)) {
-          label = paste0(label, ", ")
+          label <- paste0(label, ", ")
         }
       }
-      strata[[i]]$label = label
-      start = as.numeric(ranks[i]) + 1
+      strata[[i]]$label <- label
+      start <- as.numeric(ranks[i]) + 1
     }
   }
 
@@ -405,9 +405,9 @@ prepare_strata_cox_a2 <- function(params, data) {
   data$x = cbind(matrix(0, nrow = nrow(data$x), ncol = length(strata)), data$x)
   for (i in 1:length(strata)) {
     idx <- strata[[i]]$start:strata[[i]]$end
-    data$x[idx, i] = 1
-    temp  = table(data$survival$rank[idx])
-    m = length(temp)   # number of unique observed times, including where no one fails
+    data$x[idx, i] <- 1
+    temp <- table(data$survival$rank[idx])
+    m <- length(temp)   # number of unique observed times, including where no one fails
     # Count the number of 0's and 1's for each observed time
     temp0 = table(data$survival$rank[idx], data$survival$status[idx])
     # Check if there are all 1's or all 0's .  If so, add them into the table.
@@ -459,7 +459,7 @@ prepare_params_cox_a2 <- function(params, data, cutoff = 0.01, max_iterations = 
   params$halted          = FALSE
   params$singular_matrix  <- FALSE
   params$pmnStepCounter  = 1
-  pb = NULL
+  pb <- NULL
 
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "pb.rdata")) # load pb
