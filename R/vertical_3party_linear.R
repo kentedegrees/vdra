@@ -348,9 +348,9 @@ prepare_blocks_linear_t3 <- function(params, blocksize) {
   p2 = params$p2
 
 
-  minimum_block_size = get_block_size(p1, p2)
+  minimum_block_size <- get_block_size(p1, p2)
   if (n < minimum_block_size) {
-    max_a_covariates = trunc(sqrt(p2 * n) - p2 - 1)
+    max_a_covariates <- trunc(sqrt(p2 * n) - p2 - 1)
 
     params$error_message <-
       paste("The minimum secure blocksize of", minimum_block_size,
@@ -363,8 +363,8 @@ prepare_blocks_linear_t3 <- function(params, blocksize) {
     b = n - 2 * p1 - 2
     discrim = b^2 - 4 * (p1 + 1)^2
     if (discrim >= 0) {
-      min_b_covariates = trunc(1 + (b - sqrt(discrim)) / 2)
-      max_b_covariates = trunc((b + sqrt(discrim)) / 2)
+      min_b_covariates <- trunc(1 + (b - sqrt(discrim)) / 2)
+      max_b_covariates <- trunc((b + sqrt(discrim)) / 2)
       params$error_message <-
         paste0(params$error_message,
                "\nSet the number of B covariates to be between ", min_b_covariates, "and",
@@ -707,7 +707,7 @@ get_wr_linear_a3 <- function(params, data) {
                         endian = "little"), nrow = n, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
-    y_xa = cbind(data$Y[strt:stp, ], data$x[strt:stp, ])
+    y_xa <- cbind(data$Y[strt:stp, ], data$x[strt:stp, ])
     pr = t(y_xa) %*% wr
     write_time <- write_time - proc.time()[3]
     writeBin(as.vector(pr), con = to_write, endian = "little")

@@ -226,7 +226,7 @@ update_data_logistic_DP <- function(params, data) {
     data$Y = data$x[, 1, drop = FALSE]
   }
   idx <- params$indicies[[params$data_partner_id]]
-  data$x = data$x[, idx, drop = FALSE]
+  data$x <- data$x[, idx, drop = FALSE]
   data$colmin = data$colmin[idx]
   data$colmax = data$colmax[idx]
   data$colsum = data$colsum[idx]
@@ -402,7 +402,7 @@ ComputeStWSLogistic.AC <- function(params) {
   params$I = I
   halfshare = params$halfshare[[1]]
   for (id in 2:params$numDataPartners) {
-    halfshare = cbind(halfshare, params$halfshare[[id]])
+    halfshare <- cbind(halfshare, params$halfshare[[id]])
   }
   IDt = I %*% (params$sty - t(halfshare) %*% params$pi_)
   Itemp = I
@@ -445,7 +445,7 @@ update_beta_logistic_DP <- function(params) {
   for (id in 2:params$numDataPartners) {
     set.seed(params$seeds[id], kind = "Mersenne-Twister")
     idx <- params$indicies[[id]]
-    halfshareDP = cbind(halfshareDP,
+    halfshareDP <- cbind(halfshareDP,
                         matrix(rnorm(params$n * params$ps[id], sd = 20),
                                nrow = params$n, ncol = params$ps[id])[, idx, drop = FALSE])
   }

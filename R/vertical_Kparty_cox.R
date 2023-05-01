@@ -227,7 +227,7 @@ prepare_strata_cox_DP <- function(params, data) {
             strataTemp$legend = strata$legend
             first = FALSE
           } else {
-            strataTemp$x = cbind(strataTemp$x, strata$x)
+            strataTemp$x <- cbind(strataTemp$x, strata$x)
             strataTemp$legend = c(strataTemp$legend, strata$legend)
           }
         }
@@ -235,7 +235,7 @@ prepare_strata_cox_DP <- function(params, data) {
     }
   }
 
-  sorted = do.call("order", cbind(strataTemp$x, survival$rank, survival$status))
+  sorted <- do.call("order", cbind(strataTemp$x, survival$rank, survival$status))
   unsort = order(sorted)
   strataTemp$x = strataTemp$x[sorted, , drop = FALSE]
   survival$rank   = survival$rank[sorted]
@@ -249,21 +249,21 @@ prepare_strata_cox_DP <- function(params, data) {
   if (length(ranks) == 1 && colnames(strataTemp$x)[1] == "const__") {
     strata[[1]]$start = 1
     strata[[1]]$end   = as.integer(length(survival$rank))
-    strata[[1]]$label = ""
+    strata[[1]]$label <- ""
   } else {
     start = 1
     for (i in  1:length(ranks)) {
       strata[[i]]$start = start
       strata[[i]]$end   = as.integer(ranks[i])
-      label = ""
+      label <- ""
       for (j in 1:ncol(strataTemp$x)) {
         temp = colnames(strataTemp$x)[j]
-        label = paste0(label, temp, "=", strataTemp$legend[[temp]][strataTemp$x[start, j]])
+        label <- paste0(label, temp, "=", strataTemp$legend[[temp]][strataTemp$x[start, j]])
         if (j < ncol(strataTemp$x)) {
-          label = paste0(label, ", ")
+          label <- paste0(label, ", ")
         }
       }
-      strata[[i]]$label = label
+      strata[[i]]$label <- label
       start = as.numeric(ranks[i]) + 1
     }
   }
@@ -272,14 +272,14 @@ prepare_strata_cox_DP <- function(params, data) {
     temp  = table(survival$rank[idx])
     m = length(temp)   # number of unique observed times, including where no one fails
     # Count the number of 0's and 1's for each observed time
-    temp0 = table(survival$rank[idx], survival$status[idx])
+    temp0 <- table(survival$rank[idx], survival$status[idx])
     # Check if there are all 1's or all 0's .  If so, add them into the table.
     if (ncol(temp0) == 1) {
       if (which(c(0, 1) %in% colnames(temp0)) == 1) {
-        temp0 = cbind(temp0, 0)
+        temp0 <- cbind(temp0, 0)
         colnames(temp0) = c("0", "1")
       } else {
-        temp0 = cbind(0, temp0)
+        temp0 <- cbind(0, temp0)
         colnames(temp0) = c("0", "1")
       }
     }
@@ -340,7 +340,7 @@ prepare_strata_cox_DP <- function(params, data) {
 
 AddStrataToDataCox.DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "AddStrataToDataCox.DP\n\n")
-  data$x = cbind(params$strata, data$x)
+  data$x <- cbind(params$strata, data$x)
 
   colmin1 = apply(params$strata, 2, min)
   colmax1 = apply(params$strata, 2, max)
@@ -626,7 +626,7 @@ check_colinearity_cox_AC <- function(params) {
   for (id in 1:params$numDataPartners) {
     params$halfshare[[id]] = params$halfshare[[id]][, indicies[[id]], drop = FALSE]
   }
-  params$halfshare = do.call(cbind, params$halfshare)
+  params$halfshare <- do.call(cbind, params$halfshare)
 
   params$halfsharecolsum = apply(params$halfshare, 2, sum)
 
@@ -701,7 +701,7 @@ update_params_cox_DP <- function(params) {
 update_data_cox_DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "update_data_cox_DP\n\n")
   idx <- params$indicies[[params$data_partner_id]]
-  data$x = data$x[, idx, drop = FALSE]
+  data$x <- data$x[, idx, drop = FALSE]
   x = data$x
   data$colmin = data$colmin[idx]
   data$colmax = data$colmax[idx]
@@ -715,7 +715,7 @@ update_data_cox_DP <- function(params, data) {
       halfshare[[id]]  <- matrix(rnorm(params$n * params$ps[id], sd = 20), nrow = params$n, ncol = params$ps[id])
       halfshare[[id]] = halfshare[[id]][, params$indicies[[id]], drop = FALSE]
     }
-    data$halfshare = do.call(cbind, halfshare)
+    data$halfshare <- do.call(cbind, halfshare)
   }
   return(data)
 }
@@ -1387,7 +1387,7 @@ compute_results_cox_AC <- function(params) {
     surv   = survfit_cox_AC(params, pred)
   )
   stats$strata = as.data.frame(matrix(0, length(params$survival$strata), 3))
-  stats$strata$label = ""
+  stats$strata$label <- ""
   colnames(stats$strata) = c("start", "end", "events", "label")
   for (i in 1:length(params$survival$strata)) {
     stats$strata$start[i]  = params$survival$strata[[i]]$start

@@ -1257,7 +1257,7 @@ MultiplyDiagonalWTimesX <- function(w, x) {
 #' @importFrom stats runif
 FindOrthogonalVectors <- function(x, g) {
   x = as.matrix(x)
-  x = cbind(x, runif(nrow(x)))  # Randomize z
+  x <- cbind(x, runif(nrow(x)))  # Randomize z
   # Save the Random Vector Here
   n = nrow(x)
   Q = qr.Q(qr(x), complete = TRUE)
@@ -2130,12 +2130,12 @@ CreateBlocks <- function(pA, pB, n, blocksize) {
   blocks <- list()
 
   num_blocks       = max(trunc(n / blocksize), 1)
-  newBlocksize    = trunc(n / num_blocks)
+  newBlocksize    <- trunc(n / num_blocks)
   numBigBlocks    = n %% newBlocksize
   numLittleBlocks = num_blocks - numBigBlocks
   bigBlocksize    = newBlocksize + 1
-  gLittleBlock    = trunc(newBlocksize * (pA + 1) / (pA + pB + 1))
-  gBigBlock       = trunc(bigBlocksize * (pA + 1) / (pA + pB + 1))
+  gLittleBlock    <- trunc(newBlocksize * (pA + 1) / (pA + pB + 1))
+  gBigBlock       <- trunc(bigBlocksize * (pA + 1) / (pA + pB + 1))
 
   blocks$num_blocks       = num_blocks
   blocks$littleBlocksize = newBlocksize
@@ -2189,7 +2189,7 @@ CreateContainers <- function(pA, pB, blocks) {
   numSmallContainer.z <- numContainers.z - numLargeContainer.z
 
   numContainers.w = ceiling(num_blocks * littleFilesize.w / maximumFilesize)
-  num_blocksSmallContainer.w = trunc(num_blocks / numContainers.w)
+  num_blocksSmallContainer.w <- trunc(num_blocks / numContainers.w)
   num_blocksLargeContainer.w = num_blocksSmallContainer.w + 1
   numLargeContainer.w = num_blocks %% numContainers.w
   numSmallContainer.w = numContainers.w - numLargeContainer.w
@@ -2201,13 +2201,13 @@ CreateContainers <- function(pA, pB, blocks) {
   numSmallContainer.rz <- numContainers.RZ - numLargeContainer.RZ
 
   numContainers.pr = ceiling(num_blocks * littleFilesize_pr / maximumFilesize)
-  num_blocksSmallContainer.pr = trunc(num_blocks / numContainers_pr)
+  num_blocksSmallContainer.pr <- trunc(num_blocks / numContainers_pr)
   num_blocksLargeContainer.pr = num_blocksSmallContainer_pr + 1
   numLargeContainer.pr = num_blocks %% numContainers_pr
   numSmallContainer.pr = numContainers_pr - numLargeContainer_pr
 
   numContainers_xr = ceiling(num_blocks * littleFilesize_xr / maximumFilesize)
-  num_blocksSmallContainer_xr = trunc(num_blocks / numContainers_xr)
+  num_blocksSmallContainer_xr <- trunc(num_blocks / numContainers_xr)
   num_blocksLargeContainer_xr = num_blocksSmallContainer_xr + 1
   numLargeContainer_xr = num_blocks %% numContainers_xr
   numSmallContainer_xr = numContainers_xr - numLargeContainer_xr
@@ -3690,7 +3690,7 @@ print.summary.vdralinear <- function(x, lion = FALSE, ...) {
                     formatStrings(x$stars))
   colnames(temp) = c("", "Party", "Estimate", "Std. Error", "t value", "Pr(>|t|)", "")
   if (lion) {
-    temp = cbind(temp, GetLion(length(x$party)))
+    temp <- cbind(temp, GetLion(length(x$party)))
     colnames(temp)[8] = ""
   }
   print(temp, row.names = FALSE, right = TRUE)
@@ -3826,7 +3826,7 @@ print.summary.vdralogistic <- function(x, lion = FALSE, ...) {
                     formatStrings(x$stars))
   colnames(temp) = c("", "Party", "Estimate", "Std. Error", "t value", "Pr(>|t|)", "")
   if (lion) {
-    temp = cbind(temp, GetLion(length(x$party)))
+    temp <- cbind(temp, GetLion(length(x$party)))
     colnames(temp)[8] = ""
   }
   print(temp, row.names = FALSE, right = TRUE)
@@ -4522,13 +4522,13 @@ survfitDistributed.stats <- function(x) {
     start = x$strata$start[i]
     end   = x$strata$end[i]
     idx   <- which(c(1, diff(x$survival$rank[start:end])) != 0)
-    temp0 = table(x$survival$rank[start:end], x$survival$status[start:end])
+    temp0 <- table(x$survival$rank[start:end], x$survival$status[start:end])
     if (ncol(temp0) == 1) {
       if (which(c(0, 1) %in% colnames(temp0)) == 1) {
-        temp0 = cbind(temp0, 0)
+        temp0 <- cbind(temp0, 0)
         colnames(temp0) = c("0", "1")
       } else {
-        temp0 = cbind(0, temp0)
+        temp0 <- cbind(0, temp0)
         colnames(temp0) = c("0", "1")
       }
     }
@@ -4568,7 +4568,7 @@ survfitDistributed.formula <- function(x, formula, data) {
     idx    <- which(colnames(data) %in% vars)
     data   <- data[x$survival$sorted, idx, drop = FALSE]
   }
-  sorted = do.call("order", as.data.frame(cbind(data, x$survival$rank, x$survival$status)))
+  sorted <- do.call("order", as.data.frame(cbind(data, x$survival$rank, x$survival$status)))
   data   <- data[sorted, , drop = FALSE]
   rank   = x$survival$rank[sorted]
   status = x$survival$status[sorted]
@@ -4593,13 +4593,13 @@ survfitDistributed.formula <- function(x, formula, data) {
     event2 = status[start:end]
     temp = table(rank2)
     m = length(temp)
-    temp0 = table(rank2, event2)
+    temp0 <- table(rank2, event2)
     if (ncol(temp0) == 1) {
       if (which(c(0, 1) %in% colnames(temp0)) == 1) {
-        temp0 = cbind(temp0, 0)
+        temp0 <- cbind(temp0, 0)
         colnames(temp0) = c("0", "1")
       } else {
-        temp0 = cbind(0, temp0)
+        temp0 <- cbind(0, temp0)
         colnames(temp0) = c("0", "1")
       }
     }
@@ -4629,12 +4629,12 @@ survfitDistributed.formula <- function(x, formula, data) {
     if (length(vars) == 0) {
       names(surv$strata)[i] = ""
     } else {
-      label = ""
+      label <- ""
       for (j in 1:ncol(data)) {
         temp = colnames(data)[j]
-        label = paste0(label, temp, "=", legend[[temp]][data2[start, j]])
+        label <- paste0(label, temp, "=", legend[[temp]][data2[start, j]])
         if (j < ncol(data)) {
-          label = paste0(label, ", ")
+          label <- paste0(label, ", ")
         }
       }
       names(surv$strata)[i] = label

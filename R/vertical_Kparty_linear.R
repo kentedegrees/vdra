@@ -176,7 +176,7 @@ PrepareDataLinLog.DPk <- function(params, data) {
 SendBasicInfo.DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "SendbasicInfo.DP\n\n")
   n = data$n
-  params$n = n
+  params$n <- n
   analysis = params$analysis
   data_partner_id = params$data_partner_id
   write_time <- proc.time()[3]

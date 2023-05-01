@@ -285,7 +285,7 @@ prepare_params_logistic_a2 <- function(params, data, cutoff = 0.01, max_iteratio
     return(params)
   }
 
-  params$n  = nrow(data$x)
+  params$n <- nrow(data$x)
   if (pb$n != params$n) {
     params$error_message <-
       paste("Party A has", params$n, "observations and Party B has", pb$n, "observations.")
@@ -349,9 +349,9 @@ prepare_blocks_logistic_a2 <- function(params, blocksize) {
   p1 = params$p1
   p2 = params$p2
 
-  minimum_block_size = get_block_size(p1, p2)
+  minimum_block_size <- get_block_size(p1, p2)
   if (n < minimum_block_size) {
-    max_a_covariates = trunc(sqrt(p2 * n) - p2 - 1)
+    max_a_covariates <- trunc(sqrt(p2 * n) - p2 - 1)
 
     params$error_message <-
       paste("The minimum secure blocksize of", minimum_block_size,
@@ -364,8 +364,8 @@ prepare_blocks_logistic_a2 <- function(params, blocksize) {
     b = n - 2 * p1 - 2
     discrim = b^2 - 4 * (p1 + 1)^2
     if (discrim >= 0) {
-      min_b_covariates = trunc(1 + (b - sqrt(discrim)) / 2)
-      max_b_covariates = trunc((b + sqrt(discrim)) / 2)
+      min_b_covariates <- trunc(1 + (b - sqrt(discrim)) / 2)
+      max_b_covariates <- trunc((b + sqrt(discrim)) / 2)
       params$error_message <-
         paste0(params$error_message,
                "\nSet the number of B covariates to be between ", min_b_covariates, "and",
