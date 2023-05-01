@@ -1374,7 +1374,7 @@ MakeTransferMessage <- function(write_path) {
 }
 
 
-make_error_message <- function(write_path, message <- "") {
+make_error_message <- function(write_path, message = "") {
   save(message, file = file.path(write_path, "errorMessage.rdata"))
 }
 

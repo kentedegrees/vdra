@@ -3,23 +3,23 @@
 prepare_params_cox_a3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_cox_a3\n\n")
   params$n <- nrow(data$x)
-  params$p1 = ncol(data$x)
-  params$p2 = 0
-  params$colnames = colnames(data$x)
+  params$p1 <- ncol(data$x)
+  params$p2 <- 0
+  params$colnames <- colnames(data$x)
 
-  params$survival_installed = requireNamespace("survival", quietly = TRUE)
+  params$survival_installed <- requireNamespace("survival", quietly = TRUE)
   if (params$survival_installed & !("package:survival" %in% search())) {
     attachNamespace("survival")
   }
 
   pa           <- list()
-  pa$p1        = params$p1
-  pa$n         = params$n
-  pa$analysis  = params$analysis
-  pa$colnames  = params$colnames
+  pa$p1        <- params$p1
+  pa$n         <- params$n
+  pa$analysis  <- params$analysis
+  pa$colnames  <- params$colnames
   pa$strata_from_a <- data$strata$strata_from_a
   pa$strata_from_b <- data$strata$strata_from_b
-  pa$tags      = data$tags
+  pa$tags      <- data$tags
 
   write_time <- proc.time()[3]
   save(pa, file = file.path(params$write_path, "pa.rdata"))
@@ -33,23 +33,23 @@ prepare_params_cox_a3 <- function(params, data) {
 prepare_params_cox_b3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_cox_b3\n\n")
   params$n <- nrow(data$x)
-  params$p1 = 0
-  params$p2 = ncol(data$x)
-  params$colnames = colnames(data$x)
+  params$p1 <- 0
+  params$p2 <- ncol(data$x)
+  params$colnames <- colnames(data$x)
 
-  params$survival_installed = requireNamespace("survival", quietly = TRUE)
+  params$survival_installed <- requireNamespace("survival", quietly = TRUE)
   if (params$survival_installed & !("package:survival" %in% search())) {
     attachNamespace("survival")
   }
 
   pb           <- list()
-  pb$p2        = params$p2
-  pb$n         = params$n
-  pb$analysis  = params$analysis
-  pb$colnames  = params$colnames
+  pb$p2        <- params$p2
+  pb$n         <- params$n
+  pb$analysis  <- params$analysis
+  pb$colnames  <- params$colnames
   pb$strata_from_a <- data$strata$strata_from_a
   pb$strata_from_b <- data$strata$strata_from_b
-  pb$tags      = data$tags
+  pb$tags      <- data$tags
 
   write_time <- proc.time()[3]
   save(pb, file = file.path(params$write_path, "pb.rdata"))
@@ -84,29 +84,29 @@ prepare_params_cox_t3 <- function(params, cutoff, max_iterations) {
                                        "observations."))
   }
 
-  params$survival_installed = requireNamespace("survival", quietly = TRUE)
+  params$survival_installed <- requireNamespace("survival", quietly = TRUE)
   if (params$survival_installed & !("package:survival" %in% search())) {
     attachNamespace("survival")
   }
 
-  params$n             = pa$n
-  params$p1            = pa$p
-  params$p2            = pb$p
-  params$p1_old        = params$p1
-  params$p2_old        = params$p2
-  params$p             = pa$p + pb$p
-  params$colnamesA     = pa$colnames
-  params$colnamesB     = pb$colnames
-  params$cutoff        = cutoff
-  params$max_iterations = max_iterations
+  params$n             <- pa$n
+  params$p1            <- pa$p
+  params$p2            <- pb$p
+  params$p1_old        <- params$p1
+  params$p2_old        <- params$p2
+  params$p             <- pa$p + pb$p
+  params$colnamesA     <- pa$colnames
+  params$colnamesB     <- pb$colnames
+  params$cutoff        <- cutoff
+  params$max_iterations <- max_iterations
 
-  params$Astrata_from_a  = pa$strata_from_a
-  params$Astrata_from_b  = pa$strata_from_b
-  params$b_strata_from_a  = pb$strata_from_a
-  params$b_strata_from_b  = pb$strata_from_b
+  params$Astrata_from_a  <- pa$strata_from_a
+  params$Astrata_from_b  <- pa$strata_from_b
+  params$b_strata_from_a  <- pb$strata_from_a
+  params$b_strata_from_b  <- pb$strata_from_b
 
-  params$a_tags         = pa$tags
-  params$b_tags         = pb$tags
+  params$a_tags         <- pa$tags
+  params$b_tags         <- pb$tags
 
   write_time <- proc.time()[3]
   save(cutoff, max_iterations, file = file.path(params$write_path, "max_iterations.rdata"))
@@ -125,13 +125,13 @@ check_strata_cox_t3 <- function(params) {
              order(params$Astrata_from_a) == order(params$b_strata_from_a)) &&
       ifelse(length(params$Astrata_from_b) == 0, TRUE,
              order(params$Astrata_from_b) == order(params$b_strata_from_b))) {
-    params$strata_from_a = params$Astrata_from_a
-    params$strata_from_b = params$b_strata_from_b
-    params$Astrata_from_a = params$Astrata_from_b =
-      params$b_strata_from_a = params$b_strata_from_b = NULL
-    params$getStrata = TRUE
+    params$strata_from_a <- params$Astrata_from_a
+    params$strata_from_b <- params$b_strata_from_b
+    params$Astrata_from_a <- params$Astrata_from_b <-
+      params$b_strata_from_a <- params$b_strata_from_b <- NULL
+    params$getStrata <- TRUE
   } else {
-    params$getStrata = FALSE
+    params$getStrata <- FALSE
     a_cap_b <- intersect(params$Astrata_from_a, params$b_strata_from_b)
     b_cap_a <- intersect(params$b_strata_from_a, params$Astrata_from_b)
     if (length(a_cap_b) > 0) {
@@ -151,7 +151,7 @@ check_strata_cox_t3 <- function(params) {
     }
     params$failed <- TRUE
   }
-  empty = 0
+  empty <- 0
   save(empty, file = file.path(params$write_path, "empty.rdata"))
   params <- add_to_log(params, "check_strata_cox_t3", 0, 0, 0, 0)
   return(params)
@@ -161,7 +161,7 @@ check_strata_cox_t3 <- function(params) {
 send_strata_cox_a3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "send_strata_cox_a3\n\n")
   a_strata <- data$strata
-  survival = data$survival
+  survival <- data$survival
   write_time <- proc.time()[3]
   save(a_strata, survival, file = file.path(params$write_path, "Astrata.rdata"))
   write_size <- file.size(file.path(params$write_path, "Astrata.rdata"))
@@ -185,9 +185,9 @@ send_strata_cox_b3 <- function(params, data) {
 
 prepare_strata_cox_t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_strata_cox_t3\n\n")
-  a_strata  = NULL
-  b_strata  = NULL
-  survival = NULL
+  a_strata  <- NULL
+  b_strata  <- NULL
+  survival <- NULL
   strata_temp   <- list()
 
   read_time <- proc.time()[3]
@@ -214,22 +214,22 @@ prepare_strata_cox_t3 <- function(params) {
 
   sorted <- do.call("order", cbind(strata_temp$x, survival$rank, survival$status))
   strata_temp$x <- strata_temp$x[sorted, , drop = FALSE]
-  survival$rank   = survival$rank[sorted]
-  survival$status = survival$status[sorted]
-  survival$sorted = sorted
+  survival$rank   <- survival$rank[sorted]
+  survival$status <- survival$status[sorted]
+  survival$sorted <- sorted
   ranks <- which(apply(abs(apply(strata_temp$x, 2, diff)), 1, sum) > 0)
-  ranks = c(ranks, nrow(strata_temp$x))
-  names(ranks) = NULL
-  strata = rep(list(list()), length(ranks))
+  ranks <- c(ranks, nrow(strata_temp$x))
+  names(ranks) <- NULL
+  strata <- rep(list(list()), length(ranks))
   if (length(ranks) == 1 && colnames(strata_temp$x)[1] == "const__") {
-    strata[[1]]$start = 1
-    strata[[1]]$end   = as.integer(length(survival$rank))
+    strata[[1]]$start <- 1
+    strata[[1]]$end   <- as.integer(length(survival$rank))
     strata[[1]]$label <- ""
   } else {
-    start = 1
+    start <- 1
     for (i in  1:length(ranks)) {
-      strata[[i]]$start = start
-      strata[[i]]$end   = as.integer(ranks[i])
+      strata[[i]]$start <- start
+      strata[[i]]$end   <- as.integer(ranks[i])
       label <- ""
       for (j in 1:ncol(strata_temp$x)) {
         temp <- colnames(strata_temp$x)[j]
@@ -244,27 +244,27 @@ prepare_strata_cox_t3 <- function(params) {
   }
   for (i in 1:length(strata)) {
     idx <- strata[[i]]$start:strata[[i]]$end
-    temp  = table(survival$rank[idx])
-    m = length(temp)   # number of unique observed times, including where no one fails
+    temp  <- table(survival$rank[idx])
+    m <- length(temp)   # number of unique observed times, including where no one fails
     # Count the number of 0's and 1's for each observed time
     temp0 <- table(survival$rank[idx], survival$status[idx])
     # Check if there are all 1's or all 0's .  If so, add them into the table.
     if (ncol(temp0) == 1) {
       if (which(c(0, 1) %in% colnames(temp0)) == 1) {
         temp0 <- cbind(temp0, 0)
-        colnames(temp0) = c("0", "1")
+        colnames(temp0) <- c("0", "1")
       } else {
         temp0 <- cbind(0, temp0)
-        colnames(temp0) = c("0", "1")
+        colnames(temp0) <- c("0", "1")
       }
     }
-    strata[[i]]$J = as.integer(sum(temp0[, 2] > 0))         # number of distinct failure times
+    strata[[i]]$J <- as.integer(sum(temp0[, 2] > 0))         # number of distinct failure times
     # The number of failures at each rank which has a failure
     strata[[i]]$nfails <- as.numeric(temp0[which(temp0[, 2] > 0), 2])
     # The first index of the ranks for which the number of failures is > 0.
-    strata[[i]]$start0 = c(1, (cumsum(temp)[1:(m - 1)] + 1))[which(temp0[, 2] > 0)]
+    strata[[i]]$start0 <- c(1, (cumsum(temp)[1:(m - 1)] + 1))[which(temp0[, 2] > 0)]
     # The first index of a failure for each rank which has a failure
-    strata[[i]]$start1 = strata[[i]]$start0 + temp0[which(temp0[, 2] > 0), 1]
+    strata[[i]]$start1 <- strata[[i]]$start0 + temp0[which(temp0[, 2] > 0), 1]
     # The last index of a failure for each rank which has a failure
     strata[[i]]$stop1  <- as.numeric(strata[[i]]$start1 + strata[[i]]$nfails  - 1)
     strata[[i]]$start0 <- as.numeric(strata[[i]]$start0 + strata[[i]]$start - 1)
@@ -272,8 +272,8 @@ prepare_strata_cox_t3 <- function(params) {
     strata[[i]]$stop1  <- as.numeric(strata[[i]]$stop1  + strata[[i]]$start - 1)
   }
 
-  survival$strata = strata
-  params$survival = survival
+  survival$strata <- strata
+  params$survival <- survival
 
   write_time <- proc.time()[3]
   save(survival, file = file.path(params$write_path, "survival.rdata"))
@@ -288,13 +288,13 @@ prepare_strata_cox_t3 <- function(params) {
 
 sort_data_cox_a3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "sort_data_cox_a3\n\n")
-  survival = NULL
+  survival <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "survival.rdata"))
   read_size <- file.size(file.path(params$read_path[["T"]], "survival.rdata"))
   read_time <- proc.time()[3] - read_time
   data$x <- data$x[survival$sorted, , drop = FALSE]
-  data$survival = survival
+  data$survival <- survival
   data$read_time <- read_time
   data$read_size <- read_size
   return(data)
@@ -317,8 +317,8 @@ get_z_cox_a3 <- function(params, data) {
     }
     strt <- params$blocks$starts[i]
     stp <- params$blocks$stops[i]
-    n = stp - strt + 1
-    g = params$blocks$g[i]
+    n <- stp - strt + 1
+    g <- params$blocks$g[i]
     z <- FindOrthogonalVectors(data$x[strt:stp, ], g)
 
     write_time <- write_time - proc.time()[3]
@@ -337,13 +337,13 @@ get_z_cox_a3 <- function(params, data) {
 
 sort_data_cox_b3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "sort_data_cox_b3\n\n")
-  survival = NULL
+  survival <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "survival.rdata"))
   read_size <- file.size(file.path(params$read_path[["T"]], "survival.rdata"))
   read_time <- proc.time()[3] - read_time
   data$x <- data$x[survival$sorted, , drop = FALSE]
-  data$survival = survival
+  data$survival <- survival
   data$read_time <- read_time
   data$read_size <- read_size
   return(data)
@@ -354,9 +354,9 @@ get_s_xb_cox_b3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "get_s_xb_cox_b3\n\n")
   s  <- matrix(0, nrow = params$n, ncol = length(data$survival$strata))
   for (i in 1:length(data$survival$strata)) {
-    s[data$survival$strata[[i]]$start:data$survival$strata[[i]]$end, i] = 1
+    s[data$survival$strata[[i]]$start:data$survival$strata[[i]]$end, i] <- 1
   }
-  s_t_xb = t(s) %*% data$x
+  s_t_xb <- t(s) %*% data$x
   write_time <- proc.time()[3]
   save(s_t_xb, file = file.path(params$write_path, "sxb.rdata"))
   write_size <- file.size(file.path(params$write_path, "sxb.rdata"))
@@ -374,40 +374,40 @@ get_wr_cox_a3 <- function(params, data) {
   write_size <- file.size(file.path(params$write_path, "xatxa.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  p2 = NULL
+  p2 <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "p2.rdata"))
   read_size <- file.size(file.path(params$read_path[["T"]], "p2.rdata"))
   read_time <- proc.time()[3] - read_time
-  params$p2 = p2
+  params$p2 <- p2
 
   num_blocks <- params$blocks$num_blocks
   pbar <- make_progress_bar_1(num_blocks, "XA'(I - z*z')XB*R", params$verbose)
 
-  container_ct_wr = 0
-  container_ct_pr = 0
+  container_ct_wr <- 0
+  container_ct_pr <- 0
   for (i in 1:num_blocks) {
     if (i %in% params$container$filebreak.wr) {
-      container_ct_wr = container_ct_wr + 1
+      container_ct_wr <- container_ct_wr + 1
       filename1 <- paste0("cwr_", container_ct_wr, ".rdata")
       to_read <- file(file.path(params$read_path[["T"]], filename1), "rb")
     }
     if (i %in% params$container$filebreak.pr) {
-      container_ct_pr = container_ct_pr + 1
+      container_ct_pr <- container_ct_pr + 1
       filename2 <- paste0("cpr_", container_ct_pr, ".rdata")
       to_write <- file(file.path(params$write_path, filename2), "wb")
     }
 
     strt <- params$blocks$starts[i]
     stp <- params$blocks$stops[i]
-    n = stp - strt + 1
+    n <- stp - strt + 1
 
     read_time <- read_time - proc.time()[3]
     wr  <- matrix(readBin(con = to_read, what = numeric(), n = n * p2,
                         endian = "little"), nrow = n, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
-    pr = t(data$x[strt:stp, ]) %*% wr
+    pr <- t(data$x[strt:stp, ]) %*% wr
     write_time <- write_time - proc.time()[3]
     writeBin(as.vector(pr), con = to_write, endian = "little")
     write_time <- write_time + proc.time()[3]
@@ -432,9 +432,9 @@ get_s_xa_cox_a3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "get_s_xa_cox_a3\n\n")
   s  <- matrix(0, nrow = params$n, ncol = length(data$survival$strata))
   for (i in 1:length(data$survival$strata)) {
-    s[data$survival$strata[[i]]$start:data$survival$strata[[i]]$end, i] = 1
+    s[data$survival$strata[[i]]$start:data$survival$strata[[i]]$end, i] <- 1
   }
-  s_t_xa = t(s) %*% data$x
+  s_t_xa <- t(s) %*% data$x
   write_time <- proc.time()[3]
   save(s_t_xa, file = file.path(params$write_path, "sxa.rdata"))
   write_size <- file.size(file.path(params$write_path, "sxa.rdata"))
@@ -448,11 +448,11 @@ get_products_cox_t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "get_products_cox_t3\n\n")
   p1 <- params$p1
   p2 <- params$p2
-  xa_t_xa = 0
+  xa_t_xa <- 0
   xb_t_xb <- 0
-  xa_t_xb = 0
-  s_t_xa  = 0
-  s_t_xb  = 0
+  xa_t_xb <- 0
+  s_t_xa  <- 0
+  s_t_xb  <- 0
 
   num_blocks <- params$blocks$num_blocks
   read_time <- proc.time()[3]
@@ -468,10 +468,10 @@ get_products_cox_t3 <- function(params) {
 
   pbar <- make_progress_bar_1(num_blocks, "X'X", params$verbose)
 
-  container_ct_pr = 0
+  container_ct_pr <- 0
   for (i in 1:num_blocks) {
     if (i %in% params$container$filebreak.pr) {
-      container_ct_pr = container_ct_pr + 1
+      container_ct_pr <- container_ct_pr + 1
       filename1 <- paste0("cpr_", container_ct_pr, ".rdata")
       to_read <- file(file.path(params$read_path[["A"]], filename1), "rb")
       read_size <- read_size + file.size(file.path(params$read_path[["A"]], filename1))
@@ -479,7 +479,7 @@ get_products_cox_t3 <- function(params) {
 
     filename1 <- paste0("r2_", i, ".rdata")
     read_time <- read_time - proc.time()[3]
-    to_read_1 = file(file.path(params$dp_local_path, filename1), "rb")
+    to_read_1 <- file(file.path(params$dp_local_path, filename1), "rb")
     r2  <- matrix(readBin(con = to_read_1, what = numeric(), n = p2 * p2,
                         endian = "little"), p2, p2)
     read_size <- read_size + file.size(file.path(params$dp_local_path, filename1))
@@ -487,17 +487,17 @@ get_products_cox_t3 <- function(params) {
     pr  <- matrix(readBin(con = to_read, what = numeric(), n = p1 * p2,
                         endian = "little"), p1, p2)
     read_time <- read_time + proc.time()[3]
-    xa_t_xb = xa_t_xb + pr %*% t(r2)
+    xa_t_xb <- xa_t_xb + pr %*% t(r2)
     if ((i + 1) %in% params$container$filebreak.pr || i == num_blocks) {
       close(to_read)
     }
     pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
 
-  num = length(params$survival$strata)
+  num <- length(params$survival$strata)
   sts  <- matrix(0, nrow = num, ncol = num)
   for (i in 1:num) {
-    sts[i, i] = params$survival$strata[[i]]$end - params$survival$strata[[i]]$start + 1
+    sts[i, i] <- params$survival$strata[[i]]$end - params$survival$strata[[i]]$start + 1
   }
 
   xtx <- rbind(cbind(sts, s_t_xa, s_t_xb),
@@ -514,7 +514,7 @@ get_products_cox_t3 <- function(params) {
 check_colinearity_cox_t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "check_colinearity_cox_t3\n\n")
   xtx <- params$xtx
-  nrow = nrow(xtx)
+  nrow <- nrow(xtx)
   num_strata <- length(params$survival$strata)
   indicies <- 1:num_strata
   for (i in (1 + num_strata):nrow) {
@@ -524,31 +524,31 @@ check_colinearity_cox_t3 <- function(params) {
     }
   }
 
-  a_names = params$colnamesA
-  b_names = params$colnamesB
+  a_names <- params$colnamesA
+  b_names <- params$colnamesB
   indicies <- indicies[-(1:num_strata)] - num_strata# Get rid of the strata indicators
   a_index <- which(indicies <= length(a_names))
   b_index <- which(indicies > length(a_names))
-  params$indicies      = indicies
-  params$a_indicies_keep = indicies[a_index]
-  params$b_indicies_keep = indicies[b_index] - length(a_names)
-  a_names_keep = a_names[params$a_indicies_keep]
-  b_names_keep = b_names[params$b_indicies_keep]
-  params$colnames_a_old = params$colnamesA
-  params$colnamesB_old = params$colnamesB
-  params$colnamesA     = a_names_keep
-  params$colnamesB     = b_names_keep
-  params$p1_old        = params$p1
-  params$p2_old        = params$p2
-  params$p1            = length(a_names_keep)
-  params$p2            = length(b_names_keep)
-  params$p_old         = params$p1_old + params$p2_old
-  params$p             = params$p1 + params$p2
+  params$indicies      <- indicies
+  params$a_indicies_keep <- indicies[a_index]
+  params$b_indicies_keep <- indicies[b_index] - length(a_names)
+  a_names_keep <- a_names[params$a_indicies_keep]
+  b_names_keep <- b_names[params$b_indicies_keep]
+  params$colnames_a_old <- params$colnamesA
+  params$colnamesB_old <- params$colnamesB
+  params$colnamesA     <- a_names_keep
+  params$colnamesB     <- b_names_keep
+  params$p1_old        <- params$p1
+  params$p2_old        <- params$p2
+  params$p1            <- length(a_names_keep)
+  params$p2            <- length(b_names_keep)
+  params$p_old         <- params$p1_old + params$p2_old
+  params$p             <- params$p1 + params$p2
 
   a_indicies <- params$a_indicies_keep
   b_indicies <- params$b_indicies_keep
 
-  colnames_a_old = params$colnames_a_old
+  colnames_a_old <- params$colnames_a_old
   p2 <- params$p2
 
   write_time <- proc.time()[3]
@@ -571,20 +571,20 @@ check_colinearity_cox_t3 <- function(params) {
 
 compute_initial_betas_cox_t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "compute_initial_betas_cox_t3\n\n")
-  a_betas   = rep(0, params$p1)
-  b_betas   = rep(0, params$p2)
-  betas    = c(a_betas, b_betas)
+  a_betas   <- rep(0, params$p1)
+  b_betas   <- rep(0, params$p2)
+  betas    <- c(a_betas, b_betas)
 
-  params$betas           = betas
-  params$betasold        = betas
-  params$x_beta           = rep(0, params$n)
+  params$betas           <- betas
+  params$betasold        <- betas
+  params$x_beta           <- rep(0, params$n)
   params$alg_iteration_counter <- 1
   params$delta_beta       <- Inf
   params$loglikelihood   <- -Inf
-  params$converged       = FALSE
-  params$max_iter_exceeded = FALSE
-  converged              = FALSE
-  max_iter_exceeded        = FALSE
+  params$converged       <- FALSE
+  params$max_iter_exceeded <- FALSE
+  converged              <- FALSE
+  max_iter_exceeded        <- FALSE
 
   write_time <- proc.time()[3]
   save(a_betas, file = file.path(params$write_path, "betasA.rdata"))
@@ -603,16 +603,16 @@ compute_initial_betas_cox_t3 <- function(params) {
 update_params_cox_a3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "update_params_cox_a3\n\n")
   a_indicies <- NULL
-  p2        = NULL
+  p2        <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "Aindicies.rdata"))
   read_size <- file.size(file.path(params$read_path[["T"]], "Aindicies.rdata"))
   read_time <- proc.time()[3] - read_time
-  params$p             = length(a_indicies)
-  params$p2            = p2
-  params$colnames_old  = params$colnames
-  params$colnames      = params$colnames[a_indicies]
-  params$a_indicies_keep = a_indicies
+  params$p             <- length(a_indicies)
+  params$p2            <- p2
+  params$colnames_old  <- params$colnames
+  params$colnames      <- params$colnames[a_indicies]
+  params$a_indicies_keep <- a_indicies
   params <- add_to_log(params, "update_params_cox_a3, update_data_cox_a3", read_time, read_size, 0, 0)
   return(params)
 }
@@ -620,17 +620,17 @@ update_params_cox_a3 <- function(params) {
 
 update_params_cox_b3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "update_params_cox_b3\n\n")
-  b_indicies     = NULL
-  colnames_a_old = NULL
+  b_indicies     <- NULL
+  colnames_a_old <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "Bindicies.rdata"))
   read_size <- file.size(file.path(params$read_path[["T"]], "Bindicies.rdata"))
   read_time <- proc.time()[3] - read_time
-  params$p             = length(b_indicies)
-  params$colnames_a_old = colnames_a_old
-  params$colnames_old  = params$colnames
-  params$colnames      = params$colnames[b_indicies]
-  params$b_indicies_keep = b_indicies
+  params$p             <- length(b_indicies)
+  params$colnames_a_old <- colnames_a_old
+  params$colnames_old  <- params$colnames
+  params$colnames      <- params$colnames[b_indicies]
+  params$b_indicies_keep <- b_indicies
   params <- add_to_log(params, "update_params_cox_b3", read_time, read_size, 0, 0)
   return(params)
 }
@@ -653,7 +653,7 @@ update_data_cox_b3 <- function(params, data) {
 get_beta_a_cox_a3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetBeataACox.a3\n\n")
   converged <- NULL
-  max_iter_exceeded = NULL
+  max_iter_exceeded <- NULL
   a_betas <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "converged.rdata"))
@@ -662,7 +662,7 @@ get_beta_a_cox_a3 <- function(params) {
                                                                "betasA.rdata"))))
   read_time <- proc.time()[3] - read_time
   params$converged <- converged
-  params$max_iter_exceeded = max_iter_exceeded
+  params$max_iter_exceeded <- max_iter_exceeded
   params$betas <- a_betas
   params <- add_to_log(params, "get_beta_a_cox_a3", read_time, read_size, 0, 0)
   return(params)
@@ -671,9 +671,9 @@ get_beta_a_cox_a3 <- function(params) {
 
 get_beta_b_cox_b3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "get_beta_b_cox_b3\n\n")
-  converged       = NULL
-  max_iter_exceeded = NULL
-  b_betas          = NULL
+  converged       <- NULL
+  max_iter_exceeded <- NULL
+  b_betas          <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "converged.rdata"))
   load(file.path(params$read_path[["T"]], "betasB.rdata"))
@@ -681,7 +681,7 @@ get_beta_b_cox_b3 <- function(params) {
                                                                "betasB.rdata"))))
   read_time <- proc.time()[3] - read_time
   params$converged <- converged
-  params$max_iter_exceeded = max_iter_exceeded
+  params$max_iter_exceeded <- max_iter_exceeded
   params$betas <- b_betas
   params <- add_to_log(params, "get_beta_b_cox_b3", read_time, read_size, 0, 0)
   return(params)
@@ -715,24 +715,24 @@ get_xb_beta_b_cox_b3 <- function(params, data) {
 compute_log_likelihood_cox_t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "compute_log_likelihood_cox_t3\n\n")
   n <- params$n
-  xa_beta_a = NULL
-  xb_beta_b = NULL
+  xa_beta_a <- NULL
+  xb_beta_b <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["A"]], "xabetaa.rdata"))
   load(file.path(params$read_path[["B"]], "xbbetab.rdata"))
   read_size <- file.size(file.path(params$read_path[["A"]], "xabetaa.rdata")) +
     file.size(file.path(params$read_path[["B"]], "xbbetab.rdata"))
   read_time <- proc.time()[3] - read_time
-  params$x_beta_old = params$x_beta
-  x_beta = xa_beta_a + xb_beta_b
-  params$x_beta = x_beta
-  params$loglikelihood_old = params$loglikelihood
+  params$x_beta_old <- params$x_beta
+  x_beta <- xa_beta_a + xb_beta_b
+  params$x_beta <- x_beta
+  params$loglikelihood_old <- params$loglikelihood
   step_size <- 1
-  w = exp(x_beta)
+  w <- exp(x_beta)
   while (max(w) == Inf) {
-    x_beta = (x_beta + params$x_betas_old) * 0.5
+    x_beta <- (x_beta + params$x_betas_old) * 0.5
     step_size <- step_size * 0.5
-    w = exp(x_beta)
+    w <- exp(x_beta)
   }
   compute_log_likelihood <- TRUE
 
@@ -744,14 +744,14 @@ compute_log_likelihood_cox_t3 <- function(params) {
     for (i in 1:length(params$survival$strata)) {                    ##!
       if (params$survival$strata[[i]]$J > 0) {                       ##!
         for (j in 1:params$survival$strata[[i]]$J) {                 ##!
-          nj = params$survival$strata[[i]]$nfails[j]                 ##!
-          y_index = params$survival$strata[[i]]$start0[j]:params$survival$strata[[i]]$end      ##!
-          z_index = params$survival$strata[[i]]$start1[j]:params$survival$strata[[i]]$stop1[j] ##!
-          a_j1 = sum(w[y_index])
-          a_j2 = sum(w[z_index]) / nj
+          nj <- params$survival$strata[[i]]$nfails[j]                 ##!
+          y_index <- params$survival$strata[[i]]$start0[j]:params$survival$strata[[i]]$end      ##!
+          z_index <- params$survival$strata[[i]]$start1[j]:params$survival$strata[[i]]$stop1[j] ##!
+          a_j1 <- sum(w[y_index])
+          a_j2 <- sum(w[z_index]) / nj
           loglikelihood <- loglikelihood + sum(log(w[z_index]))
           for (r in 0:(nj - 1)) {
-            a_jr = a_j1 - r * a_j2
+            a_jr <- a_j1 - r * a_j2
             loglikelihood <- loglikelihood - log(a_jr)
           }
           step_counter <- step_counter + nj
@@ -763,17 +763,17 @@ compute_log_likelihood_cox_t3 <- function(params) {
       compute_log_likelihood <- FALSE
     } else {
       if (params$verbose) cat("Step Halving\n\n")
-      x_beta = (x_beta + params$x_beta_old) * 0.5
+      x_beta <- (x_beta + params$x_beta_old) * 0.5
       step_size <- step_size * 0.5
-      w = exp(x_beta)
+      w <- exp(x_beta)
     }
   }
-  params$loglikelihoodold = params$loglikelihood
+  params$loglikelihoodold <- params$loglikelihood
   params$loglikelihood <- loglikelihood
   if (params$alg_iteration_counter == 1) {
     params$nullloglikelihood <- loglikelihood
   }
-  params$x_beta = x_beta
+  params$x_beta <- x_beta
   params$step_size <- step_size
   write_time <- proc.time()[3]
   save(x_beta, file = file.path(params$write_path, "Xbeta.rdata"))
@@ -786,8 +786,8 @@ compute_log_likelihood_cox_t3 <- function(params) {
 
 compute_xb_delta_l_cox_b3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "compute_xb_delta_l_cox_b3\n\n")
-  x_beta = NULL
-  p2 = params$p
+  x_beta <- NULL
+  p2 <- params$p
   n <- params$n
 
   read_time <- proc.time()[3]
@@ -797,7 +797,7 @@ compute_xb_delta_l_cox_b3 <- function(params, data) {
 
   num_events <- sum(data$survival$status)
 
-  w = exp(x_beta)
+  w <- exp(x_beta)
   deltal <- as.numeric(data$survival$status)
   deltal[1] <- deltal[1]  # This is to force R to make a copy since we are exploiting
   # a pass by reference with the C call.
@@ -827,7 +827,7 @@ compute_xb_delta_l_cox_b3 <- function(params, data) {
     strt <- params$blocks$starts[i]
     stp <- params$blocks$stops[i]
     n2 <- stp - strt + 1
-    g = params$blocks$g[i]
+    g <- params$blocks$g[i]
 
     read_time <- read_time - proc.time()[3]
     rz <- matrix(readBin(con = to_read, what = numeric(), n = n2 * n2,
@@ -866,8 +866,8 @@ compute_xb_delta_l_cox_b3 <- function(params, data) {
 
 compute_xa_delta_l_cox_a3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "compute_xa_delta_l_cox_a3\n\n")
-  x_beta = NULL
-  p1 = params$p
+  x_beta <- NULL
+  p1 <- params$p
   n <- params$n
 
   read_time <- proc.time()[3]
@@ -877,7 +877,7 @@ compute_xa_delta_l_cox_a3 <- function(params, data) {
 
   num_events <- sum(data$survival$status)
 
-  w = exp(x_beta)
+  w <- exp(x_beta)
   deltal <- as.numeric(data$survival$status)
   deltal[1] <- deltal[1]  # This is to force R to make a copy since we are exploiting
   # a pass by reference with the C call.
@@ -910,29 +910,29 @@ process_v_cox_t3 <- function(params) {
   num_blocks <- params$blocks$num_blocks
   pbar <- make_progress_bar_1(num_blocks, "(I-z*z')w*XB*R", params$verbose)
 
-  container_ct_rv = 0
-  container_ct_vr = 0
+  container_ct_rv <- 0
+  container_ct_vr <- 0
   for (i in 1:num_blocks) {
     if (i %in% params$container$filebreak.rv) {
-      container_ct_rv = container_ct_rv + 1
+      container_ct_rv <- container_ct_rv + 1
       filename2 <- paste0("cCox_", container_ct_rv, ".rdata")
-      to_read_2 = file(file.path(params$read_path[["B"]], filename2), "rb")
+      to_read_2 <- file(file.path(params$read_path[["B"]], filename2), "rb")
     }
     if (i %in% params$container$filebreak_vr) {
-      container_ct_vr = container_ct_vr + 1
-      filename3 = paste0("cvr_", container_ct_vr, ".rdata")
-      to_write3 = file(file.path(params$write_path, filename3), "wb")
+      container_ct_vr <- container_ct_vr + 1
+      filename3 <- paste0("cvr_", container_ct_vr, ".rdata")
+      to_write3 <- file(file.path(params$write_path, filename3), "wb")
     }
 
     strt <- params$blocks$starts[i]
     stp <- params$blocks$stops[i]
-    n = stp - strt + 1
+    n <- stp - strt + 1
 
     filename1 <- paste0("r1_", i, ".rdata")
-    filename4 = paste0("r3_", i, ".rdata")
+    filename4 <- paste0("r3_", i, ".rdata")
 
     read_time <- read_time - proc.time()[3]
-    to_read_1 = file(file.path(params$dp_local_path, filename1), "rb")
+    to_read_1 <- file(file.path(params$dp_local_path, filename1), "rb")
     r2  <- matrix(readBin(con = to_read_1, what = numeric(), n = n * n,
                         endian = "little"), nrow = n, ncol = n)
     read_size <- read_size + file.size(file.path(params$dp_local_path, filename1))
@@ -941,12 +941,12 @@ process_v_cox_t3 <- function(params) {
                         endian = "little"), nrow = n, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
-    v = t(r2) %*% rv
-    r_3 = random_orthonormal_matrix(p2)
-    vr = v %*% r_3
+    v <- t(r2) %*% rv
+    r_3 <- random_orthonormal_matrix(p2)
+    vr <- v %*% r_3
 
     write_time <- write_time - proc.time()[3]
-    to_write4 = file(file.path(params$dp_local_path, filename4), "wb")
+    to_write4 <- file(file.path(params$dp_local_path, filename4), "wb")
     writeBin(as.vector(r_3), con = to_write4, endian = "little")
     close(to_write4)
     write_size <- write_size + file.size(file.path(params$dp_local_path, filename4))
@@ -975,29 +975,29 @@ get_xr_cox_a3 <- function(params, data) {
   read_time <- 0
   read_size <- 0
   p2 <- params$p2
-  container_ct_vr = 0
-  container_ct_xr = 0
+  container_ct_vr <- 0
+  container_ct_xr <- 0
   pbar <- make_progress_bar_1(params$blocks$num_blocks, "XA'(I-z*z')w*XB*R", params$verbose)
   for (i in 1:params$blocks$num_blocks) {
     if (i %in% params$container$filebreak.rv) {
-      container_ct_vr = container_ct_vr + 1
+      container_ct_vr <- container_ct_vr + 1
       filename1 <- paste0("cvr_", container_ct_vr, ".rdata")
       to_read <- file(file.path(params$read_path[["T"]], filename1), "rb")
     }
     if (i %in% params$container$filebreak_xr) {
-      container_ct_xr = container_ct_xr + 1
+      container_ct_xr <- container_ct_xr + 1
       filename2 <- paste0("cxr_", container_ct_xr, ".rdata")
       to_write <- file(file.path(params$write_path, filename2), "wb")
     }
     strt <- params$blocks$starts[i]
     stp <- params$blocks$stops[i]
-    n = stp - strt + 1
+    n <- stp - strt + 1
 
     read_time <- read_time - proc.time()[3]
     vr  <- matrix(readBin(con = to_read, what = numeric(), n = n * p2,
                         endian = "little"), nrow = n, ncol = p2)
     read_time <- read_time + proc.time()[3]
-    xr = t(data$x[strt:stp, , drop = FALSE]) %*% vr
+    xr <- t(data$x[strt:stp, , drop = FALSE]) %*% vr
 
     write_time <- write_time - proc.time()[3]
     writeBin(as.vector(xr), con = to_write, endian = "little")
@@ -1024,10 +1024,10 @@ process_x_t_w_x_cox_t3 <- function(params) {
   p1 <- params$p1
   p2 <- params$p2
 
-  t_xa_delta_l = NULL
-  t_xb_delta_l = NULL
-  t_xa_w_xa   = NULL
-  txb_w_xb   = NULL
+  t_xa_delta_l <- NULL
+  t_xb_delta_l <- NULL
+  t_xa_w_xa   <- NULL
+  txb_w_xb   <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["A"]], "tXA_w_XA.rdata"))
   load(file.path(params$read_path[["B"]], "txb_w_xb.rdata"))
@@ -1036,19 +1036,19 @@ process_x_t_w_x_cox_t3 <- function(params) {
   read_time <- proc.time()[3] - read_time
 
   pbar <- make_progress_bar_1(params$blocks$num_blocks, "x'w*x", params$verbose)
-  container_ct_xr = 0
-  xa_t_w_xb = 0
+  container_ct_xr <- 0
+  xa_t_w_xb <- 0
 
   for (i in 1:params$blocks$num_blocks) {
     if (i %in% params$container$filebreak_xr) {
-      container_ct_xr = container_ct_xr + 1
+      container_ct_xr <- container_ct_xr + 1
       filename1 <- paste0("cxr_", container_ct_xr, ".rdata")
       to_read <- file(file.path(params$read_path[["A"]], filename1), "rb")
     }
 
     filename2 <- paste0("r3_", i, ".rdata")
     read_time <- read_time - proc.time()[3]
-    to_read_1 = file(file.path(params$dp_local_path, filename2), "rb")
+    to_read_1 <- file(file.path(params$dp_local_path, filename2), "rb")
     r  <- matrix(readBin(con = to_read_1, what = numeric(), n = p2 * p2,
                        endian = "little"), nrow = p2, ncol = p2)
     close(to_read_1)
@@ -1058,7 +1058,7 @@ process_x_t_w_x_cox_t3 <- function(params) {
     read_size <- read_size + file.size(file.path(params$dp_local_path, filename2))
     read_time <- read_time + proc.time()[3]
 
-    xa_t_w_xb = xa_t_w_xb + xr %*% t(r)
+    xa_t_w_xb <- xa_t_w_xb + xr %*% t(r)
 
     if ((i + 1) %in% params$container$filebreak_xr || i == params$blocks$num_blocks) {
       close(to_read)
@@ -1068,18 +1068,18 @@ process_x_t_w_x_cox_t3 <- function(params) {
   }
 
 
-  xtwx = rbind(cbind(t_xa_w_xa, xa_t_w_xb), cbind(t(xa_t_w_xb), txb_w_xb))
-  ii = NULL
+  xtwx <- rbind(cbind(t_xa_w_xa, xa_t_w_xb), cbind(t(xa_t_w_xb), txb_w_xb))
+  ii <- NULL
   tryCatch({
-    ii = solve(xtwx)
+    ii <- solve(xtwx)
   },
   error = function(err) {
-    ii = NULL
+    ii <- NULL
   }
   )
   if (is.null(ii)) {
     params$failed <- TRUE
-    params$singular_matrix = TRUE
+    params$singular_matrix <- TRUE
     params$error_message <-
       paste0("The matrix t(x)*w*x is not invertible.\n",
              "       This may be due to one of two possible problems.\n",
@@ -1096,23 +1096,23 @@ process_x_t_w_x_cox_t3 <- function(params) {
   }
 
   if (params$alg_iteration_counter == 1) {
-    params$nullHessian = xtwx
+    params$nullHessian <- xtwx
     params$null_score <- rbind(t_xa_delta_l, t_xb_delta_l)
   }
-  params$xtwx = xtwx
-  delta_beta = ii %*% rbind(t_xa_delta_l, t_xb_delta_l)
-  params$betas    = params$betasold + (params$betas - params$betasold) * params$step_size
-  params$betasold = params$betas
-  params$betas    = params$betasold + delta_beta
+  params$xtwx <- xtwx
+  delta_beta <- ii %*% rbind(t_xa_delta_l, t_xb_delta_l)
+  params$betas    <- params$betasold + (params$betas - params$betasold) * params$step_size
+  params$betasold <- params$betas
+  params$betas    <- params$betasold + delta_beta
   converged       <- abs(params$loglikelihood - params$loglikelihoodold) /
     (abs(params$loglikelihood) + 0.1) < params$cutoff
-  max_iter_exceeded = FALSE
+  max_iter_exceeded <- FALSE
   if (!converged) {
-    max_iter_exceeded = params$alg_iteration_counter >= params$max_iterations
+    max_iter_exceeded <- params$alg_iteration_counter >= params$max_iterations
   }
 
   params$converged <- converged
-  params$max_iter_exceeded = max_iter_exceeded
+  params$max_iter_exceeded <- max_iter_exceeded
 
   a_betas <- params$betas[1:p1]
   b_betas <- params$betas[(p1 + 1):(p1 + p2)]
@@ -1134,37 +1134,37 @@ process_x_t_w_x_cox_t3 <- function(params) {
 
 survfit_cox_bt3 <- function(params, pred) {
   if (params$trace) cat(as.character(Sys.time()), "survfit_cox_bt3\n\n")
-  survival = params$survival
-  surv = rep(1, length(survival$rank))
+  survival <- params$survival
+  surv <- rep(1, length(survival$rank))
   for (i in 1:length(survival$strata)) {
     if (survival$strata[[i]]$J > 0) {
-      start   = survival$strata[[i]]$start
-      end     = survival$strata[[i]]$end
-      risk    = exp(pred[start:end])
-      dtime   = survival$rank[start:end]
-      status  = survival$status[start:end]
-      death   = status == 1                                  # times where death happened
-      time    = sort(unique(dtime))                          # (A) get unique event times
+      start   <- survival$strata[[i]]$start
+      end     <- survival$strata[[i]]$end
+      risk    <- exp(pred[start:end])
+      dtime   <- survival$rank[start:end]
+      status  <- survival$status[start:end]
+      death   <- status == 1                                  # times where death happened
+      time    <- sort(unique(dtime))                          # (A) get unique event times
       rcumsum <- function(x) rev(cumsum(rev(x)))
-      nevent  = as.vector(rowsum(as.numeric(death), dtime))  # (A) Count the number of deaths at each event time
-      ndeath  = rowsum(status, dtime)                        # (A) number of deaths at each unique event time
-      nrisk   = rcumsum(rowsum(risk, dtime))                 # (A) rowsum = sum of risk at each time, then reverse cum sum, sorted by time
-      erisk   = rowsum(risk * death, dtime)                  # (A) risk score sums of death at each unique event time
-      n       = length(nevent)
-      sum1 = double(n)   # a vector of 0's, length number of unique event times
+      nevent  <- as.vector(rowsum(as.numeric(death), dtime))  # (A) Count the number of deaths at each event time
+      ndeath  <- rowsum(status, dtime)                        # (A) number of deaths at each unique event time
+      nrisk   <- rcumsum(rowsum(risk, dtime))                 # (A) rowsum <- sum of risk at each time, then reverse cum sum, sorted by time
+      erisk   <- rowsum(risk * death, dtime)                  # (A) risk score sums of death at each unique event time
+      n       <- length(nevent)
+      sum1 <- double(n)   # a vector of 0's, length number of unique event times
       for (i in 1:n) {
-        d = ndeath[i]
+        d <- ndeath[i]
         if (d == 1) {
-          sum1[i] = 1 / nrisk[i]
+          sum1[i] <- 1 / nrisk[i]
         } else if (d > 1) {
           for (j in 0:(d - 1)) {
-            sum1[i] = sum1[i] + 1 / (d * nrisk[i] - erisk[i] * j)
+            sum1[i] <- sum1[i] + 1 / (d * nrisk[i] - erisk[i] * j)
           }
         }
       }
       temp <- exp(-cumsum(nevent * sum1))
       for (i in start:end) {
-        surv[i] = temp[which(time == survival$rank[i])]
+        surv[i] <- temp[which(time == survival$rank[i])]
       }
     }
   }
@@ -1237,39 +1237,39 @@ compute_results_cox_t3 <- function(params) {
   }
 
   stats$survival <- data.frame(
-    rank   = params$survival$rank,
-    status = params$survival$status,
-    sorted = params$survival$sorted,
-    surv   = survfit_cox_bt3(params, pred)
+    rank   <- params$survival$rank,
+    status <- params$survival$status,
+    sorted <- params$survival$sorted,
+    surv   <- survfit_cox_bt3(params, pred)
   )
   stats$strata <- as.data.frame(matrix(0, length(params$survival$strata), 3))
   stats$strata$label <- ""
-  colnames(stats$strata) = c("start", "end", "events", "label")
+  colnames(stats$strata) <- c("start", "end", "events", "label")
   for (i in 1:length(params$survival$strata)) {
-    stats$strata$start[i]  = params$survival$strata[[i]]$start
-    stats$strata$end[i]    = params$survival$strata[[i]]$end
-    stats$strata$events[i] = sum(params$survival$status[stats$strata$start[i]:stats$strata$end[i]])
-    stats$strata$label[i]  = params$survival$strata[[i]]$label
+    stats$strata$start[i]  <- params$survival$strata[[i]]$start
+    stats$strata$end[i]    <- params$survival$strata[[i]]$end
+    stats$strata$events[i] <- sum(params$survival$status[stats$strata$start[i]:stats$strata$end[i]])
+    stats$strata$label[i]  <- params$survival$strata[[i]]$label
   }
 
-  names(stats$party)           = names_old
-  names(stats$coefficients)    = names_old
-  names(stats$expcoef)         = names_old
-  names(stats$expncoef)        = names_old
-  rownames(stats$var)          = names_old
-  colnames(stats$var)          = names_old
-  names(stats$secoef)          = names_old
-  names(stats$zvals)           = names_old
-  names(stats$pvals)           = names_old
-  names(stats$stars)           = names_old
-  names(stats$lower95)         = names_old
-  names(stats$upper95)         = names_old
-  names(stats$loglik)          = c("loglikelihood", "null loglikelihood")
-  names(stats$score)           = c("score", "p-value")
-  names(stats$lrt)             = c("likelihood ratio", "p-value")
-  names(stats$rsquare)         = c("r-square", "max possible")
-  names(stats$wald.test)       = c("wald", "p-value")
-  names(stats$concordance)     = c("concordant", "discordant", "tied.risk", "tied.time",
+  names(stats$party)           <- names_old
+  names(stats$coefficients)    <- names_old
+  names(stats$expcoef)         <- names_old
+  names(stats$expncoef)        <- names_old
+  rownames(stats$var)          <- names_old
+  colnames(stats$var)          <- names_old
+  names(stats$secoef)          <- names_old
+  names(stats$zvals)           <- names_old
+  names(stats$pvals)           <- names_old
+  names(stats$stars)           <- names_old
+  names(stats$lower95)         <- names_old
+  names(stats$upper95)         <- names_old
+  names(stats$loglik)          <- c("loglikelihood", "null loglikelihood")
+  names(stats$score)           <- c("score", "p-value")
+  names(stats$lrt)             <- c("likelihood ratio", "p-value")
+  names(stats$rsquare)         <- c("r-square", "max possible")
+  names(stats$wald.test)       <- c("wald", "p-value")
+  names(stats$concordance)     <- c("concordant", "discordant", "tied.risk", "tied.time",
                                    "concordance", "stderr")
 
   params$stats <- stats
@@ -1317,11 +1317,11 @@ check_colinearity_cox_b3 <- function(params, data) {
   num_strata <- length(data$survival$strata)
   x <- cbind(matrix(0, nrow = nrow(data$x), ncol = num_strata), data$x)
   for (i in 1:num_strata) {
-    x[data$survival$strata[[i]]$start:data$survival$strata[[i]]$end, i] = 1
+    x[data$survival$strata[[i]]$start:data$survival$strata[[i]]$end, i] <- 1
   }
 
   xtx <- t(x) %*% x
-  nrow = nrow(xtx)
+  nrow <- nrow(xtx)
   indicies <- 1:num_strata
   for (i in (num_strata + 1):nrow) {
     temp_indicies <- c(indicies, i)
@@ -1331,20 +1331,20 @@ check_colinearity_cox_b3 <- function(params, data) {
   }
   indicies <- indicies[-(1:num_strata)] - num_strata  # Get rid of the Strata
 
-  params$a_indicies_keep = c()
-  params$colnames_a_old = c()
-  params$colnamesA     = c()
-  params$p1_old        = params$p1
-  params$p1            = 0
+  params$a_indicies_keep <- c()
+  params$colnames_a_old <- c()
+  params$colnamesA     <- c()
+  params$p1_old        <- params$p1
+  params$p1            <- 0
 
-  b_names               = params$colnames
-  b_names_keep           = b_names[indicies]
-  params$b_indicies_keep = indicies
-  params$colnames_old  = params$colnames
-  params$colnames      = b_names_keep
-  params$p2_old        = params$p2
-  params$p2            = length(b_names_keep)
-  params$p             = params$p1 + params$p2
+  b_names               <- params$colnames
+  b_names_keep           <- b_names[indicies]
+  params$b_indicies_keep <- indicies
+  params$colnames_old  <- params$colnames
+  params$colnames      <- b_names_keep
+  params$p2_old        <- params$p2
+  params$p2            <- length(b_names_keep)
+  params$p             <- params$p1 + params$p2
 
   if (params$p2 == 0) {
     params$failed <- TRUE
@@ -1360,26 +1360,28 @@ compute_cox_from_survival_b3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "compute_cox_from_survival_b3\n\n")
   # We have loaded survival previously
 
-  max_iterations = 25
+  max_iterations <- 25
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "max_iterations.rdata"))
   read_size <- file.size(file.path(params$read_path[["T"]], "max_iterations.rdata"))
   read_time <- proc.time()[3] - read_time
-  strata = rep(0, nrow(data$x))
+  strata <- rep(0, nrow(data$x))
   for (i in 1:length(data$survival$strata)) {
-    strata[data$survival$strata[[i]]$start:data$survival$strata[[i]]$end] = i
+    strata[data$survival$strata[[i]]$start:data$survival$strata[[i]]$end] <- i
   }
 
-  colnames(data$x) = paste0("V", 1:ncol(data$x))
-  f = paste(c("Surv(rank, status) ~ strata(strata)", paste0("V", 1:ncol(data$x))), collapse = " + ")
+  colnames(data$x) <- paste0("V", 1:ncol(data$x))
+  f <- paste(c("Surv(rank, status) ~ strata(strata)", paste0("V", 1:ncol(data$x))), collapse = " + ")
 
   error <- tryCatch(
-    {fit = survival::coxph(as.formula(f),
+    {
+      fit <- survival::coxph(as.formula(f),
                            data <- data.frame(rank = data$survival$rank,
                                              status = data$survival$status,
                                              strata = strata,
                                              data$x),
-                           iter.max = max_iterations)},
+                           iter.max = max_iterations)
+      },
     error = function(e) {
       return(TRUE)
     },
@@ -1389,13 +1391,13 @@ compute_cox_from_survival_b3 <- function(params, data) {
   )
 
   if (class(error) == "logical" && error) {
-    params$converged = FALSE
+    params$converged <- FALSE
     params$failed <- TRUE
     params$error_message <- "Coxph in the survival package failed to converge."
   } else {
-    params$converged = TRUE
+    params$converged <- TRUE
     if (class(error) == "logical") {
-      fit = suppressWarnings(survival::coxph(as.formula(f),
+      fit <- suppressWarnings(survival::coxph(as.formula(f),
                                              data <- data.frame(rank = data$survival$rank,
                                                                status = data$survival$status,
                                                                strata = strata,
@@ -1403,15 +1405,15 @@ compute_cox_from_survival_b3 <- function(params, data) {
                                              iter.max = max_iterations))
       params$converged = FALSE
     }
-    fit$linear.predictors = NULL
-    fit$residuals = NULL
-    fit$y = NULL
-    fit$formula = NULL
-    fit$call = NULL
-    fit$assign = NULL
-    fit$terms = NULL
-    fit$means = NULL
-    params$fit = fit
+    fit$linear.predictors <- NULL
+    fit$residuals <- NULL
+    fit$y <- NULL
+    fit$formula <- NULL
+    fit$call <- NULL
+    fit$assign <- NULL
+    fit$terms <- NULL
+    fit$means <- NULL
+    params$fit <- fit
   }
   params <- add_to_log(params, "compute_cox_from_survival_b3", read_time, read_size, 0, 0)
   return(params)
@@ -1420,16 +1422,16 @@ compute_cox_from_survival_b3 <- function(params, data) {
 
 compute_cox_b3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "compute_cox_b3\n\n")
-  n           = params$n
-  p2          = params$p
+  n           <- params$n
+  p2          <- params$p
   params$alg_iteration_counter <- 1
   x_betas_old  <- matrix(0, n, 1)
   x_betas      <- matrix(0, n, 1)
   betas_b       <- matrix(0, p2, 1)
   betas_b_old   <- betas_b
   loglikelihood_old <- -Inf
-  max_iterations = 25
-  cutoff        = 10^-8
+  max_iterations <- 25
+  cutoff        <- 10^-8
 
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "max_iterations.rdata"))
@@ -1441,12 +1443,12 @@ compute_cox_b3 <- function(params, data) {
     BeginningIteration(params)
     loglikelihood <- 0
     step_size <- 1
-    w = exp(x_betas)
+    w <- exp(x_betas)
     while (max(w) == Inf) {
       if (params$verbose) cat("Step Halving\n\n")
       x_betas <- (x_betas + x_betas_old) * 0.5
       step_size <- step_size * 0.5
-      w = exp(x_betas)
+      w <- exp(x_betas)
     }
     compute_log_likelihood <- TRUE
     while (compute_log_likelihood) {
@@ -1457,14 +1459,14 @@ compute_cox_b3 <- function(params, data) {
       for (i in 1:length(data$survival$strata)) {                    ##!
         if (data$survival$strata[[i]]$J > 0) {                       ##!
           for (j in 1:data$survival$strata[[i]]$J) {                 ##!
-            nj = data$survival$strata[[i]]$nfails[j]                 ##!
-            y_index = data$survival$strata[[i]]$start0[j]:data$survival$strata[[i]]$end      ##!
-            z_index = data$survival$strata[[i]]$start1[j]:data$survival$strata[[i]]$stop1[j] ##!
-            a_j1 = sum(w[y_index])
-            a_j2 = sum(w[z_index]) / nj
+            nj <- data$survival$strata[[i]]$nfails[j]                 ##!
+            y_index <- data$survival$strata[[i]]$start0[j]:data$survival$strata[[i]]$end      ##!
+            z_index <- data$survival$strata[[i]]$start1[j]:data$survival$strata[[i]]$stop1[j] ##!
+            a_j1 <- sum(w[y_index])
+            a_j2 <- sum(w[z_index]) / nj
             loglikelihood <- loglikelihood + sum(log(w[z_index]))
             for (r in 0:(nj - 1)) {
-              a_jr = a_j1 - r * a_j2
+              a_jr <- a_j1 - r * a_j2
               loglikelihood <- loglikelihood - log(a_jr)
             }
             step_counter <- step_counter + nj
@@ -1478,7 +1480,7 @@ compute_cox_b3 <- function(params, data) {
         if (params$verbose) cat("Step Halving\n\n")
         x_betas <- (x_betas + x_betas_old) * 0.5
         step_size <- step_size * 0.5
-        w = exp(x_betas)
+        w <- exp(x_betas)
       }
     }
     num_events <- sum(data$survival$status)
@@ -1493,19 +1495,19 @@ compute_cox_b3 <- function(params, data) {
 
     m <- t(data$x) %*% w_xb
 
-    params$XtWX = m
+    params$XtWX <- m
     if (params$alg_iteration_counter == 1) {
-      params$nullHessian = m
+      params$nullHessian <- m
     }
 
-    inv = NULL
+    inv <- NULL
     tryCatch({
-      inv = solve(m)
+      inv <- solve(m)
     },
     error = function(err) {
-      inv = NULL
+      inv <- NULL
     })
-    m = inv
+    m <- inv
     if (is.null(m)) {
       params$failed <- TRUE
       params$error_message <- "The matrix t(x)WX is singular.  This is probably due to divergence of the coefficients."
@@ -1513,7 +1515,7 @@ compute_cox_b3 <- function(params, data) {
       betas <- rep(NA, length(params$Bcolnames_old))
       betas[params$b_indicies_keep] <- betas_b
       betas <- data.frame(betas)
-      rownames(betas) = params$Bcolnames_old
+      rownames(betas) <- params$Bcolnames_old
       # if (params$verbose) cat("Current Parameters:\n")
       # if (params$verbose) print(betas)
       # if (params$verbose) cat("\n")
@@ -1521,7 +1523,7 @@ compute_cox_b3 <- function(params, data) {
       return(params)
     }
 
-    delta_beta = m %*% t(data$x) %*% deltal
+    delta_beta <- m %*% t(data$x) %*% deltal
     betas_b    <- betas_b_old + (betas_b - betas_b_old) * step_size
     betas_b_old <- betas_b
     betas_b    <- betas_b + delta_beta
@@ -1553,31 +1555,31 @@ compute_results_cox_b3 <- function(params, data) {
   stats <- params$stats
   stats$converged <- params$converged
   stats$party_name <- params$party_name
-  stats$failed    = FALSE
+  stats$failed    <- FALSE
 
-  fit_exists = !is.null(params$fit)
-  names_old          = c(params$colnames_a_old, params$colnames_old)
-  idx_a               = params$a_indicies_keep
-  idx_b               = params$b_indicies_keep
-  idx                = c(idx_a, idx_b + length(params$colnames_a_old))
-  stats$party        = c(rep("dp1", length(params$colnames_a_old)),
+  fit_exists <- !is.null(params$fit)
+  names_old          <- c(params$colnames_a_old, params$colnames_old)
+  idx_a               <- params$a_indicies_keep
+  idx_b               <- params$b_indicies_keep
+  idx                <- c(idx_a, idx_b + length(params$colnames_a_old))
+  stats$party        <- c(rep("dp1", length(params$colnames_a_old)),
                          rep("dp2", length(params$colnames_old)))
   stats$coefficients <- rep(NA, length(stats$party))
   if (fit_exists) {
-    stats$coefficients[idx] = params$fit$coefficients
-    tempvar          = params$fit$var
+    stats$coefficients[idx] <- params$fit$coefficients
+    tempvar          <- params$fit$var
   } else {
     stats$coefficients[idx] <- params$betas_b
-    tempvar            = solve(params$XtWX)
+    tempvar            <- solve(params$XtWX)
   }
-  stats$expcoef      = exp(stats$coefficients)  # exp(coef) = hazard ratios
-  stats$expncoef     = exp(-stats$coefficients)
+  stats$expcoef      <- exp(stats$coefficients)  # hazard ratios
+  stats$expncoef     <- exp(-stats$coefficients)
   stats$var           <- matrix(0, length(names_old), length(names_old))
-  stats$var[idx, idx] = tempvar
-  stats$secoef       = rep(NA, length(names_old))
-  stats$secoef[idx]  = sqrt(diag(tempvar))  # se(coef)
+  stats$var[idx, idx] <- tempvar
+  stats$secoef       <- rep(NA, length(names_old))
+  stats$secoef[idx]  <- sqrt(diag(tempvar))  # se(coef)
   stats$zvals        <- stats$coefficients / stats$secoef  # z values
-  stats$pvals        = 2 * pnorm(abs(stats$zvals), lower.tail = FALSE)   # pvals
+  stats$pvals        <- 2 * pnorm(abs(stats$zvals), lower.tail = FALSE)   # pvals
   stats$stars         <- matrix(sapply(stats$pvals, function(x) {
     if (is.na(x))       ""
     else if (x < 0.001) "***"
@@ -1586,37 +1588,37 @@ compute_results_cox_b3 <- function(params, data) {
     else if (x < 0.1)   "."
     else " "
   }))
-  stats$lower95      = exp(stats$coefficients - qnorm(0.975) * stats$secoef)
-  stats$upper95      = exp(stats$coefficients + qnorm(0.975) * stats$secoef)
+  stats$lower95      <- exp(stats$coefficients - qnorm(0.975) * stats$secoef)
+  stats$upper95      <- exp(stats$coefficients + qnorm(0.975) * stats$secoef)
   if (fit_exists) {
-    stats$loglik     = params$fit$loglik
-    stats$n          = params$fit$n
-    stats$nevent     = params$fit$nevent
-    stats$iter       = params$fit$iter
-    stats$score      = params$fit$score
-    stats$wald.test  = params$fit$wald.test
-    stats$concordance = params$fit$concordance[c(2, 1, 3, 4, 6, 7)]
+    stats$loglik     <- params$fit$loglik
+    stats$n          <- params$fit$n
+    stats$nevent     <- params$fit$nevent
+    stats$iter       <- params$fit$iter
+    stats$score      <- params$fit$score
+    stats$wald.test  <- params$fit$wald.test
+    stats$concordance <- params$fit$concordance[c(2, 1, 3, 4, 6, 7)]
   } else {
-    stats$loglik       = c(params$nullLoglikelihood, params$loglikelihood)
-    stats$n            = params$n
-    stats$nevent       = params$num_events
-    stats$iter         = params$alg_iteration_counter - 1
-    stats$score        = t(params$null_score) %*% solve(params$nullHessian) %*%
+    stats$loglik       <- c(params$nullLoglikelihood, params$loglikelihood)
+    stats$n            <- params$n
+    stats$nevent       <- params$num_events
+    stats$iter         <- params$alg_iteration_counter - 1
+    stats$score        <- t(params$null_score) %*% solve(params$nullHessian) %*%
       params$null_score
-    stats$wald.test    = t(params$betas_b) %*% params$XtWX %*% params$betasB
-    stats$concordance = c(NA, NA, NA, NA, NA, NA)
+    stats$wald.test    <- t(params$betas_b) %*% params$XtWX %*% params$betasB
+    stats$concordance <- c(NA, NA, NA, NA, NA, NA)
   }
-  stats$df           = params$p
-  stats$score        = c(stats$score, 1 - pchisq(stats$score, stats$df))
-  stats$method       = "efron"
-  stats$lrt          = 2 * (stats$loglik[2] - stats$loglik[1])
-  stats$lrt          = c(stats$lrt, 1 - pchisq(stats$lrt, stats$df))
-  stats$rsquare      = c(1 - exp(-stats$lrt[1] / stats$n),
+  stats$df           <- params$p
+  stats$score        <- c(stats$score, 1 - pchisq(stats$score, stats$df))
+  stats$method       <- "efron"
+  stats$lrt          <- 2 * (stats$loglik[2] - stats$loglik[1])
+  stats$lrt          <- c(stats$lrt, 1 - pchisq(stats$lrt, stats$df))
+  stats$rsquare      <- c(1 - exp(-stats$lrt[1] / stats$n),
                          1 - exp(2 * stats$loglik[1] / stats$n))
-  stats$wald.test    = c(stats$wald.test,
+  stats$wald.test    <- c(stats$wald.test,
                          1 - pchisq(stats$wald.test, stats$df))
 
-  params$survival = data$survival
+  params$survival <- data$survival
   pred <- data$x %*% stats$coefficients[idx]
   stats$survival <- data.frame(
     rank   = data$survival$rank,
@@ -1626,32 +1628,32 @@ compute_results_cox_b3 <- function(params, data) {
   )
   stats$strata <- as.data.frame(matrix(0, length(data$survival$strata), 3))
   stats$strata$label <- ""
-  colnames(stats$strata) = c("start", "end", "events", "label")
+  colnames(stats$strata) <- c("start", "end", "events", "label")
   for (i in 1:length(data$survival$strata)) {
-    stats$strata$start[i]  = data$survival$strata[[i]]$start
-    stats$strata$end[i]    = data$survival$strata[[i]]$end
-    stats$strata$events[i] = sum(data$survival$status[stats$strata$start[i]:stats$strata$end[i]])
-    stats$strata$label[i]  = data$survival$strata[[i]]$label
+    stats$strata$start[i]  <- data$survival$strata[[i]]$start
+    stats$strata$end[i]    <- data$survival$strata[[i]]$end
+    stats$strata$events[i] <- sum(data$survival$status[stats$strata$start[i]:stats$strata$end[i]])
+    stats$strata$label[i]  <- data$survival$strata[[i]]$label
   }
 
-  names(stats$party)           = names_old
-  names(stats$coefficients)    = names_old
-  names(stats$expcoef)         = names_old
-  names(stats$expncoef)        = names_old
-  rownames(stats$var)          = names_old
-  colnames(stats$var)          = names_old
-  names(stats$secoef)          = names_old
-  names(stats$zvals)           = names_old
-  names(stats$pvals)           = names_old
-  names(stats$stars)           = names_old
-  names(stats$lower95)         = names_old
-  names(stats$upper95)         = names_old
-  names(stats$loglik)          = c("loglikelihood", "null loglikelihood")
-  names(stats$score)           = c("score", "p-value")
-  names(stats$lrt)             = c("likelihood ratio", "p-value")
-  names(stats$rsquare)         = c("r-square", "max possible")
-  names(stats$wald.test)       = c("wald", "p-value")
-  names(stats$concordance)     = c("concordant", "discordant", "tied.risk", "tied.time",
+  names(stats$party)           <- names_old
+  names(stats$coefficients)    <- names_old
+  names(stats$expcoef)         <- names_old
+  names(stats$expncoef)        <- names_old
+  rownames(stats$var)          <- names_old
+  colnames(stats$var)          <- names_old
+  names(stats$secoef)          <- names_old
+  names(stats$zvals)           <- names_old
+  names(stats$pvals)           <- names_old
+  names(stats$stars)           <- names_old
+  names(stats$lower95)         <- names_old
+  names(stats$upper95)         <- names_old
+  names(stats$loglik)          <- c("loglikelihood", "null loglikelihood")
+  names(stats$score)           <- c("score", "p-value")
+  names(stats$lrt)             <- c("likelihood ratio", "p-value")
+  names(stats$rsquare)         <- c("r-square", "max possible")
+  names(stats$wald.test)       <- c("wald", "p-value")
+  names(stats$concordance)     <- c("concordant", "discordant", "tied.risk", "tied.time",
                                    "concordance", "stderr")
 
   params$stats <- stats
@@ -1701,7 +1703,7 @@ party_a_process_3_cox <- function(data,
   params <- initialize_time_stamps_3p(params)
   params <- initialize_tracking_table_3p(params)
   header(params)
-  params   = prepare_folder_linear_a3(params, monitor_folder)
+  params   <- prepare_folder_linear_a3(params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))

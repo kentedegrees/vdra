@@ -795,11 +795,11 @@ compute_results_logistic_t3 <- function(params) {
   stats$ROC     = ROC
   stats$iter    = params$alg_iteration_counter - 1
   names_old = c(a_names, b_names)
-  names(stats$coefficients) = names_old
-  names(stats$party) = names_old
-  names(stats$secoef) = names_old
-  names(stats$tvals) = names_old
-  names(stats$pvals) = names_old
+  names(stats$coefficients) <- names_old
+  names(stats$party) <- names_old
+  names(stats$secoef) <- names_old
+  names(stats$tvals) <- names_old
+  names(stats$pvals) <- names_old
 
   write_time <- proc.time()[3]
   save(stats, file = file.path(params$write_path, "stats.rdata"))

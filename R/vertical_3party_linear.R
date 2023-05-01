@@ -911,16 +911,16 @@ compute_results_linear_t3 <- function(params) {
   stats$means_y                 = means_y
   stats$means                  = c(means_a, means_b)
 
-  names(stats$party)           = names_old
-  names(stats$coefficients)    = names_old
-  names(stats$secoef)          = names_old
-  names(stats$tvals)           = names_old
-  names(stats$pvals)           = names_old
+  names(stats$party)           <- names_old
+  names(stats$coefficients)    <- names_old
+  names(stats$secoef)          <- names_old
+  names(stats$tvals)           <- names_old
+  names(stats$pvals)           <- names_old
 
-  colnames(stats$xtx)          = names_old
-  rownames(stats$xtx)          = names_old
+  colnames(stats$xtx)          <- names_old
+  rownames(stats$xtx)          <- names_old
   colnames(stats$xty)          = colnames(params$xty)
-  rownames(stats$xty)          = names_old
+  rownames(stats$xty)          <- names_old
 
   params$stats <- stats
 

@@ -1309,7 +1309,7 @@ party_b_process_2_logistic <- function(data,
   params <- initialize_time_stamps_2p(params)
   params <- initialize_tracking_table_2p(params)
   header(params)
-  params   = prepare_folder_logistic_b2(params, monitor_folder)
+  params   <- prepare_folder_logistic_b2(params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
@@ -1325,7 +1325,7 @@ party_b_process_2_logistic <- function(data,
     return(params$stats)
   }
 
-  params   = prepare_params_logistic_b2(params, data)
+  params   <- prepare_params_logistic_b2(params, data)
 
   files <- c("pb.rdata")
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
