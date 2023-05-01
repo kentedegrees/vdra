@@ -44,7 +44,7 @@ prepare_data_cox_DP <- function(params, data, y_name, strata, mask) {
     }
   } else {
     workdata$tags <- create_model_matrix_tags(data[, covariate_index, drop = FALSE])
-    workdata$x = model.matrix(~ ., data[, covariate_index, drop = FALSE])
+    workdata$x <- model.matrix(~ ., data[, covariate_index, drop = FALSE])
     workdata$x <- workdata$x[, -1, drop = FALSE]
     workdata$colmin   = apply(workdata$x, 2, min)
     workdata$colmax   = apply(workdata$x, 2, max)
@@ -298,7 +298,7 @@ prepare_strata_cox_DP <- function(params, data) {
   }
 
   survival$strata = strata
-  survival$num_events = sum(survival$status)
+  survival$num_events <- sum(survival$status)
   params$survival = survival
 
   if (totalStrata == 0) {
@@ -385,7 +385,7 @@ PrepareSharesCox.DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareSharesCox.DP\n\n")
   read_time <- 0
   read_size <- 0
-  n = params$n
+  n <- params$n
   p = params$p
   scaler = NULL
   seed   = NULL
@@ -402,7 +402,7 @@ PrepareSharesCox.DP <- function(params, data) {
 
   for (id in 1:params$numDataPartners) {
     if (id == params$data_partner_id) {
-      products[[id]] = t(data$x) %*% data$x
+      products[[id]] <- t(data$x) %*% data$x
       params$ps      = c(params$ps, params$p)
       params$scalers = c(params$scalers, params$scaler)
       params$seeds   = c(params$seeds, params$seed)
@@ -689,7 +689,7 @@ update_params_cox_DP <- function(params) {
   params$indicies      = indicies
   params$pReduct       = pReduct
   if (params$data_partner_id == 1) {
-    params$loglikelihood = -Inf
+    params$loglikelihood <- -Inf
     params$sBeta_old = rep(0, params$n)
     params$cutoff    = cutoff
   }
@@ -724,7 +724,7 @@ update_data_cox_DP <- function(params, data) {
 ComputeSBetaCox.DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeSBetaCox.DP\n\n")
   u = NULL
-  n = params$n
+  n <- params$n
   read_time <- proc.time()[3]
   load(file.path(params$readPathAC, "u.rdata"))
   read_size <- file.size(file.path(params$readPathAC, "u.rdata"))
@@ -788,8 +788,8 @@ compute_log_likelihood_cox_DP <- function(params, data) {
   scale = 1
   while (stephalving) {
     w = exp(sBeta)
-    loglikelihood = 0
-    step_counter = 0
+    loglikelihood <- 0
+    step_counter <- 0
     pbar = MakeProgressBar1(params$survival$num_events, "loglikelihood", params$verbose)
     for (i in 1:length(params$survival$strata)) {
       if (params$survival$strata[[i]]$J > 0) {
@@ -799,12 +799,12 @@ compute_log_likelihood_cox_DP <- function(params, data) {
           zIndex = params$survival$strata[[i]]$start1[j]:params$survival$strata[[i]]$stop1[j]
           a_j1 = sum(w[y_index])
           a_j2 = sum(w[zIndex]) / nj
-          loglikelihood = loglikelihood + sum(log(w[zIndex]))
+          loglikelihood <- loglikelihood + sum(log(w[zIndex]))
           for (r in 0:(nj - 1)) {
             a_jr = a_j1 - r * a_j2
-            loglikelihood = loglikelihood - log(a_jr)
+            loglikelihood <- loglikelihood - log(a_jr)
           }
-          step_counter = step_counter + nj
+          step_counter <- step_counter + nj
           pbar = MakeProgressBar2(step_counter, pbar, params$verbose)
         }
       }
@@ -819,14 +819,14 @@ compute_log_likelihood_cox_DP <- function(params, data) {
   }
 
   if (params$alg_iteration_counter == 1) {
-    params$nullLoglikelihood = loglikelihood
+    params$nullloglikelihood <- loglikelihood
   }
 
   converged = abs(loglikelihood - loglikelihood_old) / (abs(loglikelihood) + 0.1) < params$cutoff
   params$converged = converged
   params$scale     <- scale
   params$sBeta     = sBeta
-  params$loglikelihood = loglikelihood
+  params$loglikelihood <- loglikelihood
 
   write_time <- proc.time()[3]
   save(sBeta, file = file.path(params$write_path, "sbeta.rdata"))
@@ -849,14 +849,14 @@ ComputeSDelLCox.AC <- function(params) {
   read_time <- proc.time()[3] - read_time
   halfshare = params$halfshare[params$survival$sortedIdx, , drop = FALSE]
   p = ncol(halfshare)
-  n = params$n
+  n <- params$n
   w = exp(sBeta)
 
   deltal = as.numeric(params$survival$status)
-  deltal[1] = deltal[1]  # This is to force R to make a copy since we are exploiting
+  deltal[1] <- deltal[1]  # This is to force R to make a copy since we are exploiting
   # a pass by reference with the C call.
   w_s_r  <- matrix(0, n, p)
-  num_events = params$survival$num_events
+  num_events <- params$survival$num_events
 
   .Call("ComputeCox", params$survival$strata, halfshare, w, deltal, w_s_r,
         as.integer(n), as.integer(p), as.integer(num_events),
@@ -882,14 +882,14 @@ ComputeSDelLCox.DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeSDelLCox.DP\n\n")
   halfshare = data$halfshare[params$survival$sortedIdx, , drop = FALSE]
   p = ncol(halfshare)
-  n = params$n
+  n <- params$n
   w = exp(params$sBeta)
 
   deltal = as.numeric(params$survival$status)
-  deltal[1] = deltal[1]  # This is to force R to make a copy since we are exploiting
+  deltal[1] <- deltal[1]  # This is to force R to make a copy since we are exploiting
   # a pass by reference with the C call.
   w_s_l  <- matrix(0, n, p)
-  num_events = params$survival$num_events
+  num_events <- params$survival$num_events
 
   .Call("ComputeCox", params$survival$strata, halfshare, w, deltal, w_s_l,
         as.integer(n), as.integer(p), as.integer(num_events),
@@ -961,7 +961,7 @@ ComputeProductsCox.DP <- function(params, data) {
         E1[[id2]]  <- matrix(0, nrow = 0, ncol = length(params$idx[[id2]]))
       }
     } else {
-      E1[[1]] = t(data$x) %*% (params$w_s_l[, params$idx[[1]], drop = FALSE] + w_s_r_1)
+      E1[[1]] <- t(data$x) %*% (params$w_s_l[, params$idx[[1]], drop = FALSE] + w_s_r_1)
       D = diag(params$colrange.w_s_l[params$idx[[1]]], ncol = p, nrow = p)
       for (id2 in 2:params$numDataPartners) {
         set.seed(params$seeds[id2], kind = "Mersenne-Twister")
@@ -1236,8 +1236,8 @@ UpdateBetasCox.DP <- function(params) {
   }
 
   if (params$data_partner_id == 1) {
-    loglikelihood = params$loglikelihood
-    nullLoglikelihood = params$nullLoglikelihood
+    loglikelihood <- params$loglikelihood
+    nullloglikelihood <- params$nullLoglikelihood
   }
   write_time <- proc.time()[3]
   save(u, file = file.path(params$write_path, "u.rdata"))
@@ -1307,7 +1307,7 @@ compute_results_cox_AC <- function(params) {
   betasnew          = NULL
   scorePart         = NULL
   loglikelihood     = NULL
-  nullLoglikelihood = NULL
+  nullloglikelihood <- NULL
   score             = params$score
   read_time <- proc.time()[3]
   betas  <- matrix(0, nrow = 0, ncol = 1)

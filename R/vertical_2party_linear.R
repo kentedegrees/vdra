@@ -154,7 +154,7 @@ prepare_data_linear_a23 <- function(params, data, y_name = NULL) {
   }
   covariate_index <- setdiff(1:ncol(data), response_index)
   workdata$tags <- create_model_matrix_tags(data[, covariate_index, drop = FALSE])
-  workdata$tags = c("(Intercept)", workdata$tags)
+  workdata$tags <- c("(Intercept)", workdata$tags)
   names(workdata$tags)[1] = "numeric"
   x = model.matrix(~ ., data[, c(response_index, covariate_index), drop = FALSE])
   rownames(x) = NULL
@@ -207,7 +207,7 @@ prepare_data_linear_b23 <- function(params, data) {
     return(workdata)
   }
 
-  workdata$x = model.matrix(~ ., data)
+  workdata$x <- model.matrix(~ ., data)
   rownames(workdata$x) = NULL
   workdata$x <- workdata$x[, -1, drop = FALSE]
   workdata$means = apply(workdata$x, 2, mean)
@@ -338,8 +338,8 @@ prepare_params_linear_a2 <- function(params, data) {
 prepare_blocks_linear_a2 <- function(params, blocksize) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_blocks_linear_a2\n\n")
   # For now, assuming that p1 > 0 and p2 > 0
-  n  = params$n
-  p1 = params$p1
+  n <- params$n
+  p1 <- params$p1
   p2 = params$p2
 
   minimum_block_size <- get_block_size(p1, p2)
@@ -355,7 +355,7 @@ prepare_blocks_linear_a2 <- function(params, blocksize) {
             "Decrease the number of A covariates to", max_a_covariates, "or less.")
 
     b = n - 2 * p1 - 2
-    discrim = b^2 - 4 * (p1 + 1)^2
+    discrim <- b^2 - 4 * (p1 + 1)^2
     if (discrim >= 0) {
       min_b_covariates <- trunc(1 + (b - sqrt(discrim)) / 2)
       max_b_covariates <- trunc((b + sqrt(discrim)) / 2)
@@ -371,21 +371,21 @@ prepare_blocks_linear_a2 <- function(params, blocksize) {
   }
 
   if (is.null(blocksize)) {
-    blocksize = minimum_block_size
+    blocksize <- minimum_block_size
   }
   if (blocksize < minimum_block_size) {
     message(paste("Block size of", blocksize,
                   "is too small. Proceeding with minimum blocksize of",
                   paste0(minimum_block_size, ".")))
-    blocksize = minimum_block_size
+    blocksize <- minimum_block_size
   } else if (n < blocksize) {
     message(paste("Block size of", blocksize,
                   "is larger than size of data.  Proceeding with blocksize of",
                   paste0(n, ".")))
   }
 
-  params$blocks    = CreateBlocks(p1, p2, n, blocksize)
-  params$container = CreateContainers(p1, p2, params$blocks)
+  params$blocks    <- create_blocks(p1, p2, n, blocksize)
+  params$container <- create_containers(p1, p2, params$blocks)
   write_time <- proc.time()[3]
   save(blocksize, file = file.path(params$write_path, "blocksize.rdata"))
   write_size <- file.size(file.path(params$write_path, "blocksize.rdata"))
@@ -400,13 +400,13 @@ get_z_linear_a2 <- function(params, data) {
   write_time <- 0
   write_size <- 0
 
-  num_blocks = params$blocks$num_blocks
+  num_blocks <- params$blocks$num_blocks
   pbar <- make_progress_bar_1(num_blocks, "z", params$verbose)
   container_ct_z <- 0
   for (i in 1:num_blocks) {
     if (i %in% params$container$file_break_z) {
       container_ct_z <- container_ct_z + 1
-      filename = paste0("cz_", container_ct_z, ".rdata")
+      filename <- paste0("cz_", container_ct_z, ".rdata")
       to_write <- file(file.path(params$write_path, filename), "wb")
     }
     strt <- params$blocks$starts[i]
@@ -452,14 +452,14 @@ finalize_params_linear_b2 <- function(params, data) {
 
 prepare_blocks_linear_b2 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_blocks_linear_b2\n\n")
-  blocksize = NULL
+  blocksize <- NULL
   # For now, assuming that p1 > 0 and p2 > 0
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "blocksize.rdata")) # load blocksize
   read_size <- file.size(file.path(params$read_path, "blocksize.rdata"))
   read_time <- proc.time()[3] - read_time
-  params$blocks    = CreateBlocks(params$p1, params$p2, params$n, blocksize)
-  params$container = CreateContainers(params$p1, params$p2, params$blocks)
+  params$blocks    <- create_blocks(params$p1, params$p2, params$n, blocksize)
+  params$container <- create_containers(params$p1, params$p2, params$blocks)
   params <- add_to_log(params, "prepare_blocks_linear_b2", read_time, read_size, 0, 0)
   return(params)
 }
@@ -531,8 +531,8 @@ get_w_linear_b2 <- function(params, data) {
 
 get_products_linear_a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "get_products_linear_a2\n\n")
-  n  = params$n
-  p1 = params$p1
+  n <- params$n
+  p1 <- params$p1
   p2 = params$p2
   xb_t_xb <- NULL
 
@@ -541,8 +541,8 @@ get_products_linear_a2 <- function(params, data) {
   read_size <- file.size(file.path(params$read_path, "xbtxb.rdata"))
   read_time <- proc.time()[3] - read_time
 
-  xa_t_xa = t(data$x) %*% data$x
-  xa_t_y  = t(data$x) %*% data$Y
+  xa_t_xa <- t(data$x) %*% data$x
+  xa_t_y  <- t(data$x) %*% data$Y
   y_t_xb  = 0
   xa_t_xb = 0
 
@@ -552,7 +552,7 @@ get_products_linear_a2 <- function(params, data) {
   for (i in 1:params$blocks$num_blocks) {
     if (i %in% params$container$filebreak.w) {
       container_ct_w <- container_ct_w + 1
-      filename = paste0("cw_", container_ct_w, ".rdata")
+      filename <- paste0("cw_", container_ct_w, ".rdata")
       to_read <- file(file.path(params$read_path, filename), "rb")
     }
     strt <- params$blocks$starts[i]
@@ -574,7 +574,7 @@ get_products_linear_a2 <- function(params, data) {
     pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
 
-  xtx = rbind(cbind(xa_t_xa, xa_t_xb), cbind(t(xa_t_xb), xb_t_xb))
+  xtx <- rbind(cbind(xa_t_xa, xa_t_xb), cbind(t(xa_t_xb), xb_t_xb))
   x_t_y = rbind(xa_t_y, t(y_t_xb))
 
   # lasso: x is standardized but needs to be divided by sqrt(n - 1),
@@ -582,7 +582,7 @@ get_products_linear_a2 <- function(params, data) {
   x_t_x_lasso = xtx / (n - 1)
   x_t_y_lasso = params$sdy * x_t_y / sqrt(n - 1)
 
-  params$xtx = xtx
+  params$xtx <- xtx
   params$xty = x_t_y
   params$xtxLasso = x_t_x_lasso
   params$xtyLasso = x_t_y_lasso
@@ -613,11 +613,11 @@ compute_results_linear_a2 <- function(params, data) {
   means_b   <- params$means_b
 
   # First we de-standardize.
-  xtx = diag(c(sda, sdb)) %*% xtx %*% diag(c(sda, sdb))
+  xtx <- diag(c(sda, sdb)) %*% xtx %*% diag(c(sda, sdb))
   offset  <- matrix(c(means_a, means_b), ncol = 1) %*%
     matrix(c(means_a, means_b), nrow = 1) * n
   offset[1, 1] = 0
-  xtx = xtx + offset
+  xtx <- xtx + offset
 
   xty = diag(c(sda, sdb)) %*% xty * sdy
   offset = n * means_y * matrix(c(means_a, means_b), ncol = 1)
@@ -625,11 +625,11 @@ compute_results_linear_a2 <- function(params, data) {
 
   # Now, we check for colinearity
   nrow = nrow(xtx)
-  indicies = c(1)
+  indicies <- c(1)
   for (i in 2:nrow) {
-    temp_indicies = c(indicies, i)
+    temp_indicies <- c(indicies, i)
     if (rcond(xtx[temp_indicies, temp_indicies]) > 10^8 * .Machine$double.eps) {
-      indicies = c(indicies, i)
+      indicies <- c(indicies, i)
     }
   }
 
@@ -644,7 +644,7 @@ compute_results_linear_a2 <- function(params, data) {
   xtx           = xtx[indicies, indicies, drop = FALSE]
   xty            <- matrix(xty[indicies, ], ncol = 1)
 
-  invxtx = solve(xtx)
+  invxtx <- solve(xtx)
   betas  = drop(invxtx %*% xty)
 
   num_covariates <- p - 1

@@ -2,19 +2,19 @@
 
 check_colinearity_logistic_t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "check_colinearity_logistic_t3\n\n")
-  xtx = params$xtx
+  xtx <- params$xtx
   xty = params$xty
 
   nrow = nrow(xtx)
-  indicies = c(1)
+  indicies <- c(1)
   for (i in 2:nrow) {
-    temp_indicies = c(indicies, i)
+    temp_indicies <- c(indicies, i)
     if (rcond(xtx[temp_indicies, temp_indicies]) > 10^8 * .Machine$double.eps) {
-      indicies = c(indicies, i)
+      indicies <- c(indicies, i)
     }
   }
 
-  xtx = xtx[indicies, indicies, drop = FALSE]
+  xtx <- xtx[indicies, indicies, drop = FALSE]
   xty = xty[indicies, drop = FALSE]
 
   a_names               = params$colnamesA
@@ -42,8 +42,8 @@ check_colinearity_logistic_t3 <- function(params) {
   params$xtx           = xtx
   params$xty           = xty
 
-  a_indicies = params$a_indicies_keep
-  b_indicies = params$b_indicies_keep
+  a_indicies <- params$a_indicies_keep
+  b_indicies <- params$b_indicies_keep
 
   write_time <- proc.time()[3]
   save(a_indicies, file = file.path(params$write_path, "Aindicies.rdata"))
@@ -52,8 +52,8 @@ check_colinearity_logistic_t3 <- function(params) {
                                                           "Bindicies.rdata"))))
   write_time <- proc.time()[3] - write_time
 
-  b_tags = params$b_tags[params$b_indicies_keep]
-  a_tags = params$a_tags[params$a_indicies_keep][-1]
+  b_tags <- params$b_tags[params$b_indicies_keep]
+  a_tags <- params$a_tags[params$a_indicies_keep][-1]
 
   if ((length(unique(a_tags)) == 1) | (length(unique(a_tags)) >= 2 & !("numeric" %in% names(a_tags)))) {
     params$failed <- TRUE
@@ -93,8 +93,8 @@ compute_initial_betas_logistic_t3 <- function(params) {
   params$betas_a_old  <- matrix(0, p1, 1)
   params$betas_b    = b_betas
 
-  params$alg_iteration_counter      = 1
-  params$delta_beta = Inf
+  params$alg_iteration_counter      <- 1
+  params$delta_beta <- Inf
   params$converged = FALSE
   converged = FALSE
   max_iter_exceeded = FALSE
@@ -121,7 +121,7 @@ compute_initial_betas_logistic_t3 <- function(params) {
 
 update_params_logistic_a3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "update_params_logistic_a3\n\n")
-  a_indicies = NULL
+  a_indicies <- NULL
   a_xty      = NULL
   p2        = NULL
   read_time <- proc.time()[3]
@@ -147,7 +147,7 @@ update_params_logistic_a3 <- function(params) {
 
 update_params_logistic_b3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "update_params_logistic_b3\n\n")
-  b_indicies = NULL
+  b_indicies <- NULL
   b_xty      = NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "Bindicies.rdata"))
@@ -171,14 +171,14 @@ update_params_logistic_b3 <- function(params) {
 
 update_data_logistic_a3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "update_data_logistic_a3\n\n")
-  data$x = as.matrix(data$x[, params$a_indicies_keep, drop = FALSE])
+  data$x <- as.matrix(data$x[, params$a_indicies_keep, drop = FALSE])
   return(data)
 }
 
 
 update_data_logistic_b3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "update_data_logistic_b3\n\n")
-  data$x = as.matrix(data$x[, params$b_indicies_keep, drop = FALSE])
+  data$x <- as.matrix(data$x[, params$b_indicies_keep, drop = FALSE])
   return(data)
 }
 
@@ -355,7 +355,7 @@ process_v_logistic_t3 <- function(params) {
 
   params$xbtwxb = xb_t_w_xb
 
-  num_blocks = params$blocks$num_blocks
+  num_blocks <- params$blocks$num_blocks
   pbar = MakeProgressBar1(num_blocks, "(I-z*z')w*XB*R", params$verbose)
 
   containerCt.rv = 0
@@ -491,7 +491,7 @@ get_xr_logistic_a3 <- function(params, data) {
 process_xt_wx_logistic_t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "process_xt_wx_logistic_t3\n\n")
   xa_t_w_xa = NULL
-  p1 = params$p1
+  p1 <- params$p1
   p2 = params$p2
 
   read_time <- proc.time()[3]
@@ -719,7 +719,7 @@ compute_results_logistic_a3 <- function(params, data) {
   read_size <- file.size(file.path(params$read_path[["T"]], "finalFitted.rdata"))
   read_time <- proc.time()[3] - read_time
 
-  n = params$n
+  n <- params$n
   ct      = sum(data$Y)
   params$final_fitted = finalFitted
   resdev  = -2 * (sum(data$Y * finalFitted) - sum(log(1 + exp(finalFitted))))
@@ -764,7 +764,7 @@ compute_results_logistic_t3 <- function(params) {
   p1_old = params$p1_old
   p2_old = params$p2_old
   p_old  = params$p_old
-  indicies = params$IndiciesKeep
+  indicies <- params$IndiciesKeep
 
   # If xtwx were singular, it would have been caught in GetII.A2(), so we may
   # assume that xtwx is NOT singular and so we do not have to do a check.

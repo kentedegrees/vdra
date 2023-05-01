@@ -908,7 +908,7 @@ create_model_matrix_tags <- function(data) {
       classes[i] = "factor"
     }
   }
-  tags = rep(names(data), times = num)
+  tags <- rep(names(data), times = num)
   names(tags) = rep(classes, times = num)
   return(tags)
 }
@@ -2117,12 +2117,12 @@ get_block_size <- function(pA, pB) {
   # We need to guarentee that pA + pB + g <= blocksize
   # where g = (pA + 1) / (pA + pB + 1) * blocksize
   # May change in the future.
-  minBlocksize = max(25, trunc(1 + (pA + pB + 1)^2 / pB))
+  minblocksize <- max(25, trunc(1 + (pA + pB + 1)^2 / pB))
   return(minBlocksize)
 }
 
 
-CreateBlocks <- function(pA, pB, n, blocksize) {
+create_blocks <- function(pA, pB, n, blocksize) {
 
   # Divides the matrix with ncol(n) into submatrices of approximately
   # equal size. minimum size is blocksize.
@@ -2138,7 +2138,7 @@ CreateBlocks <- function(pA, pB, n, blocksize) {
   gBigBlock       <- trunc(bigBlocksize * (pA + 1) / (pA + pB + 1))
 
   blocks$num_blocks       = num_blocks
-  blocks$littleBlocksize = newBlocksize
+  blocks$littleblocksize <- newBlocksize
   blocks$bigBlocksize    = bigBlocksize
   blocks$numLittleBlocks = numLittleBlocks
   blocks$numBigBlocks    = numBigBlocks
@@ -2166,13 +2166,13 @@ CreateBlocks <- function(pA, pB, n, blocksize) {
 }
 
 
-CreateContainers <- function(pA, pB, blocks) {
+create_containers <- function(pA, pB, blocks) {
   containers <- list()
 
   maximumFilesize = 25 * 1024^2
 
   num_blocks = blocks$num_blocks
-  littleBlocksize = blocks$littleBlocksize
+  littleblocksize <- blocks$littleBlocksize
 
   littleBlockG = blocks$gLittleBlock
 
@@ -4101,7 +4101,7 @@ differentModel <- function(formula = NULL, x = NULL) {
   p         = length(indicies)
   n         = x$n
 
-  invxtx = solve(xtx)
+  invxtx <- solve(xtx)
   betas  = drop(invxtx %*% xty)
 
   num_covariates <- p - 1

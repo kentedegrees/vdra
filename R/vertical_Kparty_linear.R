@@ -114,12 +114,12 @@ PrepareDataLinLog.DP1 <- function(params, data, y_name = NULL) {
   }
   covariate_index <- setdiff(1:ncol(data), response_index)
   workdata$tags <- create_model_matrix_tags(data[, covariate_index, drop = FALSE])
-  workdata$tags = c("(Intercept)", workdata$tags)
+  workdata$tags <- c("(Intercept)", workdata$tags)
   names(workdata$tags)[1] = "numeric"
   x = model.matrix(~ ., data[, c(response_index, covariate_index), drop = FALSE])
   rownames(x) = NULL
   covariate_index <- setdiff(1:ncol(x), 2)
-  workdata$x = x[, c(2, covariate_index), drop = FALSE]
+  workdata$x <- x[, c(2, covariate_index), drop = FALSE]
 
   workdata$n        = nrow(workdata$x)
   workdata$colmin   = apply(workdata$x, 2, min)
@@ -153,7 +153,7 @@ PrepareDataLinLog.DPk <- function(params, data) {
   data <- data.frame(data) # convert to a clean data.frame
 
   workdata$tags <- create_model_matrix_tags(data)
-  workdata$x = model.matrix(~ ., data)
+  workdata$x <- model.matrix(~ ., data)
   rownames(workdata$x) = NULL
   workdata$x <- workdata$x[, -1, drop = FALSE]
 
@@ -290,7 +290,7 @@ PrepareSharesLinear.DP <- function(params, data) {
 
   for (id in 1:params$numDataPartners) {
     if (id == params$data_partner_id) {
-      products[[id]] = t(data$x) %*% data$x
+      products[[id]] <- t(data$x) %*% data$x
       params$ps      = c(params$ps, params$p)
       params$scalers = c(params$scalers, params$scaler)
       params$seeds   = c(params$seeds, params$seed)
@@ -443,7 +443,7 @@ compute_results_linear_AC <- function(params) {
     }
   }
 
-  tags = params$tags
+  tags <- params$tags
   min = 1
   for (id in 1:params$numDataPartners) {
     max = min + params$pi[id] - 1
@@ -484,7 +484,7 @@ compute_results_linear_AC <- function(params) {
   xtx           = xtx[indicies, indicies, drop = FALSE]
   xty           = xty[indicies, , drop = FALSE]
 
-  invxtx = solve(xtx)
+  invxtx <- solve(xtx)
   betas  = drop(invxtx %*% xty)
 
   num_covariates <- p - 1

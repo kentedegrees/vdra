@@ -207,7 +207,7 @@ update_params_logistic_DP <- function(params) {
   betas = NULL
   read_time <- proc.time()[3]
   load(file.path(params$readPathAC, "indicies.rdata"))
-  filename = paste0("u_beta_", params$data_partner_id, ".rdata")
+  filename <- paste0("u_beta_", params$data_partner_id, ".rdata")
   load(file.path(params$readPathAC, filename))
   read_size <- file.size(file.path(params$readPathAC, "indicies.rdata")) +
     file.size(file.path(params$readPathAC, filename))
@@ -311,7 +311,7 @@ ComputeStWSLogistic.DP <- function(params, data) {
         t(halfshareDP) %*% MultiplyDiagonalWTimesX(w, halfshare) +
         t(halfshareDP) %*% MultiplyDiagonalWTimesX(w, data$x - halfshare)
     } else if (id == params$data_partner_id) {
-      C[[id]] = t(data$x) %*% MultiplyDiagonalWTimesX(w, data$x)
+      C[[id]] <- t(data$x) %*% MultiplyDiagonalWTimesX(w, data$x)
     } else {
       set.seed(params$seeds[id], kind = "Mersenne-Twister")
       idx <- params$indicies[[id]]
@@ -615,7 +615,7 @@ compute_results_logistic_AC <- function(params) {
   stats$secoef = rep(NA, params$p)
   stats$tvals  = rep(NA, params$p)
   stats$pvals  = rep(NA, params$p)
-  stats$n  = params$n
+  stats$n <- params$n
   stats$nulldev = nulldev
   stats$resdev = resdev
   stats$aic = resdev + 2 * sum(params$pReduct)
