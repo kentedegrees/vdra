@@ -4,12 +4,12 @@ PrepareFolder.ACDP = function(params, monitor_folder) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareFolder.ACDP\n\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.  Please use the same monitor_folder as the DataMart Client.")
-    params$failed = TRUE
+    params$failed <- TRUE
     return(params)
   }
   if (class(monitor_folder) != "character") {
     warning("monitor_folder directory is not valid.  Please use the same monitor_folder as the DataMart Client.")
-    params$failed = TRUE
+    params$failed <- TRUE
     return(params)
   }
   while (!dir.exists(monitor_folder)) {
@@ -17,9 +17,9 @@ PrepareFolder.ACDP = function(params, monitor_folder) {
   }
 
   params$dplocalPath   = file.path(monitor_folder, "dplocal")
-  params$rprogramsPath = file.path(monitor_folder, "rprograms")
-  params$macrosPath    = file.path(monitor_folder, "macros")
-  if (params$dataPartnerID == 0) {
+  params$r_programs_path = file.path(monitor_folder, "rprograms")
+  params$macros_path    = file.path(monitor_folder, "macros")
+  if (params$data_partner_id == 0) {
     params$write_path   = file.path(monitor_folder, "inputfiles")
   } else {
     params$write_path   = file.path(monitor_folder, "msoc")
@@ -28,51 +28,51 @@ PrepareFolder.ACDP = function(params, monitor_folder) {
   params$readPathDP    = file.path(monitor_folder, paste0("msoc", 1:params$numDataPartners))
 
   if (!CreateIOLocation(monitor_folder, "dplocal")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$dplocalPath, "."),
                                 "Check the path and restart the program.")
   }
   if (!CreateIOLocation(monitor_folder, "rprograms")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
                                 "Could not create directory",
-                                paste0(params$rprogramsPath, "."),
+                                paste0(params$r_programs_path, "."),
                                 "Check the path and restart the program.")
   }
   if (!CreateIOLocation(monitor_folder, "macros")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
                                 "Could not create directory",
-                                paste0(params$macrosPath, "."),
+                                paste0(params$macros_path, "."),
                                 "Check the path and restart the program.")
   }
   if (!CreateIOLocation(monitor_folder, "inputfiles")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$readPathAC, "."),
                                 "Check the path and restart the program.")
   }
   if (!CreateIOLocation(monitor_folder, "msoc")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$write_path, "."),
                                 "Check the path and restart the program.")
   }
   for (id in 1:params$numDataPartners) {
     if (!CreateIOLocation(monitor_folder, paste0("msoc", id))) {
-      params$failed = TRUE
-      params$error_message = paste(params$error_message,
+      params$failed <- TRUE
+      params$error_message <- paste(params$error_message,
                                   "Could not create directory",
                                   paste0(params$readPathDP[id], "."),
                                   "Check the path and restart the program.")
     }
   }
 
-  if (params$dataPartnerID != 0) {
+  if (params$data_partner_id != 0) {
     Sys.sleep(1)
     DeleteTrigger("files_done.ok", params$readPathAC)
     for (id in 1:params$numDataPartners) {
@@ -178,9 +178,9 @@ SendBasicInfo.DP = function(params, data) {
   n = data$n
   params$n = n
   analysis = params$analysis
-  dataPartnerID = params$dataPartnerID
+  data_partner_id = params$data_partner_id
   write_time = proc.time()[3]
-  save(analysis, n, dataPartnerID, file = file.path(params$write_path, "n_analysis.rdata"))
+  save(analysis, n, data_partner_id, file = file.path(params$write_path, "n_analysis.rdata"))
   write_size = file.size(file.path(params$write_path, "n_analysis.rdata"))
   write_time = proc.time()[3] - write_time
   params <- add_to_log(params, "SendBasicInfo.DP", 0, 0, write_time, write_size)
@@ -193,12 +193,12 @@ CheckAgreement.AC = function(params) {
   read_size = 0
   analysisAll = rep("", params$numDataPartners)
   nAll        = rep(0, params$numDataPartners)
-  nDataPartnerID = rep(0, params$numDataPartners)
+  ndata_partner_id = rep(0, params$numDataPartners)
   message1    = NULL
   message2    = NULL
   n           = NULL
   analysis    = NULL
-  dataPartnerID = NULL
+  data_partner_id = NULL
   for (id in 1:params$numDataPartners) {
     read_time = read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "n_analysis.rdata"))
@@ -206,11 +206,11 @@ CheckAgreement.AC = function(params) {
     read_time = read_time + proc.time()[3]
     analysisAll[id] = analysis
     nAll[id]        = n
-    nDataPartnerID[id] = dataPartnerID
+    ndata_partner_id[id] = data_partner_id
   }
 
   if (any(params$analysis != analysisAll)) {
-    params$failed = TRUE
+    params$failed <- TRUE
     message1 = "Different regressions have been specified.\n"
     message1 = paste(message1, "Analysis center specified", params$analysis, "regression.\n")
     for (id in 1:params$numDataPartners) {
@@ -219,7 +219,7 @@ CheckAgreement.AC = function(params) {
   }
 
   if (min(nAll) < max(nAll)) {
-    params$failed = TRUE
+    params$failed <- TRUE
     message2 = "Data partners provided different numbers of observations.\n"
     for (id in 1:params$numDataPartners) {
       message2 = paste(message2, "Data partner", id, "has", nAll[id], "observations.\n")
@@ -229,10 +229,10 @@ CheckAgreement.AC = function(params) {
   message3error = FALSE
   message3 = ""
   for (i in 1:params$numDataPartners) {
-    if (i != nDataPartnerID[i]) {
+    if (i != ndata_partner_id[i]) {
       message3error = TRUE
-      params$failed = TRUE
-      message3 = paste0(message3, "Data Partner ", i, " reports its ID as ", nDataPartnerID[i], "\n")
+      params$failed <- TRUE
+      message3 = paste0(message3, "Data Partner ", i, " reports its ID as ", ndata_partner_id[i], "\n")
     }
   }
   if (message3error) {
@@ -240,7 +240,7 @@ CheckAgreement.AC = function(params) {
   }
 
   if (params$failed) {
-    params$error_message = paste0(message1, message2, message3)
+    params$error_message <- paste0(message1, message2, message3)
   }
 
   params <- add_to_log(params, "CheckAgreement.AC", read_time, read_size, 0, 0)
@@ -289,7 +289,7 @@ PrepareSharesLinear.DP = function(params, data) {
   params$seeds = c()
 
   for (id in 1:params$numDataPartners) {
-    if (id == params$dataPartnerID) {
+    if (id == params$data_partner_id) {
       products[[id]] = t(data$X) %*% data$X
       params$ps      = c(params$ps, params$p)
       params$scalers = c(params$scalers, params$scaler)
@@ -307,11 +307,11 @@ PrepareSharesLinear.DP = function(params, data) {
     set.seed(seed, kind = "Mersenne-Twister")
     halfShare2 = matrix(rnorm(params$n * p, sd = 20), nrow = params$n, ncol = p)
 
-    if (id < params$dataPartnerID) {
+    if (id < params$data_partner_id) {
       products[[id]] = t(halfShare2) %*% (data$X - scaler / (scaler + params$scaler) * halfshare)
     }
 
-    if (id > params$dataPartnerID) {
+    if (id > params$data_partner_id) {
       products[[id]] = t(data$X - scaler / (scaler + params$scaler) * halfshare) %*% halfShare2
     }
   }
@@ -457,12 +457,12 @@ ComputeResultsLinear.AC = function(params) {
     min = max + 1
   }
 
-  params$error_message = ""
+  params$error_message <- ""
   numeric_found = FALSE
   for (id in 2:params$numDataPartners) {
     if (length(unique(tags[[id]])) == 0) {
-      params$failed = TRUE
-      params$error_message = paste0(params$error_message,
+      params$failed <- TRUE
+      params$error_message <- paste0(params$error_message,
                                    paste("After removing colinear covariates, Data Partner",
                                          id, "has no covariates."))
     } else {
@@ -470,8 +470,8 @@ ComputeResultsLinear.AC = function(params) {
     }
   }
   if (!numeric_found) {
-    params$failed = TRUE
-    params$error_message = paste0(params$error_message,
+    params$failed <- TRUE
+    params$error_message <- paste0(params$error_message,
                                  paste("After removing colinear covariates, no Data Partner > DP1 has a numeric covariate."))
   }
 
@@ -586,7 +586,7 @@ GetResultsLinear.DP = function(params) {
 DataPartnerKLinear = function(data,
                               yname           = NULL,
                               numDataPartners = NULL,
-                              dataPartnerID   = NULL,
+                              data_partner_id   = NULL,
                               monitor_folder   = NULL,
                               sleep_time       = 10,
                               maxWaitingTime  = 24 * 60 * 60,
@@ -594,7 +594,7 @@ DataPartnerKLinear = function(data,
                               trace          = FALSE,
                               verbose        = TRUE) {
 
-  params <- PrepareParams.kp("linear", dataPartnerID, numDataPartners, ac = FALSE,
+  params <- PrepareParams.kp("linear", data_partner_id, numDataPartners, ac = FALSE,
                             popmednet = popmednet, trace = trace, verbose = verbose)
   if (params$failed) {
     warning(params$error_message)
@@ -612,7 +612,7 @@ DataPartnerKLinear = function(data,
     return(invisible(NULL))
   }
 
-  if (dataPartnerID == 1) {
+  if (data_partner_id == 1) {
     data = PrepareDataLinLog.DP1(params, data, yname)
     params <- add_to_log(params, "PrepareDataLinLog.DP1", 0, 0, 0, 0)
   } else {
@@ -622,12 +622,12 @@ DataPartnerKLinear = function(data,
 
 
   if (data$failed) {
-    params$error_message = paste("Error processing data for data partner", params$dataPartnerID, "\n")
+    params$error_message <- paste("Error processing data for data partner", params$data_partner_id, "\n")
     MakeErrorMessage(params$write_path, params$error_message)
     files = "error_message.rdata"
     params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
                                   sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
-    params$error_message = ReadErrorMessage(params$readPathAC)
+    params$error_message <- ReadErrorMessage(params$readPathAC)
     warning(params$error_message)
     params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
@@ -640,7 +640,7 @@ DataPartnerKLinear = function(data,
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
-    params$error_message = possibleError$message
+    params$error_message <- possibleError$message
     warning(possibleError$message)
     params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
@@ -658,7 +658,7 @@ DataPartnerKLinear = function(data,
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
-    params$error_message = possibleError$message
+    params$error_message <- possibleError$message
     warning(possibleError$message)
     params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
@@ -700,7 +700,7 @@ AnalysisCenterKLinear = function(numDataPartners = NULL,
 
   possibleError = ReceivedError.kp(params, from = "DP")
   if (possibleError$error) {
-    params$error_message = possibleError$message
+    params$error_message <- possibleError$message
     warning(possibleError$message)
     MakeErrorMessage(params$write_path, possibleError$message)
     files = "error_message.rdata"

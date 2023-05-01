@@ -507,7 +507,7 @@ DataPartner.KParty = function(regression            = "linear",
                               strata                = NULL,
                               mask                  = TRUE,
                               numDataPartners       = NULL,
-                              dataPartnerID         = NULL,
+                              data_partner_id         = NULL,
                               monitor_folder         = NULL,
                               sleep_time             = 10,
                               maxWaitingTime        = 86400,
@@ -521,21 +521,21 @@ DataPartner.KParty = function(regression            = "linear",
     warning("monitor_folder must be specified.")
   } else if (is.null(numDataPartners)) {
     warning("numDataPartners must be specified")
-  } else if (is.null(dataPartnerID)) {
-    warning("dataPartnerID must be specified")
+  } else if (is.null(data_partner_id)) {
+    warning("data_partner_id must be specified")
   } else if (regression == "cox") {
     stats = DataPartnerKCox(data, response, strata, mask, numDataPartners,
-                            dataPartnerID, monitor_folder,
+                            data_partner_id, monitor_folder,
                             sleep_time, maxWaitingTime, popmednet, trace,
                             verbose)
   } else if (regression == "linear") {
     stats = DataPartnerKLinear(data, response, numDataPartners,
-                               dataPartnerID, monitor_folder,
+                               data_partner_id, monitor_folder,
                                sleep_time, maxWaitingTime, popmednet, trace,
                                verbose)
   } else  if (regression == "logistic") {
     stats = DataPartnerKLogistic(data, response, numDataPartners,
-                                 dataPartnerID, monitor_folder,
+                                 data_partner_id, monitor_folder,
                                  sleep_time, maxWaitingTime, popmednet, trace,
                                  verbose)
   } else {
@@ -568,10 +568,10 @@ DataPartner.KParty = function(regression            = "linear",
 #'   \code{"cox"} returns a fitted Cox proportional hazards model.
 #' @param data a data.frame or matrix which contains the data to be used in the
 #'   model.  All columns will be used as covariates in the regression with the
-#'   exception of the data partner which has \code{dataPartnerID = 1}.  For this
+#'   exception of the data partner which has \code{data_partner_id = 1}.  For this
 #'   data partner, all columns, with the exception of the column specified by
 #'   \code{response}, will be used as covariates in the regression.
-#' @param response only used for data partner with \code{dataPartnerID = 1}. For
+#' @param response only used for data partner with \code{data_partner_id = 1}. For
 #'   \code{"linear"} and \code{"logistic"} regression, the name of the column in
 #'   \code{data} which holds the response variable.  If \code{reponse = NULL},
 #'   then the first column of \code{data} will be used as the response variable.
@@ -591,8 +591,8 @@ DataPartner.KParty = function(regression            = "linear",
 #'   will be changed to \code{NA}.
 #' @param numDataPartners the number of data partners which are supplying data
 #'   for the regression.
-#' @param dataPartnerID a unique identifier for each data partner.  The data
-#'   partner with the response variable(s) must have \code{dataPartnerID = 1}.
+#' @param data_partner_id a unique identifier for each data partner.  The data
+#'   partner with the response variable(s) must have \code{data_partner_id = 1}.
 #'   All other data partners must have an integer value from 2 to
 #'   \code{numDataPartners}.
 #' @param monitor_folder the folder where the directories \code{dplocal},
@@ -644,7 +644,7 @@ DataPartner.KParty = function(regression            = "linear",
 #'                          data = vdra_data[, c(1, 5:7)],
 #'                          response = "Change_BMI",
 #'                          numDataPartners = 2,
-#'                          dataPartnerID = 1,
+#'                          data_partner_id = 1,
 #'                          monitor_folder = tempdir())
 #'
 #' # Data Partner 2 -- To be run in third instand of R, on perhaps a different
@@ -654,7 +654,7 @@ DataPartner.KParty = function(regression            = "linear",
 #' fit = DataPartner.KParty(regression = "linear",
 #'                          data = vdra_data[, 8:11],
 #'                          numDataPartners = 2,
-#'                          dataPartnerID = 2,
+#'                          data_partner_id = 2,
 #'                          monitor_folder = tempdir())
 #'
 #' ## 3 party logistic regression
@@ -675,7 +675,7 @@ DataPartner.KParty = function(regression            = "linear",
 #'                          data = vdra_data[, c(2, 5:7)],
 #'                          response = "WtLost",
 #'                          numDataPartners = 2,
-#'                          dataPartnerID = 1,
+#'                          data_partner_id = 1,
 #'                          monitor_folder = tempdir())
 #'
 #' # Data Partner 2 -- To be run in third instand of R, on perhaps a different
@@ -685,7 +685,7 @@ DataPartner.KParty = function(regression            = "linear",
 #' fit = DataPartner.KParty(regression = "logistic",
 #'                          data = vdra_data[, 8:11],
 #'                          numDataPartners = 2,
-#'                          dataPartnerID = 2,
+#'                          data_partner_id = 2,
 #'                          monitor_folder = tempdir())
 #'
 #' ## 3 party cox regression
@@ -707,7 +707,7 @@ DataPartner.KParty = function(regression            = "linear",
 #'                          response = c("Time", "Status"),
 #'                          strata = c("Exposure", "Sex"),
 #'                          numDataPartners = 2,
-#'                          dataPartnerID = 1,
+#'                          data_partner_id = 1,
 #'                          monitor_folder = tempdir())
 #'
 #' # Data Partner 2 -- To be run in third instand of R, on perhaps a different
@@ -718,7 +718,7 @@ DataPartner.KParty = function(regression            = "linear",
 #'                          data = vdra_data[, 8:11],
 #'                          strata = c("Exposure", "Sex"),
 #'                          numDataPartners = 2,
-#'                          dataPartnerID = 2,
+#'                          data_partner_id = 2,
 #'                          monitor_folder = tempdir())
 #' }
 
@@ -975,12 +975,12 @@ PrepareParams.3p = function(analysis, party, msreqid = "v_default_00_000",
 
 ########################### K PARTY SETUP FUNCTIONS ############################
 
-PrepareParams.kp = function(analysis, dataPartnerID, numDataPartners,
+PrepareParams.kp = function(analysis, data_partner_id, numDataPartners,
                             msreqid = "v_default_00_000", cutoff = NULL,
                             maxIterations = NULL, ac = FALSE, popmednet = TRUE,
                             trace = FALSE, verbose = TRUE) {
   params                     = list()
-  params$dataPartnerID       = dataPartnerID
+  params$data_partner_id       = data_partner_id
   params$numDataPartners     = numDataPartners
   params$analysis            = analysis
   params$msreqid             = msreqid
@@ -1006,19 +1006,19 @@ PrepareParams.kp = function(analysis, dataPartnerID, numDataPartners,
        numDataPartners <= 0 ||
        is.infinite(numDataPartners) ||
        round(numDataPartners) != numDataPartners)) {
-    params$failed = TRUE
+    params$failed <- TRUE
     params$errorMessage = "numDataPartners must be a positive integer, and must equal the number of data partners providing data."
   }
   if (!params$failed) {
     if (ac) {
-      if (dataPartnerID != 0) {
-        params$failed = TRUE
-        params$errorMessage = "dataPartnerID for Analysis Center must be 0.\n\n"
+      if (data_partner_id != 0) {
+        params$failed <- TRUE
+        params$errorMessage = "data_partner_id for Analysis Center must be 0.\n\n"
       }
     } else {
-      if (dataPartnerID <= 0 || dataPartnerID > numDataPartners) {
-        params$failed = TRUE
-        params$errorMessage = paste0("dataPartnerID must be between 1 and ", numDataPartners, " inclusive.\n\n")
+      if (data_partner_id <= 0 || data_partner_id > numDataPartners) {
+        params$failed <- TRUE
+        params$errorMessage = paste0("data_partner_id must be between 1 and ", numDataPartners, " inclusive.\n\n")
       }
     }
   }
@@ -1746,7 +1746,7 @@ WaitForTurn.kp = function(params, sleep_time) {
   partyOffset = 15
 
   modulus   = (params$numDataPartners + 1) * partyOffset
-  targetTime = params$dataPartnerID * partyOffset
+  targetTime = params$data_partner_id * partyOffset
 
   if (params$verbose) cat("Elapsed Time:", HMS(0), "\r")
   while (as.integer(Sys.time()) %% modulus != targetTime) {
@@ -1774,7 +1774,7 @@ SendPauseQuit.kp = function(params,
   WriteLogCSV(params)
   WriteLogRaw(params)
 
-  if (params$dataPartnerID != 0) {
+  if (params$data_partner_id != 0) {
     WriteTrackingTableRaw(params)
 
     filesAC = c(filesAC, "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
@@ -1783,7 +1783,7 @@ SendPauseQuit.kp = function(params,
     }
 
     dataPartnerTarget = 1:params$numDataPartners
-    dataPartnerTarget = dataPartnerTarget[-params$dataPartnerID]
+    dataPartnerTarget = dataPartnerTarget[-params$data_partner_id]
     files = c(filesAC, rep(filesDP, length(dataPartnerTarget)), "file_list.csv")
     transfer = c(rep(1, length(files) - 1), 10)
     destination = c(rep(0, length(filesAC)),
@@ -1791,7 +1791,7 @@ SendPauseQuit.kp = function(params,
                     10)
   }
 
-  if (params$dataPartnerID == 0) {
+  if (params$data_partner_id == 0) {
     WriteTrackingTableCSV(params)
     files       = c("dl_track_tbl.csv", "file_list.csv")
     if (job_failed) {
@@ -1816,7 +1816,7 @@ SendPauseQuit.kp = function(params,
   }
   WriteStampsCSV(params)
   WriteStampsRaw(params)
-  if (params$dataPartnerID == 0) {
+  if (params$data_partner_id == 0) {
     if (job_failed)  {
       MakeTrigger("job_fail.ok",  params$write_path)
     } else {
@@ -1852,8 +1852,8 @@ SendPauseContinue.kp = function(params,
       filesDP = c(filesDP, "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
     }
     dataPartnerTarget = 1:params$numDataPartners
-    if (params$dataPartnerID != 0) {
-      dataPartnerTarget = dataPartnerTarget[-params$dataPartnerID]
+    if (params$data_partner_id != 0) {
+      dataPartnerTarget = dataPartnerTarget[-params$data_partner_id]
     }
 
     files = c(filesAC, rep(filesDP, length(dataPartnerTarget)), "file_list.csv")
@@ -1880,7 +1880,7 @@ SendPauseContinue.kp = function(params,
     transfer = rep(1, length(files))
     destination = rep(0, length(filesAC))
     for (dp in 1:params$numDataPartners) {
-      if (length(filesDP[[dp]]) > 0 && dp != params$dataPartnerID) {
+      if (length(filesDP[[dp]]) > 0 && dp != params$data_partner_id) {
         files = c(files, filesDP[[dp]], "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
         transfer = c(transfer, rep(1, length(filesDP[[dp]]) + 3))
         destination = c(destination, rep(dp, length(filesDP[[dp]]) + 3))
@@ -1890,7 +1890,7 @@ SendPauseContinue.kp = function(params,
     transfer = c(transfer, 10)
     destination = c(destination, 10)
   }
-  if (params$dataPartnerID == 0) {
+  if (params$data_partner_id == 0) {
     WriteTrackingTableCSV(params)
     files = c(files, "dl_track_tbl.csv")
     transfer    = c(transfer, 10)
@@ -1918,17 +1918,17 @@ SendPauseContinue.kp = function(params,
     DeleteTrigger("files_done.ok", params$readPathAC)
   } else if (from == "DP") {
     if (params$verbose) cat("Waiting for data partners\n")
-    if (params$dataPartnerID == 0) {
+    if (params$data_partner_id == 0) {
       Standby("files_done.ok", params$readPathDP,
               maxWaitingTime = maxWaitingTime,
               verbose = params$verbose)
       DeleteTrigger("files_done.ok", params$readPathDP)
     } else {
       Standby("files_done.ok",
-              params$readPathDP[-params$dataPartnerID],
+              params$readPathDP[-params$data_partner_id],
               maxWaitingTime = maxWaitingTime,
               verbose = params$verbose)
-      DeleteTrigger("files_done.ok", params$readPathDP[-params$dataPartnerID])
+      DeleteTrigger("files_done.ok", params$readPathDP[-params$data_partner_id])
     }
   } else if (from == "DP1") {
     if (params$verbose) cat("Waiting for data partner 1\n")
@@ -1970,7 +1970,7 @@ PauseContinue.kp = function(params, from = NULL, maxWaitingTime = 24 * 60 * 60) 
     DeleteTrigger("files_done.ok", params$readPathAC)
   } else {
     if (params$verbose) cat("Waiting for data partners\n")
-    if (params$dataPartnerID == 0) {
+    if (params$data_partner_id == 0) {
       Standby("files_done.ok",
               params$readPathDP,
               maxWaitingTime = maxWaitingTime,
@@ -1978,10 +1978,10 @@ PauseContinue.kp = function(params, from = NULL, maxWaitingTime = 24 * 60 * 60) 
       DeleteTrigger("files_done.ok", params$readPathDP)
     } else {
       Standby("files_done.ok",
-              params$readPathDP[-params$dataPartnerID],
+              params$readPathDP[-params$data_partner_id],
               maxWaitingTime = maxWaitingTime,
               verbose = params$verbose)
-      DeleteTrigger("files_done.ok", params$readPathDP[-params$dataPartnerID])
+      DeleteTrigger("files_done.ok", params$readPathDP[-params$data_partner_id])
     }
   }
   if (params$verbose) cat("Resuming local processing\n\n")
@@ -2472,7 +2472,7 @@ MergeStampsRaw.3p = function(params, from) {
 InitializeStamps.kp = function(params) {
   stamps = list()
   stamps$blank = data.frame(Step        = params$pmnStepCounter,
-                            Source      = paste0("Org dp", params$dataPartnerID, " Dist Reg"),
+                            Source      = paste0("Org dp", params$data_partner_id, " Dist Reg"),
                             Description = "R program execution begins",
                             Time        = GetRoundTripTime(),
                             Type        = "Tracking Table")
@@ -2514,7 +2514,7 @@ MergeStampsRaw.kp = function(params, from) {
     }
   } else {
     for (id in 1:params$numDataPartners) {
-      if (id == params$dataPartnerID) next
+      if (id == params$data_partner_id) next
       load(file.path(params$readPathDP[id], "stamps.rdata"))
       key1 = paste0(params$stamps$history$Step,
                     params$stamps$history$Source,
@@ -3051,7 +3051,7 @@ InitializeLog.kp = function(params) {
 
 NewLogEntry.kp = function(params) {
   params$log$current = params$log$blank
-  params$log$current$Party         = paste0("dp", params$dataPartnerID)
+  params$log$current$Party         = paste0("dp", params$data_partner_id)
   params$log$current$Start.Time    = GetUTCTime()
   return(params)
 }
@@ -3060,7 +3060,7 @@ NewLogEntry.kp = function(params) {
 StoreLogEntry.kp = function(params, files) {
   params$log$current$Step          = params$pmnStepCounter
   params$log$current$Iteration.alg = params$algIterationCounter
-  params$log$current$Party = paste0("dp", params$dataPartnerID)
+  params$log$current$Party = paste0("dp", params$data_partner_id)
   params$log$current$End.Time = GetUTCTime()
   params$log$current$Computation.Time = round(as.numeric(difftime(
     params$log$current$End.Time, params$log$current$Start.Time, units = "secs")) -
@@ -3115,7 +3115,7 @@ MergeLogRaw.kp = function(params, from) {
     }
   } else {
     for (id in 1:params$numDataPartners) {
-      if (id == params$dataPartnerID) next
+      if (id == params$data_partner_id) next
       load(file.path(params$readPathDP[id], "log.rdata"))
       key1 = paste0(params$log$history$Step, params$log$history$Party)
       key2 = paste0(log$Step, log$Party)
@@ -3408,7 +3408,7 @@ MergeTrackingTableRAW.3p = function(params, from) {
 
 InitializeTrackingTable.kp = function(params) {
   trackingTable = list()
-  trackingTable$current = data.frame(DP_CD              = params$dataPartnerID,
+  trackingTable$current = data.frame(DP_CD              = params$data_partner_id,
                                      MSREQID            = params$msreqid,
                                      RUNID              = "dl",
                                      ITER_NB            = 0,  # params$pmnIterationCounter
@@ -3504,7 +3504,7 @@ MergeTrackingTableRAW.kp = function(params, from) {
     }
   } else {
     for (id in 1:params$numDataPartners) {
-      if (id == params$dataPartnerID) next
+      if (id == params$data_partner_id) next
       load(file.path(params$readPathDP[id], "tr_tb_updt.rdata"))
       key1 = paste0(params$trackingTable$history$ITER_NB,
                     params$trackingTable$history$DP_CD)

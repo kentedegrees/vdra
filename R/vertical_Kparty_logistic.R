@@ -137,16 +137,16 @@ CheckColinearityLogistic.AC = function(params) {
 
   params$error_message = ""
   if ((length(unique(tags[[1]])) == 1) | (length(unique(tags[[1]])) >= 2 & !("numeric" %in% names(tags[[1]])))) {
-    params$failed = TRUE
+    params$failed <- TRUE
     params$error_message = "Data Partner 1 must have no covariates or at least 2 covariates at least one of which is continuous.\n"
   }
   for (id in 2:params$numDataPartners) {
     if (length(unique(tags[[id]])) < 2) {
-      params$failed = TRUE
+      params$failed <- TRUE
       params$error_message = paste0(params$error_message,
                                    paste("After removing colinear covariates, Data Partner", id, "has 1 or fewer covariates.\n"))
     } else if (!("numeric" %in% names(tags[[id]]))) {
-      params$failed = TRUE
+      params$failed <- TRUE
       params$error_message = paste0(params$error_message,
                                    paste("After removing colinear covariates, Data Partner", id, "has no continuous covariates.\n"))
     }
@@ -207,7 +207,7 @@ UpdateParamsLogistic.DP = function(params) {
   betas = NULL
   read_time = proc.time()[3]
   load(file.path(params$readPathAC, "indicies.rdata"))
-  filename = paste0("u_beta_", params$dataPartnerID, ".rdata")
+  filename = paste0("u_beta_", params$data_partner_id, ".rdata")
   load(file.path(params$readPathAC, filename))
   read_size = file.size(file.path(params$readPathAC, "indicies.rdata")) +
     file.size(file.path(params$readPathAC, filename))
@@ -222,10 +222,10 @@ UpdateParamsLogistic.DP = function(params) {
 
 UpdateDataLogistic.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateDataLogistic.DP\n\n")
-  if (params$dataPartnerID == 1) {
+  if (params$data_partner_id == 1) {
     data$Y = data$X[, 1, drop = FALSE]
   }
-  idx = params$indicies[[params$dataPartnerID]]
+  idx = params$indicies[[params$data_partner_id]]
   data$X = data$X[, idx, drop = FALSE]
   data$colmin = data$colmin[idx]
   data$colmax = data$colmax[idx]
@@ -296,13 +296,13 @@ ComputeStWSLogistic.DP = function(params, data) {
   W = pi_ * (1 - pi_)
   C = rep(list(list()), params$numDataPartners)
 
-  idx = params$indicies[[params$dataPartnerID]]
+  idx = params$indicies[[params$data_partner_id]]
   set.seed(params$seed, kind = "Mersenne-Twister")
   halfshare = matrix(rnorm(params$n * params$p, sd = 20),
                      nrow = params$n, ncol = params$p)[, idx, drop = FALSE]
 
   for (id in 1:params$numDataPartners) {
-    if (id < params$dataPartnerID) {
+    if (id < params$data_partner_id) {
       set.seed(params$seeds[id], kind = "Mersenne-Twister")
       idx = params$indicies[[id]]
       halfshareDP = matrix(rnorm(params$n * params$ps[id], sd = 20),
@@ -310,7 +310,7 @@ ComputeStWSLogistic.DP = function(params, data) {
       C[[id]] = params$scaler / (params$scaler + params$scalers[id]) *
         t(halfshareDP) %*% MultiplyDiagonalWTimesX(W, halfshare) +
         t(halfshareDP) %*% MultiplyDiagonalWTimesX(W, data$X - halfshare)
-    } else if (id == params$dataPartnerID) {
+    } else if (id == params$data_partner_id) {
       C[[id]] = t(data$X) %*% MultiplyDiagonalWTimesX(W, data$X)
     } else {
       set.seed(params$seeds[id], kind = "Mersenne-Twister")
@@ -383,8 +383,8 @@ ComputeStWSLogistic.AC = function(params) {
   }
   )
   if (is.null(I)) {
-    params$failed = TRUE
-    params$singularMatrix = TRUE
+    params$failed <- TRUE
+    params$singular_matrix = TRUE
     params$error_message =
       paste0("The matrix t(X)*W*X is not invertible.\n",
              "       This may be due to one of two possible problems.\n",
@@ -433,8 +433,8 @@ UpdateBetaLogistic.DP = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateBetaLogistic.DP\n\n")
   I = IDt = NULL
   read_time = proc.time()[3]
-  load(file.path(params$readPathAC, paste0("ID", params$dataPartnerID, ".rdata")))
-  read_size = file.size(file.path(params$readPathAC, paste0("ID", params$dataPartnerID, ".rdata")))
+  load(file.path(params$readPathAC, paste0("ID", params$data_partner_id, ".rdata")))
+  read_size = file.size(file.path(params$readPathAC, paste0("ID", params$data_partner_id, ".rdata")))
   read_time = proc.time()[3] - read_time
 
   id = 1
@@ -656,7 +656,7 @@ GetResultsLogistic.DP = function(params, data) {
   load(file.path(params$readPathAC, "stats.rdata"))
   read_size = file.size(file.path(params$readPathAC, "stats.rdata"))
   read_time = proc.time()[3] - read_time
-  if (params$dataPartnerID == 1) {
+  if (params$data_partner_id == 1) {
     stats$Y           = data$Y # For Hoslem and ROC
     stats$FinalFitted = params$FinalFitted
   }
@@ -670,7 +670,7 @@ GetResultsLogistic.DP = function(params, data) {
 DataPartnerKLogistic = function(data,
                                 yname           = NULL,
                                 numDataPartners = NULL,
-                                dataPartnerID   = NULL,
+                                data_partner_id   = NULL,
                                 monitor_folder   = NULL,
                                 sleep_time       = 10,
                                 maxWaitingTime  = 24 * 60 * 60,
@@ -678,7 +678,7 @@ DataPartnerKLogistic = function(data,
                                 trace           = FALSE,
                                 verbose         = TRUE) {
 
-  params <- PrepareParams.kp("logistic", dataPartnerID, numDataPartners, ac = FALSE,
+  params <- PrepareParams.kp("logistic", data_partner_id, numDataPartners, ac = FALSE,
                             popmednet = popmednet, trace = trace, verbose = verbose)
   if (params$failed) {
     warning(params$error_message)
@@ -696,7 +696,7 @@ DataPartnerKLogistic = function(data,
     return(invisible(NULL))
   }
 
-  if (dataPartnerID == 1) {
+  if (data_partner_id == 1) {
     data = PrepareDataLinLog.DP1(params, data, yname)
     params <- add_to_log(params, "PrepareParamsLinLog.DP1", 0, 0, 0, 0)
   } else {
@@ -707,7 +707,7 @@ DataPartnerKLogistic = function(data,
   params <- add_to_log(params, "PrepareParamsLinear.DP", 0, 0, 0, 0)
 
   if (data$failed) {
-    params$error_message = paste("Error processing data for data partner", params$dataPartnerID, "\n")
+    params$error_message = paste("Error processing data for data partner", params$data_partner_id, "\n")
     MakeErrorMessage(params$write_path, params$error_message)
     files = "error_message.rdata"
     params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
@@ -796,7 +796,7 @@ DataPartnerKLogistic = function(data,
   params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
                                 sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
 
-  if (dataPartnerID == 1) {
+  if (data_partner_id == 1) {
     params <- ComputeResultsLogistic.DP(params, data)
     files = "logisticstats.rdata"
     params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",

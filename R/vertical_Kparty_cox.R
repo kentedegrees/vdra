@@ -17,7 +17,7 @@ prepare_data_cox_DP = function(params, data, yname, strata, mask) {
   }
   strata_index = workdata$strata$strata_index
   response_index = numeric()
-  if (params$dataPartnerID == 1) {
+  if (params$data_partner_id == 1) {
     response_index = CheckResponse(params, data, yname)
     if (is.null(response_index)) {
       workdata$failed = TRUE
@@ -35,7 +35,7 @@ prepare_data_cox_DP = function(params, data, yname, strata, mask) {
   covariate_index = setdiff(1:ncol(data), union(strata_index, response_index))
   workdata$n = nrow(data)
   if (length(covariate_index) == 0) {
-    if (params$dataPartnerID == 1) {
+    if (params$data_partner_id == 1) {
       workdata$X = matrix(0, nrow = nrow(data), ncol = 0)
     } else {
       warning("After removing strata, data is empty.  Party B must supply at least one non-strata covariate.")
@@ -134,14 +134,14 @@ CheckStrataCox.DP = function(params, data) {
   }
 
   if (!passed) {
-    params$failed = TRUE
-    params$error_message = "Data partners specified different strata:\n"
+    params$failed <- TRUE
+    params$error_message <- "Data partners specified different strata:\n"
     for (i in 1:params$numDataPartners) {
       temp = NULL
       if (length(specified[[i]] > 0)) {
         temp = paste0(specified[[i]], collapse = ", ")
       }
-      params$error_message = paste0(params$error_message,
+      params$error_message <- paste0(params$error_message,
                                    paste("Data Partner", i, "specified strata:", temp, "\n"))
     }
     params <- add_to_log(params, "CheckStrataCox.DP", read_time, read_size, 0, 0)
@@ -154,10 +154,10 @@ CheckStrataCox.DP = function(params, data) {
   }
 
   if (!passed) {
-    params$failed = TRUE
-    params$error_message = "The following strata are claimed by two or more data partners: "
-    params$error_message = paste0(params$error_message, paste0(names(tab[which(tab > 1)]), collapse = ", "), "\n")
-    params$error_message = paste0(params$error_message, "Make Sure that strata covariate names are unique to each data partner.")
+    params$failed <- TRUE
+    params$error_message <- "The following strata are claimed by two or more data partners: "
+    params$error_message <- paste0(params$error_message, paste0(names(tab[which(tab > 1)]), collapse = ", "), "\n")
+    params$error_message <- paste0(params$error_message, "Make Sure that strata covariate names are unique to each data partner.")
     params <- add_to_log(params, "CheckStrataCox.DP", read_time, read_size, 0, 0)
     return(params)
   }
@@ -167,9 +167,9 @@ CheckStrataCox.DP = function(params, data) {
   passed = length(claimed1) == length(unclaimed) && all(claimed1 == unclaimed)
 
   if (!passed) {
-    params$failed = TRUE
-    params$error_message = "No data partner has the following specified strata: "
-    params$error_message = paste0(params$error_message, paste0(unclaimed[which(!(unclaimed %in% claimed1))], collapse = ", "), ".")
+    params$failed <- TRUE
+    params$error_message <- "No data partner has the following specified strata: "
+    params$error_message <- paste0(params$error_message, paste0(unclaimed[which(!(unclaimed %in% claimed1))], collapse = ", "), ".")
     params <- add_to_log(params, "CheckStrataCox.DP", read_time, read_size, 0, 0)
     return(params)
   }
@@ -401,7 +401,7 @@ PrepareSharesCox.DP = function(params, data) {
   params$seeds = c()
 
   for (id in 1:params$numDataPartners) {
-    if (id == params$dataPartnerID) {
+    if (id == params$data_partner_id) {
       products[[id]] = t(data$X) %*% data$X
       params$ps      = c(params$ps, params$p)
       params$scalers = c(params$scalers, params$scaler)
@@ -419,11 +419,11 @@ PrepareSharesCox.DP = function(params, data) {
     set.seed(seed, kind = "Mersenne-Twister")
     halfShare2 = matrix(rnorm(params$n * p, sd = 20), nrow = params$n, ncol = p)
 
-    if (id < params$dataPartnerID) {
+    if (id < params$data_partner_id) {
       products[[id]] = t(halfShare2) %*% (data$X - scaler / (scaler + params$scaler) * halfshare.L)
     }
 
-    if (id > params$dataPartnerID) {
+    if (id > params$data_partner_id) {
       products[[id]] = t(data$X - scaler / (scaler + params$scaler) * halfshare.L) %*% halfShare2
     }
   }
@@ -602,12 +602,12 @@ CheckColinearityCox.AC = function(params) {
     min = max + 1
   }
 
-  params$error_message = ""
+  params$error_message <- ""
   numeric_found = FALSE
   for (id in 2:params$numDataPartners) {
     if (length(unique(tags[[id]])) == 0) {
-      params$failed = TRUE
-      params$error_message = paste0(params$error_message,
+      params$failed <- TRUE
+      params$error_message <- paste0(params$error_message,
                                    paste("After removing colinear covariates, Data Partner", id, "has no covariates."))
     }
   }
@@ -681,14 +681,14 @@ UpdateParamsCox.DP = function(params) {
   read_size = file.size(file.path(params$readPathAC, "indicies.rdata")) +
     file.size(file.path(params$readPathAC, "u.rdata"))
   read_time = proc.time()[3] - read_time
-  betas = matrix(0, nrow = length(indicies[[params$dataPartnerID]]), ncol = 1)
+  betas = matrix(0, nrow = length(indicies[[params$data_partner_id]]), ncol = 1)
   params$u             = u
   params$idx           = idx
   params$betas         = betas
   params$deltabeta.old = betas
   params$indicies      = indicies
   params$pReduct       = pReduct
-  if (params$dataPartnerID == 1) {
+  if (params$data_partner_id == 1) {
     params$loglikelihood = -Inf
     params$sBeta.old = rep(0, params$n)
     params$cutoff    = cutoff
@@ -700,7 +700,7 @@ UpdateParamsCox.DP = function(params) {
 #' @importFrom stats rnorm
 UpdateDataCox.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateDataCox.DP\n\n")
-  idx = params$indicies[[params$dataPartnerID]]
+  idx = params$indicies[[params$data_partner_id]]
   data$X = data$X[, idx, drop = FALSE]
   X = data$X
   data$colmin = data$colmin[idx]
@@ -708,7 +708,7 @@ UpdateDataCox.DP = function(params, data) {
   data$colsum = data$colsum[idx]
   data$colrange = data$colrange[idx]
 
-  if (params$dataPartnerID == 1) {
+  if (params$data_partner_id == 1) {
     halfshare = rep(list(list()), params$numDataPartners)
     for (id in 1:params$numDataPartners) {
       set.seed(params$seeds[id], kind = "Mersenne-Twister")
@@ -736,12 +736,12 @@ ComputeSBetaCox.DP = function(params, data) {
     set.seed(params$seeds[id] + params$algIterationCounter)
     v = rnorm(n, mean = runif(n = 1, min = -1, max = 1), sd = 20)
     V = V + v
-    if (id == params$dataPartnerID) {
+    if (id == params$data_partner_id) {
       sBetaPart = sBetaPart + v
     }
   }
 
-  sBetaPart = sBetaPart - params$scalers[params$dataPartnerID] / sum(params$scalers) * V
+  sBetaPart = sBetaPart - params$scalers[params$data_partner_id] / sum(params$scalers) * V
 
   write_time = proc.time()[3]
   save(sBetaPart, file = file.path(params$write_path, "sbeta.rdata"))
@@ -947,7 +947,7 @@ ComputeSDelLCox.DP = function(params, data) {
 #' @importFrom stats rnorm
 ComputeProductsCox.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeProductsCox.DP\n\n")
-  if (params$dataPartnerID == 1) {
+  if (params$data_partner_id == 1) {
     W.S.R.1 = NULL
     read_time = proc.time()[3]
     load(file.path(params$readPathAC, "wsr1.rdata"))
@@ -1007,9 +1007,9 @@ ComputeProductsCox.DP = function(params, data) {
 
     F1 = rep(list(list()), params$numDataPartners)
     set.seed(params$seed, kind = "Mersenne-Twister")
-    halfshare.L = matrix(rnorm(params$n * params$p, sd = 20), nrow = params$n, ncol = params$p)[, params$indicies[[params$dataPartnerID]], drop = FALSE]
+    halfshare.L = matrix(rnorm(params$n * params$p, sd = 20), nrow = params$n, ncol = params$p)[, params$indicies[[params$data_partner_id]], drop = FALSE]
     halfshare.R = data$X - halfshare.L
-    halfshare.R.L = matrix(rnorm(params$n * params$p, sd = 20), nrow = params$n, ncol = params$p)[, params$indicies[[params$dataPartnerID]], drop = FALSE]
+    halfshare.R.L = matrix(rnorm(params$n * params$p, sd = 20), nrow = params$n, ncol = params$p)[, params$indicies[[params$data_partner_id]], drop = FALSE]
     halfshare.R.R = halfshare.R - halfshare.R.L  # This is halfshare.R.L and halfshare.R.R
     for (id in 1:params$numDataPartners) {
       F1[[id]] = params$scaler / (params$scalers[1] + params$scaler) * t(scaled.W.S.L.L[, params$idx[[id]], drop = FALSE]) %*% halfshare.R.L +
@@ -1121,9 +1121,9 @@ ComputeStWSCox.AC = function(params) {
   }
   )
   if (is.null(I)) {
-    params$failed = TRUE
-    params$singularMatrix = TRUE
-    params$error_message =
+    params$failed <- TRUE
+    params$singular_matrix = TRUE
+    params$error_message <-
       paste0("The matrix t(S)*W*S is not invertible.\n",
              "       This may be due to one of two possible problems.\n",
              "       1. Poor random initialization of the security halfshares.\n",
@@ -1172,7 +1172,7 @@ UpdateConvergeStatus.DP = function(params) {
   scale    = NULL
   converged = NULL
   maxIterExceeded = NULL
-  if (params$dataPartnerID > 1) {
+  if (params$data_partner_id > 1) {
     read_time = proc.time()[3]
     load(file.path(params$readPathDP[1], "converged.rdata"))
     read_size = file.size(file.path(params$readPathDP[1], "converged.rdata"))
@@ -1196,15 +1196,15 @@ UpdateBetasCox.DP = function(params) {
   IDt.part = NULL
   tS.deltal.L = NULL
   read_time = proc.time()[3]
-  load(file.path(params$readPathAC, paste0("update", params$dataPartnerID, ".rdata")))
-  read_size = file.size(file.path(params$readPathAC, paste0("update", params$dataPartnerID, ".rdata")))
-  if (params$dataPartnerID > 1) {
+  load(file.path(params$readPathAC, paste0("update", params$data_partner_id, ".rdata")))
+  read_size = file.size(file.path(params$readPathAC, paste0("update", params$data_partner_id, ".rdata")))
+  if (params$data_partner_id > 1) {
     load(file.path(params$readPathDP[1], "tsdeltal.rdata"))
     read_size = read_size + file.size(file.path(params$readPathDP[1], "tsdeltal.rdata"))
   }
   read_time = proc.time()[3] - read_time
 
-  if (params$dataPartnerID == 1) {
+  if (params$data_partner_id == 1) {
     deltabeta = IDt.part + I.part %*% params$tS.deltal.L
     if (params$algIterationCounter == 1) {
       if (params$pReduct[1] == 0) {
@@ -1218,8 +1218,8 @@ UpdateBetasCox.DP = function(params) {
   } else {
     deltabeta = IDt.part + I.part %*% tS.deltal.L
     if (params$algIterationCounter == 1) {
-      temp = sum(params$pReduct[1:(params$dataPartnerID - 1)])
-      idx = (temp + 1):(temp + params$pReduct[params$dataPartnerID])
+      temp = sum(params$pReduct[1:(params$data_partner_id - 1)])
+      idx = (temp + 1):(temp + params$pReduct[params$data_partner_id])
       params$score = 2 * t(IDt.part) %*% tS.deltal.L[idx, 1, drop = FALSE] +
         t(I.part %*% tS.deltal.L) %*% tS.deltal.L[idx, 1, drop = FALSE]
     }
@@ -1228,14 +1228,14 @@ UpdateBetasCox.DP = function(params) {
   params$betas = params$betas + deltabeta - (1 - params$scale) * params$deltabeta.old
   params$deltabeta.old = deltabeta
 
-  p = length(params$indicies[[params$dataPartnerID]])
+  p = length(params$indicies[[params$data_partner_id]])
   if (p == 0) {
     u = 1
   } else {
     u = sum(runif(n = p, min = 1, max = 2) * abs(params$betas))
   }
 
-  if (params$dataPartnerID == 1) {
+  if (params$data_partner_id == 1) {
     loglikelihood = params$loglikelihood
     nullLoglikelihood = params$nullLoglikelihood
   }
@@ -1245,7 +1245,7 @@ UpdateBetasCox.DP = function(params) {
   if (params$converged) {
     betasnew  = params$betas
     scorePart = params$score
-    if (params$dataPartnerID == 1) {
+    if (params$data_partner_id == 1) {
       save(scorePart, nullLoglikelihood, loglikelihood, betasnew, file = file.path(params$write_path, "betas.rdata"))
     } else {
       save(scorePart, betasnew, file = file.path(params$write_path, "betas.rdata"))
@@ -1455,7 +1455,7 @@ DataPartnerKCox = function(data,
                            strata          = NULL,
                            mask            = TRUE,
                            numDataPartners = NULL,
-                           dataPartnerID   = NULL,
+                           data_partner_id   = NULL,
                            monitor_folder   = NULL,
                            sleep_time       = 10,
                            maxWaitingTime  = 24 * 60 * 60,
@@ -1463,7 +1463,7 @@ DataPartnerKCox = function(data,
                            trace           = FALSE,
                            verbose         = TRUE) {
 
-  params <- PrepareParams.kp("cox", dataPartnerID, numDataPartners, ac = FALSE,
+  params <- PrepareParams.kp("cox", data_partner_id, numDataPartners, ac = FALSE,
                             popmednet = popmednet, trace = trace, verbose = verbose)
   if (params$failed) {
     warning(params$error_message)
@@ -1485,12 +1485,12 @@ DataPartnerKCox = function(data,
   params <- add_to_log(params, "prepare_data_cox_DP", 0, 0, 0, 0)
 
   if (data$failed) {
-    params$error_message = paste("Error processing data for data partner", params$dataPartnerID)
+    params$error_message <- paste("Error processing data for data partner", params$data_partner_id)
     MakeErrorMessage(params$write_path, params$error_message)
     files = "error_message.rdata"
     params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
                                   sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
-    params$error_message = ReadErrorMessage(params$readPathAC)
+    params$error_message <- ReadErrorMessage(params$readPathAC)
     warning(params$error_message)
     params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
@@ -1503,13 +1503,13 @@ DataPartnerKCox = function(data,
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
-    params$error_message = possibleError$message
+    params$error_message <- possibleError$message
     warning(possibleError$message)
     params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
   }
 
-  if (params$dataPartnerID == 1) {
+  if (params$data_partner_id == 1) {
     params <- DoNothing.ACDP(params)
     params <- SendPauseContinue.kp(params, filesAC = "empty.rdata", from = "DP",
                                   sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
@@ -1548,7 +1548,7 @@ DataPartnerKCox = function(data,
 
     possibleError = ReceivedError.kp(params, from = "DP1")
     if (possibleError$error) {
-      params$error_message = possibleError$message
+      params$error_message <- possibleError$message
       warning(possibleError$message)
       params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
       return(params$stats)
@@ -1567,7 +1567,7 @@ DataPartnerKCox = function(data,
 
   params <- PrepareSharesCox.DP(params, data)
   files = c("products.rdata", "halfshare.rdata", "colstats.rdata")
-  if (params$dataPartnerID == 1) {
+  if (params$data_partner_id == 1) {
     files = c(files, "survival.rdata")
   }
   params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
@@ -1575,7 +1575,7 @@ DataPartnerKCox = function(data,
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
-    params$error_message = possibleError$message
+    params$error_message <- possibleError$message
     warning(possibleError$message)
     params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
@@ -1590,7 +1590,7 @@ DataPartnerKCox = function(data,
     BeginningIteration(params)
     params <- ComputeSBetaCox.DP(params, data)
 
-    if (params$dataPartnerID == 1) {
+    if (params$data_partner_id == 1) {
       files = "sbeta.rdata"
       params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
                                     sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
@@ -1606,7 +1606,7 @@ DataPartnerKCox = function(data,
       files = c("tsdeltal.rdata", "scaledwsll.rdata", "converged.rdata")
       params <- SendPauseContinue.kp(params, filesDP = files, from = "AC",
                                     sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
-    } else if (params$dataPartnerID == 2) {
+    } else if (params$data_partner_id == 2) {
       files = "sbeta.rdata"
       params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
                                     sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
@@ -1624,7 +1624,7 @@ DataPartnerKCox = function(data,
     }
 
     params <- ComputeProductsCox.DP(params, data)
-    if (params$dataPartnerID == 1) {
+    if (params$data_partner_id == 1) {
       files = c("products.rdata", "scaledwslr.rdata", "converged.rdata")
     } else {
       files = c("products.rdata")
@@ -1634,7 +1634,7 @@ DataPartnerKCox = function(data,
 
     possibleError = ReceivedError.kp(params, from = "AC")
     if (possibleError$error) {
-      params$error_message = possibleError$message
+      params$error_message <- possibleError$message
       warning(possibleError$message)
       params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
       return(params$stats)
@@ -1697,7 +1697,7 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
 
   possibleError = ReceivedError.kp(params, from = "DP")
   if (possibleError$error) {
-    params$error_message = possibleError$message
+    params$error_message <- possibleError$message
     warning(possibleError$message)
     MakeErrorMessage(params$write_path, possibleError$message)
     files = "error_message.rdata"
@@ -1734,7 +1734,7 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
 
   possibleError = ReceivedError.kp(params, from = "DP")
   if (possibleError$error) {
-    params$error_message = possibleError$message
+    params$error_message <- possibleError$message
     warning(possibleError$message)
     params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.kp(params)

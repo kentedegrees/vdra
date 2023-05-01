@@ -2,58 +2,58 @@
 
 PrepareFolderLinear.A2 = function(params, monitor_folder) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareFolderLinear.A2\n\n")
-  params$dplocalPath   = file.path(monitor_folder, "dplocal")
-  params$rprogramsPath = file.path(monitor_folder, "rprograms")
-  params$macrosPath    = file.path(monitor_folder, "macros")
+  params$dp_local_path   = file.path(monitor_folder, "dplocal")
+  params$r_programs_path = file.path(monitor_folder, "rprograms")
+  params$macros_path    = file.path(monitor_folder, "macros")
   params$write_path     = file.path(monitor_folder, "inputfiles")
   params$read_path      = file.path(monitor_folder, "msoc1")
 
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.  Please use the same monitor_folder as the DataMart Client.")
-    params$failed = TRUE
+    params$failed <- TRUE
     return(params)
   }
   if (class(monitor_folder) != "character") {
     warning("monitor_folder directory is not valid.  Please use the same monitor_folder as the DataMart Client.")
-    params$failed = TRUE
+    params$failed <- TRUE
     return(params)
   }
   while (!dir.exists(monitor_folder)) {
     Sys.sleep(1)
   }
 
-  params$error_message = NULL
+  params$error_message <- NULL
   if (!CreateIOLocation(monitor_folder, "dplocal")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
                                 "Could not create directory",
-                                paste0(params$dplocalPath, "."),
+                                paste0(params$dp_local_path, "."),
                                 "Check the path and restart the program.")
   }
   if (!CreateIOLocation(monitor_folder, "rprograms")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
                                 "Could not create directory",
-                                paste0(params$rprogramsPath, "."),
+                                paste0(params$r_programs_path, "."),
                                 "Check the path and restart the program.")
   }
   if (!CreateIOLocation(monitor_folder, "macros")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
                                 "Could not create directory",
-                                paste0(params$macrosPath, "."),
+                                paste0(params$macros_path, "."),
                                 "Check the path and restart the program.")
   }
   if (!CreateIOLocation(monitor_folder, "inputfiles")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$write_path, "."),
                                 "Check the path and restart the program.")
   }
   if (!CreateIOLocation(monitor_folder, "msoc1")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$read_path, "."),
                                 "Check the path and restart the program.")
@@ -67,58 +67,58 @@ PrepareFolderLinear.A2 = function(params, monitor_folder) {
 PrepareFolderLinear.B2 = function(params, monitor_folder) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareFolderLinear.B2\n\n")
 
-  params$dplocalPath   = file.path(monitor_folder, "dplocal")
-  params$rprogramsPath = file.path(monitor_folder, "rprograms")
-  params$macrosPath    = file.path(monitor_folder, "macros")
+  params$dp_local_path   = file.path(monitor_folder, "dplocal")
+  params$r_programs_path = file.path(monitor_folder, "rprograms")
+  params$macros_path    = file.path(monitor_folder, "macros")
   params$write_path     = file.path(monitor_folder, "msoc")
   params$read_path      = file.path(monitor_folder, "inputfiles")
 
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.  Please use the same monitor_folder as the DataMart Client.")
-    params$failed = TRUE
+    params$failed <- TRUE
     return(params)
   }
   if (class(monitor_folder) != "character") {
     warning("monitor_folder directory is not valid.  Please use the same monitor_folder as the DataMart Client.")
-    params$failed = TRUE
+    params$failed <- TRUE
     return(params)
   }
   while (!dir.exists(monitor_folder)) {
     Sys.sleep(1)
   }
 
-  params$error_message = NULL
+  params$error_message <- NULL
   if (!CreateIOLocation(monitor_folder, "dplocal")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
                                 "Could not create directory",
-                                paste0(params$dplocalPath, "."),
+                                paste0(params$dp_local_path, "."),
                                 "Check the path and restart the program.")
   }
   if (!CreateIOLocation(monitor_folder, "rprograms")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
                                 "Could not create directory",
-                                paste0(params$rprogramsPath, "."),
+                                paste0(params$r_programs_path, "."),
                                 "Check the path and restart the program.")
   }
   if (!CreateIOLocation(monitor_folder, "macros")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
                                 "Could not create directory",
-                                paste0(params$macrosPath, "."),
+                                paste0(params$macros_path, "."),
                                 "Check the path and restart the program.")
   }
   if (!CreateIOLocation(monitor_folder, "msoc")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$write_path, "."),
                                 "Check the path and restart the program.")
   }
   if (!CreateIOLocation(monitor_folder, "inputfiles")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
                                 "Could not create directory",
                                 paste0(params$read_path, "."),
                                 "Check the path and restart the program.")
@@ -227,7 +227,7 @@ PrepareParamsLinear.B2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareParamsLinear.B2\n\n")
   params$failed         = FALSE
   params$halted         = FALSE
-  params$singularMatrix = FALSE
+  params$singular_matrix = FALSE
 
   params$n             = nrow(data$X)
   params$numEvents     = 0
@@ -270,7 +270,7 @@ PrepareParamsLinear.A2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareParamsLinear.A2\n\n")
 
   params$halted          = FALSE
-  params$singularMatrix  = FALSE
+  params$singular_matrix  = FALSE
   params$pmnStepCounter  = 1
   pb                     = NULL
 
@@ -280,19 +280,19 @@ PrepareParamsLinear.A2 = function(params, data) {
   read_time = proc.time()[3] - read_time
 
   if (params$analysis != pb$analysis) {
-    params$error_message =
+    params$error_message <-
       paste("Party A is running", params$analysis, "regression and Party B is running", pb$analysis, "regression.")
     warning(params$error_message)
-    params$failed = TRUE
+    params$failed <- TRUE
     return(params)
   }
 
   params$n  = nrow(data$X)
   if (pb$n != params$n) {
-    params$error_message =
+    params$error_message <-
       paste("Party A has", params$n, "observations and Party B has", pb$n, "observations.")
     warning(params$error_message)
-    params$failed = TRUE
+    params$failed <- TRUE
   }
 
   params$p1 = ncol(data$X)
@@ -346,7 +346,7 @@ PrepareBlocksLinear.A2 = function(params, blocksize) {
   if (n < minimumBlocksize) {
     maxACovariates = trunc(sqrt(p2 * n) - p2 - 1)
 
-    params$error_message =
+    params$error_message <-
       paste("The minimum secure blocksize of", minimumBlocksize,
             "is larger than the number of observations", paste0(n, ".\n"),
             "Your options are:\n",
@@ -359,13 +359,13 @@ PrepareBlocksLinear.A2 = function(params, blocksize) {
     if (discrim >= 0) {
       minBCovariates = trunc(1 + (b - sqrt(discrim)) / 2)
       maxBCovariates = trunc((b + sqrt(discrim)) / 2)
-      params$error_message =
+      params$error_message <-
         paste0(params$error_message,
                "\nSet the number of B covariates to be between ", minBCovariates, "and",
                paste0(maxBCovariates, "."))
     }
     warning(params$error_message)
-    params$failed = TRUE
+    params$failed <- TRUE
     params <- add_to_log(params, "PrepareBlocksCox.A2", 0, 0, 0, 0)
     return(params)
   }

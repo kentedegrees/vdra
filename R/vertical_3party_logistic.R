@@ -56,14 +56,14 @@ CheckColinearityLogistic.T3 = function(params) {
   Atags = params$Atags[params$AIndiciesKeep][-1]
 
   if ((length(unique(Atags)) == 1) | (length(unique(Atags)) >= 2 & !("numeric" %in% names(Atags)))) {
-    params$failed = TRUE
-    params$error_message = "A must have no covariates or at least 2 covariates at least one of which is continuous."
+    params$failed <- TRUE
+    params$error_message <- "A must have no covariates or at least 2 covariates at least one of which is continuous."
   } else if (length(unique(Btags)) < 2) {
-    params$failed = TRUE
-    params$error_message = "After removing colinear covariates, Party B has 1 or fewer covariates."
+    params$failed <- TRUE
+    params$error_message <- "After removing colinear covariates, Party B has 1 or fewer covariates."
   } else if (!("numeric" %in% names(Btags))) {
-    params$failed = TRUE
-    params$error_message = "After removing colinear covariates, Party B has no continuous covariates."
+    params$failed <- TRUE
+    params$error_message <- "After removing colinear covariates, Party B has no continuous covariates."
   }
 
   params <- add_to_log(params, "CheckColinearityLogistic.T3", 0, 0, write_time, write_size)
@@ -544,9 +544,9 @@ ProcessXtWXLogistic.T3 = function(params) {
   }
   )
   if (is.null(II)) {
-    params$failed = TRUE
-    params$singularMatrix = TRUE
-    params$error_message =
+    params$failed <- TRUE
+    params$singular_matrix = TRUE
+    params$error_message <-
       paste0("The matrix t(X)*W*X is not invertible.\n",
              "       This may be due to one of two possible problems.\n",
              "       1. Poor random initialization of the security vector.\n",

@@ -71,14 +71,14 @@ prepare_params_cox_T3 = function(params, cutoff, maxIterations) {
     file.size(file.path(params$read_path[["B"]], "pb.rdata"))
   read_time = proc.time()[3] - read_time
   if (length(table(c(pa$analysis, pb$analysis, params$analysis))) > 1) {
-    params$failed = TRUE
-    params$error_message = paste("Party A specified", pa$analysis, "regression, ",
+    params$failed <- TRUE
+    params$error_message <- paste("Party A specified", pa$analysis, "regression, ",
                                 "Party B specified", pb$analysis, "regression, ",
                                 "and Party T specified", params$analysis, "regression. ")
   }
   if (pa$n != pb$n) {
-    params$failed = TRUE
-    params$error_message = paste0(params$error_message,
+    params$failed <- TRUE
+    params$error_message <- paste0(params$error_message,
                                  paste("Party A has", pa$n,
                                        "observtions and Party B has", pb$n,
                                        "observations."))
@@ -132,24 +132,24 @@ CheckStrataCox.T3 = function(params) {
     params$getStrata = TRUE
   } else {
     params$getStrata = FALSE
-    AcapB = intersect(params$Astrata_from_a, params$Bstrata_from_b)
+    a_cap_b = intersect(params$Astrata_from_a, params$Bstrata_from_b)
     BcapA = intersect(params$Bstrata_from_a, params$Astrata_from_b)
-    if (length(AcapB) > 0) {
-      params$error_message =
-        paste("Party A and Party B have", length(AcapB), "variable(s) with the same name which are used in the strata.",
-              "These variable(s) are <", paste0(AcapB, collapse = ", "), ">.",
+    if (length(a_cap_b) > 0) {
+      params$error_message <-
+        paste("Party A and Party B have", length(a_cap_b), "variable(s) with the same name which are used in the strata.",
+              "These variable(s) are <", paste0(a_cap_b, collapse = ", "), ">.",
               "Make sure the variables from each party have distinct names.")
     } else if (length(BcapA) > 0) {
-      params$error_message =
+      params$error_message <-
         paste("Party A and Party B have specified", length(BcapA), "variable(s) for the strata which are not found in the data.",
               "These variable(s) are <", paste0(BcapA, collapse = ", "), ">.",
               "Check the spelling of the variables names and / or remove them from the strata.")
     } else {
-      params$error_message =
+      params$error_message <-
         paste("Party A and Party B have specified different strata.",
               "Verify that both parties specify the same strata.")
     }
-    params$failed = TRUE
+    params$failed <- TRUE
   }
   empty = 0
   save(empty, file = file.path(params$write_path, "empty.rdata"))
@@ -479,10 +479,10 @@ GetProductsCox.T3 = function(params) {
 
     filename1 = paste0("r2_", i, ".rdata")
     read_time = read_time - proc.time()[3]
-    toRead1 = file(file.path(params$dplocalPath, filename1), "rb")
+    toRead1 = file(file.path(params$dp_local_path, filename1), "rb")
     R2 = matrix(readBin(con = toRead1, what = numeric(), n = p2 * p2,
                         endian = "little"), p2, p2)
-    read_size = read_size + file.size(file.path(params$dplocalPath, filename1))
+    read_size = read_size + file.size(file.path(params$dp_local_path, filename1))
     close(toRead1)
     PR = matrix(readBin(con = toRead, what = numeric(), n = p1 * p2,
                         endian = "little"), p1, p2)
@@ -560,8 +560,8 @@ CheckColinearityCox.T3 = function(params) {
   tags = params$Btags[Bindicies]
 
   if (length(unique(tags)) == 0) {
-    params$failed = TRUE
-    params$error_message = "After removing colinear covariates, Party B has no covariates."
+    params$failed <- TRUE
+    params$error_message <- "After removing colinear covariates, Party B has no covariates."
   }
   write_time = proc.time()[3] - write_time
   params <- add_to_log(params, "CheckColinearityCox.T3", 0, 0, write_time, write_size)
@@ -932,10 +932,10 @@ ProcessVCox.T3 = function(params) {
     filename4 = paste0("r3_", i, ".rdata")
 
     read_time = read_time - proc.time()[3]
-    toRead1 = file(file.path(params$dplocalPath, filename1), "rb")
+    toRead1 = file(file.path(params$dp_local_path, filename1), "rb")
     R2 = matrix(readBin(con = toRead1, what = numeric(), n = n * n,
                         endian = "little"), nrow = n, ncol = n)
-    read_size = read_size + file.size(file.path(params$dplocalPath, filename1))
+    read_size = read_size + file.size(file.path(params$dp_local_path, filename1))
     close(toRead1)
     RV = matrix(readBin(con = toRead2, what = numeric(), n = n * p2,
                         endian = "little"), nrow = n, ncol = p2)
@@ -946,10 +946,10 @@ ProcessVCox.T3 = function(params) {
     VR = V %*% R3
 
     write_time = write_time - proc.time()[3]
-    toWrite4 = file(file.path(params$dplocalPath, filename4), "wb")
+    toWrite4 = file(file.path(params$dp_local_path, filename4), "wb")
     writeBin(as.vector(R3), con = toWrite4, endian = "little")
     close(toWrite4)
-    write_size = write_size + file.size(file.path(params$dplocalPath, filename4))
+    write_size = write_size + file.size(file.path(params$dp_local_path, filename4))
     writeBin(as.vector(VR), con = toWrite3, endian = "little")
     write_time = write_time + proc.time()[3]
     if ((i + 1) %in% params$container$filebreak.RV || i == numBlocks) {
@@ -1048,14 +1048,14 @@ ProcessXtWXCox.T3 = function(params) {
 
     filename2 = paste0("r3_", i, ".rdata")
     read_time = read_time - proc.time()[3]
-    toRead1 = file(file.path(params$dplocalPath, filename2), "rb")
+    toRead1 = file(file.path(params$dp_local_path, filename2), "rb")
     R = matrix(readBin(con = toRead1, what = numeric(), n = p2 * p2,
                        endian = "little"), nrow = p2, ncol = p2)
     close(toRead1)
     XR = matrix(readBin(con = toRead, what = numeric(), n = p1 * p2,
                         endian = "little"), nrow = p1, ncol = p2)
 
-    read_size = read_size + file.size(file.path(params$dplocalPath, filename2))
+    read_size = read_size + file.size(file.path(params$dp_local_path, filename2))
     read_time = read_time + proc.time()[3]
 
     XATWXB = XATWXB + XR %*% t(R)
@@ -1078,9 +1078,9 @@ ProcessXtWXCox.T3 = function(params) {
   }
   )
   if (is.null(II)) {
-    params$failed = TRUE
-    params$singularMatrix = TRUE
-    params$error_message =
+    params$failed <- TRUE
+    params$singular_matrix = TRUE
+    params$error_message <-
       paste0("The matrix t(X)*W*X is not invertible.\n",
              "       This may be due to one of two possible problems.\n",
              "       1. Poor random initialization of the security vector.\n",
@@ -1347,8 +1347,8 @@ CheckColinearityCox.B3 = function(params, data) {
   params$p             = params$p1 + params$p2
 
   if (params$p2 == 0) {
-    params$failed = TRUE
-    params$error_message = "After removing colinear covariates, Party B has no covariates."
+    params$failed <- TRUE
+    params$error_message <- "After removing colinear covariates, Party B has no covariates."
   }
   params <- add_to_log(params, "CheckColinearityCox.B3", 0, 0, 0, 0)
 
@@ -1390,8 +1390,8 @@ ComputeCoxFromSurvival.B3 = function(params, data) {
 
   if (class(error) == "logical" && error) {
     params$converged = FALSE
-    params$failed = TRUE
-    params$error_message = "Coxph in the survival package failed to converge."
+    params$failed <- TRUE
+    params$error_message <- "Coxph in the survival package failed to converge."
   } else {
     params$converged = TRUE
     if (class(error) == "logical") {
@@ -1507,8 +1507,8 @@ ComputeCox.B3 = function(params, data) {
     })
     M = inv
     if (is.null(M)) {
-      params$failed = TRUE
-      params$error_message = "The matrix t(X)WX is singular.  This is probably due to divergence of the coefficients."
+      params$failed <- TRUE
+      params$error_message <- "The matrix t(X)WX is singular.  This is probably due to divergence of the coefficients."
 
       betas = rep(NA, length(params$Bcolnames.old))
       betas[params$BIndiciesKeep] = betasB

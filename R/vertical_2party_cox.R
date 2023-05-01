@@ -2,60 +2,60 @@
 
 prepare_folder_cox_A2 = function(params, monitor_folder) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_folder_cox_A2\n\n")
-  params$dplocalPath   = file.path(monitor_folder, "dplocal")
-  params$rprogramsPath = file.path(monitor_folder, "rprograms")
-  params$macrosPath    = file.path(monitor_folder, "macros")
-  params$write_path     = file.path(monitor_folder, "inputfiles")
-  params$read_path      = file.path(monitor_folder, "msoc1")
+  params$dp_local_path   <- file.path(monitor_folder, "dplocal")
+  params$r_programs_path <- file.path(monitor_folder, "rprograms")
+  params$macros_path     <- file.path(monitor_folder, "macros")
+  params$write_path      <- file.path(monitor_folder, "inputfiles")
+  params$read_path       <- file.path(monitor_folder, "msoc1")
 
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.  Please use the same monitor_folder as the DataMart Client.")
-    params$failed = TRUE
+    params$failed <- TRUE
     return(params)
   }
   if (class(monitor_folder) != "character") {
     warning("monitor_folder directory is not valid.  Please use the same monitor_folder as the DataMart Client.")
-    params$failed = TRUE
+    params$failed <- TRUE
     return(params)
   }
   while (!dir.exists(monitor_folder)) {
     Sys.sleep(1)
   }
-  params$error_message = NULL
+  params$error_message <- NULL
   if (!CreateIOLocation(monitor_folder, "dplocal")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
-                                "Could not create directory",
-                                paste0(params$dplocalPath, "."),
-                                "Check the path and restart the program.")
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
+                                  "Could not create directory",
+                                  paste0(params$dp_local_path, "."),
+                                  "Check the path and restart the program.")
   }
   if (!CreateIOLocation(monitor_folder, "rprograms")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
-                                "Could not create directory",
-                                paste0(params$rprogramsPath, "."),
-                                "Check the path and restart the program.")
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
+                                  "Could not create directory",
+                                  paste0(params$r_programs_path, "."),
+                                  "Check the path and restart the program.")
   }
   if (!CreateIOLocation(monitor_folder, "macros")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
-                                "Could not create directory",
-                                paste0(params$macrosPath, "."),
-                                "Check the path and restart the program.")
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
+                                  "Could not create directory",
+                                  paste0(params$macros_path, "."),
+                                  "Check the path and restart the program.")
   }
   if (!CreateIOLocation(monitor_folder, "inputfiles")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
-                                "Could not create directory",
-                                paste0(params$write_path, "."),
-                                "Check the path and restart the program.")
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
+                                  "Could not create directory",
+                                  paste0(params$write_path, "."),
+                                  "Check the path and restart the program.")
   }
   if (!CreateIOLocation(monitor_folder, "msoc1")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
-                                "Could not create directory",
-                                paste0(params$read_path, "."),
-                                "Check the path and restart the program.")
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
+                                  "Could not create directory",
+                                  paste0(params$read_path, "."),
+                                  "Check the path and restart the program.")
   }
 
   params <- add_to_log(params, "prepare_data_cox_A23, prepare_folder_cox_A2", 0, 0, 0, 0)
@@ -66,61 +66,61 @@ prepare_folder_cox_A2 = function(params, monitor_folder) {
 prepare_folder_cox_B2 = function(params, monitor_folder) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_folder_cox_B2\n\n")
 
-  params$dplocalPath   = file.path(monitor_folder, "dplocal")
-  params$rprogramsPath = file.path(monitor_folder, "rprograms")
-  params$macrosPath    = file.path(monitor_folder, "macros")
-  params$write_path     = file.path(monitor_folder, "msoc")
-  params$read_path      = file.path(monitor_folder, "inputfiles")
+  params$dp_local_path   <- file.path(monitor_folder, "dplocal")
+  params$r_programs_path <- file.path(monitor_folder, "rprograms")
+  params$macros_path     <- file.path(monitor_folder, "macros")
+  params$write_path      <- file.path(monitor_folder, "msoc")
+  params$read_path       <- file.path(monitor_folder, "inputfiles")
 
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.  Please use the same monitor_folder as the DataMart Client.")
-    params$failed = TRUE
+    params$failed <- TRUE
     return(params)
   }
   if (class(monitor_folder) != "character") {
     warning("monitor_folder directory is not valid.  Please use the same monitor_folder as the DataMart Client.")
-    params$failed = TRUE
+    params$failed <- TRUE
     return(params)
   }
   while (!dir.exists(monitor_folder)) {
     Sys.sleep(1)
   }
 
-  params$error_message = NULL
+  params$error_message <- NULL
   if (!CreateIOLocation(monitor_folder, "dplocal")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
-                                "Could not create directory",
-                                paste0(params$dplocalPath, "."),
-                                "Check the path and restart the program.")
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
+                                  "Could not create directory",
+                                  paste0(params$dp_local_path, "."),
+                                  "Check the path and restart the program.")
   }
   if (!CreateIOLocation(monitor_folder, "rprograms")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
-                                "Could not create directory",
-                                paste0(params$rprogramsPath, "."),
-                                "Check the path and restart the program.")
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
+                                  "Could not create directory",
+                                  paste0(params$r_programs_path, "."),
+                                  "Check the path and restart the program.")
   }
   if (!CreateIOLocation(monitor_folder, "macros")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
-                                "Could not create directory",
-                                paste0(params$macrosPath, "."),
-                                "Check the path and restart the program.")
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
+                                  "Could not create directory",
+                                  paste0(params$macros_path, "."),
+                                  "Check the path and restart the program.")
   }
   if (!CreateIOLocation(monitor_folder, "msoc")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
-                                "Could not create directory",
-                                paste0(params$write_path, "."),
-                                "Check the path and restart the program.")
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
+                                  "Could not create directory",
+                                  paste0(params$write_path, "."),
+                                  "Check the path and restart the program.")
   }
   if (!CreateIOLocation(monitor_folder, "inputfiles")) {
-    params$failed = TRUE
-    params$error_message = paste(params$error_message,
-                                "Could not create directory",
-                                paste0(params$read_path, "."),
-                                "Check the path and restart the program.")
+    params$failed <- TRUE
+    params$error_message <- paste(params$error_message,
+                                  "Could not create directory",
+                                  paste0(params$read_path, "."),
+                                  "Check the path and restart the program.")
   }
 
   Sys.sleep(1)
@@ -134,28 +134,28 @@ prepare_folder_cox_B2 = function(params, monitor_folder) {
 
 extract_strata = function(params, data, stratas, mask) {
   strata = list()
-  strata$failed = FALSE
+  strata$failed <- FALSE
   if (!is.null(stratas)) {
     if (!("character" %in% class(stratas))) {
       warning("Strata is not a valid variable name(s).")
-      strata$failed = TRUE
+      strata$failed <- TRUE
       return(strata)
     }
     if (length(stratas) > 0) {
       idx = stratas %in% colnames(data)
       if (!is.null(params$party_name) && params$party_name == "A")  {
-        strata$strata_from_a = stratas[idx]
-        strata$strata_from_b = stratas[!idx]
+        strata$strata_from_a <- stratas[idx]
+        strata$strata_from_b <- stratas[!idx]
       } else {
-        strata$strata_from_b = stratas[idx]
-        strata$strata_from_a = stratas[!idx]
+        strata$strata_from_b <- stratas[idx]
+        strata$strata_from_a <- stratas[!idx]
       }
-      if (!is.null(params$dataPartnerID) && params$dataPartnerID == "1") {
-        strata$strataFromMe     = stratas[idx]
-        strata$strataFromOthers = stratas[!idx]
+      if (!is.null(params$data_partner_id) && params$data_partner_id == "1") {
+        strata$strataFromMe     <- stratas[idx]
+        strata$strataFromOthers <- stratas[!idx]
       } else {
-        strata$strataFromMe     = stratas[idx]
-        strata$strataFromOthers = stratas[!idx]
+        strata$strataFromMe     <- stratas[idx]
+        strata$strataFromOthers <- stratas[!idx]
       }
       strata$strata_index = which(colnames(data) %in% stratas)
       if (length(strata$strata_index) > 0) {
@@ -209,9 +209,9 @@ prepare_data_cox_23 = function(params, data, yname, strata, mask) {
       return(workdata)
     }
 
-    workdata$survival        = list()
-    workdata$survival$rank   = data[, response_index[1]]
-    workdata$survival$status = data[, response_index[2]]
+    workdata$survival        <- list()
+    workdata$survival$rank   <- data[, response_index[1]]
+    workdata$survival$status <- data[, response_index[2]]
     if (length(intersect(strata_index, response_index)) > 0) {
       warning("Response and strata share a variable.")
       workdata$failed = TRUE
@@ -247,44 +247,44 @@ prepare_data_cox_23 = function(params, data, yname, strata, mask) {
 
 prepare_params_cox_B2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_cox_B2\n\n")
-  params$failed         = FALSE
-  params$converged      = FALSE
-  params$halted         = FALSE
-  params$singularMatrix = FALSE
+  params$failed          <- FALSE
+  params$converged       <- FALSE
+  params$halted          <- FALSE
+  params$singular_matrix <- FALSE
 
-  params$n = nrow(data$X)
-  params$numEvents = 0
-  params$p1 = 0
-  params$p2 = ncol(data$X)
-  params$p  = params$p1 + params$p2
-  params$p1.old = params$p1
-  params$p2.old = params$p2
-  params$Acolnames = c("")
-  params$Bcolnames = colnames(data$X)
-  params$Acolnames.old = c("")
-  params$Bcolnames.old = c("")
-  params$cutoff        = 1
-  params$maxIterations = 1
+  params$n <- nrow(data$X)
+  params$numEvents <- 0
+  params$p1 <- 0
+  params$p2 <- ncol(data$X)
+  params$p  <- params$p1 + params$p2
+  params$p1.old <- params$p1
+  params$p2.old <- params$p2
+  params$Acolnames <- c("")
+  params$Bcolnames <- colnames(data$X)
+  params$Acolnames.old <- c("")
+  params$Bcolnames.old <- c("")
+  params$cutoff        <- 1
+  params$maxIterations <- 1
 
-  params$survivalInstalled = requireNamespace("survival", quietly = TRUE)
+  params$survivalInstalled <- requireNamespace("survival", quietly = TRUE)
   if (params$survivalInstalled & !("package:survival" %in% search())) {
     attachNamespace("survival")
   }
 
-  pb           = list()
-  pb$p2        = params$p2
-  pb$n         = params$n
-  pb$analysis  = params$analysis
-  pb$Bcolnames = params$Bcolnames
-  pb$strata_b   = list()
-  pb$strata_b$strata_from_a = data$strata$strata_from_a
-  pb$strata_b$strata_from_b = data$strata$strata_from_b
-  pb$tags      = data$tags
+  pb           <- list()
+  pb$p2        <- params$p2
+  pb$n         <- params$n
+  pb$analysis  <- params$analysis
+  pb$Bcolnames <- params$Bcolnames
+  pb$strata_b   <- list()
+  pb$strata_b$strata_from_a <- data$strata$strata_from_a
+  pb$strata_b$strata_from_b <- data$strata$strata_from_b
+  pb$tags      <- data$tags
 
-  write_time = proc.time()[3]
-  save(pb, file = file.path(params$write_path, "pb.rdata"))
-  write_size = sum(file.size(file.path(params$write_path, "pb.rdata")))
-  write_time = proc.time()[3] - write_time
+  write_time <- proc.time()[3]
+  save(pb, file <- file.path(params$write_path, "pb.rdata"))
+  write_size <- sum(file.size(file.path(params$write_path, "pb.rdata")))
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "prepare_params_cox_B2", 0, 0, write_time, write_size)
   return(params)
 }
@@ -306,25 +306,25 @@ CheckStrataCox.A2 = function(params, data) {
     params$getStrataFromB = length(data$strata$strata_from_b) > 0
   } else {
     params$getStrataFromB = FALSE
-    AcapB = intersect(data$strata$strata_from_a, pb$strata_b$strata_from_b)
+    a_cap_b = intersect(data$strata$strata_from_a, pb$strata_b$strata_from_b)
     BcapA = intersect(data$strata$strata_from_b, pb$strata_b$strata_from_a)
-    if (length(AcapB) > 0) {
-      params$error_message =
-        paste("Party A and Party B have", length(AcapB), "variable(s) with the same name which are used in the strata.",
-              "These variable(s) are <", paste0(AcapB, collapse = ", "), ">.",
+    if (length(a_cap_b) > 0) {
+      params$error_message <-
+        paste("Party A and Party B have", length(a_cap_b), "variable(s) with the same name which are used in the strata.",
+              "These variable(s) are <", paste0(a_cap_b, collapse = ", "), ">.",
               "Make sure the variables from each party have distinct names.")
     } else if (length(BcapA) > 0) {
-      params$error_message =
+      params$error_message <-
         paste("Party A and Party B have specified", length(BcapA), "variable(s) for the strata which are not found in the data.",
               "These variable(s) are <", paste0(BcapA, collapse = ", "), ">.",
               "Check the spelling of the variables names and / or remove them from the strata.")
     } else {
-      params$error_message =
+      params$error_message <-
         paste("Party A and Party B have specified different strata.",
               "Verify that both parties specify the same strata.")
     }
     warning(params$error_message)
-    params$failed = TRUE
+    params$failed <- TRUE
   }
   params <- add_to_log(params, "CheckStrata.A2", read_time, read_size, 0, 0)
   return(params)
@@ -457,7 +457,7 @@ prepare_params_cox_A2 = function(params, data, cutoff = 0.01, maxIterations = 25
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_cox_A2\n\n")
   params$converged       = FALSE
   params$halted          = FALSE
-  params$singularMatrix  = FALSE
+  params$singular_matrix  <- FALSE
   params$pmnStepCounter  = 1
   pb = NULL
 
@@ -467,20 +467,20 @@ prepare_params_cox_A2 = function(params, data, cutoff = 0.01, maxIterations = 25
   read_time = proc.time()[3] - read_time
 
   if (params$analysis != pb$analysis) {
-    params$error_message =
+    params$error_message <-
       paste("Party A is running", params$analysis, "regression and Party B is running", pb$analysis, "regression.")
     warning(params$error_message)
-    params$failed = TRUE
+    params$failed <- TRUE
     return(params)
   }
 
   params$n  = nrow(data$X)
   params$numEvents = sum(data$survival$status)
   if (pb$n != params$n) {
-    params$error_message =
+    params$error_message <-
       paste("Party A has", params$n, "observations and Party B has", pb$n, "observations.")
     warning(params$error_message)
-    params$failed = TRUE
+    params$failed <- TRUE
     return(params)
   }
 
@@ -522,7 +522,7 @@ prepare_params_cox_A2 = function(params, data, cutoff = 0.01, maxIterations = 25
   write_size = sum(file.size(file.path(params$write_path, "pa.rdata")))
   write_time = proc.time()[3] - write_time
   params <- add_to_log(params, "prepare_params_cox_A2", read_time, read_size,
-                    write_time, write_size)
+                       write_time, write_size)
   return(params)
 }
 
@@ -539,7 +539,7 @@ PrepareBlocksCox.A2 = function(params, blocksize) {
   if (n < minimumBlocksize) {
     maxACovariates = trunc(sqrt(p2 * n) - p2 - 1)
 
-    params$error_message =
+    params$error_message <-
       paste("The minimum secure blocksize of", minimumBlocksize,
             "is larger than the number of observations", paste0(n, ".\n"),
             "Your options are:\n",
@@ -552,13 +552,13 @@ PrepareBlocksCox.A2 = function(params, blocksize) {
     if (discrim >= 0) {
       minBCovariates = trunc(1 + (b - sqrt(discrim)) / 2)
       maxBCovariates = trunc((b + sqrt(discrim)) / 2)
-      params$error_message =
+      params$error_message <-
         paste0(params$error_message,
                "\nSet the number of B covariates to be between ", minBCovariates, "and",
                paste0(maxBCovariates, "."))
     }
     warning(params$error_message)
-    params$failed = TRUE
+    params$failed <- TRUE
     params <- add_to_log(params, "PrepareBlocksCox.A2", 0, 0, 0, 0)
     return(params)
   }
@@ -818,8 +818,8 @@ CheckColinearityCox.A2 = function(params, data) {
   tags = params$Btags[Bindicies]
 
   if (length(unique(tags)) == 0) {
-    params$failed = TRUE
-    params$error_message = "After removing colinear covariates, Party B has no covariates."
+    params$failed <- TRUE
+    params$error_message <- "After removing colinear covariates, Party B has no covariates."
   }
   params <- add_to_log(params, "CheckColinearityCox.A2", read_time, read_size, write_time, write_size)
   return(params)
@@ -903,7 +903,7 @@ ComputeLogLikelihoodCox.A2 = function(params, data) {
       }
     }
     if (loglikelihood > params$loglikelihood.old || stepSize < 0.5^6) {
-      computeLoglikelihood = FALSE
+      computeLoglikelihood <- FALSE
     } else {
       if (params$verbose) cat("Step Halving\n\n")
       X.betas = (X.betas + params$X.betas.old) * 0.5
@@ -939,7 +939,7 @@ ComputeLogLikelihoodCox.A2 = function(params, data) {
   write_size = sum(file.size(file.path(params$write_path, "X_betas_ss.rdata")))
   write_time = proc.time()[3] - write_time
   params <- add_to_log(params, "ComputeLogLikelihoodCox.A2", read_time, read_size,
-                    write_time, write_size)
+                       write_time, write_size)
   return(params)
 }
 
@@ -1125,8 +1125,8 @@ ComputeInverseCox.A2 = function(params, data) {
   })
   M = inv
   if (is.null(M)) {
-    params$failed = TRUE
-    params$error_message = "The matrix XWX is singular.  This is probably due to divergence of the coefficients."
+    params$failed <- TRUE
+    params$error_message <- "The matrix XWX is singular.  This is probably due to divergence of the coefficients."
     warning(params$error_message)
 
     betas = rep(NA, length(params$Acolnames.old))
@@ -1181,7 +1181,7 @@ ComputeBetaCox.B2 = function(params, data) {
   save(M2.tXB.deltal, file = file.path(params$write_path, "M2_tXB_deltal.rdata"))
   save(XB.betasB, file = file.path(params$write_path, "XB_betasB.rdata"))
   write_size = sum(file.size(file.path(params$write_path, c("M2_tXB_deltal.rdata",
-                                                          "XB_betasB.rdata"))))
+                                                            "XB_betasB.rdata"))))
   write_time = proc.time()[3] - write_time
   params <- add_to_log(params, "ComputeBetaCox.B2", read_time, read_size, write_time, write_size)
 
@@ -1298,7 +1298,7 @@ ComputeResultsCox.A2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsCox.A2\n\n")
   stats = params$stats
   stats$converged = params$converged
-  stats$failed    = FALSE
+  stats$failed    <- FALSE
   read_time = 0
   read_size = 0
   betasB     = NULL
@@ -1309,7 +1309,7 @@ ComputeResultsCox.A2 = function(params, data) {
   load(file.path(params$read_path, "B_betas_ns.rdata")) # load betasB, nullscoreB
   load(file.path(params$read_path, "XB_betasB.rdata")) # load XB.betasB
   read_size = sum(file.size(file.path(params$read_path, c("B_betas_ns.rdata",
-                                                        "XB_betasB.rdata"))))
+                                                          "XB_betasB.rdata"))))
   read_time = proc.time()[3] - read_time
   params$betasB = betasB
   params$nullScore = rbind(params$nullScore, nullScoreB)
@@ -1420,7 +1420,7 @@ ComputeResultsCox.A2 = function(params, data) {
   write_time = proc.time()[3] - write_time
 
   params <- add_to_log(params, "ComputeResultsCox.A2",
-                    read_time, read_size, write_time, write_size)
+                       read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -1493,8 +1493,8 @@ CheckColinearityCox.B2 = function(params, data) {
   params$p             = params$p1 + params$p2
 
   if (params$p2 == 0) {
-    params$failed = TRUE
-    params$error_message = "Party A has no covariates and all of Party B's covariates are linear."
+    params$failed <- TRUE
+    params$error_message <- "Party A has no covariates and all of Party B's covariates are linear."
     warning(params$error_message)
   }
   params <- add_to_log(params, "CheckColinearityCox.B2", 0, 0, 0, 0)
@@ -1533,9 +1533,9 @@ ComputeCoxFromSurvival.B2 = function(params, data) {
   )
 
   if ((class(error) == "logical" && error)) {
-    params$converged = FALSE
+    params$converged <- FALSE
     params$failed    = TRUE
-    params$error_message = "Coxph in the survival package failed to converge."
+    params$error_message <- "Coxph in the survival package failed to converge."
     warning(params$error_message)
   } else {
     params$converged = TRUE
@@ -1546,7 +1546,7 @@ ComputeCoxFromSurvival.B2 = function(params, data) {
                                                                strata = strata,
                                                                data$X),
                                              iter.max = params$maxIterations))
-      params$converged = FALSE
+      params$converged <- FALSE
     }
     fit$linear.predictors = NULL
     fit$residuals = NULL
@@ -1611,7 +1611,7 @@ ComputeCox.B2 = function(params, data) {
         }
       }
       if (loglikelihood > loglikelihood.old || stepSize < 0.5^6) {
-        computeLoglikelihood = FALSE
+        computeLoglikelihood <- FALSE
       } else {
         if (params$verbose) cat("Step Halving\n\n")
         X.betas = (X.betas + X.betas.old) * 0.5
@@ -1645,8 +1645,8 @@ ComputeCox.B2 = function(params, data) {
     })
     M = inv
     if (is.null(M)) {
-      params$failed = TRUE
-      params$error_message = "The matrix t(X)WX is singular.  This is probably due to divergence of the coefficients."
+      params$failed <- TRUE
+      params$error_message <- "The matrix t(X)WX is singular.  This is probably due to divergence of the coefficients."
       warning(params$error_message)
 
       betas = rep(NA, length(params$Bcolnames.old))
@@ -1678,8 +1678,8 @@ ComputeCox.B2 = function(params, data) {
   params$betasB = betasB
   params$X.betas = X.betas
   if (!params$converged) {
-    params$failed = TRUE
-    params$error_message = "Cox failed to converge in the specified number of iterations."
+    params$failed <- TRUE
+    params$error_message <- "Cox failed to converge in the specified number of iterations."
     warning(params$error_message)
   }
   params <- add_to_log(params, "ComputeCox.B2", 0, 0, 0, 0)
@@ -1692,7 +1692,7 @@ ComputeResultsCox.B2 = function(params, data) {
   stats = params$stats
   stats$converged = params$converged
   stats$party_name <- params$party_name
-  stats$failed    = FALSE
+  stats$failed    <- FALSE
 
   fitExists = !is.null(params$fit)
   names.old          = c(params$Acolnames.old, params$Bcolnames.old)
@@ -1828,13 +1828,13 @@ PartyAProcess2Cox = function(data,
                              blocksize      = 500,
                              cutoff         = 1e-8,
                              maxIterations  = 25,
-                             sleep_time      = 10,
+                             sleep_time     = 10,
                              maxWaitingTime = 24 * 60 * 60,
                              popmednet      = TRUE,
                              trace          = FALSE,
                              verbose        = TRUE) {
   params <- PrepareParams.2p("cox", "A", msreqid = msreqid,
-                            popmednet = popmednet, trace = trace, verbose = verbose)
+                             popmednet = popmednet, trace = trace, verbose = verbose)
   params <- InitializeLog.2p(params)
   params <- InitializeStamps.2p(params)
   params <- InitializeTrackingTable.2p(params)
@@ -1889,7 +1889,7 @@ PartyAProcess2Cox = function(data,
 
   data = PrepareStrataCox.A2(params, data)
   params <- add_to_log(params, "PrepareStrataCox.A2", data$read_time,
-                    data$read_size, data$write_time, data$write_size)
+                       data$read_size, data$write_time, data$write_size)
 
   if (params$p1 == 0) { # Check for $p1 == 0 => no covariates, only strata
     MakeTransferMessage(params$write_path)
@@ -2020,7 +2020,7 @@ PartyBProcess2Cox = function(data,
                              trace               = FALSE,
                              verbose             = TRUE) {
   params <- PrepareParams.2p("cox", "B", popmednet = popmednet, trace = trace,
-                            verbose = verbose)
+                             verbose = verbose)
   params <- InitializeLog.2p(params)
   params <- InitializeStamps.2p(params)
   params <- InitializeTrackingTable.2p(params)
@@ -2067,7 +2067,7 @@ PartyBProcess2Cox = function(data,
 
   data = SortDataCox.B2(params, data)
   params <- add_to_log(params, "SortDataCox.B2", data$read_time,
-                    data$read_size, 0, 0)
+                       data$read_size, 0, 0)
 
   if (file.exists(file.path(params$read_path, "transferControl.rdata"))) {
     params <- FinalizeParams2Cox.B2(params, data)
