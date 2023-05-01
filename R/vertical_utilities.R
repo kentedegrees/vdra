@@ -162,7 +162,7 @@ AnalysisCenter.2Party <- function(regression            = "linear",
                                  blocksize, sleep_time, max_waiting_time,
                                  popmednet, trace, verbose)
   } else if (regression == "logistic") {
-    stats <- PartyAProcess2Logistic(data, response, monitor_folder, msreqid,
+    stats <- party_a_process_2_logistic(data, response, monitor_folder, msreqid,
                                    blocksize, tol, max_iterations, sleep_time,
                                    max_waiting_time, popmednet, trace, verbose)
   } else {
@@ -200,7 +200,7 @@ DataPartner.2Party <- function(regression          = "linear",
     stats <- party_b_process_2_linear(data, monitor_folder, sleep_time, max_waiting_time,
                                  popmednet, trace, verbose)
   } else if (regression == "logistic") {
-    stats <- PartyBProcess2Logistic(data, monitor_folder, sleep_time, max_waiting_time,
+    stats <- party_b_process_2_logistic(data, monitor_folder, sleep_time, max_waiting_time,
                                    popmednet, trace, verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
@@ -2177,7 +2177,7 @@ CreateContainers <- function(pA, pB, blocks) {
   littleBlockG = blocks$gLittleBlock
 
   littleFilesize.z   = 8 * littleBlocksize * littleBlockG
-  littleFilesize.w   = 8 * littleBlocksize * pB # used for w, V, RW, WR, RV, Cox
+  littleFilesize.w   = 8 * littleBlocksize * pB # used for w, v, RW, WR, RV, Cox
   littleFilesize.RZ  = 8 * littleBlocksize^2
   littleFilesize.PR  = 8 * (pA + 1) * pB        # I think this is not used anymore
   littleFilesize.XR = 8 * pA * pB
@@ -2261,7 +2261,7 @@ CreateContainers <- function(pA, pB, blocks) {
   containers$filebreak.w   = filebreak.w
   containers$filebreak.RZ  = filebreak.RZ
   containers$filebreak.PR  = filebreak.PR # I think we are not using this anymore
-  containers$filebreak.V   = filebreak.w
+  containers$filebreak.v   = filebreak.w
   containers$filebreak.RW  = filebreak.w
   containers$filebreak.WR  = filebreak.w
   containers$filebreak.RV  = filebreak.w
@@ -4214,7 +4214,7 @@ HoslemInternal <- function(x, data = NULL, nGroups = 10) {
   } else {
     Y = data$Y
   }
-  pi_ = exp(x$FinalFitted) / (1 + exp(x$FinalFitted))
+  pi_ = exp(x$final_fitted) / (1 + exp(x$final_fitted))
   uq = unique(quantile(pi_, probs = seq(0, 1, 1 / nGroups)))
   group_ = cut(pi_, breaks = uq, include.lowest = TRUE)
   dd = data.frame(y = Y[order(pi_)], pi_ = sort(pi_),
@@ -4288,7 +4288,7 @@ HoslemTest <- function(x = NULL, nGroups = 10) {
     warning("Process did not converge. Cannot perform Hosmer and Lemeshow goodness of fit test.")
     return(invisible(NULL))
   }
-  if (is.null(x$Y) || is.null(x$FinalFitted)) {
+  if (is.null(x$Y) || is.null(x$final_fitted)) {
     warning("HoslemTest can only be invoked by the party which holds the response.")
     return(invisible(NULL))
   } else if (is.numeric(nGroups)) {
@@ -4318,7 +4318,7 @@ RocInternal <- function(x, data = NULL, bins = 500) {
 
   positive = sum(Y)
   negative = length(Y) - positive
-  pi_ = exp(x$FinalFitted) / (1 + exp(x$FinalFitted))
+  pi_ = exp(x$final_fitted) / (1 + exp(x$final_fitted))
   threshold = seq(0, 1, length.out = bins)
   rtrn = matrix(NA, bins, 2)
 
@@ -4386,7 +4386,7 @@ RocTest <- function(x = NULL, bins = 10) {
     warning("Process did not converge.  Cannot generate ROC.")
     return(invisible(NULL))
   }
-  if (is.null(x$Y) || is.null(x$FinalFitted)) {
+  if (is.null(x$Y) || is.null(x$final_fitted)) {
     warning("RocTest can only be invoked by the party which holds the response.")
     return(invisible(NULL))
   } else if (is.numeric(bins)) {

@@ -613,7 +613,7 @@ check_colinearity_cox_AC <- function(params) {
   }
 
   if (params$failed) {
-    params <- add_to_log(params, "CheckColinearityLogistic.AC", 0, 0, 0, 0)
+    params <- add_to_log(params, "check_colinearity_logistic_AC", 0, 0, 0, 0)
   }
   indicies = params$indicies
   idx      = params$idx
@@ -638,7 +638,7 @@ check_colinearity_cox_AC <- function(params) {
   write_size <- file.size(file.path(params$write_path, "indicies.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "CheckColinearityLogistic.AC", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "check_colinearity_logistic_AC", 0, 0, write_time, write_size)
   return(params)
 }
 
@@ -685,7 +685,7 @@ update_params_cox_DP <- function(params) {
   params$u             = u
   params$idx           = idx
   params$betas         = betas
-  params$deltabeta_old = betas
+  params$delta_beta_old = betas
   params$indicies      = indicies
   params$pReduct       = pReduct
   if (params$data_partner_id == 1) {
@@ -731,17 +731,17 @@ ComputeSBetaCox.DP <- function(params, data) {
   read_time <- proc.time()[3] - read_time
 
   sBetaPart = (data$x %*% params$betas + u) / (2 * u)
-  V = 0
+  v = 0
   for (id in 1:params$numDataPartners) {
     set.seed(params$seeds[id] + params$alg_iteration_counter)
     v = rnorm(n, mean = runif(n = 1, min = -1, max = 1), sd = 20)
-    V = V + v
+    v = v + v
     if (id == params$data_partner_id) {
       sBetaPart = sBetaPart + v
     }
   }
 
-  sBetaPart = sBetaPart - params$scalers[params$data_partner_id] / sum(params$scalers) * V
+  sBetaPart = sBetaPart - params$scalers[params$data_partner_id] / sum(params$scalers) * v
 
   write_time <- proc.time()[3]
   save(sBetaPart, file = file.path(params$write_path, "sbeta.rdata"))
@@ -1225,8 +1225,8 @@ UpdateBetasCox.DP <- function(params) {
     }
   }
 
-  params$betas = params$betas + deltabeta - (1 - params$scale) * params$deltabeta_old
-  params$deltabeta_old = deltabeta
+  params$betas = params$betas + deltabeta - (1 - params$scale) * params$delta_beta_old
+  params$delta_beta_old = deltabeta
 
   p = length(params$indicies[[params$data_partner_id]])
   if (p == 0) {

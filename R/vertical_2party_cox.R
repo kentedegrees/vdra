@@ -836,10 +836,10 @@ update_data_cox_a2 <- function(params, data) {
 
 prepare_loop_cox_a2 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_loop_cox_a2\n\n")
-  params$betasA    = matrix(0, params$p1, 1)
-  params$betasAold = matrix(0, params$p1, 1)
+  params$betas_a    = matrix(0, params$p1, 1)
+  params$betas_a_old = matrix(0, params$p1, 1)
   params$alg_iteration_counter      = 1
-  params$deltabeta = Inf
+  params$delta_beta = Inf
   params <- add_to_log(params, "prepare_loop_cox_a2", 0, 0, 0, 0)
   return(params)
 }
@@ -935,8 +935,8 @@ compute_log_likelihood_cox_a2 <- function(params, data) {
   params$step_size <- step_size
 
   write_time <- proc.time()[3]
-  save(x_betas, step_size, file = file.path(params$write_path, "x_betas_ss.rdata"))
-  write_size <- sum(file.size(file.path(params$write_path, "x_betas_ss.rdata")))
+  save(x_betas, step_size, file = file.path(params$write_path, "Xbetas_ss.rdata"))
+  write_size <- sum(file.size(file.path(params$write_path, "Xbetas_ss.rdata")))
   write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "compute_log_likelihood_cox_a2", read_time, read_size,
                        write_time, write_size)
@@ -991,8 +991,8 @@ compute_log_likelihood_cox_b2 <- function(params, data) {
   write_size <- 0
 
   read_time <- read_time - proc.time()[3]
-  load(file.path(params$read_path, "x_betas_ss.rdata")) # load x_betas, step_size
-  read_size <- sum(file.size(file.path(params$read_path, "x_betas_ss.rdata")))
+  load(file.path(params$read_path, "Xbetas_ss.rdata")) # load x_betas, step_size
+  read_size <- sum(file.size(file.path(params$read_path, "Xbetas_ss.rdata")))
   read_time <- read_time + proc.time()[3]
 
   params$step_size <- step_size
@@ -1130,7 +1130,7 @@ compute_inverse_cox_a2 <- function(params, data) {
     warning(params$error_message)
 
     betas = rep(NA, length(params$a_col_names_old))
-    betas[params$a_indicies_keep] = params$betasA
+    betas[params$a_indicies_keep] = params$betas_a
     betas = data.frame(betas)
     rownames(betas) = params$a_col_names_old
     params <- add_to_log(params, "compute_inverse_cox_a2", read_time, read_size, write_time, write_size)
@@ -1200,17 +1200,17 @@ compute_beta_cox_a2 <- function(params, data) {
   read_time <- proc.time()[3] - read_time
 
   if (params$step_size < 1) { # Is this in the wrong spot?
-    params$betasA = params$betasAold + (params$betasA - params$betasAold) * params$step_size
+    params$betas_a = params$betas_a_old + (params$betas_a - params$betas_a_old) * params$step_size
   }
 
-  params$betasAold = params$betasA
-  params$betasA = params$betasA + params$m[1:p1, 1:p1] %*% params$tXA.deltal + m2_txb_deta_l
+  params$betas_a_old = params$betas_a
+  params$betas_a = params$betas_a + params$m[1:p1, 1:p1] %*% params$tXA.deltal + m2_txb_deta_l
 
   converged = abs(params$loglikelihood - params$loglikelihood_old) /
     (abs(params$loglikelihood) + 0.1) < params$cutoff
   params$converged = converged
 
-  params$xa_betas_a = data$x %*% params$betasA
+  params$xa_betas_a = data$x %*% params$betas_a
 
   if (params$alg_iteration_counter >= params$max_iterations) {
     params$halted = TRUE
@@ -1322,7 +1322,7 @@ compute_results_cox_a2 <- function(params, data) {
   stats$party        <- c(rep("dp0", length(params$a_col_names_old)),
                          rep("dp1", length(params$b_col_names_old)))
   stats$coefficients <- rep(NA, length(stats$party))
-  tempcoefs          <- c(params$betasA, params$betas_b)
+  tempcoefs          <- c(params$betas_a, params$betas_b)
   stats$coefficients[idx] <- tempcoefs
   stats$expcoef      <- exp(stats$coefficients)  # exp(coef) = hazard ratios
   stats$expncoef     <- exp(-stats$coefficients)
@@ -1969,7 +1969,7 @@ party_a_process_2_cox <- function(data,
 
     params <- compute_log_likelihood_cox_a2(params, data)
 
-    files <- c("x_betas_ss.rdata")
+    files <- c("Xbetas_ss.rdata")
     if (params$alg_iteration_counter == 1) {
       files <- c("indicies.rdata", files)
     } else {

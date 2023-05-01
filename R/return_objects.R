@@ -135,7 +135,7 @@ NULL
 #'   \item{Y}{a matrix of the response.  Only returned to the party which holds
 #'   the response.}
 #'
-#'   \item{FinalFitted}{a matrix of final fitted values of the regression.  Only
+#'   \item{final_fitted}{a matrix of final fitted values of the regression.  Only
 #'   returned to the party which holds the response.}
 #'
 #'   }

@@ -571,15 +571,15 @@ check_colinearity_cox_t3 <- function(params) {
 
 ComputeInitialBetasCox.t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeInitialBetasCox.t3\n\n")
-  Abetas   = rep(0, params$p1)
-  Bbetas   = rep(0, params$p2)
-  betas    = c(Abetas, Bbetas)
+  a_betas   = rep(0, params$p1)
+  b_betas   = rep(0, params$p2)
+  betas    = c(a_betas, b_betas)
 
   params$betas           = betas
   params$betasold        = betas
-  params$Xbeta           = rep(0, params$n)
+  params$x_beta           = rep(0, params$n)
   params$alg_iteration_counter = 1
-  params$deltabeta       = Inf
+  params$delta_beta       = Inf
   params$loglikelihood   = -Inf
   params$converged       = FALSE
   params$maxIterExceeded = FALSE
@@ -587,8 +587,8 @@ ComputeInitialBetasCox.t3 <- function(params) {
   maxIterExceeded        = FALSE
 
   write_time <- proc.time()[3]
-  save(Abetas, file = file.path(params$write_path, "betasA.rdata"))
-  save(Bbetas, file = file.path(params$write_path, "betasB.rdata"))
+  save(a_betas, file = file.path(params$write_path, "betasA.rdata"))
+  save(b_betas, file = file.path(params$write_path, "betasB.rdata"))
   save(converged, maxIterExceeded,
        file = file.path(params$write_path, "converged.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, c("betasA.rdata",
@@ -654,7 +654,7 @@ GetBetaACox.a3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetBeataACox.a3\n\n")
   converged = NULL
   maxIterExceeded = NULL
-  Abetas = NULL
+  a_betas = NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "converged.rdata"))
   load(file.path(params$read_path[["T"]], "betasA.rdata"))
@@ -663,7 +663,7 @@ GetBetaACox.a3 <- function(params) {
   read_time <- proc.time()[3] - read_time
   params$converged = converged
   params$maxIterExceeded = maxIterExceeded
-  params$betas = Abetas
+  params$betas = a_betas
   params <- add_to_log(params, "GetBetaACox.a3", read_time, read_size, 0, 0)
   return(params)
 }
@@ -673,7 +673,7 @@ GetBetaBCox.b3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetBetaBCox.b3\n\n")
   converged       = NULL
   maxIterExceeded = NULL
-  Bbetas          = NULL
+  b_betas          = NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "converged.rdata"))
   load(file.path(params$read_path[["T"]], "betasB.rdata"))
@@ -682,7 +682,7 @@ GetBetaBCox.b3 <- function(params) {
   read_time <- proc.time()[3] - read_time
   params$converged = converged
   params$maxIterExceeded = maxIterExceeded
-  params$betas = Bbetas
+  params$betas = b_betas
   params <- add_to_log(params, "GetBetaBCox.b3", read_time, read_size, 0, 0)
   return(params)
 }
@@ -723,16 +723,16 @@ compute_log_likelihood_cox_t3 <- function(params) {
   read_size <- file.size(file.path(params$read_path[["A"]], "xabetaa.rdata")) +
     file.size(file.path(params$read_path[["B"]], "xbbetab.rdata"))
   read_time <- proc.time()[3] - read_time
-  params$Xbeta_old = params$Xbeta
-  Xbeta = XAbetaA + XBbetaB
-  params$Xbeta = Xbeta
+  params$x_beta_old = params$x_beta
+  x_beta = XAbetaA + XBbetaB
+  params$x_beta = x_beta
   params$loglikelihood_old = params$loglikelihood
   step_size <- 1
-  w = exp(Xbeta)
+  w = exp(x_beta)
   while (max(w) == Inf) {
-    Xbeta = (Xbeta + params$Xbetas_old) * 0.5
+    x_beta = (x_beta + params$x_betas_old) * 0.5
     step_size <- step_size * 0.5
-    w = exp(Xbeta)
+    w = exp(x_beta)
   }
   compute_log_likelihood <- TRUE
 
@@ -763,9 +763,9 @@ compute_log_likelihood_cox_t3 <- function(params) {
       compute_log_likelihood <- FALSE
     } else {
       if (params$verbose) cat("Step Halving\n\n")
-      Xbeta = (Xbeta + params$Xbeta_old) * 0.5
+      x_beta = (x_beta + params$x_beta_old) * 0.5
       step_size <- step_size * 0.5
-      w = exp(Xbeta)
+      w = exp(x_beta)
     }
   }
   params$loglikelihoodold = params$loglikelihood
@@ -773,10 +773,10 @@ compute_log_likelihood_cox_t3 <- function(params) {
   if (params$alg_iteration_counter == 1) {
     params$nullLoglikelihood = loglikelihood
   }
-  params$Xbeta = Xbeta
+  params$x_beta = x_beta
   params$step_size <- step_size
   write_time <- proc.time()[3]
-  save(Xbeta, file = file.path(params$write_path, "Xbeta.rdata"))
+  save(x_beta, file = file.path(params$write_path, "Xbeta.rdata"))
   write_size <- file.size(file.path(params$write_path, "Xbeta.rdata"))
   write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "compute_log_likelihood_cox_t3", read_time, read_size, write_time, write_size)
@@ -786,7 +786,7 @@ compute_log_likelihood_cox_t3 <- function(params) {
 
 ComputeXBDeltaLCox.b3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeXBDeltaLCox.b3\n\n")
-  Xbeta = NULL
+  x_beta = NULL
   p2 = params$p
   n = params$n
 
@@ -797,7 +797,7 @@ ComputeXBDeltaLCox.b3 <- function(params, data) {
 
   num_events = sum(data$survival$status)
 
-  w = exp(Xbeta)
+  w = exp(x_beta)
   deltal = as.numeric(data$survival$status)
   deltal[1] = deltal[1]  # This is to force R to make a copy since we are exploiting
   # a pass by reference with the C call.
@@ -866,7 +866,7 @@ ComputeXBDeltaLCox.b3 <- function(params, data) {
 
 ComputeXADeltaLCox.a3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeXADeltaLCox.a3\n\n")
-  Xbeta = NULL
+  x_beta = NULL
   p1 = params$p
   n = params$n
 
@@ -877,7 +877,7 @@ ComputeXADeltaLCox.a3 <- function(params, data) {
 
   num_events = sum(data$survival$status)
 
-  w = exp(Xbeta)
+  w = exp(x_beta)
   deltal = as.numeric(data$survival$status)
   deltal[1] = deltal[1]  # This is to force R to make a copy since we are exploiting
   # a pass by reference with the C call.
@@ -941,9 +941,9 @@ ProcessVCox.t3 <- function(params) {
                         endian = "little"), nrow = n, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
-    V = t(R2) %*% RV
+    v = t(R2) %*% RV
     R3 = RandomOrthonomalMatrix(p2)
-    VR = V %*% R3
+    VR = v %*% R3
 
     write_time <- write_time - proc.time()[3]
     to_write4 = file(file.path(params$dp_local_path, filename4), "wb")
@@ -1037,7 +1037,7 @@ ProcessXtWXCox.t3 <- function(params) {
 
   pbar <- make_progress_bar_1(params$blocks$num_blocks, "x'w*x", params$verbose)
   container_ct_XR = 0
-  XATWXB = 0
+  xa_t_w_xb = 0
 
   for (i in 1:params$blocks$num_blocks) {
     if (i %in% params$container$filebreak.XR) {
@@ -1058,7 +1058,7 @@ ProcessXtWXCox.t3 <- function(params) {
     read_size <- read_size + file.size(file.path(params$dp_local_path, filename2))
     read_time <- read_time + proc.time()[3]
 
-    XATWXB = XATWXB + XR %*% t(R)
+    xa_t_w_xb = xa_t_w_xb + XR %*% t(R)
 
     if ((i + 1) %in% params$container$filebreak.XR || i == params$blocks$num_blocks) {
       close(to_read)
@@ -1068,16 +1068,16 @@ ProcessXtWXCox.t3 <- function(params) {
   }
 
 
-  xtwx = rbind(cbind(tXA.w_xa, XATWXB), cbind(t(XATWXB), txb_w_xb))
-  II = NULL
+  xtwx = rbind(cbind(tXA.w_xa, xa_t_w_xb), cbind(t(xa_t_w_xb), txb_w_xb))
+  ii = NULL
   tryCatch({
-    II = solve(xtwx)
+    ii = solve(xtwx)
   },
   error = function(err) {
-    II = NULL
+    ii = NULL
   }
   )
-  if (is.null(II)) {
+  if (is.null(ii)) {
     params$failed <- TRUE
     params$singular_matrix = TRUE
     params$error_message <-
@@ -1100,7 +1100,7 @@ ProcessXtWXCox.t3 <- function(params) {
     params$nullScore = rbind(tXA.deltal, tXB.deltal)
   }
   params$xtwx = xtwx
-  delta_beta = II %*% rbind(tXA.deltal, tXB.deltal)
+  delta_beta = ii %*% rbind(tXA.deltal, tXB.deltal)
   params$betas    = params$betasold + (params$betas - params$betasold) * params$step_size
   params$betasold = params$betas
   params$betas    = params$betasold + delta_beta
@@ -1114,11 +1114,11 @@ ProcessXtWXCox.t3 <- function(params) {
   params$converged = converged
   params$maxIterExceeded = maxIterExceeded
 
-  Abetas = params$betas[1:p1]
-  Bbetas = params$betas[(p1 + 1):(p1 + p2)]
+  a_betas = params$betas[1:p1]
+  b_betas = params$betas[(p1 + 1):(p1 + p2)]
   write_time <- proc.time()[3]
-  save(Abetas, file = file.path(params$write_path, "betasA.rdata"))
-  save(Bbetas, file = file.path(params$write_path, "betasB.rdata"))
+  save(a_betas, file = file.path(params$write_path, "betasA.rdata"))
+  save(b_betas, file = file.path(params$write_path, "betasB.rdata"))
   save(converged, maxIterExceeded,
        file = file.path(params$write_path, "converged.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, c("betasA.rdata",
@@ -1219,7 +1219,7 @@ compute_results_cox_t3 <- function(params) {
   stats$wald.test    <- t(params$betas) %*% params$xtwx %*% params$betas
   stats$wald.test    <- c(stats$wald.test,
                          1 - pchisq(stats$wald.test, stats$df))
-  pred <- -params$Xbeta
+  pred <- -params$x_beta
   if (params$survival_installed) {
     surv <- survival::Surv(params$survival$rank, params$survival$status)
     strat <- rep(0, length(surv))
