@@ -446,7 +446,7 @@ get_z_linear_a3 <- function(params, data) {
       close(to_write)
       write_size <- write_size + file.size(file.path(params$write_path, filename))
     }
-    pbar <- make_progress_bar_1(i, pbar, params$verbose)
+    pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
   params <- add_to_log(params, "get_z_linear_a3", 0, 0, write_time, write_size)
   return(params)
@@ -505,7 +505,7 @@ process_z_linear_t3 <- function(params) {
       write_size <- write_size + file.size(file.path(params$write_path, filename2))
     }
 
-    pbar <- make_progress_bar_1(i, pbar, params$verbose)
+    pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
 
   params <- add_to_log(params, "process_z_linear_t3", read_time, read_size, write_time, write_size)
@@ -582,7 +582,7 @@ get_rw_linear_b3 <- function(params, data) {
       write_size <- write_size + file.size(file.path(params$write_path, filename2))
     }
 
-    pbar <- make_progress_bar_1(i, pbar, params$verbose)
+    pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
 
   params <- add_to_log(params, "get_rw_linear_b3", read_time, read_size, write_time, write_size)
@@ -658,7 +658,7 @@ process_w_linear_t3 <- function(params) {
       write_size <- write_size + file.size(file.path(params$write_path, filename3))
     }
 
-    pbar <- make_progress_bar_1(i, pbar, params$verbose)
+    pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
 
   params <- add_to_log(params, "process_w_linear_t3", read_time, read_size, write_time, write_size)
@@ -722,7 +722,7 @@ get_wr_linear_a3 <- function(params, data) {
       write_size <- write_size + file.size(file.path(params$write_path, filename2))
     }
 
-    pbar <- make_progress_bar_1(i, pbar, params$verbose)
+    pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
   params <- add_to_log(params, "get_wr_linear_a3", read_time, read_size, write_time, write_size)
   return(params)
@@ -776,7 +776,7 @@ get_products_linear_t3 <- function(params) {
       close(to_read)
     }
 
-    pbar <- make_progress_bar_1(i, pbar, params$verbose)
+    pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
 
   y_t_xb <- y_xa_t_xb[1, , drop = FALSE]

@@ -805,7 +805,7 @@ compute_log_likelihood_cox_DP <- function(params, data) {
             loglikelihood <- loglikelihood - log(a_jr)
           }
           step_counter <- step_counter + nj
-          pbar <- make_progress_bar_1(step_counter, pbar, params$verbose)
+          pbar <- make_progress_bar_2(step_counter, pbar, params$verbose)
         }
       }
     }

@@ -1209,7 +1209,7 @@ make_progress_bar_1 <- function(steps, message, verbose) {
 
 
 #' @importFrom stats flush.console
-make_progress_bar_1 <- function(i, pb, verbose) {
+make_progress_bar_2 <- function(i, pb, verbose) {
   percent = floor(100 * i / pb$numSteps)
   if (percent == pb$percent) {
     return(pb)

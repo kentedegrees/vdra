@@ -329,7 +329,7 @@ get_rv_logistic_b3 <- function(params, data) {
       close(to_write)
       write_size <- write_size + file.size(file.path(params$write_path, filename2))
     }
-    pbar <- make_progress_bar_1(i, pbar, params$verbose)
+    pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
 
   write_time <- write_time - proc.time()[3]
@@ -409,7 +409,7 @@ process_v_logistic_t3 <- function(params) {
       write_size <- write_size + file.size(file.path(params$write_path, filename3))
     }
 
-    pbar <- make_progress_bar_1(i, pbar, params$verbose)
+    pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
   params <- add_to_log(params, "process_v_logistic_t3", read_time, read_size, write_time, write_size)
   return(params)
@@ -475,7 +475,7 @@ get_xr_logistic_a3 <- function(params, data) {
       close(to_write)
       write_size <- write_size + file.size(file.path(params$write_path, filename2))
     }
-    pbar <- make_progress_bar_1(i, pbar, params$verbose)
+    pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
 
   write_time <- write_time - proc.time()[3]
@@ -529,7 +529,7 @@ process_xt_wx_logistic_t3 <- function(params) {
       close(to_read)
       read_size <- read_size + file.size(file.path(params$read_path[["A"]], filename1))
     }
-    pbar <- make_progress_bar_1(i, pbar, params$verbose)
+    pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
 
   xtwx = rbind(cbind(params$xatwxa, xa_t_w_xb), cbind(t(xa_t_w_xb), params$xbtwxb))
