@@ -68,10 +68,10 @@ SendStrataNamesCox.DP = function(params, data) {
   strataNames = list()
   strataNames$strataFromMe = data$strata$strataFromMe
   strataNames$strataFromOthers = data$strata$strataFromOthers
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(strataNames, file = file.path(params$write_path, "strata_names.rdata"))
-  write_size = file.size(file.path(params$write_path, "strata_names.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "strata_names.rdata"))
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "SendStrataNamesCox.DP", 0, 0, write_time, write_size)
   return(params)
 }
@@ -80,7 +80,7 @@ SendStrataNamesCox.DP = function(params, data) {
 check_strata_cox_DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "check_strata_cox_DP\n\n")
   read_time <- 0
-  read_size = 0
+  read_size <- 0
   strataNames          = NULL
   strataClaimed        = rep(list(list()), params$numDataPartners)
   strataUnclaimed      = rep(list(list()), params$numDataPartners)
@@ -93,7 +93,7 @@ check_strata_cox_DP = function(params, data) {
   for (i in 2:params$numDataPartners) {
     read_time <- read_time - proc.time()[3]
     load(file.path(params$readPathDP[i], "strata_names.rdata"))
-    read_size = read_size + file.size(file.path(params$readPathDP[i], "strata_names.rdata"))
+    read_size <- read_size + file.size(file.path(params$readPathDP[i], "strata_names.rdata"))
     read_time <- read_time + proc.time()[3]
     if (length(strataNames$strataFromMe) > 0) {
       strataClaimed[[i]] = strataNames$strataFromMe
@@ -184,10 +184,10 @@ send_strata_cox_DP = function(params, data) {
   strata = list()
   strata$X = data$strata$X
   strata$legend = data$strata$legend
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(strata, file = file.path(params$write_path, "strata.rdata"))
-  write_size = file.size(file.path(params$write_path, "strata.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "strata.rdata"))
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "send_strata_cox_DP", 0, 0, write_time, write_size)
   return(params)
 }
@@ -199,7 +199,7 @@ prepare_strata_cox_DP = function(params, data) {
   survival = data$survival
   strataTemp   = list()
   totalStrata = 0
-  read_size = 0
+  read_size <- 0
   read_time <- 0
   for (id in 1:params$numDataPartners) {
     totalStrata = totalStrata + length(params$strataClaimed[[id]])
@@ -220,7 +220,7 @@ prepare_strata_cox_DP = function(params, data) {
         } else {
           read_time <- read_time - proc.time()[3]
           load(file.path(params$readPathDP[[id]], "strata.rdata"))
-          read_size = read_size + file.size(file.path(params$readPathDP[[id]], "strata.rdata"))
+          read_size <- read_size + file.size(file.path(params$readPathDP[[id]], "strata.rdata"))
           read_time <- read_time + proc.time()[3]
           if (first) {
             strataTemp$X = strata$X
@@ -270,7 +270,7 @@ prepare_strata_cox_DP = function(params, data) {
   for (i in 1:length(strata)) {
     idx = strata[[i]]$start:strata[[i]]$end
     temp  = table(survival$rank[idx])
-    M = length(temp)   # number of unique observed times, including where no one fails
+    m = length(temp)   # number of unique observed times, including where no one fails
     # Count the number of 0's and 1's for each observed time
     temp0 = table(survival$rank[idx], survival$status[idx])
     # Check if there are all 1's or all 0's .  If so, add them into the table.
@@ -287,7 +287,7 @@ prepare_strata_cox_DP = function(params, data) {
     # The number of failures at each rank which has a failure
     strata[[i]]$nfails = as.numeric(temp0[which(temp0[, 2] > 0), 2])
     # The first index of the ranks for which the number of failures is > 0.
-    strata[[i]]$start0 = c(1, (cumsum(temp)[1:(M - 1)] + 1))[which(temp0[, 2] > 0)]
+    strata[[i]]$start0 = c(1, (cumsum(temp)[1:(m - 1)] + 1))[which(temp0[, 2] > 0)]
     # The first index of a failure for each rank which has a failure
     strata[[i]]$start1 = strata[[i]]$start0 + temp0[which(temp0[, 2] > 0), 1]
     # The last index of a failure for each rank which has a failure
@@ -327,10 +327,10 @@ prepare_strata_cox_DP = function(params, data) {
   pStrata = ncol(params$strata)
   params$pStrata = pStrata
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(pStrata, survival, file = file.path(params$write_path, "survival.rdata"))
-  write_size = file.size(file.path(params$write_path, "survival.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "survival.rdata"))
+  write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "prepare_strata_cox_DP", read_time, read_size, write_time, write_size)
 
@@ -371,10 +371,10 @@ prepare_params_cox_DP = function(params, data) {
   seed = params$seed
   scaler = params$scaler
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(p, scaler, seed, file = file.path(params$write_path, "p_scaler_seed.rdata"))
-  write_size = file.size(file.path(params$write_path, "p_scaler_seed.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "p_scaler_seed.rdata"))
+  write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "prepare_params_cox_DP", 0, 0, write_time, write_size)
   return(params)
@@ -384,7 +384,7 @@ prepare_params_cox_DP = function(params, data) {
 PrepareSharesCox.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareSharesCox.DP\n\n")
   read_time <- 0
-  read_size = 0
+  read_size <- 0
   n = params$n
   p = params$p
   scaler = NULL
@@ -410,7 +410,7 @@ PrepareSharesCox.DP = function(params, data) {
     }
     read_time <- read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "p_scaler_seed.rdata"))
-    read_size = read_size + file.size(file.path(params$readPathDP[id], "p_scaler_seed.rdata"))
+    read_size <- read_size + file.size(file.path(params$readPathDP[id], "p_scaler_seed.rdata"))
     read_time <- read_time + proc.time()[3]
     params$ps      = c(params$ps, p)
     params$scalers = c(params$scalers, scaler)
@@ -434,14 +434,14 @@ PrepareSharesCox.DP = function(params, data) {
   colnames  = colnames(data$X)
   tags      = data$tags
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(products, file = file.path(params$write_path, "products.rdata"))
   save(halfshare.R, file = file.path(params$write_path, "halfshare.rdata"))
   save(colmin, colrange, colsum, colnames, tags, file = file.path(params$write_path, "colstats.rdata"))
-  write_size = sum(file.size(file.path(params$write_path, c("products.rdata",
+  write_size <- sum(file.size(file.path(params$write_path, c("products.rdata",
                                                           "halfshare.rdata",
                                                           "colstats.rdata"))))
-  write_time <-proc.time()[3] - write_time
+  write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "PrepareSharesCox.DP", read_time, read_size, write_time, write_size)
 
@@ -455,7 +455,7 @@ GetStrata.AC = function(params) {
   pStrata  = NULL
   read_time <- proc.time()[3]
   load(file.path(params$readPathDP[1], "survival.rdata"))
-  read_size = file.size(file.path(params$readPathDP[1], "survival.rdata"))
+  read_size <- file.size(file.path(params$readPathDP[1], "survival.rdata"))
   read_time <- proc.time()[3] - read_time
   params$survival = survival
   params$pStrata = pStrata
@@ -467,7 +467,7 @@ GetStrata.AC = function(params) {
 GetProductsCox.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetProductsCox.AC\n\n")
   read_time <- 0
-  read_size = 0
+  read_size <- 0
   p = 0
   n = 0
 
@@ -485,7 +485,7 @@ GetProductsCox.AC = function(params) {
     load(file.path(params$readPathDP[id], "products.rdata"))
     load(file.path(params$readPathDP[id], "halfshare.rdata"))
     load(file.path(params$readPathDP[id], "colstats.rdata"))
-    read_size = read_size + sum(file.size(file.path(params$readPathDP[id],
+    read_size <- read_size + sum(file.size(file.path(params$readPathDP[id],
                                                   c("products.rdata",
                                                     "halfshare.rdata",
                                                     "colstats.rdata"))))
@@ -503,9 +503,9 @@ GetProductsCox.AC = function(params) {
     if (id == 1) n = nrow(halfshare.R)
   }
 
-  M = matrix(0, p, p)
-  colnames(M) = allcolnames
-  rownames(M) = allcolnames
+  m = matrix(0, p, p)
+  colnames(m) = allcolnames
+  rownames(m) = allcolnames
   offset1 = 1
   params$pi = rep(0, params$numDataPartners)
   for (id1 in 1:params$numDataPartners) {
@@ -515,19 +515,19 @@ GetProductsCox.AC = function(params) {
     for (id2 in id1:params$numDataPartners) {
       p2 = ncol(allhalfshare[[id2]])
       if (id1 == id2) {
-        M[offset1:(offset1 + p1 - 1), offset2:(offset2 + p2 - 1)] = allproducts[[id1]][[id2]]
+        m[offset1:(offset1 + p1 - 1), offset2:(offset2 + p2 - 1)] = allproducts[[id1]][[id2]]
       } else {
         temp = allproducts[[id1]][[id2]] + allproducts[[id2]][[id1]] +
           t(allhalfshare[[id1]]) %*% allhalfshare[[id2]]
-        M[offset1:(offset1 + p1 - 1), offset2:(offset2 + p2 - 1)] = temp
-        M[offset2:(offset2 + p2 - 1), offset1:(offset1 + p1 - 1)] = t(temp)
+        m[offset1:(offset1 + p1 - 1), offset2:(offset2 + p2 - 1)] = temp
+        m[offset2:(offset2 + p2 - 1), offset1:(offset1 + p1 - 1)] = t(temp)
       }
       offset2 = offset2 + p2
     }
     offset1 = offset1 + p1
   }
 
-  params$sts          = M
+  params$sts          = m
   params$n            = n
   params$p            = p
   params$colmin       = allcolmin
@@ -633,10 +633,10 @@ check_colinearity_cox_AC = function(params) {
   cutoff = params$cutoff
   pReduct = params$pReduct
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(cutoff, idx, indicies, pReduct, file = file.path(params$write_path, "indicies.rdata"))
-  write_size = file.size(file.path(params$write_path, "indicies.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "indicies.rdata"))
+  write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "CheckColinearityLogistic.AC", 0, 0, write_time, write_size)
   return(params)
@@ -645,7 +645,7 @@ check_colinearity_cox_AC = function(params) {
 ComputeUCox.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeUCox.AC\n\n")
   read_time <- 0
-  read_size = 0
+  read_size <- 0
   if (params$algIterationCounter == 1) {
     u = 1
   } else {
@@ -653,17 +653,17 @@ ComputeUCox.AC = function(params) {
     for (id in 1:params$numDataPartners) {
       read_time <- read_time - proc.time()[3]
       load(file.path(params$readPathDP[id], "u.rdata"))
-      read_size = read_size + file.size(file.path(params$readPathDP[id], "u.rdata"))
+      read_size <- read_size + file.size(file.path(params$readPathDP[id], "u.rdata"))
       read_time <- read_time + proc.time()[3]
       uTemp = uTemp + u
     }
     u = uTemp
   }
   params$u = u
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(u, file = file.path(params$write_path, "u.rdata"))
-  write_size = file.size(file.path(params$write_path, "u.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "u.rdata"))
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "ComputeUCox.AC", read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -678,7 +678,7 @@ UpdateParamsCox.DP = function(params) {
   read_time <- proc.time()[3]
   load(file.path(params$readPathAC, "indicies.rdata"))
   load(file.path(params$readPathAC, "u.rdata"))
-  read_size = file.size(file.path(params$readPathAC, "indicies.rdata")) +
+  read_size <- file.size(file.path(params$readPathAC, "indicies.rdata")) +
     file.size(file.path(params$readPathAC, "u.rdata"))
   read_time <- proc.time()[3] - read_time
   betas = matrix(0, nrow = length(indicies[[params$data_partner_id]]), ncol = 1)
@@ -727,7 +727,7 @@ ComputeSBetaCox.DP = function(params, data) {
   n = params$n
   read_time <- proc.time()[3]
   load(file.path(params$readPathAC, "u.rdata"))
-  read_size = file.size(file.path(params$readPathAC, "u.rdata"))
+  read_size <- file.size(file.path(params$readPathAC, "u.rdata"))
   read_time <- proc.time()[3] - read_time
 
   sBetaPart = (data$X %*% params$betas + u) / (2 * u)
@@ -743,10 +743,10 @@ ComputeSBetaCox.DP = function(params, data) {
 
   sBetaPart = sBetaPart - params$scalers[params$data_partner_id] / sum(params$scalers) * V
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(sBetaPart, file = file.path(params$write_path, "sbeta.rdata"))
-  write_size = file.size(file.path(params$write_path, "sbeta.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "sbeta.rdata"))
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "ComputeSBetaCox.DP", read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -756,20 +756,20 @@ GetSBetaCox.AC = function(params) {
   sBeta = 0
   sBetaPart = NULL
   read_time <- 0
-  read_size = 0
+  read_size <- 0
   for (id in 1:params$numDataPartners) {
     read_time <- read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "sbeta.rdata"))
-    read_size = read_size + file.size(file.path(params$readPathDP[id], "sbeta.rdata"))
+    read_size <- read_size + file.size(file.path(params$readPathDP[id], "sbeta.rdata"))
     read_time <- read_time + proc.time()[3]
     sBeta = sBeta + sBetaPart
   }
   sBeta = 2 * params$u * sBeta - params$u * params$numDataPartners
   params$sBeta = sBeta
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(sBeta, file = file.path(params$write_path, "sbeta.rdata"))
-  write_size = file.size(file.path(params$write_path, "sbeta.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "sbeta.rdata"))
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "GetBetaCox.AC", read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -780,7 +780,7 @@ ComputeLogLikelihoodCox.DP = function(params, data) {
   sBeta = 0
   read_time <- proc.time()[3]
   load(file.path(params$readPathAC, "sbeta.rdata"))
-  read_size = file.size(file.path(params$readPathAC, "sbeta.rdata"))
+  read_size <- file.size(file.path(params$readPathAC, "sbeta.rdata"))
   read_time <- proc.time()[3] - read_time
   sBeta = sBeta[params$survival$sortedIdx]
   loglikelihood.old = params$loglikelihood
@@ -828,12 +828,12 @@ ComputeLogLikelihoodCox.DP = function(params, data) {
   params$sBeta     = sBeta
   params$loglikelihood = loglikelihood
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(sBeta, file = file.path(params$write_path, "sbeta.rdata"))
   save(scale, converged, file = file.path(params$write_path, "converged.rdata"))
-  write_size = file.size(file.path(params$write_path, "converged.rdata")) +
+  write_size <- file.size(file.path(params$write_path, "converged.rdata")) +
     file.size(file.path(params$write_path, "sbeta.rdata"))
-  write_time <-proc.time()[3] - proc.time()[3]
+  write_time <- proc.time()[3] - proc.time()[3]
 
   params <- add_to_log(params, "ComputeLogLikelihoodCox.DP", read_time, read_size, write_time, write_size)
   return(params)
@@ -845,7 +845,7 @@ ComputeSDelLCox.AC = function(params) {
   sBeta = 0
   read_time <- proc.time()[3]
   load(file.path(params$readPathDP[1], "sbeta.rdata"))
-  read_size = file.size(file.path(params$readPathDP[1], "sbeta.rdata"))
+  read_size <- file.size(file.path(params$readPathDP[1], "sbeta.rdata"))
   read_time <- proc.time()[3] - read_time
   halfshare = params$halfshare[params$survival$sortedIdx, , drop = FALSE]
   p = ncol(halfshare)
@@ -868,10 +868,10 @@ ComputeSDelLCox.AC = function(params) {
   params$W.S.R = W.S.R
   params$tS.deltal.R = tS.deltal.R
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(W.S.R.1, file = file.path(params$write_path, "wsr1.rdata"))
-  write_size = file.size(file.path(params$write_path, "wsr1.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "wsr1.rdata"))
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "ComputeSDelLCox.AC", read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -928,15 +928,15 @@ ComputeSDelLCox.DP = function(params, data) {
   params$colrange.W.S.L = colrange.W.S.L
   params$scaled.W.S.L.L = scaled.W.S.L.L
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(colmin.W.S.L, colrange.W.S.L, scaled.W.S.L.R,
        file = file.path(params$write_path, "scaledwslr.rdata"))
   save(tS.deltal.L, file = file.path(params$write_path, "tsdeltal.rdata"))
   save(scaled.W.S.L.L, file = file.path(params$write_path, "scaledwsll.rdata"))
-  write_size = sum(file.size(file.path(params$write_path, "scaledwslr.rdata"),
+  write_size <- sum(file.size(file.path(params$write_path, "scaledwslr.rdata"),
                             file.path(params$write_path, "tsdeltal.rdata"),
                             file.path(params$write_path, "scaledwsll.rdata")))
-  write_time <-proc.time()[3] - write_time
+  write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "ComputeSDelLCox.DP", 0, 0, write_time, write_size)
 
@@ -951,7 +951,7 @@ ComputeProductsCox.DP = function(params, data) {
     W.S.R.1 = NULL
     read_time <- proc.time()[3]
     load(file.path(params$readPathAC, "wsr1.rdata"))
-    read_size = file.size(file.path(params$readPathAC, "wsr1.rdata"))
+    read_size <- file.size(file.path(params$readPathAC, "wsr1.rdata"))
     read_time <- proc.time()[3] - read_time
     E = rep(list(list()), params$numDataPartners)
     E1 = rep(list(matrix(0, 0, 0)), params$numDataPartners)
@@ -994,15 +994,15 @@ ComputeProductsCox.DP = function(params, data) {
       }
       E[[id1]] = E1
     }
-    write_time <-proc.time()[3]
+    write_time <- proc.time()[3]
     save(E, file = file.path(params$write_path, "products.rdata"))
-    write_size = file.size(file.path(params$write_path, "products.rdata"))
-    write_time <-proc.time()[3] - write_time
+    write_size <- file.size(file.path(params$write_path, "products.rdata"))
+    write_time <- proc.time()[3] - write_time
   } else {
     scaled.W.S.L.L = NULL
     read_time <- proc.time()[3]
     load(file.path(params$readPathDP[1], "scaledwsll.rdata"))
-    read_size = file.size(file.path(params$readPathDP[1], "scaledwsll.rdata"))
+    read_size <- file.size(file.path(params$readPathDP[1], "scaledwsll.rdata"))
     read_time <- proc.time()[3] - read_time
 
     F1 = rep(list(list()), params$numDataPartners)
@@ -1015,10 +1015,10 @@ ComputeProductsCox.DP = function(params, data) {
       F1[[id]] = params$scaler / (params$scalers[1] + params$scaler) * t(scaled.W.S.L.L[, params$idx[[id]], drop = FALSE]) %*% halfshare.R.L +
         t(scaled.W.S.L.L[, params$idx[[id]], drop = FALSE]) %*% halfshare.R.R
     }
-    write_time <-proc.time()[3]
+    write_time <- proc.time()[3]
     save(F1, file = file.path(params$write_path, "products.rdata"))
-    write_size = file.size(file.path(params$write_path, "products.rdata"))
-    write_time <-proc.time()[3] - write_time
+    write_size <- file.size(file.path(params$write_path, "products.rdata"))
+    write_time <- proc.time()[3] - write_time
   }
   params <- add_to_log(params, "ComputeProductsCox.DP", read_time, read_size, write_time, write_size)
   return(params)
@@ -1030,7 +1030,7 @@ UpdateConvergeStatus.AC = function(params) {
   converged = NULL
   read_time <- proc.time()[3]
   load(file.path(params$readPathDP[1], "converged.rdata"))
-  read_size = file.size(file.path(params$readPathDP[1], "converged.rdata"))
+  read_size <- file.size(file.path(params$readPathDP[1], "converged.rdata"))
   read_time <- proc.time()[3] - read_time
   params$converged = converged
   params <- add_to_log(params, "UpdateConvergeStatus.AC", read_time, read_size, 0, 0)
@@ -1048,13 +1048,13 @@ ComputeStWSCox.AC = function(params) {
   read_time <- proc.time()[3]
   load(file.path(params$readPathDP[1], "scaledwslr.rdata"))
   load(file.path(params$readPathDP[1], "products.rdata"))
-  read_size = file.size(file.path(params$readPathDP[1], "scaledwslr.rdata")) +
+  read_size <- file.size(file.path(params$readPathDP[1], "scaledwslr.rdata")) +
     file.size(file.path(params$readPathDP[1], "products.rdata"))
   read_time <- proc.time()[3] - read_time
   for (id in 2:params$numDataPartners) {
     read_time <- read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "products.rdata"))
-    read_size = read_size + file.size(file.path(params$readPathDP[id], "products.rdata"))
+    read_size <- read_size + file.size(file.path(params$readPathDP[id], "products.rdata"))
     read_time <- read_time + proc.time()[3]
     F1[[id]] = F1
   }
@@ -1062,7 +1062,7 @@ ComputeStWSCox.AC = function(params) {
   for (id in 1:params$numDataPartners) {
     p = p + length(params$idx[[id]])
   }
-  M = matrix(0, p, p)
+  m = matrix(0, p, p)
   startrow = 1
   for (id1 in 1:params$numDataPartners) {
     p1 = length(params$idx[[id1]])
@@ -1075,13 +1075,13 @@ ComputeStWSCox.AC = function(params) {
       endcol = startcol + p2 - 1
       if (p2 == 0) next
       if (id1 == 1 && id2 == 1) {
-        M[startrow:endrow, startcol:endcol] = E[[1]][[1]]
+        m[startrow:endrow, startcol:endcol] = E[[1]][[1]]
       } else if (id1 == id2) {
         idx = params$idx[[id1]]
         G = D %*% (E[[id1]][[id1]] + F1[[id1]][[id1]] + t(scaled.W.S.L.R[, idx, drop = FALSE]) %*%
                      params$halfshare[, idx, drop = FALSE]) +
           outer(colmin.W.S.L[idx], params$halfsharecolsum[idx])
-        M[startrow:endrow, startcol:endcol] = G + t(G) +
+        m[startrow:endrow, startcol:endcol] = G + t(G) +
           t(params$halfshare[, idx, drop = FALSE]) %*% params$W.S.R[, idx, drop = FALSE]
       } else {
         idx1 = params$idx[[id1]]
@@ -1091,8 +1091,8 @@ ComputeStWSCox.AC = function(params) {
                           params$halfshare[, idx2, drop = FALSE]) +
             t(params$halfshare[, idx1, drop = FALSE]) %*% params$W.S.R[, idx2, drop = FALSE] +
             outer(colmin.W.S.L[idx1], params$halfsharecolsum[idx2])
-          M[startrow:endrow, startcol:endcol] = temp
-          M[startcol:endcol, startrow:endrow] = t(temp)
+          m[startrow:endrow, startcol:endcol] = temp
+          m[startcol:endcol, startrow:endrow] = t(temp)
         } else {
           p1 = length(params$idx[[id2]])
           D2 = diag(x = colrange.W.S.L[params$idx[[id2]]], nrow = p2, ncol = p2)
@@ -1103,8 +1103,8 @@ ComputeStWSCox.AC = function(params) {
                           params$halfshare[, idx1, drop = FALSE]) +
             outer(colmin.W.S.L[idx2], params$halfsharecolsum[idx1])
           temp = G23 + t(G32) + t(params$halfshare[, idx1, drop = FALSE]) %*% params$W.S.R[, idx2, drop = FALSE]
-          M[startrow:endrow, startcol:endcol] = temp
-          M[startcol:endcol, startrow:endrow] = t(temp)
+          m[startrow:endrow, startcol:endcol] = temp
+          m[startcol:endcol, startrow:endrow] = t(temp)
         }
       }
       startcol = endcol + 1
@@ -1114,7 +1114,7 @@ ComputeStWSCox.AC = function(params) {
 
   I = NULL
   tryCatch({
-    I = solve(M)
+    I = solve(m)
   },
   error = function(err) {
     I = NULL
@@ -1148,15 +1148,15 @@ ComputeStWSCox.AC = function(params) {
   params$maxIterExceeded = params$algIterationCounter > params$max_iterations
   maxIterExceeded = params$maxIterExceeded
 
-  write_time <-0
-  write_size = 0
+  write_time <- 0
+  write_size <- 0
   for (id in 1:params$numDataPartners) {
     I.part = I[params$idx[[id]], , drop = FALSE]
     IDt.part = IDt[params$idx[[id]], , drop = FALSE]
     write_time <-write_time - proc.time()[3]
     save(I.part, IDt.part, file = file.path(params$write_path, paste0("update", id, ".rdata")))
     save(maxIterExceeded, file = file.path(params$write_path, "maxiterexceeded.rdata"))
-    write_size = write_size + file.size(file.path(params$write_path, paste0("update", id, ".rdata"))) +
+    write_size <- write_size + file.size(file.path(params$write_path, paste0("update", id, ".rdata"))) +
       file.size(file.path(params$write_path, "maxiterexceeded.rdata"))
     write_time <-write_time + proc.time()[3]
   }
@@ -1168,21 +1168,21 @@ ComputeStWSCox.AC = function(params) {
 UpdateConvergeStatus.DP = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateConvergeStatus.DP\n\n")
   read_time <- 0
-  read_size = 0
+  read_size <- 0
   scale    = NULL
   converged = NULL
   maxIterExceeded = NULL
   if (params$data_partner_id > 1) {
     read_time <- proc.time()[3]
     load(file.path(params$readPathDP[1], "converged.rdata"))
-    read_size = file.size(file.path(params$readPathDP[1], "converged.rdata"))
+    read_size <- file.size(file.path(params$readPathDP[1], "converged.rdata"))
     read_time <- proc.time()[3] - read_time
     params$converged = converged
     params$scale     = scale
   }
   read_time <- read_time - proc.time()[3]
   load(file.path(params$readPathAC, "maxiterexceeded.rdata"))
-  read_size = read_size + file.size(file.path(params$readPathAC, "maxiterexceeded.rdata"))
+  read_size <- read_size + file.size(file.path(params$readPathAC, "maxiterexceeded.rdata"))
   read_time <- read_time + proc.time()[3]
   params$maxIterExceeded = maxIterExceeded
   params <- add_to_log(params, "UpdateConvergeStatus.DP", read_time, read_size, 0, 0)
@@ -1197,10 +1197,10 @@ UpdateBetasCox.DP = function(params) {
   tS.deltal.L = NULL
   read_time <- proc.time()[3]
   load(file.path(params$readPathAC, paste0("update", params$data_partner_id, ".rdata")))
-  read_size = file.size(file.path(params$readPathAC, paste0("update", params$data_partner_id, ".rdata")))
+  read_size <- file.size(file.path(params$readPathAC, paste0("update", params$data_partner_id, ".rdata")))
   if (params$data_partner_id > 1) {
     load(file.path(params$readPathDP[1], "tsdeltal.rdata"))
-    read_size = read_size + file.size(file.path(params$readPathDP[1], "tsdeltal.rdata"))
+    read_size <- read_size + file.size(file.path(params$readPathDP[1], "tsdeltal.rdata"))
   }
   read_time <- proc.time()[3] - read_time
 
@@ -1239,9 +1239,9 @@ UpdateBetasCox.DP = function(params) {
     loglikelihood = params$loglikelihood
     nullLoglikelihood = params$nullLoglikelihood
   }
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(u, file = file.path(params$write_path, "u.rdata"))
-  write_size = file.size(file.path(params$write_path, "u.rdata"))
+  write_size <- file.size(file.path(params$write_path, "u.rdata"))
   if (params$converged) {
     betasnew  = params$betas
     scorePart = params$score
@@ -1250,9 +1250,9 @@ UpdateBetasCox.DP = function(params) {
     } else {
       save(scorePart, betasnew, file = file.path(params$write_path, "betas.rdata"))
     }
-    write_size = write_size + file.size(file.path(params$write_path, "betas.rdata"))
+    write_size <- write_size + file.size(file.path(params$write_path, "betas.rdata"))
   }
-  write_time <-proc.time()[3] - write_time
+  write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "UpdateBetasCox.DP", read_time, read_size, write_time, write_size)
 
@@ -1315,7 +1315,7 @@ ComputeResultsCox.AC = function(params) {
     load(file.path(params$readPathDP[id], "betas.rdata"))
     betas = rbind(betas, betasnew)
     score = score + scorePart
-    read_size = read_size + file.size(file.path(params$readPathDP[id], "betas.rdata"))
+    read_size <- read_size + file.size(file.path(params$readPathDP[id], "betas.rdata"))
   }
   read_time <- proc.time()[3] - read_time
 
@@ -1417,10 +1417,10 @@ ComputeResultsCox.AC = function(params) {
                                    "concordance", "stderr")
 
   params$stats = stats
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(stats, file = file.path(params$write_path, "stats.rdata"))
-  write_size = file.size(file.path(params$write_path, "stats.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "stats.rdata"))
+  write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "ComputeResultsCox.AC", read_time, read_size, write_time, write_size)
   return(params)
@@ -1432,7 +1432,7 @@ GetResultsCox.DP = function(params) {
   stats = NULL
   read_time <- proc.time()[3]
   load(file.path(params$readPathAC, "stats.rdata"))
-  read_size = file.size(file.path(params$readPathAC, "stats.rdata"))
+  read_size <- file.size(file.path(params$readPathAC, "stats.rdata"))
   read_time <- proc.time()[3] - read_time
   params$stats = stats
 

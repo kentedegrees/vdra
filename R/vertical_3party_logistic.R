@@ -45,12 +45,12 @@ CheckColinearityLogistic.t3 = function(params) {
   Aindicies = params$a_indicies_keep
   Bindicies = params$b_indicies_keep
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(Aindicies, file = file.path(params$write_path, "Aindicies.rdata"))
   save(Bindicies, file = file.path(params$write_path, "Bindicies.rdata"))
-  write_size = sum(file.size(file.path(params$write_path, c("Aindicies.rdata",
+  write_size <- sum(file.size(file.path(params$write_path, c("Aindicies.rdata",
                                                           "Bindicies.rdata"))))
-  write_time <-proc.time()[3] - write_time
+  write_time <- proc.time()[3] - write_time
 
   Btags = params$Btags[params$b_indicies_keep]
   Atags = params$Atags[params$a_indicies_keep][-1]
@@ -99,19 +99,19 @@ ComputeInitialBetasLogistic.t3 = function(params) {
   converged = FALSE
   maxIterExceeded = FALSE
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(Abetas, file = file.path(params$write_path, "betasA.rdata"))
   save(p2, Axty,   file = file.path(params$write_path, "Axty.rdata"))
   save(Bbetas, file = file.path(params$write_path, "betasB.rdata"))
   save(Bxty,   file = file.path(params$write_path, "Bxty.rdata"))
   save(converged, maxIterExceeded,
        file = file.path(params$write_path, "converged.rdata"))
-  write_size = sum(file.size(file.path(params$write_path, c("betasA.rdata",
+  write_size <- sum(file.size(file.path(params$write_path, c("betasA.rdata",
                                                           "betasB.rdata",
                                                           "Axty.rdata",
                                                           "Bxty.rdata",
                                                           "converged.rdata"))))
-  write_time <-proc.time()[3] - write_time
+  write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "ComputeInitialBetasLogistic.t3", 0, 0, write_time, write_size)
 
@@ -127,7 +127,7 @@ UpdateParamsLogistic.a3 = function(params) {
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "Aindicies.rdata"))
   load(file.path(params$read_path[["T"]], "Axty.rdata"))
-  read_size = sum(file.size(file.path(params$read_path[["T"]], c("Aindicies.rdata",
+  read_size <- sum(file.size(file.path(params$read_path[["T"]], c("Aindicies.rdata",
                                                                "Axty.rdata"))))
 
   read_time <- proc.time()[3] - read_time
@@ -152,7 +152,7 @@ UpdateParamsLogistic.b3 = function(params) {
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "Bindicies.rdata"))
   load(file.path(params$read_path[["T"]], "Bxty.rdata"))
-  read_size = sum(file.size(file.path(params$read_path[["T"]], c("Bindicies.rdata",
+  read_size <- sum(file.size(file.path(params$read_path[["T"]], c("Bindicies.rdata",
                                                                "Bxty.rdata"))))
 
   read_time <- proc.time()[3] - read_time
@@ -191,7 +191,7 @@ GetBetaALogistic.a3 = function(params) {
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "converged.rdata"))
   load(file.path(params$read_path[["T"]], "betasA.rdata"))
-  read_size = sum(file.size(file.path(params$read_path[["T"]], c("converged.rdata",
+  read_size <- sum(file.size(file.path(params$read_path[["T"]], c("converged.rdata",
                                                                "betasA.rdata"))))
   read_time <- proc.time()[3] - read_time
   params$converged = converged
@@ -210,7 +210,7 @@ GetBetaBLogistic.b3 = function(params) {
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "converged.rdata"))
   load(file.path(params$read_path[["T"]], "betasB.rdata"))
-  read_size = sum(file.size(file.path(params$read_path[["T"]], c("converged.rdata",
+  read_size <- sum(file.size(file.path(params$read_path[["T"]], c("converged.rdata",
                                                                "betasB.rdata"))))
   read_time <- proc.time()[3] - read_time
   params$converged = converged
@@ -225,10 +225,10 @@ GetXAbetaALogistic.a3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetXBetaALogistic.a3\n\n")
   XAbeta = data$X %*% params$betas
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(XAbeta, file = file.path(params$write_path, "xabeta.rdata"))
-  write_size = file.size(file.path(params$write_path, "xabeta.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "xabeta.rdata"))
+  write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "GetXAbetaALogistic.a3", 0, 0, write_time, write_size)
   return(params)
@@ -239,10 +239,10 @@ GetXBbetaBLogistic.b3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetXBetaBLogistic.b3\n\n")
   XBbeta = data$X %*% params$betas
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(XBbeta, file = file.path(params$write_path, "xbbeta.rdata"))
-  write_size = file.size(file.path(params$write_path, "xbbeta.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "xbbeta.rdata"))
+  write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "GetXBbetaBLogistic.b3", 0, 0, write_time, write_size)
   return(params)
@@ -256,7 +256,7 @@ GetWeightsLogistic.t3 = function(params) {
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["A"]], "xabeta.rdata"))  # Load XbetaB
   load(file.path(params$read_path[["B"]], "xbbeta.rdata"))  # Load XbetaB
-  read_size = file.size(file.path(params$read_path[["A"]], "xabeta.rdata")) +
+  read_size <- file.size(file.path(params$read_path[["A"]], "xabeta.rdata")) +
     file.size(file.path(params$read_path[["B"]], "xbbeta.rdata"))
   read_time <- proc.time()[3] - read_time
 
@@ -264,10 +264,10 @@ GetWeightsLogistic.t3 = function(params) {
   pi_ = (1 + exp(-Xbeta))^(-1)
   params$pi_ = pi_
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(pi_, file = file.path(params$write_path, "pi.rdata"))
-  write_size = file.size(file.path(params$write_path, "pi.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "pi.rdata"))
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "GetWeightsLogistic.t3", read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -276,12 +276,12 @@ GetWeightsLogistic.t3 = function(params) {
 GetRVLogistic.b3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetRVLogistic.b3\n\n")
   pi_ = NULL
-  write_time <-0
-  write_size = 0
-  read_time  = proc.time()[3]
+  write_time <- 0
+  write_size <- 0
+  read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "pi.rdata"))
-  read_size  = file.size(file.path(params$read_path[["T"]], "pi.rdata"))
-  read_time  = proc.time()[3] - read_time
+  read_size <- file.size(file.path(params$read_path[["T"]], "pi.rdata"))
+  read_time <- proc.time()[3] - read_time
 
   params$pi_ = pi_
   W = pi_ * (1 - params$pi_)
@@ -292,16 +292,16 @@ GetRVLogistic.b3 = function(params, data) {
   for (i in 1:params$blocks$num_blocks) {
     if (i %in% params$container$filebreak.RZ) {
       containerCt.RZ = containerCt.RZ + 1
-      filename1 = paste0("crz_", containerCt.RZ, ".rdata")
+      filename1 <- paste0("crz_", containerCt.RZ, ".rdata")
       toRead = file(file.path(params$read_path[["T"]], filename1), "rb")
     }
     if (i %in% params$container$filebreak.RV) {
       containerCt.RV = containerCt.RV + 1
-      filename2 = paste0("crv_", containerCt.RV, ".rdata")
+      filename2 <- paste0("crv_", containerCt.RV, ".rdata")
       to_write <- file(file.path(params$write_path, filename2), "wb")
     }
-    strt = params$blocks$starts[i]
-    stp = params$blocks$stops[i]
+    strt <- params$blocks$starts[i]
+    stp <- params$blocks$stops[i]
     n = stp - strt + 1
 
     Xblock  = data$X[strt:stp, , drop = FALSE]
@@ -323,18 +323,18 @@ GetRVLogistic.b3 = function(params, data) {
 
     if ((i + 1) %in% params$container$filebreak.RZ || i == params$blocks$num_blocks) {
       close(toRead)
-      read_size = read_size + file.size(file.path(params$read_path[["T"]], filename1))
+      read_size <- read_size + file.size(file.path(params$read_path[["T"]], filename1))
     }
     if ((i + 1) %in% params$container$filebreak.RV || i == params$blocks$num_blocks) {
       close(to_write)
-      write_size = write_size + file.size(file.path(params$write_path, filename2))
+      write_size <- write_size + file.size(file.path(params$write_path, filename2))
     }
     pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
 
   write_time <-write_time - proc.time()[3]
   save(XBTWXB, file = file.path(params$write_path, "xbtwxb.rdata"))
-  write_size = write_size + sum(file.size(c(file.path(params$write_path, "xbtwxb.rdata"))))
+  write_size <- write_size + sum(file.size(c(file.path(params$write_path, "xbtwxb.rdata"))))
   write_time <-write_time + proc.time()[3]
 
   params <- add_to_log(params, "GetRVLogistic.b3", read_time, read_size, write_time, write_size)
@@ -345,12 +345,12 @@ GetRVLogistic.b3 = function(params, data) {
 ProcessVLogistic.t3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ProcessVLogistic.t3\n\n")
   XBTWXB = NULL
-  write_time <-0
-  write_size = 0
+  write_time <- 0
+  write_size <- 0
   p2 = params$p2
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["B"]], "xbtwxb.rdata"))
-  read_size = file.size(file.path(params$read_path[["B"]], "xbtwxb.rdata"))
+  read_size <- file.size(file.path(params$read_path[["B"]], "xbtwxb.rdata"))
   read_time <- proc.time()[3] - read_time
 
   params$xbtwxb = XBTWXB
@@ -363,7 +363,7 @@ ProcessVLogistic.t3 = function(params) {
   for (i in 1:num_blocks) {
     if (i %in% params$container$filebreak.RV) {
       containerCt.RV = containerCt.RV + 1
-      filename2 = paste0("crv_", containerCt.RV, ".rdata")
+      filename2 <- paste0("crv_", containerCt.RV, ".rdata")
       toRead2 = file(file.path(params$read_path[["B"]], filename2), "rb")
     }
     if (i %in% params$container$filebreak.VR) {
@@ -372,18 +372,18 @@ ProcessVLogistic.t3 = function(params) {
       to_write3 = file(file.path(params$write_path, filename3), "wb")
     }
 
-    strt = params$blocks$starts[i]
-    stp = params$blocks$stops[i]
+    strt <- params$blocks$starts[i]
+    stp <- params$blocks$stops[i]
     n = stp - strt + 1
 
-    filename1 = paste0("r1_", i, ".rdata")
+    filename1 <- paste0("r1_", i, ".rdata")
     filename4 = paste0("r3_", i, ".rdata")
 
     read_time <- read_time - proc.time()[3]
     toRead1 = file(file.path(params$dplocalPath, filename1), "rb")
     R2 = matrix(readBin(con = toRead1, what = numeric(), n = n * n,
                         endian = "little"), nrow = n, ncol = n)
-    read_size = read_size + file.size(file.path(params$dplocalPath, filename1))
+    read_size <- read_size + file.size(file.path(params$dplocalPath, filename1))
     close(toRead1)
     RV = matrix(readBin(con = toRead2, what = numeric(), n = n * p2,
                         endian = "little"), nrow = n, ncol = p2)
@@ -397,16 +397,16 @@ ProcessVLogistic.t3 = function(params) {
     to_write4 = file(file.path(params$dplocalPath, filename4), "wb")
     writeBin(as.vector(R3), con = to_write4, endian = "little")
     close(to_write4)
-    write_size = write_size + file.size(file.path(params$dplocalPath, filename4))
+    write_size <- write_size + file.size(file.path(params$dplocalPath, filename4))
     writeBin(as.vector(VR), con = to_write3, endian = "little")
     write_time <-write_time + proc.time()[3]
     if ((i + 1) %in% params$container$filebreak.RV || i == num_blocks) {
       close(toRead2)
-      read_size = read_size + file.size(file.path(params$dplocalPath, filename1))
+      read_size <- read_size + file.size(file.path(params$dplocalPath, filename1))
     }
     if ((i + 1) %in% params$container$filebreak.VR || i == num_blocks) {
       close(to_write3)
-      write_size = write_size + file.size(file.path(params$write_path, filename3))
+      write_size <- write_size + file.size(file.path(params$write_path, filename3))
     }
 
     pbar = MakeProgressBar2(i, pbar, params$verbose)
@@ -420,12 +420,12 @@ GetXRLogistic.a3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetXRLogistic.a3\n\n")
   pi_ = NULL
   p2 = params$p2
-  write_time <-0
-  write_size = 0
-  read_time  = proc.time()[3]
+  write_time <- 0
+  write_size <- 0
+  read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "pi.rdata"))
-  read_size  = file.size(file.path(params$read_path[["T"]], "pi.rdata"))
-  read_time  = proc.time()[3] - read_time
+  read_size <- file.size(file.path(params$read_path[["T"]], "pi.rdata"))
+  read_time <- proc.time()[3] - read_time
 
   params$pi_ = pi_
   W = pi_ * (1 - params$pi_)
@@ -438,16 +438,16 @@ GetXRLogistic.a3 = function(params, data) {
   for (i in 1:params$blocks$num_blocks) {
     if (i %in% params$container$filebreak.RV) {
       containerCt.VR = containerCt.VR + 1
-      filename1 = paste0("cvr_", containerCt.VR, ".rdata")
+      filename1 <- paste0("cvr_", containerCt.VR, ".rdata")
       toRead = file(file.path(params$read_path[["T"]], filename1), "rb")
     }
     if (i %in% params$container$filebreak.XR) {
       containerCt.XR = containerCt.XR + 1
-      filename2 = paste0("cxr_", containerCt.XR, ".rdata")
+      filename2 <- paste0("cxr_", containerCt.XR, ".rdata")
       to_write <- file(file.path(params$write_path, filename2), "wb")
     }
-    strt = params$blocks$starts[i]
-    stp = params$blocks$stops[i]
+    strt <- params$blocks$starts[i]
+    stp <- params$blocks$stops[i]
     n = stp - strt + 1
 
     Xblock  = data$X[strt:stp, , drop = FALSE]
@@ -469,18 +469,18 @@ GetXRLogistic.a3 = function(params, data) {
 
     if ((i + 1) %in% params$container$filebreak.VR || i == params$blocks$num_blocks) {
       close(toRead)
-      read_size = read_size + file.size(file.path(params$read_path[["T"]], filename1))
+      read_size <- read_size + file.size(file.path(params$read_path[["T"]], filename1))
     }
     if ((i + 1) %in% params$container$filebreak.XR || i == params$blocks$num_blocks) {
       close(to_write)
-      write_size = write_size + file.size(file.path(params$write_path, filename2))
+      write_size <- write_size + file.size(file.path(params$write_path, filename2))
     }
     pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
 
   write_time <-write_time - proc.time()[3]
   save(XATWXA, file = file.path(params$write_path, "xatwxa.rdata"))
-  write_size = write_size + sum(file.size(c(file.path(params$write_path, "xatwxa.rdata"))))
+  write_size <- write_size + sum(file.size(c(file.path(params$write_path, "xatwxa.rdata"))))
   write_time <-write_time + proc.time()[3]
 
   params <- add_to_log(params, "GetXRLogistic.a3", read_time, read_size, write_time, write_size)
@@ -496,7 +496,7 @@ ProcessXtWXLogistic.t3 = function(params) {
 
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["A"]], "xatwxa.rdata"))
-  read_size = file.size(file.path(params$read_path[["A"]], "xatwxa.rdata"))
+  read_size <- file.size(file.path(params$read_path[["A"]], "xatwxa.rdata"))
   read_time <- proc.time()[3] - read_time
 
   params$xatwxa = XATWXA
@@ -508,11 +508,11 @@ ProcessXtWXLogistic.t3 = function(params) {
   for (i in 1:params$blocks$num_blocks) {
     if (i %in% params$container$filebreak.XR) {
       containerCt.XR = containerCt.XR + 1
-      filename1 = paste0("cxr_", containerCt.XR, ".rdata")
+      filename1 <- paste0("cxr_", containerCt.XR, ".rdata")
       toRead = file(file.path(params$read_path[["A"]], filename1), "rb")
     }
 
-    filename2 = paste0("r3_", i, ".rdata")
+    filename2 <- paste0("r3_", i, ".rdata")
     read_time <- read_time - proc.time()[3]
     toRead1 = file(file.path(params$dplocalPath, filename2), "rb")
     R = matrix(readBin(con = toRead1, what = numeric(), n = p2 * p2,
@@ -520,14 +520,14 @@ ProcessXtWXLogistic.t3 = function(params) {
     close(toRead1)
     XR = matrix(readBin(con = toRead, what = numeric(), n = p1 * p2,
                         endian = "little"), nrow = p1, ncol = p2)
-    read_size = read_size + file.size(file.path(params$dplocalPath, filename2))
+    read_size <- read_size + file.size(file.path(params$dplocalPath, filename2))
     read_time <- read_time + proc.time()[3]
 
     XATWXB = XATWXB + XR %*% t(R)
 
     if ((i + 1) %in% params$container$filebreak.XR || i == params$blocks$num_blocks) {
       close(toRead)
-      read_size = read_size + file.size(file.path(params$read_path[["A"]], filename1))
+      read_size <- read_size + file.size(file.path(params$read_path[["A"]], filename1))
     }
     pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
@@ -562,11 +562,11 @@ ProcessXtWXLogistic.t3 = function(params) {
   params$II = II
   IIA = II[, 1:p1, drop = FALSE]
   IIB = II[, (p1 + 1):(p1 + p2), drop = FALSE]
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(IIA, file = file.path(params$write_path, "IIA.rdata"))
   save(IIB, file = file.path(params$write_path, "IIB.rdata"))
-  write_size = sum(file.size(file.path(params$write_path, c("IIA.rdata", "IIB.rdata"))))
-  write_time <-proc.time()[3] - write_time
+  write_size <- sum(file.size(file.path(params$write_path, c("IIA.rdata", "IIB.rdata"))))
+  write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "ProcessXtWXLogistic.t3", read_time, read_size, write_time, write_size)
   return(params)
@@ -578,17 +578,17 @@ UpdateBetaLogistic.a3 = function(params, data) {
   IIA = NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "IIA.rdata"))
-  read_size = file.size(file.path(params$read_path[["T"]], "IIA.rdata"))
+  read_size <- file.size(file.path(params$read_path[["T"]], "IIA.rdata"))
   read_time <- proc.time()[3] - read_time
 
   IA = params$Axty - t(data$X) %*% params$pi_
   AI = IIA %*% IA
 
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(AI, file = file.path(params$write_path, "AI.rdata"))
-  write_size = file.size(file.path(params$write_path, "AI.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "AI.rdata"))
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "UpdateBetaLogistic.a3", read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -599,16 +599,16 @@ UpdateBetaLogistic.b3 = function(params, data) {
   IIB = NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "IIB.rdata"))
-  read_size = file.size(file.path(params$read_path[["T"]], "IIB.rdata"))
+  read_size <- file.size(file.path(params$read_path[["T"]], "IIB.rdata"))
   read_time <- proc.time()[3] - read_time
 
   IB = params$Bxty - t(data$X) %*% params$pi_
   BI = IIB %*% IB
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(BI, file = file.path(params$write_path, "BI.rdata"))
-  write_size = file.size(file.path(params$write_path, "BI.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "BI.rdata"))
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "UpdateBetaLogistic.b3", read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -621,7 +621,7 @@ UpdateBetaLogistic.t3 = function(params) {
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["A"]], "AI.rdata"))
   load(file.path(params$read_path[["B"]], "BI.rdata"))
-  read_size = file.size(file.path(params$read_path[["A"]], "AI.rdata")) +
+  read_size <- file.size(file.path(params$read_path[["A"]], "AI.rdata")) +
     file.size(file.path(params$read_path[["B"]], "BI.rdata"))
   read_time <- proc.time()[3] - read_time
 
@@ -636,15 +636,15 @@ UpdateBetaLogistic.t3 = function(params) {
   Abetas = betas[1:params$p1]
   Bbetas = betas[(params$p1 + 1):(params$p1 + params$p2)]
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(converged, maxIterExceeded,
        file = file.path(params$write_path, "converged.rdata"))
   save(Abetas, file = file.path(params$write_path, "betasA.rdata"))
   save(Bbetas, file = file.path(params$write_path, "betasB.rdata"))
-  write_size = sum(file.size(file.path(params$write_path, c("betasA.rdata",
+  write_size <- sum(file.size(file.path(params$write_path, c("betasA.rdata",
                                                           "betasB.rdata",
                                                           "converged.rdata"))))
-  write_time <-proc.time()[3] - write_time
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "UpdateBetaLogistic.t3", read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -656,10 +656,10 @@ GetFinalBetaLogistic.a3 = function(params, data) {
   offsetA = sum(betas[-1] * params$means[-1])
   AFinalFitted = t(params$sd * t(data$X) + params$means) %*% betas -
     t(params$sd[1] * t(data$X[, 1]) + params$means[1]) %*% betas[1]
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(offsetA, AFinalFitted, file = file.path(params$write_path, "Afinalfitted.rdata"))
-  write_size = file.size(file.path(params$write_path, "Afinalfitted.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "Afinalfitted.rdata"))
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "GetFinalBetaLogistic.a3", 0, 0, write_time, write_size)
   return(params)
 }
@@ -671,10 +671,10 @@ GetFinalBetaLogistic.b3 = function(params, data) {
   offsetB = sum(betas * params$means)
   BFinalFitted = t(params$sd * t(data$X) + params$means) %*% betas
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(offsetB, BFinalFitted, file = file.path(params$write_path, "Bfinalfitted.rdata"))
-  write_size = file.size(file.path(params$write_path, "Bfinalfitted.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "Bfinalfitted.rdata"))
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "GetFinalBetaLogistic.b3", 0, 0, write_time, write_size)
   return(params)
 }
@@ -689,7 +689,7 @@ GetFinalFittedLogistic.t3 = function(params) {
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["A"]], "Afinalfitted.rdata"))
   load(file.path(params$read_path[["B"]], "Bfinalfitted.rdata"))
-  read_size = file.size(file.path(params$read_path[["A"]], "Afinalfitted.rdata")) +
+  read_size <- file.size(file.path(params$read_path[["A"]], "Afinalfitted.rdata")) +
     file.size(file.path(params$read_path[["B"]], "Bfinalfitted.rdata"))
   read_time <- proc.time()[3] - read_time
 
@@ -701,10 +701,10 @@ GetFinalFittedLogistic.t3 = function(params) {
   params$betas = betas
   params$finalFitted = finalFitted
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(finalFitted, file = file.path(params$write_path, "finalFitted.rdata"))
-  write_size = file.size(file.path(params$write_path, "finalFitted.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "finalFitted.rdata"))
+  write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "GetFinalBetaLogistic.t3", read_time, read_size, write_time, write_size)
   return(params)
@@ -716,7 +716,7 @@ ComputeResultsLogistic.a3 = function(params, data) {
 
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "finalFitted.rdata"))
-  read_size = file.size(file.path(params$read_path[["T"]], "finalFitted.rdata"))
+  read_size <- file.size(file.path(params$read_path[["T"]], "finalFitted.rdata"))
   read_time <- proc.time()[3] - read_time
 
   n = params$n
@@ -727,10 +727,10 @@ ComputeResultsLogistic.a3 = function(params, data) {
   hoslem  = HoslemInternal(params, data)
   ROC     = RocInternal(params, data)
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(resdev, nulldev, hoslem, ROC, file = file.path(params$write_path, "logisticstats.rdata"))
-  write_size = file.size(file.path(params$write_path, "logisticstats.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "logisticstats.rdata"))
+  write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "ComputeResultsLogistic.a3", read_time, read_size, write_time, write_size)
   return(params)
@@ -745,7 +745,7 @@ ComputeResultsLogistic.t3 = function(params) {
   ROC     = NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["A"]], "logisticstats.rdata"))
-  read_size = file.size(file.path(params$read_path[["A"]], "logisticstats.rdata"))
+  read_size <- file.size(file.path(params$read_path[["A"]], "logisticstats.rdata"))
   read_time <- proc.time()[3] - read_time
 
   stats = params$stats
@@ -801,10 +801,10 @@ ComputeResultsLogistic.t3 = function(params) {
   names(stats$tvals) = names.old
   names(stats$pvals) = names.old
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(stats, file = file.path(params$write_path, "stats.rdata"))
-  write_size = file.size(file.path(params$write_path, "stats.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "stats.rdata"))
+  write_time <- proc.time()[3] - write_time
 
   params$stats      = stats
 
@@ -818,7 +818,7 @@ GetResultsLogistic.a3 = function(params, data) {
   stats = NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "stats.rdata"))
-  read_size = file.size(file.path(params$read_path[["T"]], "stats.rdata"))
+  read_size <- file.size(file.path(params$read_path[["T"]], "stats.rdata"))
   read_time <- proc.time()[3] - read_time
   stats$Y           = data$Y # For Hoslem and ROC
   stats$FinalFitted = params$FinalFitted
@@ -833,7 +833,7 @@ GetResultsLogistic.b3 = function(params) {
   stats = NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "stats.rdata"))
-  read_size = file.size(file.path(params$read_path[["T"]], "stats.rdata"))
+  read_size <- file.size(file.path(params$read_path[["T"]], "stats.rdata"))
   read_time <- proc.time()[3] - read_time
   params$stats = stats
   params <- add_to_log(params, "GetResultsLogistic.b3", read_time, read_size, 0, 0)

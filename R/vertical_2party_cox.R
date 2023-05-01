@@ -294,7 +294,7 @@ check_strata_cox_a2 = function(params, data) {
   pb = NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "pb.rdata")) # load pb
-  read_size = sum(file.size(file.path(params$read_path, "pb.rdata")))
+  read_size <- sum(file.size(file.path(params$read_path, "pb.rdata")))
   read_time <- proc.time()[3] - read_time
 
   if (length(pb$strata_b$strata_from_a) == length(data$strata$strata_from_a) &&
@@ -334,10 +334,10 @@ check_strata_cox_a2 = function(params, data) {
 send_strata_cox_b2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "send_strata_cox_b2\n\n")
   strata_temp = data$strata
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(strata_temp, file = file.path(params$write_path, "strata.rdata"))
-  write_size = file.size(file.path(params$write_path, "strata.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "strata.rdata"))
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "send_strata_cox_b2", 0, 0, write_time, write_size)
   return(params)
 }
@@ -347,15 +347,15 @@ prepare_strata_cox_a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_strata_cox_a2\n\n")
   # I will need to update both data$survival and params$logs, etc in this function.
   read_time <- 0
-  read_size = 0
-  write_time <-0
-  write_size = 0
+  read_size <- 0
+  write_time <- 0
+  write_size <- 0
   strata_temp = NULL
 
   if (params$get_strata_from_b) {
     read_time <- proc.time()[3]
     load(file = file.path(params$read_path, "strata.rdata"))
-    read_size = file.size(file.path(params$read_path, "strata.rdata"))
+    read_size <- file.size(file.path(params$read_path, "strata.rdata"))
     read_time <- proc.time()[3] - read_time
   }
   if (length(data$strata$strata_from_a) == 0 && length(data$strata$strata_from_b) == 0) {
@@ -407,7 +407,7 @@ prepare_strata_cox_a2 <- function(params, data) {
     idx = strata[[i]]$start:strata[[i]]$end
     data$X[idx, i] = 1
     temp  = table(data$survival$rank[idx])
-    M = length(temp)   # number of unique observed times, including where no one fails
+    m = length(temp)   # number of unique observed times, including where no one fails
     # Count the number of 0's and 1's for each observed time
     temp0 = table(data$survival$rank[idx], data$survival$status[idx])
     # Check if there are all 1's or all 0's .  If so, add them into the table.
@@ -427,7 +427,7 @@ prepare_strata_cox_a2 <- function(params, data) {
     # The number of failures at each rank which has a failure
     strata[[i]]$nfails = as.numeric(temp0[which(temp0[, 2] > 0), 2])
     # The first index of the ranks for which the number of failures is > 0.
-    strata[[i]]$start0 = c(1, (cumsum(temp)[1:(M - 1)] + 1))[which(temp0[, 2] > 0)]
+    strata[[i]]$start0 = c(1, (cumsum(temp)[1:(m - 1)] + 1))[which(temp0[, 2] > 0)]
     # The first index of a failure for each rank which has a failure
     strata[[i]]$start1 = strata[[i]]$start0 + temp0[which(temp0[, 2] > 0), 1]
     # The last index of a failure for each rank which has a failure
@@ -439,15 +439,15 @@ prepare_strata_cox_a2 <- function(params, data) {
 
   data$survival$strata = strata
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   survival = data$survival
   save(survival, file = file.path(params$write_path, "survival.rdata"))
-  write_size = file.size(file.path(params$write_path, "survival.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "survival.rdata"))
+  write_time <- proc.time()[3] - write_time
   data$read_time <- read_time
-  data$read_size = read_size
+  data$read_size <- read_size
   data$write_time <-write_time
-  data$write_size = write_size
+  data$write_size <- write_size
 
   return(data)
 }
@@ -463,7 +463,7 @@ prepare_params_cox_a2 = function(params, data, cutoff = 0.01, max_iterations = 2
 
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "pb.rdata")) # load pb
-  read_size = sum(file.size(file.path(params$read_path, "pb.rdata")))
+  read_size <- sum(file.size(file.path(params$read_path, "pb.rdata")))
   read_time <- proc.time()[3] - read_time
 
   if (params$analysis != pb$analysis) {
@@ -579,10 +579,10 @@ prepare_blocks_cox_a2 = function(params, blocksize) {
 
   params$blocks    = CreateBlocks(p1, p2, n, blocksize)
   params$container = CreateContainers(p1, p2, params$blocks)
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(blocksize, file = file.path(params$write_path, "blocksize.rdata"))
-  write_size = file.size(file.path(params$write_path, "blocksize.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "blocksize.rdata"))
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "prepare_blocks_cox_a2", 0, 0, write_time, write_size)
   return(params)
 }
@@ -590,20 +590,20 @@ prepare_blocks_cox_a2 = function(params, blocksize) {
 
 get_z_cox_a2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "get_z_cox_a2\n\n")
-  write_time <-0
-  write_size = 0
+  write_time <- 0
+  write_size <- 0
 
   num_blocks = params$blocks$num_blocks
-  pbar = MakeProgressBar1(num_blocks, "Z Files", params$verbose)
-  container_ct_z = 0
+  pbar <- MakeProgressBar1(num_blocks, "Z Files", params$verbose)
+  container_ct_z <- 0
   for (i in 1:num_blocks) {
     if (i %in% params$container$filebreak.Z) {
-      container_ct_z = container_ct_z + 1
+      container_ct_z <- container_ct_z + 1
       filename = paste0("cz_", container_ct_z, ".rdata")
       to_write <- file(file.path(params$write_path, filename), "wb")
     }
-    strt = params$blocks$starts[i]
-    stp = params$blocks$stops[i]
+    strt <- params$blocks$starts[i]
+    stp <- params$blocks$stops[i]
     g = params$blocks$g[i]
     Z = FindOrthogonalVectors(data$X[strt:stp, ], g)
     write_time <-write_time - proc.time()[3]
@@ -611,9 +611,9 @@ get_z_cox_a2 = function(params, data) {
     write_time <-write_time + proc.time()[3]
     if ((i + 1) %in% params$container$filebreak.Z || i == num_blocks) {
       close(to_write)
-      write_size = write_size + file.size(file.path(params$write_path, filename))
+      write_size <- write_size + file.size(file.path(params$write_path, filename))
     }
-    pbar = MakeProgressBar2(i, pbar, params$verbose)
+    pbar <- MakeProgressBar2(i, pbar, params$verbose)
   }
   params <- add_to_log(params, "get_z_cox_a2", 0, 0, write_time, write_size)
   return(params)
@@ -625,12 +625,12 @@ sort_data_cox_b2 = function(params, data) {
   survival = NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "survival.rdata"))
-  read_size = file.size(file.path(params$read_path, "survival.rdata"))
+  read_size <- file.size(file.path(params$read_path, "survival.rdata"))
   read_time <- proc.time()[3] - read_time
   data$X = data$X[survival$sorted, , drop = FALSE]
   data$survival = survival
   data$read_time <- read_time
-  data$read_size = read_size
+  data$read_size <- read_size
   return(data)
 }
 
@@ -640,7 +640,7 @@ finalize_params_cox_b2 = function(params, data) {
   pa = NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "pa.rdata")) # read pa
-  read_size = sum(file.size(file.path(params$read_path, "pa.rdata")))
+  read_size <- sum(file.size(file.path(params$read_path, "pa.rdata")))
   read_time             = proc.time()[3] - read_time
   params$numEvents     = sum(data$survival$status)
   params$p1            = pa$p1
@@ -659,7 +659,7 @@ prepare_blocks_cox_b2 = function(params) {
   # For now, assuming that p1 > 0 and p2 > 0
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "blocksize.rdata")) # load blocksize
-  read_size = file.size(file.path(params$read_path, "blocksize.rdata"))
+  read_size <- file.size(file.path(params$read_path, "blocksize.rdata"))
   read_time <- proc.time()[3] - read_time
   params$blocks    = CreateBlocks(params$p1, params$p2, params$n, blocksize)
   params$container = CreateContainers(params$p1, params$p2, params$blocks)
@@ -668,39 +668,39 @@ prepare_blocks_cox_b2 = function(params) {
 }
 
 
-get_w_cox_b2 = function(params, data) {
+get_w_cox_b2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "get_w_cox_b2\n\n")
   read_time  = 0
-  read_size  = 0
-  write_time <-0
-  write_size = 0
+  read_size <- 0
+  write_time <- 0
+  write_size <- 0
 
-  pbar = MakeProgressBar1(params$blocks$num_blocks, "(I-Z*Z')X", params$verbose)
+  pbar <- MakeProgressBar1(params$blocks$num_blocks, "(I-Z*Z')X", params$verbose)
 
-  XBTXB = t(data$X) %*% data$X
+  xb_t_xb <- t(data$X) %*% data$X
 
-  container_ct_z = 0
-  container_ct_w = 0
+  container_ct_z <- 0
+  container_ct_w <- 0
 
   for (i in 1:params$blocks$num_blocks) {
     if (i %in% params$container$filebreak.Z) {
-      container_ct_z = container_ct_z + 1
-      filename1 = paste0("cz_", container_ct_z, ".rdata")
-      toRead = file(file.path(params$read_path, filename1), "rb")
-      read_size = read_size + file.size(file.path(params$read_path, filename1))
+      container_ct_z <- container_ct_z + 1
+      filename1 <- paste0("cz_", container_ct_z, ".rdata")
+      to_read <- file(file.path(params$read_path, filename1), "rb")
+      read_size <- read_size + file.size(file.path(params$read_path, filename1))
     }
     if (i %in% params$container$filebreak.W) {
-      container_ct_w = container_ct_w + 1
-      filename2 = paste0("cw_", container_ct_w, ".rdata")
+      container_ct_w <- container_ct_w + 1
+      filename2 <- paste0("cw_", container_ct_w, ".rdata")
       to_write <- file(file.path(params$write_path, filename2), "wb")
     }
-    strt = params$blocks$starts[i]
-    stp = params$blocks$stops[i]
-    n2 = stp - strt + 1
-    g1 = params$blocks$g[i]
+    strt <- params$blocks$starts[i]
+    stp <- params$blocks$stops[i]
+    n2 <- stp - strt + 1
+    g1 <- params$blocks$g[i]
 
     read_time <- read_time - proc.time()[3]
-    Z = matrix(readBin(con = toRead, what = numeric(), n = n2 * g1,
+    Z = matrix(readBin(con = to_read, what = numeric(), n = n2 * g1,
                        endian = "little"), nrow = n2, ncol = g1)
     read_time <- read_time + proc.time()[3]
 
@@ -711,19 +711,19 @@ get_w_cox_b2 = function(params, data) {
     write_time <-write_time + proc.time()[3]
 
     if ((i + 1) %in% params$container$filebreak.Z || i == params$blocks$num_blocks) {
-      close(toRead)
+      close(to_read)
     }
     if ((i + 1) %in% params$container$filebreak.W || i == params$blocks$num_blocks) {
       close(to_write)
-      write_size = write_size + file.size(file.path(params$write_path, filename2))
+      write_size <- write_size + file.size(file.path(params$write_path, filename2))
     }
 
-    pbar = MakeProgressBar2(i, pbar, params$verbose)
+    pbar <- MakeProgressBar2(i, pbar, params$verbose)
   }
 
   write_time <-write_time - proc.time()[3]
-  save(XBTXB, file = file.path(params$write_path, "xbtxb.rdata"))
-  write_size = write_size + file.size(file.path(params$write_path, "xbtxb.rdata"))
+  save(xb_t_xb, file = file.path(params$write_path, "xbtxb.rdata"))
+  write_size <- write_size + file.size(file.path(params$write_path, "xbtxb.rdata"))
   write_time <-write_time + proc.time()[3]
 
   params <- add_to_log(params, "get_w_cox_b2", read_time, read_size, write_time, write_size)
@@ -736,46 +736,46 @@ check_colinearity_cox_a2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "check_colinearity_cox_a2\n\n")
   p2 = params$p2
   read_time  = 0
-  read_size  = 0
-  write_time <-0
-  write_size = 0
-  XBTXB = NULL
+  read_size <- 0
+  write_time <- 0
+  write_size <- 0
+  xb_t_xb <- NULL
 
   read_time <- read_time - proc.time()[3]
-  load(file.path(params$read_path, "xbtxb.rdata")) # load XBTXB
-  read_size = file.size(file.path(params$read_path, "xbtxb.rdata"))
+  load(file.path(params$read_path, "xbtxb.rdata")) # load xb_t_xb
+  read_size <- file.size(file.path(params$read_path, "xbtxb.rdata"))
   read_time <- read_time + proc.time()[3]
   XATXA = t(data$X) %*% data$X
   XATXB = 0
 
-  pbar = MakeProgressBar1(params$blocks$num_blocks, "X'X", params$verbose)
+  pbar <- MakeProgressBar1(params$blocks$num_blocks, "X'X", params$verbose)
 
-  container_ct_w = 0
+  container_ct_w <- 0
   for (i in 1:params$blocks$num_blocks) {
     if (i %in% params$container$filebreak.W) {
-      container_ct_w = container_ct_w + 1
+      container_ct_w <- container_ct_w + 1
       filename = paste0("cw_", container_ct_w, ".rdata")
-      toRead = file(file.path(params$read_path, filename), "rb")
+      to_read <- file(file.path(params$read_path, filename), "rb")
     }
-    strt = params$blocks$starts[i]
-    stp = params$blocks$stops[i]
-    n2 = stp - strt + 1
+    strt <- params$blocks$starts[i]
+    stp <- params$blocks$stops[i]
+    n2 <- stp - strt + 1
 
     read_time <- read_time - proc.time()[3]
-    W = matrix(readBin(con = toRead, what = numeric(), n = n2 * p2,
+    W = matrix(readBin(con = to_read, what = numeric(), n = n2 * p2,
                        endian = "little"), nrow = n2, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
     XATXB = XATXB + t(data$X[strt:stp, ]) %*% W
 
     if ((i + 1) %in% params$container$filebreak.W || i == params$blocks$num_blocks) {
-      close(toRead)
-      read_size = read_size + file.size(file.path(params$read_path, filename))
+      close(to_read)
+      read_size <- read_size + file.size(file.path(params$read_path, filename))
     }
-    pbar = MakeProgressBar2(i, pbar, params$verbose)
+    pbar <- MakeProgressBar2(i, pbar, params$verbose)
   }
 
-  XTX = rbind(cbind(XATXA, XATXB), cbind(t(XATXB), XBTXB))
+  XTX = rbind(cbind(XATXA, XATXB), cbind(t(XATXB), xb_t_xb))
 
   nrow = nrow(XTX)
   indicies = 1:length(data$survival$strata)
@@ -813,7 +813,7 @@ check_colinearity_cox_a2 = function(params, data) {
 
   write_time <-write_time - proc.time()[3]
   save(Aindicies, Bindicies, file = file.path(params$write_path, "indicies.rdata"))
-  write_size = sum(file.size(file.path(params$write_path, "indicies.rdata")))
+  write_size <- sum(file.size(file.path(params$write_path, "indicies.rdata")))
   write_time <-write_time + proc.time()[3]
   tags = params$Btags[Bindicies]
 
@@ -850,7 +850,7 @@ ComputeLogLikelihoodCox.a2 = function(params, data) {
   n  = params$n
   p1 = params$p1
   read_time <- 0
-  read_size = 0
+  read_size <- 0
   XB.betasB = NULL
 
   if (params$algIterationCounter == 1) {
@@ -860,7 +860,7 @@ ComputeLogLikelihoodCox.a2 = function(params, data) {
   } else {
     read_time <- -proc.time()[3]
     load(file.path(params$read_path, "XB_betasB.rdata")) # load XB.betasB
-    read_size = file.size(file.path(params$read_path, "XB_betasB.rdata"))
+    read_size <- file.size(file.path(params$read_path, "XB_betasB.rdata"))
     read_time <- read_time + proc.time()[3]
     params$X.betas.old = params$X.betas
     X.betas = params$XA.betasA + XB.betasB
@@ -882,7 +882,7 @@ ComputeLogLikelihoodCox.a2 = function(params, data) {
 
   while (computeLoglikelihood) {
     stepCounter = 0
-    pbar = MakeProgressBar1(numEvents, "Loglikelihood", params$verbose)
+    pbar <- MakeProgressBar1(numEvents, "Loglikelihood", params$verbose)
     loglikelihood = 0
     for (i in 1:length(data$survival$strata)) {                    ##!
       if (data$survival$strata[[i]]$J > 0) {                       ##!
@@ -898,7 +898,7 @@ ComputeLogLikelihoodCox.a2 = function(params, data) {
             loglikelihood = loglikelihood - log(Ajr)
           }
           stepCounter = stepCounter + nj
-          pbar = MakeProgressBar2(stepCounter, pbar, params$verbose)
+          pbar <- MakeProgressBar2(stepCounter, pbar, params$verbose)
         }
       }
     }
@@ -934,10 +934,10 @@ ComputeLogLikelihoodCox.a2 = function(params, data) {
   params$X.betas = X.betas
   params$stepSize = stepSize
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(X.betas, stepSize, file = file.path(params$write_path, "X_betas_ss.rdata"))
-  write_size = sum(file.size(file.path(params$write_path, "X_betas_ss.rdata")))
-  write_time <-proc.time()[3] - write_time
+  write_size <- sum(file.size(file.path(params$write_path, "X_betas_ss.rdata")))
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "ComputeLogLikelihoodCox.a2", read_time, read_size,
                        write_time, write_size)
   return(params)
@@ -951,7 +951,7 @@ UpdateParamsCox.b2 = function(params) {
 
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "indicies.rdata")) # load Aindicies, Bindicies
-  read_size = sum(file.size(file.path(params$read_path, "indicies.rdata")))
+  read_size <- sum(file.size(file.path(params$read_path, "indicies.rdata")))
   read_time <- proc.time()[3] - read_time
   params$a_col_names.old = params$a_col_names
   params$b_col_names.old = params$b_col_names
@@ -986,13 +986,13 @@ ComputeLogLikelihoodCox.b2 = function(params, data) {
   X.betas  = NULL
 
   read_time  = 0
-  read_size  = 0
-  write_time <-0
-  write_size = 0
+  read_size <- 0
+  write_time <- 0
+  write_size <- 0
 
   read_time <- read_time - proc.time()[3]
   load(file.path(params$read_path, "X_betas_ss.rdata")) # load X.betas, stepSize
-  read_size = sum(file.size(file.path(params$read_path, "X_betas_ss.rdata")))
+  read_size <- sum(file.size(file.path(params$read_path, "X_betas_ss.rdata")))
   read_time <- read_time + proc.time()[3]
 
   params$stepSize = stepSize
@@ -1008,28 +1008,28 @@ ComputeLogLikelihoodCox.b2 = function(params, data) {
         as.integer(n), as.integer(p2), as.integer(numEvents),
         as.integer(params$verbose))
 
-  pbar = MakeProgressBar1(params$blocks$num_blocks, "(I-Z*Z')WX", params$verbose)
-  container_ct_z = 0
+  pbar <- MakeProgressBar1(params$blocks$num_blocks, "(I-Z*Z')WX", params$verbose)
+  container_ct_z <- 0
   container_ct_Cox = 0
 
   for (i in 1:params$blocks$num_blocks) {
     if (i %in% params$container$filebreak.Z) {
-      container_ct_z = container_ct_z + 1
-      filename1 = paste0("cz_", container_ct_z, ".rdata")
-      toRead = file(file.path(params$read_path, filename1), "rb")
+      container_ct_z <- container_ct_z + 1
+      filename1 <- paste0("cz_", container_ct_z, ".rdata")
+      to_read <- file(file.path(params$read_path, filename1), "rb")
     }
     if (i %in% params$container$filebreak.Cox) {
       container_ct_Cox = container_ct_Cox + 1
-      filename2 = paste0("cCox_", container_ct_Cox, ".rdata")
+      filename2 <- paste0("cCox_", container_ct_Cox, ".rdata")
       to_write <- file(file.path(params$write_path, filename2), "wb")
     }
-    strt = params$blocks$starts[i]
-    stp = params$blocks$stops[i]
-    n2 = stp - strt + 1
+    strt <- params$blocks$starts[i]
+    stp <- params$blocks$stops[i]
+    n2 <- stp - strt + 1
     g = params$blocks$g[i]
 
     read_time <- read_time - proc.time()[3]
-    Z = matrix(readBin(con = toRead, what = numeric(), n = n2 * g,
+    Z = matrix(readBin(con = to_read, what = numeric(), n = n2 * g,
                        endian = "little"), nrow = n2, ncol = g)
     read_time <- read_time + proc.time()[3]
 
@@ -1040,15 +1040,15 @@ ComputeLogLikelihoodCox.b2 = function(params, data) {
     write_time <-write_time + proc.time()[3]
 
     if ((i + 1) %in% params$container$filebreak.Z || i == params$blocks$num_blocks) {
-      close(toRead)
-      read_size = read_size + file.size(file.path(params$read_path, filename1))
+      close(to_read)
+      read_size <- read_size + file.size(file.path(params$read_path, filename1))
     }
     if ((i + 1) %in% params$container$filebreak.Cox || i == params$blocks$num_blocks) {
       close(to_write)
-      write_size = write_size + file.size(file.path(params$write_path, filename2))
+      write_size <- write_size + file.size(file.path(params$write_path, filename2))
     }
 
-    pbar = MakeProgressBar2(i, pbar, params$verbose)
+    pbar <- MakeProgressBar2(i, pbar, params$verbose)
   }
   params$deltal = deltal
   params$tXB.W.XB   = t(data$X) %*% W.XB
@@ -1060,7 +1060,7 @@ ComputeLogLikelihoodCox.b2 = function(params, data) {
   tXB.W.XB = params$tXB.W.XB
   write_time <-write_time - proc.time()[3]
   save(tXB.W.XB, file = file.path(params$write_path, "tXB_w_XB.rdata"))
-  write_size = write_size + file.size(file.path(params$write_path, "tXB_w_XB.rdata"))
+  write_size <- write_size + file.size(file.path(params$write_path, "tXB_w_XB.rdata"))
   write_time <-write_time + proc.time()[3]
   params <- add_to_log(params, "ComputeLogLikelihoodCox.b2", read_time, read_size, write_time, write_size)
   return(params)
@@ -1072,15 +1072,15 @@ ComputeInverseCox.a2 = function(params, data) {
   p1 = params$p1
   p2 = params$p2
   read_time  = 0
-  read_size  = 0
-  write_time <-0
-  write_size = 0
+  read_size <- 0
+  write_time <- 0
+  write_size <- 0
   tXB.W.XB = 0
   tXA.W.XB = 0
 
   read_time <- read_time - proc.time()[3]
   load(file.path(params$read_path, "tXB_w_XB.rdata")) # load tXB.W.XB
-  read_size = read_size + file.size(file.path(params$read_path, "tXB_w_XB.rdata"))
+  read_size <- read_size + file.size(file.path(params$read_path, "tXB_w_XB.rdata"))
   read_time <- read_time + proc.time()[3]
 
   container_ct_Cox = 0
@@ -1089,42 +1089,42 @@ ComputeInverseCox.a2 = function(params, data) {
     if (i %in% params$container$filebreak.Cox) {
       container_ct_Cox = container_ct_Cox + 1
       filename = paste0("cCox_", container_ct_Cox, ".rdata")
-      toRead = file(file.path(params$read_path, filename), "rb")
+      to_read <- file(file.path(params$read_path, filename), "rb")
     }
-    strt = params$blocks$starts[i]
-    stp = params$blocks$stops[i]
-    n2 = stp - strt + 1
+    strt <- params$blocks$starts[i]
+    stp <- params$blocks$stops[i]
+    n2 <- stp - strt + 1
 
     read_time <- read_time - proc.time()[3]
-    IZ.tZ.W.XB = matrix(readBin(con = toRead, what = numeric(), n = n2 * p2,
+    IZ.tZ.W.XB = matrix(readBin(con = to_read, what = numeric(), n = n2 * p2,
                                 endian = "little"), nrow = n2, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
     tXA.W.XB = tXA.W.XB + t(data$X[strt:stp, ]) %*% IZ.tZ.W.XB
     if ((i + 1) %in% params$container$filebreak.Cox || i == params$blocks$num_blocks) {
-      close(toRead)
-      read_size = read_size + file.size(file.path(params$read_path, filename))
+      close(to_read)
+      read_size <- read_size + file.size(file.path(params$read_path, filename))
     }
   }
 
-  M = rbind(cbind(params$tXA.W.XA, tXA.W.XB),
+  m = rbind(cbind(params$tXA.W.XA, tXA.W.XB),
             cbind(t(tXA.W.XB), tXB.W.XB))
 
   if (params$algIterationCounter == 1) {
-    params$nullHessian = M
+    params$nullHessian = m
   }
-  params$XtWX = M
+  params$XtWX = m
 
 
   inv = NULL
   tryCatch({
-    inv = solve(M)
+    inv = solve(m)
   },
   error = function(err) {
     inv = NULL
   })
-  M = inv
-  if (is.null(M)) {
+  m = inv
+  if (is.null(m)) {
     params$failed <- TRUE
     params$error_message <- "The matrix XWX is singular.  This is probably due to divergence of the coefficients."
     warning(params$error_message)
@@ -1136,13 +1136,13 @@ ComputeInverseCox.a2 = function(params, data) {
     params <- add_to_log(params, "ComputeInverseCox.a2", read_time, read_size, write_time, write_size)
     return(params)
   }
-  M3 = M[(p1 + 1):(p1 + p2), 1:p1]
-  params$M = M
+  M3 = m[(p1 + 1):(p1 + p2), 1:p1]
+  params$m = m
   params$M3.tXA.deltal = M3 %*% params$tXA.deltal
   M3.tXA.deltal = params$M3.tXA.deltal
   write_time <-write_time - proc.time()[3]
-  save(M, M3.tXA.deltal, file = file.path(params$write_path, "M.rdata"))
-  write_size = write_size + sum(file.size(file.path(params$write_path, "M.rdata")))
+  save(m, M3.tXA.deltal, file = file.path(params$write_path, "M.rdata"))
+  write_size <- write_size + sum(file.size(file.path(params$write_path, "M.rdata")))
   write_time <-write_time + proc.time()[3]
   params <- add_to_log(params, "ComputeInverseCox.a2", read_time, read_size, write_time, write_size)
 
@@ -1154,12 +1154,12 @@ ComputeBetaCox.b2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeBetaCox.b2\n\n")
   p1 = params$p1
   p2 = params$p2
-  M  = 0
+  m  = 0
   M3.tXA.deltal = 0
 
   read_time <- proc.time()[3]
-  load(file.path(params$read_path, "M.rdata")) # load M, M3.tXA.deltal
-  read_size = sum(file.size(file.path(params$read_path, "M.rdata")))
+  load(file.path(params$read_path, "M.rdata")) # load m, M3.tXA.deltal
+  read_size <- sum(file.size(file.path(params$read_path, "M.rdata")))
   read_time <- proc.time()[3] - read_time
 
   if (params$stepSize < 1) {  # Is this in the wrong spot?
@@ -1167,8 +1167,8 @@ ComputeBetaCox.b2 = function(params, data) {
   }
 
   params$betasBold = params$betasB
-  M4 = M[(p1 + 1):(p1 + p2), (p1 + 1):(p1 + p2)]
-  M2 = M[1:p1, (p1 + 1):(p1 + p2)]
+  M4 = m[(p1 + 1):(p1 + p2), (p1 + 1):(p1 + p2)]
+  M2 = m[1:p1, (p1 + 1):(p1 + p2)]
 
   params$M2.tXB.deltal = M2 %*% params$tXB.deltal
   params$betasB = params$betasB + M3.tXA.deltal + M4 %*% params$tXB.deltal
@@ -1177,12 +1177,12 @@ ComputeBetaCox.b2 = function(params, data) {
 
   M2.tXB.deltal = params$M2.tXB.deltal
   XB.betasB = params$XB.betasB
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(M2.tXB.deltal, file = file.path(params$write_path, "M2_tXB_deltal.rdata"))
   save(XB.betasB, file = file.path(params$write_path, "XB_betasB.rdata"))
-  write_size = sum(file.size(file.path(params$write_path, c("M2_tXB_deltal.rdata",
+  write_size <- sum(file.size(file.path(params$write_path, c("M2_tXB_deltal.rdata",
                                                             "XB_betasB.rdata"))))
-  write_time <-proc.time()[3] - write_time
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "ComputeBetaCox.b2", read_time, read_size, write_time, write_size)
 
   return(params)
@@ -1196,7 +1196,7 @@ ComputeBetaCox.a2 = function(params, data) {
 
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "M2_tXB_deltal.rdata")) # load M2.tXB.deltal
-  read_size = sum(file.size(file.path(params$read_path, "M2_tXB_deltal.rdata")))
+  read_size <- sum(file.size(file.path(params$read_path, "M2_tXB_deltal.rdata")))
   read_time <- proc.time()[3] - read_time
 
   if (params$stepSize < 1) { # Is this in the wrong spot?
@@ -1204,7 +1204,7 @@ ComputeBetaCox.a2 = function(params, data) {
   }
 
   params$betasAold = params$betasA
-  params$betasA = params$betasA + params$M[1:p1, 1:p1] %*% params$tXA.deltal + M2.tXB.deltal
+  params$betasA = params$betasA + params$m[1:p1, 1:p1] %*% params$tXA.deltal + M2.tXB.deltal
 
   converged = abs(params$loglikelihood - params$loglikelihood.old) /
     (abs(params$loglikelihood) + 0.1) < params$cutoff
@@ -1217,10 +1217,10 @@ ComputeBetaCox.a2 = function(params, data) {
     warning(paste("Failed to converged in", params$max_iterations, "iterations."))
   }
 
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(converged, file = file.path(params$write_path, "converged.rdata"))
-  write_size = file.size(file.path(params$write_path, "converged.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "converged.rdata"))
+  write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "ComputeBetaCox.a2", read_time, read_size, write_time, write_size)
   return(params)
@@ -1233,22 +1233,22 @@ GetConvergedStatusCox.b2 = function(params) {
 
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "converged.rdata")) # load deltabeta
-  read_size = file.size(file.path(params$read_path, "converged.rdata"))
+  read_size <- file.size(file.path(params$read_path, "converged.rdata"))
   read_time <- proc.time()[3] - read_time
   params$converged = converged
   if (params$algIterationCounter > params$max_iterations) {
     params$halted = TRUE
     warning(paste("Failed to converged in", params$max_iterations, "iterations."))
   }
-  write_time <-0
-  write_size = 0
+  write_time <- 0
+  write_size <- 0
   if (params$converged || params$halted) {
     betasB = params$betasB
     nullScoreB = params$nullScore
-    write_time <-proc.time()[3]
+    write_time <- proc.time()[3]
     save(betasB, nullScoreB, file = file.path(params$write_path, "B_betas_ns.rdata"))
-    write_size = sum(file.size(file.path(params$write_path, "B_betas_ns.rdata")))
-    write_time <-proc.time()[3] - write_time
+    write_size <- sum(file.size(file.path(params$write_path, "B_betas_ns.rdata")))
+    write_time <- proc.time()[3] - write_time
   }
   params <- add_to_log(params, "GetConvergedStatusCox.b2", read_time, read_size, write_time, write_size)
   return(params)
@@ -1300,7 +1300,7 @@ ComputeResultsCox.a2 = function(params, data) {
   stats$converged = params$converged
   stats$failed    <- FALSE
   read_time <- 0
-  read_size = 0
+  read_size <- 0
   betasB     = NULL
   nullScoreB = NULL
   XB.betasB  = NULL
@@ -1308,7 +1308,7 @@ ComputeResultsCox.a2 = function(params, data) {
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "B_betas_ns.rdata")) # load betasB, nullscoreB
   load(file.path(params$read_path, "XB_betasB.rdata")) # load XB.betasB
-  read_size = sum(file.size(file.path(params$read_path, c("B_betas_ns.rdata",
+  read_size <- sum(file.size(file.path(params$read_path, c("B_betas_ns.rdata",
                                                           "XB_betasB.rdata"))))
   read_time <- proc.time()[3] - read_time
   params$betasB = betasB
@@ -1414,10 +1414,10 @@ ComputeResultsCox.a2 = function(params, data) {
                                    "concordance", "stderr")
 
   params$stats = stats
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(stats, file = file.path(params$write_path, "stats.rdata"))
-  write_size = file.size(file.path(params$write_path, "stats.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "stats.rdata"))
+  write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "ComputeResultsCox.a2",
                        read_time, read_size, write_time, write_size)
@@ -1430,7 +1430,7 @@ GetResultsCox.b2 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetResultsCox.b2\n\n")
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "stats.rdata"))
-  read_size = file.size(file.path(params$read_path, "stats.rdata"))
+  read_size <- file.size(file.path(params$read_path, "stats.rdata"))
   read_time <- proc.time()[3] - read_time
   params$stats = stats
   params <- add_to_log(params, "GetResultsCox.b2", read_time, read_size, 0, 0)
@@ -1445,7 +1445,7 @@ FinalizeParams2Cox.b2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "FinalizeParams2Cox.b2\n\n")
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "pa.rdata")) # read pa
-  read_size = file.size(file.path(params$read_path, "pa.rdata"))
+  read_size <- file.size(file.path(params$read_path, "pa.rdata"))
   read_time <- proc.time()[3] - read_time
   params$numEvents = sum(data$survival$status)
   params$p1 = pa$p1
@@ -1590,7 +1590,7 @@ ComputeCox.b2 = function(params, data) {
     while (computeLoglikelihood) {
       numEvents = sum(data$survival$status)
       stepCounter = 0
-      pbar = MakeProgressBar1(numEvents, "Loglikelihood", params$verbose)
+      pbar <- MakeProgressBar1(numEvents, "Loglikelihood", params$verbose)
       loglikelihood = 0
       for (i in 1:length(data$survival$strata)) {                    ##!
         if (data$survival$strata[[i]]$J > 0) {                       ##!
@@ -1606,7 +1606,7 @@ ComputeCox.b2 = function(params, data) {
               loglikelihood = loglikelihood - log(Ajr)
             }
             stepCounter = stepCounter + nj
-            pbar = MakeProgressBar2(stepCounter, pbar, params$verbose)
+            pbar <- MakeProgressBar2(stepCounter, pbar, params$verbose)
           }
         }
       }
@@ -1629,22 +1629,22 @@ ComputeCox.b2 = function(params, data) {
           as.integer(n), as.integer(p2), as.integer(numEvents),
           as.integer(params$verbose))
 
-    M = t(data$X) %*% W.XB
+    m = t(data$X) %*% W.XB
 
-    params$XtWX = M
+    params$XtWX = m
     if (params$algIterationCounter == 1) {
-      params$nullHessian = M
+      params$nullHessian = m
     }
 
     inv = NULL
     tryCatch({
-      inv = solve(M)
+      inv = solve(m)
     },
     error = function(err) {
       inv = NULL
     })
-    M = inv
-    if (is.null(M)) {
+    m = inv
+    if (is.null(m)) {
       params$failed <- TRUE
       params$error_message <- "The matrix t(X)WX is singular.  This is probably due to divergence of the coefficients."
       warning(params$error_message)
@@ -1656,7 +1656,7 @@ ComputeCox.b2 = function(params, data) {
       params <- add_to_log(params, "ComputeCox.b2", 0, 0, 0, 0)
       return(params)
     }
-    deltaBeta = M %*% t(data$X) %*% deltal
+    deltaBeta = m %*% t(data$X) %*% deltal
     betasB    = betasBold + (betasB - betasBold) * stepSize
     betasBold = betasB
     betasB    = betasB + deltaBeta
@@ -1794,10 +1794,10 @@ ComputeResultsCox.b2 = function(params, data) {
                                    "concordance", "stderr")
 
   params$stats = stats
-  write_time <-proc.time()[3]
+  write_time <- proc.time()[3]
   save(stats, file = file.path(params$write_path, "stats.rdata"))
-  write_size = file.size(file.path(params$write_path, "stats.rdata"))
-  write_time <-proc.time()[3] - write_time
+  write_size <- file.size(file.path(params$write_path, "stats.rdata"))
+  write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "ComputeResultsCox.b2", 0, 0, write_time, write_size)
   return(params)
 }
@@ -1807,7 +1807,7 @@ GetResultsCox.a2 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetResultsCox.a2\n\n")
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "stats.rdata"))
-  read_size = file.size(file.path(params$read_path, "stats.rdata"))
+  read_size <- file.size(file.path(params$read_path, "stats.rdata"))
   read_time <- proc.time()[3] - read_time
   stats$party_name <- params$party_name
   params$stats = stats

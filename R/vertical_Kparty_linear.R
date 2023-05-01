@@ -376,9 +376,9 @@ GetProductsLinear.AC = function(params) {
     if (id == 1) n = nrow(halfshare)
   }
 
-  M = matrix(0, p, p)
-  colnames(M) = allcolnames
-  rownames(M) = allcolnames
+  m = matrix(0, p, p)
+  colnames(m) = allcolnames
+  rownames(m) = allcolnames
   offset1 = 1
   params$pi = rep(0, params$numDataPartners)
   for (id1 in 1:params$numDataPartners) {
@@ -388,25 +388,25 @@ GetProductsLinear.AC = function(params) {
     for (id2 in id1:params$numDataPartners) {
       p2 = ncol(allhalfshare[[id2]])
       if (id1 == id2) {
-        M[offset1:(offset1 + p1 - 1), offset2:(offset2 + p2 - 1)] = allproducts[[id1]][[id2]]
+        m[offset1:(offset1 + p1 - 1), offset2:(offset2 + p2 - 1)] = allproducts[[id1]][[id2]]
       } else {
         temp = allproducts[[id1]][[id2]] + allproducts[[id2]][[id1]] +
           t(allhalfshare[[id1]]) %*% allhalfshare[[id2]]
-        M[offset1:(offset1 + p1 - 1), offset2:(offset2 + p2 - 1)] = temp
-        M[offset2:(offset2 + p2 - 1), offset1:(offset1 + p1 - 1)] = t(temp)
+        m[offset1:(offset1 + p1 - 1), offset2:(offset2 + p2 - 1)] = temp
+        m[offset2:(offset2 + p2 - 1), offset1:(offset1 + p1 - 1)] = t(temp)
       }
       offset2 = offset2 + p2
     }
     offset1 = offset1 + p1
   }
 
-  M = diag(allcolrange) %*% M %*% diag(allcolrange) +
+  m = diag(allcolrange) %*% m %*% diag(allcolrange) +
     outer(allcolmin, allcolsum) + outer(allcolsum, allcolmin) -
     n * outer(allcolmin, allcolmin)
 
-  params$xtx          = M[2:p, 2:p, drop = FALSE]
-  params$xty          = M[2:p, 1, drop = FALSE]
-  params$yty          = M[1, 1]
+  params$xtx          = m[2:p, 2:p, drop = FALSE]
+  params$xty          = m[2:p, 1, drop = FALSE]
+  params$yty          = m[1, 1]
   params$meansy       = allcolsum[1] / n
   params$means        = allcolsum[-1] / n
   params$n            = n
