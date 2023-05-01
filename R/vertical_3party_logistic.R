@@ -8,8 +8,8 @@ CheckColinearityLogistic.t3 <- function(params) {
   nrow = nrow(xtx)
   indicies = c(1)
   for (i in 2:nrow) {
-    tempIndicies = c(indicies, i)
-    if (rcond(xtx[tempIndicies, tempIndicies]) > 10^8 * .Machine$double.eps) {
+    temp_indicies = c(indicies, i)
+    if (rcond(xtx[temp_indicies, temp_indicies]) > 10^8 * .Machine$double.eps) {
       indicies = c(indicies, i)
     }
   }
@@ -23,16 +23,16 @@ CheckColinearityLogistic.t3 <- function(params) {
   params$IndiciesKeep  = indicies
   params$a_indicies_keep = indicies[a_index]
   params$b_indicies_keep = indicies[-a_index] - length(a_names)
-  AnamesKeep           = a_names[params$a_indicies_keep]
-  BnamesKeep           = b_names[params$b_indicies_keep]
+  A_names_keep           = a_names[params$a_indicies_keep]
+  b_names_keep           = b_names[params$b_indicies_keep]
   params$colnamesA_old = params$colnamesA
   params$colnamesB_old = params$colnamesB
-  params$colnamesA     = AnamesKeep
-  params$colnamesB     = BnamesKeep
+  params$colnamesA     = A_names_keep
+  params$colnamesB     = b_names_keep
   params$p1_old        = params$p1
   params$p2_old        = params$p2
-  params$p1            = length(AnamesKeep)
-  params$p2            = length(BnamesKeep)
+  params$p1            = length(A_names_keep)
+  params$p2            = length(b_names_keep)
   params$p_old         = params$p1_old + params$p2_old
   params$p             = params$p1 + params$p2
   params$meansA        = params$meansA[params$a_indicies_keep]
@@ -46,10 +46,10 @@ CheckColinearityLogistic.t3 <- function(params) {
   b_indicies = params$b_indicies_keep
 
   write_time <- proc.time()[3]
-  save(a_indicies, file = file.path(params$write_path, Aindicies.rdata"))
-  save(b_indicies, file = file.path(params$write_path, Bindicies.rdata"))
-  write_size <- sum(file.size(file.path(params$write_path, c(Aindicies.rdata",
-                                                          Bindicies.rdata"))))
+  save(a_indicies, file = file.path(params$write_path, "Aindicies.rdata"))
+  save(b_indicies, file = file.path(params$write_path, "Bindicies.rdata"))
+  write_size <- sum(file.size(file.path(params$write_path, c("Aindicies.rdata",
+                                                          "Bindicies.rdata"))))
   write_time <- proc.time()[3] - write_time
 
   Btags = params$Btags[params$b_indicies_keep]
@@ -125,9 +125,9 @@ UpdateParamsLogistic.a3 <- function(params) {
   Axty      = NULL
   p2        = NULL
   read_time <- proc.time()[3]
-  load(file.path(params$read_path[["T"]], Aindicies.rdata"))
+  load(file.path(params$read_path[["T"]], "Aindicies.rdata"))
   load(file.path(params$read_path[["T"]], "Axty.rdata"))
-  read_size <- sum(file.size(file.path(params$read_path[["T"]], c(Aindicies.rdata",
+  read_size <- sum(file.size(file.path(params$read_path[["T"]], c("Aindicies.rdata",
                                                                "Axty.rdata"))))
 
   read_time <- proc.time()[3] - read_time
@@ -150,9 +150,9 @@ UpdateParamsLogistic.b3 <- function(params) {
   b_indicies = NULL
   Bxty      = NULL
   read_time <- proc.time()[3]
-  load(file.path(params$read_path[["T"]], Bindicies.rdata"))
+  load(file.path(params$read_path[["T"]], "Bindicies.rdata"))
   load(file.path(params$read_path[["T"]], "Bxty.rdata"))
-  read_size <- sum(file.size(file.path(params$read_path[["T"]], c(Bindicies.rdata",
+  read_size <- sum(file.size(file.path(params$read_path[["T"]], c("Bindicies.rdata",
                                                                "Bxty.rdata"))))
 
   read_time <- proc.time()[3] - read_time
@@ -1161,8 +1161,8 @@ PartyTProcess3Logistic <- function(monitor_folder         = NULL,
   }
 
   params <- ComputeInitialBetasLogistic.t3(params)
-  filesA = c(Aindicies.rdata", "betasA.rdata", "Axty.rdata", "converged.rdata")
-  filesB = c(Bindicies.rdata", "betasB.rdata", "Bxty.rdata", "converged.rdata")
+  filesA = c("Aindicies.rdata", "betasA.rdata", "Axty.rdata", "converged.rdata")
+  filesB = c("Bindicies.rdata", "betasB.rdata", "Bxty.rdata", "converged.rdata")
   params <- send_pause_continue_3p(params, filesA = filesA, filesB = filesB, from  = c("A", "B"),
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 

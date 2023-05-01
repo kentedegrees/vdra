@@ -43,17 +43,17 @@ int printInitialMessage(int verbose) {
   return(0);
 }
 
-int printMessage(int stepCounter, int num_events, int currentPercent, int verbose)
+int printMessage(int step_counter, int num_events, int current_percent, int verbose)
 {
-  int newPercent = 100 * stepCounter / (float)num_events;
-  int stars      = 20 * stepCounter  / (float)num_events;
-  if (newPercent > currentPercent) {
+  int newPercent = 100 * step_counter / (float)num_events;
+  int stars      = 20 * step_counter  / (float)num_events;
+  if (newPercent > current_percent) {
     if (verbose) {
       Rprintf("Processing w*X               : %3d%%|", newPercent);
       for (int i = 0; i < stars; i++ ) { Rprintf("#"); }
       for (int i = stars; i < 20; i++) { Rprintf(" "); }
       Rprintf("|\r");
-      if (stepCounter == num_events) {
+      if (step_counter == num_events) {
         Rprintf("\n\n");
       }
     }
@@ -98,8 +98,8 @@ SEXP compute_cox_SEXP _strata, SEXP _X, SEXP _w,
     return(ans);
   }
 
-  int currentPercent = printInitialMessage(verbose);
-  int stepCounter = 0;
+  int current_percent = printInitialMessage(verbose);
+  int step_counter = 0;
   //Rprintf("n = %d\np = %d\n", n, p);
   //Rprintf("length(strata) = %d\n", length(_strata));
   for (int i = 0; i < length(_strata); i++) {
@@ -117,28 +117,28 @@ SEXP compute_cox_SEXP _strata, SEXP _X, SEXP _w,
       for (int j = 0; j < J; j++) {
         //Rprintf("%d / %d\n", j, J);
         int nj = nfails[j];
-        int yIndexStart = start0[j] - 1;
-        int yIndexEnd   = end;
+        int y_index_start = start0[j] - 1;
+        int y_index_end   = end;
         int zIndexStart = start1[j] - 1;
         int zIndexEnd   = stop1[j];
-        //Rprintf("%d %d %d %d %d\n", nj, yIndexStart, yIndexEnd, zIndexStart, zIndexEnd);
-        double Aj1 = 0.;
-        double Aj2 = 0.;
-        for (int yindex = yIndexStart; yindex < yIndexEnd; yindex++) {
+        //Rprintf("%d %d %d %d %d\n", nj, y_index_start, y_index_end, zIndexStart, zIndexEnd);
+        double a_j1 = 0.;
+        double a_j2 = 0.;
+        for (int yindex = y_index_start; yindex < y_index_end; yindex++) {
           if (zIndexStart <= yindex && yindex < zIndexEnd) {
             wz[yindex] = w[yindex] / nj;
-            Aj2 += wz[yindex];
+            a_j2 += wz[yindex];
           } else {
             wz[yindex] = 0.;
           }
-          Aj1 += w[yindex];
+          a_j1 += w[yindex];
         }
         double h1, h2, h3, h4, h5;
         h1 = h2 = h3 = h4 = h5 = 0.;
         for (int r = 0; r < nj; r++) {
-          double Ajr = Aj1 - r * Aj2;
-          double denom2 = 1 / Ajr;
-          double denom1 = denom2 / Ajr;
+          double a_jr = a_j1 - r * a_j2;
+          double denom2 = 1 / a_jr;
+          double denom1 = denom2 / a_jr;
           h1 += denom1;
           h2 += r * denom1;
           h3 += r * r * denom1;
@@ -148,7 +148,7 @@ SEXP compute_cox_SEXP _strata, SEXP _X, SEXP _w,
         for (int pct = 0; pct < p; pct++) {
           YWX[pct] = ZWX[pct] = 0.;
         }
-        for (long row = yIndexStart; row < yIndexEnd; row++) {
+        for (long row = y_index_start; row < y_index_end; row++) {
           for (long col = 0; col < p; col++) {
             long idx = col * n + row;
             YWX[col] += w[row]  * X[idx];
@@ -157,7 +157,7 @@ SEXP compute_cox_SEXP _strata, SEXP _X, SEXP _w,
           deltal[row] += h5 * wz[row] - h4 * w[row];
         }
         for (long col = 0; col < p; col++) {
-          for (long row = yIndexStart; row < yIndexEnd; row++) {
+          for (long row = y_index_start; row < y_index_end; row++) {
             long idx = col * n + row;
             WX[idx] +=
               (h2 * wz[row] - h1 *  w[row]) * YWX[col] +
@@ -165,9 +165,9 @@ SEXP compute_cox_SEXP _strata, SEXP _X, SEXP _w,
               (h4 *  w[row] - h5 * wz[row]) * X[idx];
           }
         }
-        stepCounter += nj;
-        //Rprintf("%d %d %d\n", stepCounter, num_events, currentPercent);
-        currentPercent = printMessage(stepCounter, num_events, currentPercent, verbose);
+        step_counter += nj;
+        //Rprintf("%d %d %d\n", step_counter, num_events, current_percent);
+        current_percent = printMessage(step_counter, num_events, current_percent, verbose);
       }
     }
   }

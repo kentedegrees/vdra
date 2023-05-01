@@ -401,7 +401,7 @@ get_z_linear_a2 <- function(params, data) {
   write_size <- 0
 
   num_blocks = params$blocks$num_blocks
-  pbar <- MakeProgressBar1(num_blocks, "z", params$verbose)
+  pbar <- make_progress_bar_1(num_blocks, "z", params$verbose)
   container_ct_z <- 0
   for (i in 1:num_blocks) {
     if (i %in% params$container$file_break_z) {
@@ -422,7 +422,7 @@ get_z_linear_a2 <- function(params, data) {
       close(to_write)
       write_size <- write_size + file.size(file.path(params$write_path, filename))
     }
-    pbar <- MakeProgressBar2(i, pbar, params$verbose)
+    pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
   params <- add_to_log(params, "get_z_linear_a2", 0, 0, write_time, write_size)
   return(params)
@@ -472,7 +472,7 @@ get_w_linear_b2 <- function(params, data) {
   write_time <- 0
   write_size <- 0
 
-  pbar <- MakeProgressBar1(params$blocks$num_blocks, "(I-Z*Z')X", params$verbose)
+  pbar <- make_progress_bar_1(params$blocks$num_blocks, "(I-Z*Z')X", params$verbose)
 
   xb_t_xb <- t(data$x) %*% data$x
 
@@ -515,7 +515,7 @@ get_w_linear_b2 <- function(params, data) {
       write_size <- write_size + file.size(file.path(params$write_path, filename2))
     }
 
-    pbar <- MakeProgressBar2(i, pbar, params$verbose)
+    pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
 
   write_time <- write_time - proc.time()[3]
@@ -541,12 +541,12 @@ get_products_linear_a2 <- function(params, data) {
   read_size <- file.size(file.path(params$read_path, "xbtxb.rdata"))
   read_time <- proc.time()[3] - read_time
 
-  XATXA = t(data$x) %*% data$x
+  xa_t_xa = t(data$x) %*% data$x
   XATY  = t(data$x) %*% data$Y
   YTXB  = 0
-  XATXB = 0
+  xa_t_xb = 0
 
-  pbar <- MakeProgressBar1(params$blocks$num_blocks, "X'X", params$verbose)
+  pbar <- make_progress_bar_1(params$blocks$num_blocks, "X'X", params$verbose)
 
   container_ct_w <- 0
   for (i in 1:params$blocks$num_blocks) {
@@ -564,17 +564,17 @@ get_products_linear_a2 <- function(params, data) {
                        endian = "little"), nrow = n2, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
-    XATXB = XATXB + t(data$x[strt:stp, ]) %*% w
+    xa_t_xb = xa_t_xb + t(data$x[strt:stp, ]) %*% w
     YTXB  = YTXB  + t(data$Y[strt:stp, ]) %*% w
 
     if ((i + 1) %in% params$container$filebreak.w || i == params$blocks$num_blocks) {
       close(to_read)
       read_size <- read_size + file.size(file.path(params$read_path, filename))
     }
-    pbar <- MakeProgressBar2(i, pbar, params$verbose)
+    pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
 
-  xtx = rbind(cbind(XATXA, XATXB), cbind(t(XATXB), xb_t_xb))
+  xtx = rbind(cbind(xa_t_xa, xa_t_xb), cbind(t(xa_t_xb), xb_t_xb))
   XTY = rbind(XATY, t(YTXB))
 
   # lasso: x is standardized but needs to be divided by sqrt(n - 1),
@@ -627,8 +627,8 @@ compute_results_linear_a2 <- function(params, data) {
   nrow = nrow(xtx)
   indicies = c(1)
   for (i in 2:nrow) {
-    tempIndicies = c(indicies, i)
-    if (rcond(xtx[tempIndicies, tempIndicies]) > 10^8 * .Machine$double.eps) {
+    temp_indicies = c(indicies, i)
+    if (rcond(xtx[temp_indicies, temp_indicies]) > 10^8 * .Machine$double.eps) {
       indicies = c(indicies, i)
     }
   }

@@ -437,8 +437,8 @@ compute_results_linear_AC <- function(params) {
   nrow = nrow(xtx)
   indicies = c(1)
   for (i in 2:nrow) {
-    tempIndicies = c(indicies, i)
-    if (rcond(xtx[tempIndicies, tempIndicies]) > 10^8 * .Machine$double.eps) {
+    temp_indicies = c(indicies, i)
+    if (rcond(xtx[temp_indicies, temp_indicies]) > 10^8 * .Machine$double.eps) {
       indicies = c(indicies, i)
     }
   }

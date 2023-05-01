@@ -550,8 +550,8 @@ check_colinearity_cox_AC <- function(params) {
   nrow = nrow(sts)
   indicies = c(1)
   for (i in 2:nrow) {
-    tempIndicies = c(indicies, i)
-    if (rcond(sts[tempIndicies, tempIndicies]) > 10^8 * .Machine$double.eps) {
+    temp_indicies = c(indicies, i)
+    if (rcond(sts[temp_indicies, temp_indicies]) > 10^8 * .Machine$double.eps) {
       indicies = c(indicies, i)
     }
   }
@@ -789,23 +789,23 @@ compute_log_likelihood_cox_DP <- function(params, data) {
   while (stephalving) {
     w = exp(sBeta)
     loglikelihood = 0
-    stepCounter = 0
+    step_counter = 0
     pbar = MakeProgressBar1(params$survival$num_events, "loglikelihood", params$verbose)
     for (i in 1:length(params$survival$strata)) {
       if (params$survival$strata[[i]]$J > 0) {
         for (j in 1:params$survival$strata[[i]]$J) {
           nj = params$survival$strata[[i]]$nfails[j]
-          yIndex = params$survival$strata[[i]]$start0[j]:params$survival$strata[[i]]$end
+          y_index = params$survival$strata[[i]]$start0[j]:params$survival$strata[[i]]$end
           zIndex = params$survival$strata[[i]]$start1[j]:params$survival$strata[[i]]$stop1[j]
-          Aj1 = sum(w[yIndex])
-          Aj2 = sum(w[zIndex]) / nj
+          a_j1 = sum(w[y_index])
+          a_j2 = sum(w[zIndex]) / nj
           loglikelihood = loglikelihood + sum(log(w[zIndex]))
           for (r in 0:(nj - 1)) {
-            Ajr = Aj1 - r * Aj2
-            loglikelihood = loglikelihood - log(Ajr)
+            a_jr = a_j1 - r * a_j2
+            loglikelihood = loglikelihood - log(a_jr)
           }
-          stepCounter = stepCounter + nj
-          pbar = MakeProgressBar2(stepCounter, pbar, params$verbose)
+          step_counter = step_counter + nj
+          pbar = MakeProgressBar2(step_counter, pbar, params$verbose)
         }
       }
     }

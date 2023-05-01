@@ -3154,25 +3154,25 @@ SummarizeLog.kp <- function(params) {
   total.time.0 = 0
   for (party in 0:params$numDataPartners) {
     party_name <- paste0("dp", party)
-    index = which(log$Party =<- party_name)
+    index <- which(log$Party == party_name)
     if (length(index) > 0) {
-      Start.Time = log$Start.Time[index[1]]
-      End.Time   = log$End.Time[index[length(index)]]
-      Total.Time = round(as.numeric(difftime(End.Time, Start.Time, units = "secs")), digits = 2)
+      Start.Time <- log$Start.Time[index[1]]
+      End.Time   <- log$End.Time[index[length(index)]]
+      Total.Time <- round(as.numeric(difftime(End.Time, Start.Time, units = "secs")), digits = 2)
       if (party == 0) {
         total.time.0 = Total.Time
       }
-      Reading.Time = sum(log$Read.Time[index])
-      Writing.Time = sum(log$Write.Time[index])
-      Computing.Time = sum(log$Computation.Time[index])
-      Waiting.Time = sum(log$Wait.Time[index])
-      Total.Time.HMS = ConvertSecsToHMS(Total.Time, timeOnly = TRUE)
-      Reading.Time.HMS = ConvertSecsToHMS(Reading.Time, timeOnly = TRUE)
-      Writing.Time.HMS = ConvertSecsToHMS(Writing.Time, timeOnly = TRUE)
-      Computing.Time.HMS = ConvertSecsToHMS(Computing.Time, timeOnly = TRUE)
-      Waiting.Time.HMS = ConvertSecsToHMS(Waiting.Time, timeOnly = TRUE)
-      Bytes.Read = sum(log$Read.Size[index])
-      Bytes.Written = sum(log$Write.Size[index])
+      Reading.Time <- sum(log$Read.Time[index])
+      Writing.Time <- sum(log$Write.Time[index])
+      Computing.Time <- sum(log$Computation.Time[index])
+      Waiting.Time <- sum(log$Wait.Time[index])
+      Total.Time.HMS <- ConvertSecsToHMS(Total.Time, timeOnly = TRUE)
+      Reading.Time.HMS <- ConvertSecsToHMS(Reading.Time, timeOnly = TRUE)
+      Writing.Time.HMS <- ConvertSecsToHMS(Writing.Time, timeOnly = TRUE)
+      Computing.Time.HMS <- ConvertSecsToHMS(Computing.Time, timeOnly = TRUE)
+      Waiting.Time.HMS <- ConvertSecsToHMS(Waiting.Time, timeOnly = TRUE)
+      Bytes.Read <- sum(log$Read.Size[index])
+      Bytes.Written <- sum(log$Write.Size[index])
       WriteToLogSummary(c1 = paste(party_name, "Start Time"), c2 = Start.Time, write_path = write_path)
       WriteToLogSummary(c1 = paste(party_name, "End Time"), c2 = End.Time, write_path = write_path)
       WriteToLogSummary(c1 = paste(party_name, "Total Run Time"), c2 = Total.Time,
@@ -4086,8 +4086,8 @@ differentModel <- function(formula = NULL, x = NULL) {
   nrow = nrow(xtx)
   indicies = c(1)
   for (i in 2:nrow) {
-    tempIndicies = c(indicies, i)
-    if (rcond(xtx[tempIndicies, tempIndicies]) > 10 * .Machine$double.eps) {
+    temp_indicies = c(indicies, i)
+    if (rcond(xtx[temp_indicies, temp_indicies]) > 10 * .Machine$double.eps) {
       indicies = c(indicies, i)
     }
   }

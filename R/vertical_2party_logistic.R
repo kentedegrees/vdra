@@ -408,7 +408,7 @@ GetZLogistic.a2 <- function(params, data) {
   write_size <- 0
 
   num_blocks = params$blocks$num_blocks
-  pbar <- MakeProgressBar1(num_blocks, "z", params$verbose)
+  pbar <- make_progress_bar_1(num_blocks, "z", params$verbose)
   container_ct_z <- 0
   for (i in 1:num_blocks) {
     if (i %in% params$container$file_break_z) {
@@ -429,7 +429,7 @@ GetZLogistic.a2 <- function(params, data) {
       close(to_write)
       write_size <- write_size + file.size(file.path(params$write_path, filename))
     }
-    pbar <- MakeProgressBar2(i, pbar, params$verbose)
+    pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
   params <- add_to_log(params, "GetZLogistic.a2", 0, 0, write_time, write_size)
   return(params)
@@ -482,7 +482,7 @@ GetWLogistic.b2 <- function(params, data) {
   write_time <- 0
   write_size <- 0
 
-  pbar <- MakeProgressBar1(params$blocks$num_blocks, "(I-z*z')XB", params$verbose)
+  pbar <- make_progress_bar_1(params$blocks$num_blocks, "(I-z*z')XB", params$verbose)
 
   xb_t_xb <- t(data$x) %*% data$x
 
@@ -525,7 +525,7 @@ GetWLogistic.b2 <- function(params, data) {
       write_size <- write_size + file.size(file.path(params$write_path, filename2))
     }
 
-    pbar <- MakeProgressBar2(i, pbar, params$verbose)
+    pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
 
   write_time <- write_time - proc.time()[3]
@@ -552,12 +552,12 @@ CheckColinearityLogistic.a2 <- function(params, data) {
   load(file.path(params$read_path, "xbtxb.rdata")) # load xb_t_xb
   read_size <- file.size(file.path(params$read_path, "xbtxb.rdata"))
   read_time <- read_time + proc.time()[3]
-  XATXA = t(data$x) %*% data$x
-  XATXB = 0
+  xa_t_xa = t(data$x) %*% data$x
+  xa_t_xb = 0
   XATY  = t(data$x) %*% data$Y
   YTXB  = 0
 
-  pbar <- MakeProgressBar1(params$blocks$num_blocks, "X'X", params$verbose)
+  pbar <- make_progress_bar_1(params$blocks$num_blocks, "X'X", params$verbose)
 
   container_ct_w <- 0
   for (i in 1:params$blocks$num_blocks) {
@@ -575,24 +575,24 @@ CheckColinearityLogistic.a2 <- function(params, data) {
                        endian = "little"), nrow = n2, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
-    XATXB = XATXB + t(data$x[strt:stp, ]) %*% w
+    xa_t_xb = xa_t_xb + t(data$x[strt:stp, ]) %*% w
     YTXB  = YTXB  + t(data$Y[strt:stp, ]) %*% w
 
     if ((i + 1) %in% params$container$filebreak.w || i == params$blocks$num_blocks) {
       close(to_read)
       read_size <- read_size + file.size(file.path(params$read_path, filename))
     }
-    pbar <- MakeProgressBar2(i, pbar, params$verbose)
+    pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
 
-  xtx = rbind(cbind(XATXA, XATXB), cbind(t(XATXB), xb_t_xb))
+  xtx = rbind(cbind(xa_t_xa, xa_t_xb), cbind(t(xa_t_xb), xb_t_xb))
   XTY = rbind(XATY, t(YTXB))
 
   nrow = nrow(xtx)
   indicies = c(1)
   for (i in 2:nrow) {
-    tempIndicies = c(indicies, i)
-    if (rcond(xtx[tempIndicies, tempIndicies]) > 10^8 * .Machine$double.eps) {
+    temp_indicies = c(indicies, i)
+    if (rcond(xtx[temp_indicies, temp_indicies]) > 10^8 * .Machine$double.eps) {
       indicies = c(indicies, i)
     }
   }
@@ -607,16 +607,16 @@ CheckColinearityLogistic.a2 <- function(params, data) {
   params$a_indicies_keep = indicies[a_index]
   params$b_indicies_keep = indicies[-a_index] - length(a_names)
 
-  AnamesKeep = a_names[params$a_indicies_keep]
-  BnamesKeep = b_names[params$b_indicies_keep]
+  A_names_keep = a_names[params$a_indicies_keep]
+  b_names_keep = b_names[params$b_indicies_keep]
   params$a_col_names_old = params$a_col_names
   params$b_col_names_old = params$b_col_names
-  params$a_col_names     = AnamesKeep
-  params$b_col_names     = BnamesKeep
+  params$a_col_names     = A_names_keep
+  params$b_col_names     = b_names_keep
   params$p1_old        = params$p1
   params$p2_old        = params$p2
-  params$p1            = length(AnamesKeep)
-  params$p2            = length(BnamesKeep)
+  params$p1            = length(A_names_keep)
+  params$p2            = length(b_names_keep)
   params$p_old         = params$p1_old + params$p2_old
   params$p             = params$p1 + params$p2
   params$meansA        = params$meansA[params$a_indicies_keep]
@@ -787,7 +787,7 @@ GetVLogistic.b2 <- function(params, data) {
 
   XBTWXB = 0
 
-  pbar <- MakeProgressBar1(params$blocks$num_blocks, "(I - z*z')w*XB", params$verbose)
+  pbar <- make_progress_bar_1(params$blocks$num_blocks, "(I - z*z')w*XB", params$verbose)
 
   container_ct_z <- 0
   container_ct_V = 0
@@ -831,7 +831,7 @@ GetVLogistic.b2 <- function(params, data) {
       close(to_write)
       write_size <- write_size + file.size(file.path(params$write_path, filename2))
     }
-    pbar <- MakeProgressBar2(i, pbar, params$verbose)
+    pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
   # sums of each column in WX_B
   sumsWXB = apply(MultiplyDiagonalWTimesX(w, data$x), 2, sum)
@@ -870,7 +870,7 @@ GetIILogistic.a2 <- function(params, data) {
 
   XATWXA = t(data$x) %*% MultiplyDiagonalWTimesX(w, data$x)
 
-  pbar <- MakeProgressBar1(params$blocks$num_blocks, "X'W*X", params$verbose)
+  pbar <- make_progress_bar_1(params$blocks$num_blocks, "X'W*X", params$verbose)
 
   XATWXB = 0
   container_ct_V = 0
@@ -891,7 +891,7 @@ GetIILogistic.a2 <- function(params, data) {
     read_time <- read_time + proc.time()[3]
     XATWXB = XATWXB + t(data$x[strt:stp, ]) %*% V
 
-    pbar <- MakeProgressBar2(i, pbar, params$verbose)
+    pbar <- make_progress_bar_2(i, pbar, params$verbose)
     if ((i + 1) %in% params$container$filebreak.V || i == params$blocks$num_blocks) {
       close(to_read)
     }

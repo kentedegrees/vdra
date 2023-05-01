@@ -668,10 +668,10 @@ ProcessWLinear.t3 <- function(params) {
 
 get_wr_linear_a3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "get_wr_linear_a3\n\n")
-  XATXA = t(data$x) %*% data$x
+  xa_t_xa = t(data$x) %*% data$x
   XATY  = t(data$x) %*% data$Y
   write_time <- proc.time()[3]
-  save(XATXA, XATY, file = file.path(params$write_path, "xatxa.rdata"))
+  save(xa_t_xa, XATY, file = file.path(params$write_path, "xatxa.rdata"))
   write_size <- file.size(file.path(params$write_path, "xatxa.rdata"))
   write_time <- proc.time()[3] - write_time
 
@@ -734,10 +734,10 @@ get_products_linear_t3 <- function(params) {
   n  = params$n
   p1 = params$p1
   p2 = params$p2
-  XATXA = 0
+  xa_t_xa = 0
   xb_t_xb <- 0
   XATY  = 0
-  YXATXB = 0
+  Yxa_t_xb = 0
 
   num_blocks = params$blocks$num_blocks
   read_time <- proc.time()[3]
@@ -770,7 +770,7 @@ get_products_linear_t3 <- function(params) {
                         endian = "little"), p1 + 1, p2)
     read_time <- read_time + proc.time()[3]
 
-    YXATXB = YXATXB + PR %*% t(R2)
+    Yxa_t_xb = Yxa_t_xb + PR %*% t(R2)
 
     if ((i + 1) %in% params$container$filebreak.PR || i == num_blocks) {
       close(toRead)
@@ -779,9 +779,9 @@ get_products_linear_t3 <- function(params) {
     pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
 
-  YTXB = YXATXB[1, , drop = FALSE]
-  XATXB = YXATXB[-1, , drop = FALSE]
-  xtx = rbind(cbind(XATXA, XATXB), cbind(t(XATXB), xb_t_xb))
+  YTXB = Yxa_t_xb[1, , drop = FALSE]
+  xa_t_xb = Yxa_t_xb[-1, , drop = FALSE]
+  xtx = rbind(cbind(xa_t_xa, xa_t_xb), cbind(t(xa_t_xb), xb_t_xb))
   XTY = rbind(XATY, t(YTXB))
 
   XTXLasso = xtx / (n - 1)
@@ -833,8 +833,8 @@ compute_results_linear_t3 <- function(params) {
   nrow = nrow(xtx)
   indicies = c(1)
   for (i in 2:nrow) {
-    tempIndicies = c(indicies, i)
-    if (rcond(xtx[tempIndicies, tempIndicies]) > 10^8 * .Machine$double.eps) {
+    temp_indicies = c(indicies, i)
+    if (rcond(xtx[temp_indicies, temp_indicies]) > 10^8 * .Machine$double.eps) {
       indicies = c(indicies, i)
     }
   }
