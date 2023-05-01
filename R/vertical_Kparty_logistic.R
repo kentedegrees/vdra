@@ -451,10 +451,10 @@ UpdateBetaLogistic.DP <- function(params) {
   }
 
   D0 = t(halfshareDP) %*% params$pi_
-  deltaBeta = IDt - I %*% D0
-  params$betas = params$betas + deltaBeta
-  maxdifference = max(abs(deltaBeta) / (abs(params$betas) + .1))
-  utemp = sum(runif(length(deltaBeta), min = 1, max = 5) * abs(params$betas))
+  delta_beta = IDt - I %*% D0
+  params$betas = params$betas + delta_beta
+  maxdifference = max(abs(delta_beta) / (abs(params$betas) + .1))
+  utemp = sum(runif(length(delta_beta), min = 1, max = 5) * abs(params$betas))
 
   write_time <- proc.time()[3]
   save(utemp, maxdifference, file = file.path(params$write_path, "u_converge.rdata"))

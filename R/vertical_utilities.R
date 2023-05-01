@@ -148,21 +148,21 @@ AnalysisCenter.2Party <- function(regression            = "linear",
                                   trace                 = FALSE,
                                   verbose               = TRUE) {
   start_time <- proc.time()
-  stats = list()
+  stats <- list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.")
   } else if (regression == "cox") {
-    stats = PartyAProcess2Cox(data, response, strata, mask, monitor_folder,
+    stats <- party_a_process_2_cox(data, response, strata, mask, monitor_folder,
                               msreqid, blocksize, tol, max_iterations,
                               sleep_time, max_waiting_time, popmednet, trace,
                               verbose)
   } else if (regression == "linear") {
-    stats = party_a_process_2_linear(data, response, monitor_folder, msreqid,
+    stats <- party_a_process_2_linear(data, response, monitor_folder, msreqid,
                                  blocksize, sleep_time, max_waiting_time,
                                  popmednet, trace, verbose)
   } else if (regression == "logistic") {
-    stats = PartyAProcess2Logistic(data, response, monitor_folder, msreqid,
+    stats <- PartyAProcess2Logistic(data, response, monitor_folder, msreqid,
                                    blocksize, tol, max_iterations, sleep_time,
                                    max_waiting_time, popmednet, trace, verbose)
   } else {
@@ -188,19 +188,19 @@ DataPartner.2Party <- function(regression          = "linear",
                                trace               = FALSE,
                                verbose             = TRUE) {
   start_time <- proc.time()
-  stats = list()
+  stats <- list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.")
   } else if (regression == "cox") {
-    stats = party_b_process_2_cox(data, strata, mask,
+    stats <- party_b_process_2_cox(data, strata, mask,
                               monitor_folder, sleep_time, max_waiting_time,
                               popmednet, trace, verbose)
   } else if (regression == "linear") {
-    stats = party_b_process_2_linear(data, monitor_folder, sleep_time, max_waiting_time,
+    stats <- party_b_process_2_linear(data, monitor_folder, sleep_time, max_waiting_time,
                                  popmednet, trace, verbose)
   } else if (regression == "logistic") {
-    stats = PartyBProcess2Logistic(data, monitor_folder, sleep_time, max_waiting_time,
+    stats <- PartyBProcess2Logistic(data, monitor_folder, sleep_time, max_waiting_time,
                                    popmednet, trace, verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
@@ -229,20 +229,20 @@ DataPartner1.3Party <- function(regression            = "linear",
                                 verbose               = TRUE) {
 
   start_time <- proc.time()
-  stats = list()
+  stats <- list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.")
   } else if (regression == "cox") {
-    stats = PartyAProcess3Cox(data, response, strata, mask, monitor_folder,
+    stats <- PartyAProcess3Cox(data, response, strata, mask, monitor_folder,
                               sleep_time, max_waiting_time, popmednet, trace,
                               verbose)
   } else if (regression == "linear") {
-    stats = party_a_process_3_linear(data, response, monitor_folder,
+    stats <- party_a_process_3_linear(data, response, monitor_folder,
                                      sleep_time, max_waiting_time, popmednet, trace,
                                      verbose)
   } else  if (regression == "logistic") {
-    stats = PartyAProcess3Logistic(data, response, monitor_folder,
+    stats <- PartyAProcess3Logistic(data, response, monitor_folder,
                                    sleep_time, max_waiting_time, popmednet, trace,
                                    verbose)
   } else {
@@ -269,20 +269,20 @@ DataPartner2.3Party <- function(regression          = "linear",
                                 trace               = FALSE,
                                 verbose             = TRUE) {
   start_time <- proc.time()
-  stats = list()
+  stats <- list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.")
   } else if (regression == "cox") {
-    stats = PartyBProcess3Cox(data, strata, mask, monitor_folder,
+    stats <- PartyBProcess3Cox(data, strata, mask, monitor_folder,
                               sleep_time, max_waiting_time, popmednet, trace,
                               verbose)
   } else if (regression == "linear") {
-    stats = PartyBProcess3Linear(data, monitor_folder,
+    stats <- PartyBProcess3Linear(data, monitor_folder,
                                  sleep_time, max_waiting_time, popmednet, trace,
                                  verbose)
   } else if (regression == "logistic") {
-    stats = PartyBProcess3Logistic(data, monitor_folder,
+    stats <- PartyBProcess3Logistic(data, monitor_folder,
                                    sleep_time, max_waiting_time, popmednet, trace,
                                    verbose)
   } else {
@@ -471,20 +471,20 @@ AnalysisCenter.3Party <- function(regression            = "linear",
                                   trace                 = FALSE,
                                   verbose               = TRUE) {
   start_time <- proc.time()
-  stats = list()
+  stats <- list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.")
   } else if (regression == "cox") {
-    stats = PartyTProcess3Cox(monitor_folder, msreqid, blocksize, tol,
+    stats <- PartyTProcess3Cox(monitor_folder, msreqid, blocksize, tol,
                               max_iterations, sleep_time, max_waiting_time,
                               popmednet, trace, verbose)
   } else if (regression == "linear") {
-    stats = PartyTProcess3Linear(monitor_folder, msreqid, blocksize,
+    stats <- PartyTProcess3Linear(monitor_folder, msreqid, blocksize,
                                  sleep_time, max_waiting_time, popmednet, trace,
                                  verbose)
   } else if (regression == "logistic") {
-    stats = PartyTProcess3Logistic(monitor_folder, msreqid, blocksize, tol,
+    stats <- PartyTProcess3Logistic(monitor_folder, msreqid, blocksize, tol,
                                    max_iterations, sleep_time, max_waiting_time,
                                    popmednet, trace, verbose)
   } else {
@@ -515,7 +515,7 @@ DataPartner.KParty <- function(regression            = "linear",
                                trace                 = FALSE,
                                verbose               = TRUE) {
   start_time <- proc.time()
-  stats = list()
+  stats <- list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.")
@@ -524,17 +524,17 @@ DataPartner.KParty <- function(regression            = "linear",
   } else if (is.null(data_partner_id)) {
     warning("data_partner_id must be specified")
   } else if (regression == "cox") {
-    stats = DataPartnerKCox(data, response, strata, mask, numDataPartners,
+    stats <- DataPartnerKCox(data, response, strata, mask, numDataPartners,
                             data_partner_id, monitor_folder,
                             sleep_time, max_waiting_time, popmednet, trace,
                             verbose)
   } else if (regression == "linear") {
-    stats = DataPartnerKLinear(data, response, numDataPartners,
+    stats <- DataPartnerKLinear(data, response, numDataPartners,
                                data_partner_id, monitor_folder,
                                sleep_time, max_waiting_time, popmednet, trace,
                                verbose)
   } else  if (regression == "logistic") {
-    stats = DataPartnerKLogistic(data, response, numDataPartners,
+    stats <- DataPartnerKLogistic(data, response, numDataPartners,
                                  data_partner_id, monitor_folder,
                                  sleep_time, max_waiting_time, popmednet, trace,
                                  verbose)
@@ -734,22 +734,22 @@ AnalysisCenter.KParty <- function(regression            = "linear",
                                   trace                 = FALSE,
                                   verbose               = TRUE) {
   start_time <- proc.time()
-  stats = list()
+  stats <- list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.")
   } else if (is.null(numDataPartners)) {
     warning("numDataPartners must be specified.")
   } else if (regression == "cox") {
-    stats = AnalysisCenterKCox(numDataPartners, monitor_folder, msreqid, tol,
+    stats <- AnalysisCenterKCox(numDataPartners, monitor_folder, msreqid, tol,
                                max_iterations, sleep_time, max_waiting_time,
                                popmednet, trace, verbose)
   } else if (regression == "linear") {
-    stats = AnalysisCenterKLinear(numDataPartners, monitor_folder, msreqid,
+    stats <- AnalysisCenterKLinear(numDataPartners, monitor_folder, msreqid,
                                   sleep_time, max_waiting_time, popmednet, trace,
                                   verbose)
   } else if (regression == "logistic") {
-    stats = AnalysisCenterKLogistic(numDataPartners, monitor_folder, msreqid, tol,
+    stats <- AnalysisCenterKLogistic(numDataPartners, monitor_folder, msreqid, tol,
                                     max_iterations, sleep_time, max_waiting_time,
                                     popmednet, trace, verbose)
   } else {

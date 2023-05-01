@@ -69,8 +69,8 @@ SendStrataNamesCox.DP <- function(params, data) {
   strataNames$strataFromMe = data$strata$strataFromMe
   strataNames$strataFromOthers = data$strata$strataFromOthers
   write_time <- proc.time()[3]
-  save(strataNames, file = file.path(params$write_path, "strata_names_rdata"))
-  write_size <- file.size(file.path(params$write_path, "strata_names_rdata"))
+  save(strataNames, file = file.path(params$write_path, "strata_names.rdata"))
+  write_size <- file.size(file.path(params$write_path, "strata_names.rdata"))
   write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "SendStrataNamesCox.DP", 0, 0, write_time, write_size)
   return(params)
@@ -92,8 +92,8 @@ check_strata_cox_DP <- function(params, data) {
   }
   for (i in 2:params$numDataPartners) {
     read_time <- read_time - proc.time()[3]
-    load(file.path(params$readPathDP[i], "strata_names_rdata"))
-    read_size <- read_size + file.size(file.path(params$readPathDP[i], "strata_names_rdata"))
+    load(file.path(params$readPathDP[i], "strata_names.rdata"))
+    read_size <- read_size + file.size(file.path(params$readPathDP[i], "strata_names.rdata"))
     read_time <- read_time + proc.time()[3]
     if (length(strataNames$strataFromMe) > 0) {
       strataClaimed[[i]] = strataNames$strataFromMe
@@ -1541,7 +1541,7 @@ DataPartnerKCox <- function(data,
   } else {
     params <- SendStrataNamesCox.DP(params, data)
     filesList = rep(list(list()), numDataPartners)
-    filesList[[1]] = "strata_names_rdata"
+    filesList[[1]] = "strata_names.rdata"
     params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP1",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
 

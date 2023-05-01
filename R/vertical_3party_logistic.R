@@ -23,15 +23,15 @@ CheckColinearityLogistic.t3 <- function(params) {
   params$IndiciesKeep  = indicies
   params$a_indicies_keep = indicies[a_index]
   params$b_indicies_keep = indicies[-a_index] - length(a_names)
-  A_names_keep           = a_names[params$a_indicies_keep]
+  a_names_keep           = a_names[params$a_indicies_keep]
   b_names_keep           = b_names[params$b_indicies_keep]
   params$colnamesA_old = params$colnamesA
   params$colnamesB_old = params$colnamesB
-  params$colnamesA     = A_names_keep
+  params$colnamesA     = a_names_keep
   params$colnamesB     = b_names_keep
   params$p1_old        = params$p1
   params$p2_old        = params$p2
-  params$p1            = length(A_names_keep)
+  params$p1            = length(a_names_keep)
   params$p2            = length(b_names_keep)
   params$p_old         = params$p1_old + params$p2_old
   params$p             = params$p1 + params$p2
@@ -91,7 +91,7 @@ ComputeInitialBetasLogistic.t3 <- function(params) {
   params$betas     = betas
   params$betasA    = Abetas
   params$betasAold = matrix(0, p1, 1)
-  params$betasB    = Bbetas
+  params$betas_b    = Bbetas
 
   params$alg_iteration_counter      = 1
   params$deltabeta = Inf

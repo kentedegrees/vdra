@@ -607,15 +607,15 @@ CheckColinearityLogistic.a2 <- function(params, data) {
   params$a_indicies_keep = indicies[a_index]
   params$b_indicies_keep = indicies[-a_index] - length(a_names)
 
-  A_names_keep = a_names[params$a_indicies_keep]
+  a_names_keep = a_names[params$a_indicies_keep]
   b_names_keep = b_names[params$b_indicies_keep]
   params$a_col_names_old = params$a_col_names
   params$b_col_names_old = params$b_col_names
-  params$a_col_names     = A_names_keep
+  params$a_col_names     = a_names_keep
   params$b_col_names     = b_names_keep
   params$p1_old        = params$p1
   params$p2_old        = params$p2
-  params$p1            = length(A_names_keep)
+  params$p1            = length(a_names_keep)
   params$p2            = length(b_names_keep)
   params$p_old         = params$p1_old + params$p2_old
   params$p             = params$p1 + params$p2
@@ -676,7 +676,7 @@ ComputeInitialBetasLogistic.a2 <- function(params, data) {
   params$betas     = betas
   params$betasA    = Abetas
   params$betasAold = matrix(0, p1, 1)
-  params$betasB    = Bbetas
+  params$betas_b    = Bbetas
 
   params$alg_iteration_counter      = 1
   params$deltabeta = Inf
@@ -716,8 +716,8 @@ UpdateParamsLogistic.b2 <- function(params) {
   params$p      = params$p1 + params$p2
   params$b_indicies_keep = b_indicies
   params$a_indicies_keep = a_indicies
-  params$betasB    = Bbetas
-  params$betasBold = matrix(0, params$p2, 1)
+  params$betas_b    = Bbetas
+  params$betas_b_old = matrix(0, params$p2, 1)
   params$meansB = params$meansB[b_indicies]
   params$sdB    = params$sdB[b_indicies]
   params$Bxty   = Bxty
@@ -735,7 +735,7 @@ UpdateDataLogistic.b2 <- function(params, data) {
 
 GetXBetaLogistic.b2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetXBetaLogistic.b2\n\n")
-  XbetaB = data$x %*% params$betasB
+  XbetaB = data$x %*% params$betas_b
 
   write_time <- proc.time()[3]
   save(XbetaB, file = file.path(params$write_path, "xbetab.rdata"))
@@ -966,10 +966,10 @@ GetCoefLogistic.b2 <- function(params, data) {
   a12i2 = II[1:p1, (p1 + 1):(p1 + p2), drop = FALSE] %*% IB
   params$a22i2 = a22i2
 
-  params$betasBold = params$betasB
-  params$betasB = params$betasB + a21i1 + a22i2
+  params$betas_b_old = params$betas_b
+  params$betas_b = params$betas_b + a21i1 + a22i2
 
-  deltabetaB = max(abs(params$betasB - params$betasBold) / (abs(params$betasB) + 0.1))
+  deltabetaB = max(abs(params$betas_b - params$betas_b_old) / (abs(params$betas_b) + 0.1))
 
   write_time <- proc.time()[3]
   save(a12i2, deltabetaB, file = file.path(params$write_path, "a12_deltabetaB.rdata"))
@@ -1037,11 +1037,11 @@ GetConvergedStatusLogistic.b2 <- function(params) {
 
 GetFinalCoefLogistic.b2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetFinalCoefLogistic.b2\n\n")
-  betasB = params$betasB / params$sdB
-  offsetB = sum(betasB * params$meansB)
-  BFinalFitted = t(params$sdB * t(data$x) + params$meansB) %*% betasB
+  betas_b = params$betas_b / params$sdB
+  offsetB = sum(betas_b * params$meansB)
+  BFinalFitted = t(params$sdB * t(data$x) + params$meansB) %*% betas_b
   write_time <- proc.time()[3]
-  save(betasB, BFinalFitted, offsetB, file = file.path(params$write_path, "b_final.rdata"))
+  save(betas_b, BFinalFitted, offsetB, file = file.path(params$write_path, "b_final.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, "b_final.rdata")))
   write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "GetFinalCoefLogistic.b2", 0, 0, write_time, write_size)
@@ -1070,17 +1070,17 @@ ComputeResultsLogistic.a2 <- function(params, data) {
   indicies <- params$IndiciesKeep
 
 
-  betasB <- NULL
+  betas_b <- NULL
   offsetB <- NULL
   BFinalFitted <- NULL
   read_time <- proc.time()[3]
-  load(file.path(params$read_path, "b_final.rdata"))  # betasB, offsetB, BFinalFitted
+  load(file.path(params$read_path, "b_final.rdata"))  # betas_b, offsetB, BFinalFitted
   read_size <- sum(file.size(file.path(params$read_path, "b_final.rdata")))
   read_time <- proc.time()[3] - read_time
   betasA <- params$betasA / sdA
   offsetA <- sum(betasA[-1] * params$meansA[-1])
   betasA[1] <- betasA[1] - offsetA - offsetB
-  betas <- c(betasA, betasB)
+  betas <- c(betasA, betas_b)
 
   AFinalFitted <- t(sdA * t(data$x) + meansA) %*% betasA -
     t(sdA[1] * t(data$x[, 1]) + meansA[1]) %*% betasA[1]

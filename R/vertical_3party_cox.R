@@ -532,15 +532,15 @@ check_colinearity_cox_t3 <- function(params) {
   params$indicies      = indicies
   params$a_indicies_keep = indicies[a_index]
   params$b_indicies_keep = indicies[b_index] - length(a_names)
-  A_names_keep = a_names[params$a_indicies_keep]
+  a_names_keep = a_names[params$a_indicies_keep]
   b_names_keep = b_names[params$b_indicies_keep]
   params$colnamesA_old = params$colnamesA
   params$colnamesB_old = params$colnamesB
-  params$colnamesA     = A_names_keep
+  params$colnamesA     = a_names_keep
   params$colnamesB     = b_names_keep
   params$p1_old        = params$p1
   params$p2_old        = params$p2
-  params$p1            = length(A_names_keep)
+  params$p1            = length(a_names_keep)
   params$p2            = length(b_names_keep)
   params$p_old         = params$p1_old + params$p2_old
   params$p             = params$p1 + params$p2
@@ -834,10 +834,10 @@ ComputeXBDeltaLCox.b3 <- function(params, data) {
                         endian = "little"), nrow = n2, ncol = n2)
     read_time <- read_time + proc.time()[3]
 
-    IZ.tZ.w_xbtemp = RZ %*% w_xb[strt:stp, , drop = FALSE]
+    iz_tz_w_xbtemp = RZ %*% w_xb[strt:stp, , drop = FALSE]
 
     write_time <- write_time - proc.time()[3]
-    writeBin(as.vector(IZ.tZ.w_xbtemp), con = to_write, endian = "little")
+    writeBin(as.vector(iz_tz_w_xbtemp), con = to_write, endian = "little")
     write_time <- write_time + proc.time()[3]
 
     if ((i + 1) %in% params$container$filebreak.RZ || i == params$blocks$num_blocks) {
@@ -851,12 +851,12 @@ ComputeXBDeltaLCox.b3 <- function(params, data) {
     pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
 
-  tXB.w_xb = t(data$x) %*% w_xb
+  txb_w_xb = t(data$x) %*% w_xb
   tXB.deltal = t(data$x) %*% deltal
 
   write_time <- write_time - proc.time()[3]
-  save(tXB.deltal, tXB.w_xb, file = file.path(params$write_path, "tXB_w_XB.rdata"))
-  write_size <- write_size + file.size(file.path(params$write_path, "tXB_w_XB.rdata"))
+  save(tXB.deltal, txb_w_xb, file = file.path(params$write_path, "txb_w_xb.rdata"))
+  write_size <- write_size + file.size(file.path(params$write_path, "txb_w_xb.rdata"))
   write_time <- write_time + proc.time()[3]
 
   params <- add_to_log(params, "ComputeXBDeltaLCox.b3", read_time, read_size, write_time, write_size)
@@ -1027,12 +1027,12 @@ ProcessXtWXCox.t3 <- function(params) {
   tXA.deltal = NULL
   tXB.deltal = NULL
   tXA.w_xa   = NULL
-  tXB.w_xb   = NULL
+  txb_w_xb   = NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["A"]], "tXA_w_XA.rdata"))
-  load(file.path(params$read_path[["B"]], "tXB_w_XB.rdata"))
+  load(file.path(params$read_path[["B"]], "txb_w_xb.rdata"))
   read_size <- file.size(file.path(params$read_path[["A"]], "tXA_w_XA.rdata")) +
-    file.size(file.path(params$read_path[["B"]], "tXB_w_XB.rdata"))
+    file.size(file.path(params$read_path[["B"]], "txb_w_xb.rdata"))
   read_time <- proc.time()[3] - read_time
 
   pbar <- make_progress_bar_1(params$blocks$num_blocks, "x'w*x", params$verbose)
@@ -1068,7 +1068,7 @@ ProcessXtWXCox.t3 <- function(params) {
   }
 
 
-  xtwx = rbind(cbind(tXA.w_xa, XATWXB), cbind(t(XATWXB), tXB.w_xb))
+  xtwx = rbind(cbind(tXA.w_xa, XATWXB), cbind(t(XATWXB), txb_w_xb))
   II = NULL
   tryCatch({
     II = solve(xtwx)
@@ -1100,10 +1100,10 @@ ProcessXtWXCox.t3 <- function(params) {
     params$nullScore = rbind(tXA.deltal, tXB.deltal)
   }
   params$xtwx = xtwx
-  deltaBeta = II %*% rbind(tXA.deltal, tXB.deltal)
+  delta_beta = II %*% rbind(tXA.deltal, tXB.deltal)
   params$betas    = params$betasold + (params$betas - params$betasold) * params$step_size
   params$betasold = params$betas
-  params$betas    = params$betasold + deltaBeta
+  params$betas    = params$betasold + delta_beta
   converged       = abs(params$loglikelihood - params$loglikelihoodold) /
     (abs(params$loglikelihood) + 0.1) < params$cutoff
   maxIterExceeded = FALSE
@@ -1425,8 +1425,8 @@ compute_cox_b3 <- function(params, data) {
   params$alg_iteration_counter = 1
   x_betas_old = matrix(0, n, 1)
   x_betas     = matrix(0, n, 1)
-  betasB      = matrix(0, p2, 1)
-  betasBold   = betasB
+  betas_b      = matrix(0, p2, 1)
+  betas_b_old   = betas_b
   loglikelihood_old = -Inf
   max_iterations = 25
   cutoff        = 10^-8
@@ -1511,7 +1511,7 @@ compute_cox_b3 <- function(params, data) {
       params$error_message <- "The matrix t(x)WX is singular.  This is probably due to divergence of the coefficients."
 
       betas = rep(NA, length(params$Bcolnames_old))
-      betas[params$b_indicies_keep] = betasB
+      betas[params$b_indicies_keep] = betas_b
       betas = data.frame(betas)
       rownames(betas) = params$Bcolnames_old
       # if (params$verbose) cat("Current Parameters:\n")
@@ -1521,11 +1521,11 @@ compute_cox_b3 <- function(params, data) {
       return(params)
     }
 
-    deltaBeta = m %*% t(data$x) %*% deltal
-    betasB    = betasBold + (betasB - betasBold) * step_size
-    betasBold = betasB
-    betasB    = betasB + deltaBeta
-    x_betas   = data$x %*% betasB
+    delta_beta = m %*% t(data$x) %*% deltal
+    betas_b    = betas_b_old + (betas_b - betas_b_old) * step_size
+    betas_b_old = betas_b
+    betas_b    = betas_b + delta_beta
+    x_betas   = data$x %*% betas_b
 
     converged = abs(loglikelihood - loglikelihood_old) /
       (abs(loglikelihood) + 0.1) < cutoff
@@ -1540,7 +1540,7 @@ compute_cox_b3 <- function(params, data) {
     params$alg_iteration_counter = params$alg_iteration_counter + 1
   }
   params$loglikelihood = loglikelihood
-  params$betasB = betasB
+  params$betas_b = betas_b
   params$x_betas = x_betas
   params <- add_to_log(params, "compute_cox_b3", read_time, read_size, 0, 0)
   return(params)
@@ -1555,19 +1555,19 @@ compute_results_cox_b3 <- function(params, data) {
   stats$party_name <- params$party_name
   stats$failed    = FALSE
 
-  fitExists = !is.null(params$fit)
+  fit_exists = !is.null(params$fit)
   names_old          = c(params$colnamesA_old, params$colnames_old)
-  idxA               = params$a_indicies_keep
-  idxB               = params$b_indicies_keep
-  idx                = c(idxA, idxB + length(params$colnamesA_old))
+  idx_a               = params$a_indicies_keep
+  idx_b               = params$b_indicies_keep
+  idx                = c(idx_a, idx_b + length(params$colnamesA_old))
   stats$party        = c(rep("dp1", length(params$colnamesA_old)),
                          rep("dp2", length(params$colnames_old)))
   stats$coefficients <- rep(NA, length(stats$party))
-  if (fitExists) {
+  if (fit_exists) {
     stats$coefficients[idx] = params$fit$coefficients
     tempvar          = params$fit$var
   } else {
-    stats$coefficients[idx] = params$betasB
+    stats$coefficients[idx] = params$betas_b
     tempvar            = solve(params$XtWX)
   }
   stats$expcoef      = exp(stats$coefficients)  # exp(coef) = hazard ratios
@@ -1588,7 +1588,7 @@ compute_results_cox_b3 <- function(params, data) {
   }))
   stats$lower95      = exp(stats$coefficients - qnorm(0.975) * stats$secoef)
   stats$upper95      = exp(stats$coefficients + qnorm(0.975) * stats$secoef)
-  if (fitExists) {
+  if (fit_exists) {
     stats$loglik     = params$fit$loglik
     stats$n          = params$fit$n
     stats$nevent     = params$fit$nevent
@@ -1603,7 +1603,7 @@ compute_results_cox_b3 <- function(params, data) {
     stats$iter         = params$alg_iteration_counter - 1
     stats$score        = t(params$nullScore) %*% solve(params$nullHessian) %*%
       params$nullScore
-    stats$wald.test    = t(params$betasB) %*% params$XtWX %*% params$betasB
+    stats$wald.test    = t(params$betas_b) %*% params$XtWX %*% params$betasB
     stats$concordance = c(NA, NA, NA, NA, NA, NA)
   }
   stats$df           = params$p
@@ -1989,7 +1989,7 @@ PartyBProcess3Cox <- function(data,
                                   waitForTurn = TRUE)
 
     params <- ComputeXBDeltaLCox.b3(params, data)
-    files <- c("tXB_w_XB.rdata", seq_zw("cCox_", length(params$container$filebreak.Cox)))
+    files <- c("txb_w_xb.rdata", seq_zw("cCox_", length(params$container$filebreak.Cox)))
     params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time,
                                   waitForTurn = TRUE)
