@@ -1,6 +1,6 @@
 ################### DISTRIBUTED LINEAR REGRESSION FUNCTIONS ###################
 
-PrepareFolder.ACDP = function(params, monitor_folder) {
+PrepareFolder.ACDP <- function(params, monitor_folder) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareFolder.ACDP\n\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.  Please use the same monitor_folder as the DataMart Client.")
@@ -92,7 +92,7 @@ PrepareFolder.ACDP = function(params, monitor_folder) {
 
 
 #' @importFrom stats model.matrix
-PrepareDataLinLog.DP1 = function(params, data, y_name = NULL) {
+PrepareDataLinLog.DP1 <- function(params, data, y_name = NULL) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareDataLinLog.DP1\n\n")
 
   workdata = list()
@@ -138,7 +138,7 @@ PrepareDataLinLog.DP1 = function(params, data, y_name = NULL) {
 }
 
 #' @importFrom stats model.matrix
-PrepareDataLinLog.DPk = function(params, data) {
+PrepareDataLinLog.DPk <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareDataLinLog.DPk\n\n")
 
   workdata = list()
@@ -173,7 +173,7 @@ PrepareDataLinLog.DPk = function(params, data) {
   return(workdata)
 }
 
-SendBasicInfo.DP = function(params, data) {
+SendBasicInfo.DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "SendbasicInfo.DP\n\n")
   n = data$n
   params$n = n
@@ -187,7 +187,7 @@ SendBasicInfo.DP = function(params, data) {
   return(params)
 }
 
-CheckAgreement.AC = function(params) {
+CheckAgreement.AC <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "CheckAgreement.AC\n\n")
   read_time <- 0
   read_size = 0
@@ -249,7 +249,7 @@ CheckAgreement.AC = function(params) {
 
 
 #' @importFrom stats runif
-prepare_params_linear_DP = function(params, data) {
+prepare_params_linear_DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_DP\n\n")
   params$n          = nrow(data$X)
   params$p          = ncol(data$X)
@@ -273,7 +273,7 @@ prepare_params_linear_DP = function(params, data) {
 
 
 #' @importFrom stats rnorm
-PrepareSharesLinear.DP = function(params, data) {
+PrepareSharesLinear.DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareSharesLinear.DP\n\n")
   read_time <- 0
   read_size = 0
@@ -337,7 +337,7 @@ PrepareSharesLinear.DP = function(params, data) {
 }
 
 
-GetProductsLinear.AC = function(params) {
+GetProductsLinear.AC <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetProductsLinear.AC\n\n")
   read_time <- 0
   read_size = 0
@@ -422,7 +422,7 @@ GetProductsLinear.AC = function(params) {
 
 
 #' @importFrom  stats pf pt
-ComputeResultsLinear.AC = function(params) {
+ComputeResultsLinear.AC <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLinear.AC\n\n")
   stats           = params$stats
   stats$converged = params$converged
@@ -565,7 +565,7 @@ ComputeResultsLinear.AC = function(params) {
 }
 
 
-get_results_linear_DP = function(params) {
+get_results_linear_DP <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "get_results_linear_DP\n\n")
   params$converged = TRUE
   stats = NULL
@@ -583,7 +583,7 @@ get_results_linear_DP = function(params) {
 ############################## PARENT FUNCTIONS ###############################
 
 
-DataPartnerKLinear = function(data,
+DataPartnerKLinear <- function(data,
                               y_name           = NULL,
                               numDataPartners = NULL,
                               data_partner_id   = NULL,
@@ -603,7 +603,7 @@ DataPartnerKLinear = function(data,
   params <- initialize_log_kp(params)
   params <- initialize_time_stamps_kp(params)
   params <- initialize_tracking_table_kp(params)
-  Header(params)
+  header(params)
 
   params   = PrepareFolder.ACDP(params, monitor_folder)
 
@@ -670,7 +670,7 @@ DataPartnerKLinear = function(data,
 }
 
 
-AnalysisCenterKLinear = function(numDataPartners = NULL,
+AnalysisCenterKLinear <- function(numDataPartners = NULL,
                                  monitor_folder   = NULL,
                                  msreqid         = "v_default_0_000",
                                  sleep_time       = 10,
@@ -687,7 +687,7 @@ AnalysisCenterKLinear = function(numDataPartners = NULL,
   params <- initialize_log_kp(params)
   params <- initialize_time_stamps_kp(params)
   params <- initialize_tracking_table_kp(params)
-  Header(params)
+  header(params)
 
   params   = PrepareFolder.ACDP(params, monitor_folder)
 

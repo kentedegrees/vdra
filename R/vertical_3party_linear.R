@@ -1,6 +1,6 @@
 ################### DISTRIBUTED LINEAR REGRESSION FUNCTIONS ###################
 
-prepare_folder_linear_a3 = function(params, monitor_folder = NULL) {
+prepare_folder_linear_a3 <- function(params, monitor_folder = NULL) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_folder_linear_a3\n\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.  Please use the same monitor_folder as the DataMart Client.")
@@ -80,7 +80,7 @@ prepare_folder_linear_a3 = function(params, monitor_folder = NULL) {
 }
 
 
-prepare_folder_linear_b3 = function(params, monitor_folder = NULL) {
+prepare_folder_linear_b3 <- function(params, monitor_folder = NULL) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_folder_linear_b3\n\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.  Please use the same monitor_folder as the DataMart Client.")
@@ -160,7 +160,7 @@ prepare_folder_linear_b3 = function(params, monitor_folder = NULL) {
 }
 
 
-prepare_folder_linear_t3 = function(params, monitor_folder = NULL) {
+prepare_folder_linear_t3 <- function(params, monitor_folder = NULL) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_folder_linear_t3\n\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.  Please use the same monitor_folder as the DataMart Client.")
@@ -236,7 +236,7 @@ prepare_folder_linear_t3 = function(params, monitor_folder = NULL) {
 }
 
 
-prepare_params_linear_a3 = function(params, data) {
+prepare_params_linear_a3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_a3\n\n")
   params$n     = nrow(data$X)
   params$p     = ncol(data$X)
@@ -265,7 +265,7 @@ prepare_params_linear_a3 = function(params, data) {
 }
 
 
-prepare_params_linear_b3 = function(params, data) {
+prepare_params_linear_b3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_b3\n\n")
   params$n     = nrow(data$X)
   params$p     = ncol(data$X)
@@ -290,7 +290,7 @@ prepare_params_linear_b3 = function(params, data) {
 }
 
 
-prepare_params_linear_t3 = function(params, cutoff = 1e-8, max_iterations = 25) {
+prepare_params_linear_t3 <- function(params, cutoff = 1e-8, max_iterations = 25) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_t3\n\n")
   pa = NULL
   pb = NULL
@@ -340,7 +340,7 @@ prepare_params_linear_t3 = function(params, cutoff = 1e-8, max_iterations = 25) 
 }
 
 
-prepare_blocks_linear_t3 = function(params, blocksize) {
+prepare_blocks_linear_t3 <- function(params, blocksize) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_blocks_linear_t3\n\n")
   # For now, assuming that p1 > 0 and p2 > 0
   n  = params$n
@@ -403,7 +403,7 @@ prepare_blocks_linear_t3 = function(params, blocksize) {
 }
 
 
-prepare_blocks_linear_a3 = function(params) {
+prepare_blocks_linear_a3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_blocks_linear_a3\n\n")
   blocks     = NULL
   containers = NULL
@@ -419,7 +419,7 @@ prepare_blocks_linear_a3 = function(params) {
 }
 
 
-get_z_linear_a3 = function(params, data) {
+get_z_linear_a3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "get_z_linear_a3\n\n")
   write_time <- 0
   write_size <- 0
@@ -453,7 +453,7 @@ get_z_linear_a3 = function(params, data) {
 }
 
 
-ProcessZLinear.t3 = function(params) {
+ProcessZLinear.t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ProcessZLinear.t3\n\n")
   read_time <- 0
   read_size <- 0
@@ -513,7 +513,7 @@ ProcessZLinear.t3 = function(params) {
 }
 
 
-prepare_blocks_linear_b3 = function(params) {
+prepare_blocks_linear_b3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_blocks_linear_b3\n\n")
   blocks     = NULL
   containers = NULL
@@ -529,7 +529,7 @@ prepare_blocks_linear_b3 = function(params) {
 }
 
 
-GetRWLinear.b3 = function(params, data) {
+GetRWLinear.b3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetRWLinear.b3\n\n")
 
   read_time <- 0
@@ -590,7 +590,7 @@ GetRWLinear.b3 = function(params, data) {
 }
 
 
-ProcessWLinear.t3 = function(params) {
+ProcessWLinear.t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ProcessWLinear.t3\n\n")
   read_time <- 0
   read_size <- 0
@@ -666,7 +666,7 @@ ProcessWLinear.t3 = function(params) {
 }
 
 
-get_wr_linear_a3 = function(params, data) {
+get_wr_linear_a3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "get_wr_linear_a3\n\n")
   XATXA = t(data$X) %*% data$X
   XATY  = t(data$X) %*% data$Y
@@ -729,7 +729,7 @@ get_wr_linear_a3 = function(params, data) {
 }
 
 
-GetProductsLinear.t3 = function(params) {
+GetProductsLinear.t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetProductsLinear.t3\n\n")
   n  = params$n
   p1 = params$p1
@@ -781,13 +781,13 @@ GetProductsLinear.t3 = function(params) {
 
   YTXB = YXATXB[1, , drop = FALSE]
   XATXB = YXATXB[-1, , drop = FALSE]
-  XTX = rbind(cbind(XATXA, XATXB), cbind(t(XATXB), xb_t_xb))
+  xtx = rbind(cbind(XATXA, XATXB), cbind(t(XATXB), xb_t_xb))
   XTY = rbind(XATY, t(YTXB))
 
-  XTXLasso = XTX / (n - 1)
+  XTXLasso = xtx / (n - 1)
   XTYLasso = params$sdy * XTY / sqrt(n - 1)
 
-  params$xtx = XTX
+  params$xtx = xtx
   params$xty = XTY
   params$xtxLasso = XTXLasso
   params$xtyLasso = XTYLasso
@@ -800,7 +800,7 @@ GetProductsLinear.t3 = function(params) {
 
 
 #' @importFrom  stats pf pt
-ComputeResultsLinear.t3 = function(params) {
+ComputeResultsLinear.t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLinear.t3\n\n")
   stats    = params$stats
   stats$converged = params$converged
@@ -946,7 +946,7 @@ ComputeResultsLinear.t3 = function(params) {
 }
 
 
-get_results_linear_a3 = function(params) {
+get_results_linear_a3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "get_results_linear_a3\n\n")
   params$converged = TRUE
   stats = NULL
@@ -961,7 +961,7 @@ get_results_linear_a3 = function(params) {
 }
 
 
-get_results_linear_b3 = function(params) {
+get_results_linear_b3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "get_results_linear_b3\n\n")
   params$converged = TRUE
   stats = NULL
@@ -979,7 +979,7 @@ get_results_linear_b3 = function(params) {
 ############################## PARENT FUNCTIONS ###############################
 
 
-party_a_process_3_linear = function(data,
+party_a_process_3_linear <- function(data,
                                 y_name          = NULL,
                                 monitor_folder  = NULL,
                                 sleep_time      = 10,
@@ -993,7 +993,7 @@ party_a_process_3_linear = function(data,
   params <- initialize_log_3p(params)
   params <- initialize_time_stamps_3p(params)
   params <- initialize_tracking_table_3p(params)
-  Header(params)
+  header(params)
 
   params   = prepare_folder_linear_a3(params, monitor_folder)
   if (params$failed) {
@@ -1045,7 +1045,7 @@ party_a_process_3_linear = function(data,
 }
 
 
-PartyBProcess3Linear = function(data,
+PartyBProcess3Linear <- function(data,
                                 monitor_folder  = NULL,
                                 sleep_time      = 10,
                                 max_waiting_time = 24 * 60 * 60,
@@ -1058,7 +1058,7 @@ PartyBProcess3Linear = function(data,
   params <- initialize_time_stamps_3p(params)
   params <- initialize_tracking_table_3p(params)
 
-  Header(params)
+  header(params)
   params   = prepare_folder_linear_b3(params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)
@@ -1106,7 +1106,7 @@ PartyBProcess3Linear = function(data,
 }
 
 
-PartyTProcess3Linear = function(monitor_folder         = NULL,
+PartyTProcess3Linear <- function(monitor_folder         = NULL,
                                 msreqid               = "v_default_0_000",
                                 blocksize             = 500,
                                 sleep_time             = 10,
@@ -1120,7 +1120,7 @@ PartyTProcess3Linear = function(monitor_folder         = NULL,
   params <- initialize_time_stamps_3p(params)
   params <- initialize_tracking_table_3p(params)
 
-  Header(params)
+  header(params)
   params   = prepare_folder_linear_t3(params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)

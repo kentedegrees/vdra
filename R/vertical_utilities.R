@@ -132,7 +132,7 @@
 #'                             monitor_folder = tempdir())
 #' }
 #' @export
-AnalysisCenter.2Party = function(regression            = "linear",
+AnalysisCenter.2Party <- function(regression            = "linear",
                                  data                  = NULL,
                                  response              = NULL,
                                  strata                = NULL,
@@ -177,7 +177,7 @@ AnalysisCenter.2Party = function(regression            = "linear",
 
 #' @rdname distributed2party
 #' @export
-DataPartner.2Party = function(regression          = "linear",
+DataPartner.2Party <- function(regression          = "linear",
                               data                = NULL,
                               strata              = NULL,
                               mask                = TRUE,
@@ -216,7 +216,7 @@ DataPartner.2Party = function(regression          = "linear",
 
 #' @rdname distributed3party
 #' @export
-DataPartner1.3Party = function(regression            = "linear",
+DataPartner1.3Party <- function(regression            = "linear",
                                data                  = NULL,
                                response              = NULL,
                                strata                = NULL,
@@ -258,7 +258,7 @@ DataPartner1.3Party = function(regression            = "linear",
 
 #' @rdname distributed3party
 #' @export
-DataPartner2.3Party = function(regression          = "linear",
+DataPartner2.3Party <- function(regression          = "linear",
                                data                = NULL,
                                strata              = NULL,
                                mask                = TRUE,
@@ -459,7 +459,7 @@ DataPartner2.3Party = function(regression          = "linear",
 #'                           monitor_folder = tempdir())
 #' }
 #' @export
-AnalysisCenter.3Party = function(regression            = "linear",
+AnalysisCenter.3Party <- function(regression            = "linear",
                                  monitor_folder         = NULL,
                                  msreqid               = "v_default_00_000",
                                  blocksize             = 500,
@@ -501,7 +501,7 @@ AnalysisCenter.3Party = function(regression            = "linear",
 
 #' @rdname distributedKparty
 #' @export
-DataPartner.KParty = function(regression            = "linear",
+DataPartner.KParty <- function(regression            = "linear",
                               data                  = NULL,
                               response              = NULL,
                               strata                = NULL,
@@ -722,7 +722,7 @@ DataPartner.KParty = function(regression            = "linear",
 #'                          monitor_folder = tempdir())
 #' }
 
-AnalysisCenter.KParty = function(regression            = "linear",
+AnalysisCenter.KParty <- function(regression            = "linear",
                                  numDataPartners       = NULL,
                                  monitor_folder         = NULL,
                                  msreqid               = "v_default_00_000",
@@ -765,7 +765,7 @@ AnalysisCenter.KParty = function(regression            = "linear",
 ############################ SHARED SETUP FUNCTIONS ############################
 
 #' @importFrom utils file_test
-create_io_location = function(monitor_folder, folder) {
+create_io_location <- function(monitor_folder, folder) {
   location <- file.path(monitor_folder, folder)
   if (!dir.exists(location) && !file.exists(location)) {
     # directory does not exist, so create it.
@@ -782,7 +782,7 @@ create_io_location = function(monitor_folder, folder) {
 
 
 #' @importFrom utils write.csv
-CheckDataFormat = function(params, data) {
+CheckDataFormat <- function(params, data) {
   if ("data.frame" %in% class(data)) {
     data = data.frame(data)
   } else if ("matrix" %in% class(data)) {
@@ -821,7 +821,7 @@ CheckDataFormat = function(params, data) {
   return(FALSE)
 }
 
-CheckResponse = function(params, data, y_name) {
+CheckResponse <- function(params, data, y_name) {
   if (is.null(y_name)) {
     warning("Response is not specified.")
     return(NULL)
@@ -893,7 +893,7 @@ CheckResponse = function(params, data, y_name) {
   return(responseColIndex)
 }
 
-CreateModelMatrixTags = function(data) {
+CreateModelMatrixTags <- function(data) {
   if (ncol(data) == 0) {
     return(c())
   }
@@ -915,7 +915,7 @@ CreateModelMatrixTags = function(data) {
 
 ########################### 2 PARTY SETUP FUNCTIONS ############################
 
-prepare_params_2p = function(analysis, party, msreqid = "v_default_00_000",
+prepare_params_2p <- function(analysis, party, msreqid = "v_default_00_000",
                             popmednet = TRUE, trace = FALSE, verbose = TRUE) {
   params                     = list()
   params$party_name           = party
@@ -945,7 +945,7 @@ prepare_params_2p = function(analysis, party, msreqid = "v_default_00_000",
 
 ########################### 3 PARTY SETUP FUNCTIONS ############################
 
-prepare_params_3p = function(analysis, party, msreqid = "v_default_00_000",
+prepare_params_3p <- function(analysis, party, msreqid = "v_default_00_000",
                             popmednet = TRUE, trace = FALSE, verbose = TRUE) {
   params                     = list()
   params$party_name           = party
@@ -975,7 +975,7 @@ prepare_params_3p = function(analysis, party, msreqid = "v_default_00_000",
 
 ########################### K PARTY SETUP FUNCTIONS ############################
 
-prepare_params_kp = function(analysis, data_partner_id, numDataPartners,
+prepare_params_kp <- function(analysis, data_partner_id, numDataPartners,
                             msreqid = "v_default_00_000", cutoff = NULL,
                             max_iterations = NULL, ac = FALSE, popmednet = TRUE,
                             trace = FALSE, verbose = TRUE) {
@@ -1027,7 +1027,7 @@ prepare_params_kp = function(analysis, data_partner_id, numDataPartners,
 
 ########################### PRETTY OUTPUT FUNCTIONS ############################
 
-Header = function(params) {
+header <- function(params) {
   large.cox = c("  ____ _____  __",
                 " / ___/ _ \\ \\/ /",
                 "| |  | | | \\  / ",
@@ -1118,7 +1118,7 @@ Header = function(params) {
 }
 
 
-BeginningIteration = function(params) {
+BeginningIteration <- function(params) {
   width  = getOption("width")
   msg    = paste("*** Beginning Iteration", params$algIterationCounter, "***")
   offset = max(floor((width - nchar(msg)) / 2) - 1, 0)
@@ -1127,7 +1127,7 @@ BeginningIteration = function(params) {
 }
 
 
-EndingIteration = function(params) {
+EndingIteration <- function(params) {
   width  = getOption("width")
   msg    = paste("*** Ending Iteration", params$algIterationCounter, "***")
   offset = floor((width - nchar(msg)) / 2) - 1
@@ -1136,7 +1136,7 @@ EndingIteration = function(params) {
 }
 
 
-GetLion = function(p) {
+GetLion <- function(p) {
   lion1 = rep("", 5)
   lion1[1] = "    (\"`-''-/\").___..--''\"`-._\"      "
   lion1[2] = "    `6_ 6 ) `-. ( ).`-.__.`)        "
@@ -1184,7 +1184,7 @@ GetLion = function(p) {
 
 
 #' @importFrom stats flush.console
-MakeProgressBar1 = function(steps, message, verbose) {
+MakeProgressBar1 <- function(steps, message, verbose) {
   pb = list()
   messageLength    = 18
   pb$numSteps      = steps
@@ -1209,7 +1209,7 @@ MakeProgressBar1 = function(steps, message, verbose) {
 
 
 #' @importFrom stats flush.console
-MakeProgressBar2 = function(i, pb, verbose) {
+MakeProgressBar2 <- function(i, pb, verbose) {
   percent = floor(100 * i / pb$numSteps)
   if (percent == pb$percent) {
     return(pb)
@@ -1233,7 +1233,7 @@ MakeProgressBar2 = function(i, pb, verbose) {
 
 ############################### MATRIX FUNCTIONS ###############################
 
-MultiplyDiagonalWTimesX = function(w, x) {
+MultiplyDiagonalWTimesX <- function(w, x) {
   if (!is.matrix(x)) {
     x = matrix(x, length(x), 1)
     wx1 = matrix(NA, length(x), 1)
@@ -1255,7 +1255,7 @@ MultiplyDiagonalWTimesX = function(w, x) {
 
 
 #' @importFrom stats runif
-FindOrthogonalVectors = function(x, g) {
+FindOrthogonalVectors <- function(x, g) {
   x = as.matrix(x)
   x = cbind(x, runif(nrow(x)))  # Randomize Z
   # Save the Random Vector Here
@@ -1267,26 +1267,26 @@ FindOrthogonalVectors = function(x, g) {
 
 
 #' @importFrom stats runif
-RandomOrthonomalMatrix = function(size) {
+RandomOrthonomalMatrix <- function(size) {
   return(qr.Q(qr(matrix(runif(size * size), size, size)), complete = TRUE))
 }
 
 #################### SHARED PMN COMMUNICATION FUNCTIONS ###################
 
 #' @importFrom utils write.csv
-MakeCSV = function(file_nm, transfer_to_site_in, dp_cd_list, write_path) {
+MakeCSV <- function(file_nm, transfer_to_site_in, dp_cd_list, write_path) {
   dframe <- data.frame(file_nm, transfer_to_site_in, dp_cd_list)
   fp <- file.path(write_path, "file_list.csv")
   write.csv(dframe, fp, row.names = FALSE, quote = FALSE)
 }
 
 
-seq_zw = function(letter = "Z_", nblocks = 1) {
+seq_zw <- function(letter = "Z_", nblocks = 1) {
   return(paste0(letter, 1:nblocks, ".rdata"))
 }
 
 
-Standby = function(triggerName, triggerLocation,
+Standby <- function(triggerName, triggerLocation,
                    sleep_time = 1, max_waiting_time = NULL, remove = FALSE,
                    verbose = TRUE) {
 
@@ -1326,7 +1326,7 @@ Standby = function(triggerName, triggerLocation,
 }
 
 # This function is never called!  (?)
-CopyFile = function(read_directory, write_directory, filename) {
+CopyFile <- function(read_directory, write_directory, filename) {
   source      <- file.path(read_directory, filename)
   destination <- file.path(write_directory, filename)
   if (all(file.exists(source))) {
@@ -1338,7 +1338,7 @@ CopyFile = function(read_directory, write_directory, filename) {
 }
 
 
-MakeTrigger = function(triggerName, triggerPath, message = "Trigger File") {
+MakeTrigger <- function(triggerName, triggerPath, message = "Trigger File") {
 
   fn <- file.path(triggerPath, triggerName)
   if (file.exists(fn)) {
@@ -1349,7 +1349,7 @@ MakeTrigger = function(triggerName, triggerPath, message = "Trigger File") {
 }
 
 
-delete_trigger = function(triggerName, triggerPath) {
+delete_trigger <- function(triggerName, triggerPath) {
   Sys.sleep(1)
   targets <- file.path(triggerPath, triggerName)
   for (target in targets) {
@@ -1368,25 +1368,25 @@ delete_trigger = function(triggerName, triggerPath) {
 }
 
 
-MakeTransferMessage = function(write_path) {
+MakeTransferMessage <- function(write_path) {
   message = "A has no covariates."
   save(message, file = file.path(write_path, "transferControl.rdata"))
 }
 
 
-make_error_message = function(write_path, message = "") {
+make_error_message <- function(write_path, message = "") {
   save(message, file = file.path(write_path, "errorMessage.rdata"))
 }
 
 
-read_error_message = function(read_path) {
+read_error_message <- function(read_path) {
   load(file.path(read_path, "errorMessage.rdata"))
   return(message)
 }
 
 ###################### 2 PARTY PMN COMMUNICATION FUNCTIONS ######################
 
-send_pause_quit_2p = function(params,
+send_pause_quit_2p <- function(params,
                             files = c(),
                             sleep_time = 10,
                             job_failed = FALSE) {
@@ -1434,7 +1434,7 @@ send_pause_quit_2p = function(params,
   return(params)
 }
 
-send_pause_continue_2p = function(params,
+send_pause_continue_2p <- function(params,
                                 files = c(),
                                 sleep_time = 10,
                                 max_waiting_time = NULL,
@@ -1487,7 +1487,7 @@ send_pause_continue_2p = function(params,
 }
 
 
-PauseContinue.2p = function(params, max_waiting_time) {
+PauseContinue.2p <- function(params, max_waiting_time) {
   params <- StoreLogEntry.2p(params, "")
   WriteLogCSV(params)
   if (params$party_name == "A") {
@@ -1510,7 +1510,7 @@ PauseContinue.2p = function(params, max_waiting_time) {
 
 ###################### 3 PARTY PMN COMMUNICATION FUNCTIONS ######################
 
-WaitForTurn.3p = function(params, sleep_time) {
+WaitForTurn.3p <- function(params, sleep_time) {
   Sys.sleep(sleep_time)
   if ((params$party_name == "T") || (!params$popmednet)) return(NULL)
 
@@ -1539,7 +1539,7 @@ WaitForTurn.3p = function(params, sleep_time) {
 }
 
 
-send_pause_quit_3p = function(params,
+send_pause_quit_3p <- function(params,
                             filesA = NULL,
                             filesB = NULL,
                             filesT = NULL,
@@ -1609,7 +1609,7 @@ send_pause_quit_3p = function(params,
   return(params)
 }
 
-send_pause_continue_3p = function(params,
+send_pause_continue_3p <- function(params,
                                 filesA = NULL,
                                 filesB = NULL,
                                 filesT = NULL,
@@ -1692,7 +1692,7 @@ send_pause_continue_3p = function(params,
 }
 
 
-PauseContinue.3p = function(params, from = NULL, max_waiting_time = 24 * 60 * 60) {
+PauseContinue.3p <- function(params, from = NULL, max_waiting_time = 24 * 60 * 60) {
   params <- StoreLogEntry.3p(params, "")
   params <- StoreTrackingTableEntry.3p(params)
   WriteLogCSV(params)
@@ -1722,14 +1722,14 @@ PauseContinue.3p = function(params, from = NULL, max_waiting_time = 24 * 60 * 60
 }
 
 
-UpdateCounters.3p = function(params) {
+UpdateCounters.3p <- function(params) {
   params$pmnStepCounter = max(params$log$history$Step) + 1
   return(params)
 }
 
 ###################### K PARTY PMN COMMUNICATION FUNCTIONS ######################
 
-WaitForTurn.kp = function(params, sleep_time) {
+WaitForTurn.kp <- function(params, sleep_time) {
   Sys.sleep(sleep_time)
 
   if (!params$popmednet) return(NULL)
@@ -1758,7 +1758,7 @@ WaitForTurn.kp = function(params, sleep_time) {
 }
 
 
-send_pause_quit_kp = function(params,
+send_pause_quit_kp <- function(params,
                             filesAC = NULL,
                             filesDP = NULL,
                             sleep_time = 10,
@@ -1828,7 +1828,7 @@ send_pause_quit_kp = function(params,
 }
 
 
-send_pause_continue_kp = function(params,
+send_pause_continue_kp <- function(params,
                                 filesAC = NULL,
                                 filesDP = NULL,
                                 from   = NULL,
@@ -1956,7 +1956,7 @@ send_pause_continue_kp = function(params,
 }
 
 
-PauseContinue.kp = function(params, from = NULL, max_waiting_time = 24 * 60 * 60) {
+PauseContinue.kp <- function(params, from = NULL, max_waiting_time = 24 * 60 * 60) {
   params <- StoreLogEntry.kp(params, "")
   params <- StoreTrackingTableEntry.kp(params)
   WriteLogCSV(params)
@@ -1996,12 +1996,12 @@ PauseContinue.kp = function(params, from = NULL, max_waiting_time = 24 * 60 * 60
 }
 
 
-UpdateCounters.kp = function(params) {
+UpdateCounters.kp <- function(params) {
   params$pmnStepCounter = max(params$log$history$Step) + 1
   return(params)
 }
 
-ReceivedError.kp = function(params, from) {
+ReceivedError.kp <- function(params, from) {
   result = list()
   message = ""
   if (from == "AC") {
@@ -2024,20 +2024,20 @@ ReceivedError.kp = function(params, from) {
 
 ################################ TIME FUNCTIONS ################################
 
-GetUTCTime = function() {
+GetUTCTime <- function() {
   t = Sys.time()
   attr(t, "tzone") = "UTC"
   return(as.POSIXlt(t))
 }
 
 
-GetUTCOffset = function() {
+GetUTCOffset <- function() {
   t = Sys.time()
   return(format(t, "%z"))
 }
 
 
-GetUTCOffsetSeconds = function() {
+GetUTCOffsetSeconds <- function() {
   t = Sys.time()
   offset = format(t, "%z")
   hour = as.numeric(substr(offset, 2, 3))
@@ -2047,7 +2047,7 @@ GetUTCOffsetSeconds = function() {
 }
 
 
-ConvertUTCtoRoundTripTime = function(t) {
+ConvertUTCtoRoundTripTime <- function(t) {
   month <- ifelse(t$mon  < 9,  paste0("0", t$mon + 1), t$mon + 1)
   day   <- ifelse(t$mday < 10, paste0("0", t$mday),    t$mday)
   hour  <- ifelse(t$hour < 10, paste0("0", t$hour),    t$hour)
@@ -2057,12 +2057,12 @@ ConvertUTCtoRoundTripTime = function(t) {
               min, ":", sec)
 }
 
-GetRoundTripTime = function() {
+GetRoundTripTime <- function() {
   return(ConvertUTCtoRoundTripTime(GetUTCTime()))
 }
 
 
-GetElapsedTime = function(time1, final = FALSE, timeOnly = FALSE) {
+GetElapsedTime <- function(time1, final = FALSE, timeOnly = FALSE) {
   etime = floor(time1[3])
   hrs = floor(etime / 3600)
   mins = floor((etime %% 3600) / 60)
@@ -2081,7 +2081,7 @@ GetElapsedTime = function(time1, final = FALSE, timeOnly = FALSE) {
 }
 
 
-ConvertSecsToHMS = function(secs, final = FALSE, timeOnly = FALSE) {
+ConvertSecsToHMS <- function(secs, final = FALSE, timeOnly = FALSE) {
   if (length(secs) != 1) {
     secs = 0
   }
@@ -2102,7 +2102,7 @@ ConvertSecsToHMS = function(secs, final = FALSE, timeOnly = FALSE) {
   return(paste0("(Time elapsed: ", hr1, ":", min1, ":", sec1, ")"))
 }
 
-HMS = function(t) {
+HMS <- function(t) {
   paste(paste(formatC(t %/% (60 * 60), width = 2, format = "d", flag = "0"),
               formatC(t %/% 60 %% 60, width = 2, format = "d", flag = "0"),
               formatC(t %% 60, width = 2, format = "d", flag = "0"),
@@ -2112,7 +2112,7 @@ HMS = function(t) {
 
 ############################### BLOCK FUNCTIONS ################################
 
-get_block_size = function(pA, pB) {
+get_block_size <- function(pA, pB) {
   # This minimium is set up based on our current encryption scheme
   # We need to guarentee that pA + pB + g <= blocksize
   # where g = (pA + 1) / (pA + pB + 1) * blocksize
@@ -2122,7 +2122,7 @@ get_block_size = function(pA, pB) {
 }
 
 
-CreateBlocks = function(pA, pB, n, blocksize) {
+CreateBlocks <- function(pA, pB, n, blocksize) {
 
   # Divides the matrix with ncol(n) into submatrices of approximately
   # equal size. minimum size is blocksize.
@@ -2166,7 +2166,7 @@ CreateBlocks = function(pA, pB, n, blocksize) {
 }
 
 
-CreateContainers = function(pA, pB, blocks) {
+CreateContainers <- function(pA, pB, blocks) {
   containers = list()
 
   maximumFilesize = 25 * 1024^2
@@ -2274,7 +2274,7 @@ CreateContainers = function(pA, pB, blocks) {
 
 ########################### OUTPUT FORMAT FUNCTIONS ############################
 
-formatPValue = function(pvals, width = 7) {
+formatPValue <- function(pvals, width = 7) {
   p = c()
   for (x in pvals) {
     if (is.na(x)) {
@@ -2292,14 +2292,14 @@ formatPValue = function(pvals, width = 7) {
 }
 
 
-formatStrings = function(x, minWidth = NULL, justify = "left") {
+formatStrings <- function(x, minWidth = NULL, justify = "left") {
   width = max(max(nchar(x)), minWidth)
   x = format(x, justify = justify, width = width)
   return(x)
 }
 
 
-formatStat = function(x) {
+formatStat <- function(x) {
   if (is.na(x)) {
     "NA"
   } else if (x >= 1000000) {
@@ -2314,7 +2314,7 @@ formatStat = function(x) {
 }
 
 
-formatStatList = function(vals) {
+formatStatList <- function(vals) {
   # Assumes that x is non-empty set of numeric or NA and there are no NaN's
   # width = 10, justify = right => standard output, so no worries about justify nor width
   notNA = which(!is.na(vals))
@@ -2371,7 +2371,7 @@ formatStatList = function(vals) {
 
 ########################### SHARED STAMPS FUNCTIONS ############################
 
-StoreStampsEntry = function(params, description = "", type = "") {
+StoreStampsEntry <- function(params, description = "", type = "") {
   newEntry             = params$stamps$blank
   newEntry$Step        = params$pmnStepCounter
   newEntry$Description = description
@@ -2382,21 +2382,21 @@ StoreStampsEntry = function(params, description = "", type = "") {
 }
 
 
-WriteStampsRaw = function(params) {
+WriteStampsRaw <- function(params) {
   stamps = params$stamps$history
   save(stamps, file = file.path(params$write_path, "stamps.rdata"))
 }
 
 
 #' @importFrom utils write.csv
-WriteStampsCSV = function(params) {
+WriteStampsCSV <- function(params) {
   write.csv(params$stamps$history, file.path(params$write_path, "stamps.csv"),
             row.names = FALSE)
 }
 
 ########################### 2 PARTY STAMPS FUNCTIONS ###########################
 
-initialize_time_stamps_2p = function(params) {
+initialize_time_stamps_2p <- function(params) {
   stamps = list()
   stamps$blank = data.frame(#Iteration   = params$pmnIterationCounter,
     Step        = params$pmnStepCounter,
@@ -2410,7 +2410,7 @@ initialize_time_stamps_2p = function(params) {
 }
 
 
-ReadStampsRaw.2p = function(params) {
+ReadStampsRaw.2p <- function(params) {
   stamps = NULL
   load(file.path(params$read_path, "stamps.rdata"))
   params$stamps$history = stamps
@@ -2418,7 +2418,7 @@ ReadStampsRaw.2p = function(params) {
 }
 
 
-MergeStampsRaw.2p = function(params) {
+MergeStampsRaw.2p <- function(params) {
   # This function will only be used in the function Pause Continue
   # When party A and party B run simultaneously, but Party A can run first
   # even if Party B starts the whole thing.  We append party B's log
@@ -2431,7 +2431,7 @@ MergeStampsRaw.2p = function(params) {
 
 ########################### 3 PARTY STAMPS FUNCTIONS ###########################
 
-initialize_time_stamps_3p = function(params) {
+initialize_time_stamps_3p <- function(params) {
   stamps = list()
   stamps$blank = data.frame(#Iteration   = params$pmnIterationCounter,
     Step        = params$pmnStepCounter,
@@ -2445,7 +2445,7 @@ initialize_time_stamps_3p = function(params) {
 }
 
 
-MergeStampsRaw.3p = function(params, from) {
+MergeStampsRaw.3p <- function(params, from) {
   stamps = NULL
   for (party in from) {
     load(file.path(params$read_path[[party]], "stamps.rdata"))
@@ -2469,7 +2469,7 @@ MergeStampsRaw.3p = function(params, from) {
 
 ########################### K PARTY STAMPS FUNCTIONS ###########################
 
-initialize_time_stamps_kp = function(params) {
+initialize_time_stamps_kp <- function(params) {
   stamps = list()
   stamps$blank = data.frame(Step        = params$pmnStepCounter,
                             Source      = paste0("Org dp", params$data_partner_id, " Dist Reg"),
@@ -2482,7 +2482,7 @@ initialize_time_stamps_kp = function(params) {
 }
 
 
-MergeStampsRaw.kp = function(params, from) {
+MergeStampsRaw.kp <- function(params, from) {
   stamps = NULL
   if (from == "AC") {
     load(file.path(params$readPathAC, "stamps.rdata"))
@@ -2563,14 +2563,14 @@ write_log_raw <- function(params) {
 
 
 #' @importFrom utils write.csv
-WriteLogCSV = function(params) {
+WriteLogCSV <- function(params) {
   write.csv(params$log$history, file.path(params$write_path, "log.csv"),
             row.names = FALSE)
 }
 
 
 #' @importFrom utils write.table
-WriteToLogSummary = function(c1 = "", c2 = "", c3 = "",
+WriteToLogSummary <- function(c1 = "", c2 = "", c3 = "",
                              write_path = NULL, append = TRUE) {
   if (is.numeric(c2)) {
     c2 = round(c2, 2)
@@ -2582,7 +2582,7 @@ WriteToLogSummary = function(c1 = "", c2 = "", c3 = "",
 
 ############################# 2 PARTY LOG FUNCTIONS ############################
 
-initialize_log_2p = function(params) {
+initialize_log_2p <- function(params) {
   log = list()
   log$blank = data.frame(Step             = 0,
                          Iteration.alg    = 0,
@@ -2605,7 +2605,7 @@ initialize_log_2p = function(params) {
 }
 
 
-NewLogEntry.2p = function(params) {
+NewLogEntry.2p <- function(params) {
   params$log$current = params$log$blank
   params$log$current$Party         = params$party_name
   params$log$current$Start.Time    = GetUTCTime()
@@ -2613,7 +2613,7 @@ NewLogEntry.2p = function(params) {
 }
 
 
-StoreLogEntry.2p = function(params, files) {
+StoreLogEntry.2p <- function(params, files) {
   params$log$current$Step          = params$pmnStepCounter
   params$log$current$Iteration.alg = params$algIterationCounter
   params$log$current$Party = params$party_name
@@ -2644,14 +2644,14 @@ StoreLogEntry.2p = function(params, files) {
   return(params)
 }
 
-ReadLogRaw.2p = function(params) {
+ReadLogRaw.2p <- function(params) {
   load(file.path(params$read_path, "log.rdata"))
   params$log$history = log
   return(params)
 }
 
 
-MergeLogRaw.2p = function(params) {
+MergeLogRaw.2p <- function(params) {
   # This function will only be used in the function Pause Continue
   # When party A and party B run simultaneously, but Party A can run first
   # even if Party B starts the whole thing.  We append party B's log
@@ -2662,7 +2662,7 @@ MergeLogRaw.2p = function(params) {
 }
 
 
-SummarizeLog.2p = function(params) {
+SummarizeLog.2p <- function(params) {
   write_path = params$write_path
   log    = params$log$history
   indexA = which(log$Party == "A")
@@ -2785,7 +2785,7 @@ SummarizeLog.2p = function(params) {
 
 ############################# 3 PARTY LOG FUNCTIONS ############################
 
-initialize_log_3p = function(params) {
+initialize_log_3p <- function(params) {
   log = list()
   log$blank = data.frame(Step             = 0,
                          Iteration.alg    = 0,
@@ -2808,7 +2808,7 @@ initialize_log_3p = function(params) {
 }
 
 
-NewLogEntry.3p = function(params) {
+NewLogEntry.3p <- function(params) {
   params$log$current = params$log$blank
   params$log$current$Party         = params$party_name
   params$log$current$Start.Time    = GetUTCTime()
@@ -2816,7 +2816,7 @@ NewLogEntry.3p = function(params) {
 }
 
 
-StoreLogEntry.3p = function(params, files) {
+StoreLogEntry.3p <- function(params, files) {
   params$log$current$Step          = params$pmnStepCounter
   params$log$current$Iteration.alg = params$algIterationCounter
   params$log$current$Party = params$party_name
@@ -2847,7 +2847,7 @@ StoreLogEntry.3p = function(params, files) {
 }
 
 
-MergeLogRaw.3p = function(params, from) {
+MergeLogRaw.3p <- function(params, from) {
   # This function will only be used in the function Pause Continue
   # When party A and party B run simultaneously, but Party A can run first
   # even if Party B starts the whole thing.  We append party B's log
@@ -2870,7 +2870,7 @@ MergeLogRaw.3p = function(params, from) {
 }
 
 
-SummarizeLog.3p = function(params) {
+SummarizeLog.3p <- function(params) {
   write_path = params$write_path
 
   log    = params$log$history
@@ -3026,7 +3026,7 @@ SummarizeLog.3p = function(params) {
 
 ############################# K PARTY LOG FUNCTIONS ############################
 
-initialize_log_kp = function(params) {
+initialize_log_kp <- function(params) {
   log = list()
   log$blank = data.frame(Step             = 0,
                          Iteration.alg    = 0,
@@ -3049,7 +3049,7 @@ initialize_log_kp = function(params) {
 }
 
 
-NewLogEntry.kp = function(params) {
+NewLogEntry.kp <- function(params) {
   params$log$current = params$log$blank
   params$log$current$Party         = paste0("dp", params$data_partner_id)
   params$log$current$Start.Time    = GetUTCTime()
@@ -3057,7 +3057,7 @@ NewLogEntry.kp = function(params) {
 }
 
 
-StoreLogEntry.kp = function(params, files) {
+StoreLogEntry.kp <- function(params, files) {
   params$log$current$Step          = params$pmnStepCounter
   params$log$current$Iteration.alg = params$algIterationCounter
   params$log$current$Party = paste0("dp", params$data_partner_id)
@@ -3088,7 +3088,7 @@ StoreLogEntry.kp = function(params, files) {
 }
 
 
-MergeLogRaw.kp = function(params, from) {
+MergeLogRaw.kp <- function(params, from) {
   # This function will only be used in the function Pause Continue
   # When party A and party B run simultaneously, but Party A can run first
   # even if Party B starts the whole thing.  We append party B's log
@@ -3133,7 +3133,7 @@ MergeLogRaw.kp = function(params, from) {
 }
 
 
-SummarizeLog.kp = function(params) {
+SummarizeLog.kp <- function(params) {
   write_path = params$write_path
   log       = params$log$history
 
@@ -3231,7 +3231,7 @@ SummarizeLog.kp = function(params) {
 
 ####################### SHARED TRACKING TABLE FUNCTIONS ########################
 
-WriteTrackingTableRaw = function(params) {
+WriteTrackingTableRaw <- function(params) {
   trackingTable = params$trackingTable$history
   save(trackingTable, file = file.path(params$write_path, "tr_tb_updt.rdata"))
   return(params)
@@ -3239,7 +3239,7 @@ WriteTrackingTableRaw = function(params) {
 
 
 #' @importFrom utils write.csv
-WriteTrackingTableCSV = function(params) {
+WriteTrackingTableCSV <- function(params) {
   write.csv(params$trackingTable$history, file.path(params$write_path, "dl_track_tbl.csv"),
             row.names = FALSE)
   return(params)
@@ -3247,7 +3247,7 @@ WriteTrackingTableCSV = function(params) {
 
 ####################### 2 PARTY TRACKING TABLE FUNCTIONS #######################
 
-initialize_tracking_table_2p = function(params) {
+initialize_tracking_table_2p <- function(params) {
   trackingTable = list()
   trackingTable$current = data.frame(DP_CD              = ifelse(params$party_name == "A", 0, 1),
                                      MSREQID            = params$msreqid,
@@ -3273,7 +3273,7 @@ initialize_tracking_table_2p = function(params) {
 }
 
 #' @importFrom utils write.csv
-StoreTrackingTableEntry.2p = function(params) {
+StoreTrackingTableEntry.2p <- function(params) {
   params$trackingTable$current$ITER_NB = params$pmnStepCounter
   params$trackingTable$current$START_DTM = params$log$current$Start.Time
   params$trackingTable$current$END_DTM = params$log$current$End.Time
@@ -3306,7 +3306,7 @@ StoreTrackingTableEntry.2p = function(params) {
   return(params)
 }
 
-ReadTrackingTableUpdate.2p = function(params) {
+ReadTrackingTableUpdate.2p <- function(params) {
   trackingTableEntry = NULL
   load(file.path(params$read_path, "tr_tb_updt.rdata"))
   trackingTableEntry$MSREQID = params$msreqid
@@ -3321,7 +3321,7 @@ ReadTrackingTableUpdate.2p = function(params) {
 
 ####################### 3 PARTY TRACKING TABLE FUNCTIONS #######################
 
-initialize_tracking_table_3p = function(params) {
+initialize_tracking_table_3p <- function(params) {
   trackingTable = list()
   trackingTable$current = data.frame(DP_CD              = ifelse(params$party_name == "T", 0,
                                                                  ifelse(params$party_name == "A", 1, 2)),
@@ -3347,7 +3347,7 @@ initialize_tracking_table_3p = function(params) {
   return(params)
 }
 
-StoreTrackingTableEntry.3p = function(params) {
+StoreTrackingTableEntry.3p <- function(params) {
   params$trackingTable$current$ITER_NB = params$pmnStepCounter
   params$trackingTable$current$START_DTM = params$log$current$Start.Time
   params$trackingTable$current$END_DTM = params$log$current$End.Time
@@ -3380,7 +3380,7 @@ StoreTrackingTableEntry.3p = function(params) {
 }
 
 
-MergeTrackingTableRAW.3p = function(params, from) {
+MergeTrackingTableRAW.3p <- function(params, from) {
   trackingTable = NULL
   for (party in from) {
     load(file.path(params$read_path[[party]], "tr_tb_updt.rdata"))
@@ -3406,7 +3406,7 @@ MergeTrackingTableRAW.3p = function(params, from) {
 
 ####################### K PARTY TRACKING TABLE FUNCTIONS #######################
 
-initialize_tracking_table_kp = function(params) {
+initialize_tracking_table_kp <- function(params) {
   trackingTable = list()
   trackingTable$current = data.frame(DP_CD              = params$data_partner_id,
                                      MSREQID            = params$msreqid,
@@ -3431,7 +3431,7 @@ initialize_tracking_table_kp = function(params) {
   return(params)
 }
 
-StoreTrackingTableEntry.kp = function(params) {
+StoreTrackingTableEntry.kp <- function(params) {
   params$trackingTable$current$ITER_NB = params$pmnStepCounter
   params$trackingTable$current$START_DTM = params$log$current$Start.Time
   params$trackingTable$current$END_DTM = params$log$current$End.Time
@@ -3470,7 +3470,7 @@ StoreTrackingTableEntry.kp = function(params) {
 }
 
 
-MergeTrackingTableRAW.kp = function(params, from) {
+MergeTrackingTableRAW.kp <- function(params, from) {
   trackingTable = NULL
   if (from == "AC") {
     load(file.path(params$readPathAC, "tr_tb_updt.rdata"))
@@ -3529,7 +3529,7 @@ MergeTrackingTableRAW.kp = function(params, from) {
 
 ########################### VALID FORMULA FUNCTIONS ############################
 
-validFormula = function(expression) {
+validFormula <- function(expression) {
   # This function takes an expresion and checks that it is of the form var1 ~ var2 + var3 + ... varN
   # It does not check for constants.  Constants are ignored and treated if the are not there.
   # Dupliate variables are ignored.  That is, as in lm(), formulas of the form
@@ -3560,7 +3560,7 @@ validFormula = function(expression) {
   return(res1 & res2 & res3 & res4 & res5)
 }
 
-validFormula2 = function(expression) {
+validFormula2 <- function(expression) {
   # This function takes and expression and checks that it is of the form ~ var1 + var2 + ... + varN
   # Duplicate variables are ignored.  That is, ~ var1 + var1 is equivalent to ~ var1
   if (tryCatch({
@@ -3585,7 +3585,7 @@ validFormula2 = function(expression) {
 
 ###################### SHARED SUMMARY AND PRINT FUNCTIONS ######################
 
-print.vdralinear = function(x, ...) {
+print.vdralinear <- function(x, ...) {
   if (x$failed) {
     warning("Distributed linear regression failed.  No results to print.")
     return(invisible(NULL))
@@ -3641,7 +3641,7 @@ print.vdralinear = function(x, ...) {
 #' @examples
 #' summary(vdra_fit_linear_A)
 #' @export
-summary.vdralinear = function(object, ...) {
+summary.vdralinear <- function(object, ...) {
   temp = list()
   class(temp)         = "summary.vdralinear"
   temp$failed         = object$failed
@@ -3664,7 +3664,7 @@ summary.vdralinear = function(object, ...) {
 }
 
 
-print.summary.vdralinear = function(x, lion = FALSE, ...) {
+print.summary.vdralinear <- function(x, lion = FALSE, ...) {
   arguments = list(...)
 
   if (x$failed) {
@@ -3701,7 +3701,7 @@ print.summary.vdralinear = function(x, lion = FALSE, ...) {
 }
 
 
-print.vdralogistic = function(x, ...) {
+print.vdralogistic <- function(x, ...) {
   if (x$failed) {
     warning("Distributed logistic regression failed.  No results to print.")
     return(invisible(NULL))
@@ -3771,7 +3771,7 @@ print.vdralogistic = function(x, ...) {
 #' summary(vdra_fit_logistic_A)
 #' @export
 
-summary.vdralogistic = function(object, ...) {
+summary.vdralogistic <- function(object, ...) {
   temp = list()
   class(temp)         = "summary.vdralogistic"
   temp$failed         = object$failed
@@ -3795,7 +3795,7 @@ summary.vdralogistic = function(object, ...) {
 }
 
 
-print.summary.vdralogistic = function(x, lion = FALSE, ...) {
+print.summary.vdralogistic <- function(x, lion = FALSE, ...) {
   arguments = list(...)
 
   if (!is.na(arguments$lion) && is.logical(arguments$lion)) lion = arguments$lion
@@ -3842,7 +3842,7 @@ print.summary.vdralogistic = function(x, lion = FALSE, ...) {
 
 
 #' @importFrom stats printCoefmat
-print.vdracox = function(x, ...) {
+print.vdracox <- function(x, ...) {
   if (x$failed) {
     warning("Distributed Cox regression failed.  No results to print.")
     return(invisible(NULL))
@@ -3911,7 +3911,7 @@ print.vdracox = function(x, ...) {
 #' @examples
 #' summary(vdra_fit_cox_A)
 #' @export
-summary.vdracox = function(object, ...) {
+summary.vdracox <- function(object, ...) {
   temp = list()
   class(temp)         = "summary.vdracox"
   temp$failed         = object$failed
@@ -3941,7 +3941,7 @@ summary.vdracox = function(object, ...) {
 }
 
 
-print.summary.vdracox = function(x, lion = FALSE, ...) {
+print.summary.vdracox <- function(x, lion = FALSE, ...) {
   arguments = list(...)
 
   if (!is.na(arguments$lion) && is.logical(arguments$lion)) lion = arguments$lion
@@ -4027,7 +4027,7 @@ print.summary.vdracox = function(x, lion = FALSE, ...) {
 #'  summary(fit)
 #' @importFrom  stats pf pt
 #' @export
-differentModel = function(formula = NULL, x = NULL) {
+differentModel <- function(formula = NULL, x = NULL) {
   if (class(x) != "vdralinear") {
     warning("This function can only be on objects of class vdralinear. Returning original model.")
     return(invisible(x))
@@ -4189,7 +4189,7 @@ differentModel = function(formula = NULL, x = NULL) {
 
 
 #' @importFrom  stats pchisq quantile
-HoslemInternal = function(x, data = NULL, nGroups = 10) {
+HoslemInternal <- function(x, data = NULL, nGroups = 10) {
   #            y:  response (vector, length n)
   #  finalFitted:  finalFitted from getFinalCoefA(...)  (vector, length n)
   #            p:  number of covariates pA + pB
@@ -4249,7 +4249,7 @@ HoslemInternal = function(x, data = NULL, nGroups = 10) {
 }
 
 
-print.hoslemdistributed = function(x, ...) {
+print.hoslemdistributed <- function(x, ...) {
   cat("Hosmer and Lemeshow goodness of fit (GOF) test\n",
       "       Chi-squared:", x$hoslem[1], "with DF",
       paste0(x$hoslem[2], ","), " p-value:", x$hoslem[3], "\n")
@@ -4279,7 +4279,7 @@ print.hoslemdistributed = function(x, ...) {
 #'
 #'  HoslemTest(vdra_fit_logistic_A, 20)
 #' @export
-HoslemTest = function(x = NULL, nGroups = 10) {
+HoslemTest <- function(x = NULL, nGroups = 10) {
   if (class(x) != "vdralogistic") {
     warning("Cannot perform test on non vdralogistic object.")
     return(invisible(NULL))
@@ -4300,7 +4300,7 @@ HoslemTest = function(x = NULL, nGroups = 10) {
 }
 
 
-RocInternal = function(x, data = NULL, bins = 500) {
+RocInternal <- function(x, data = NULL, bins = 500) {
   #             y:  response vector (numeric, not factor, length n)
   #   finalFitted:  final_fitted from getFinalCoefA(...)  (vector, length n)
   #    thresholds:  how smooth the curve should be
@@ -4343,7 +4343,7 @@ RocInternal = function(x, data = NULL, bins = 500) {
 }
 
 #' @importFrom graphics axis lines text plot
-print.rocdistributed = function(x, ...) {
+print.rocdistributed <- function(x, ...) {
   rtrn = x$roc
   plot(rtrn[, 1], rtrn[, 2], xaxt = "n", yaxt = "n",
        xlim = c(-0.2, 1.2), ylim = c(0, 1),
@@ -4377,7 +4377,7 @@ print.rocdistributed = function(x, ...) {
 #'
 #' RocTest(vdra_fit_logistic_A, 40)
 #' @export
-RocTest = function(x = NULL, bins = 10) {
+RocTest <- function(x = NULL, bins = 10) {
   if (class(x) != "vdralogistic") {
     warning("Cannot create ROC on non vdralogistic object.")
     return(invisible(NULL))
@@ -4401,7 +4401,7 @@ RocTest = function(x = NULL, bins = 10) {
 ################### COX DISPLAY SURVFIT AND STRATA FUNCTIONS ###################
 
 #' @importFrom grDevices rgb
-GetColors = function(n) {
+GetColors <- function(n) {
   color = matrix(0, 6, 3)
   color[1, ] = c(0.000, 0.000, 1.000) # blue
   color[2, ] = c(0.627, 0.125, 0.941) # purple
@@ -4458,7 +4458,7 @@ GetColors = function(n) {
 #'  plot(sfit, merge = FALSE)
 #' @importFrom graphics legend lines
 #' @export
-plot.survfitDistributed = function(x, merge = FALSE, ...) {
+plot.survfitDistributed <- function(x, merge = FALSE, ...) {
   max = 0
   n = length(x$strata)
   labels = c()
@@ -4499,7 +4499,7 @@ plot.survfitDistributed = function(x, merge = FALSE, ...) {
 
 #' @rdname survfitDistributed
 #' @export
-print.survfitDistributed = function(x, ...) {
+print.survfitDistributed <- function(x, ...) {
   start = 1
   events = integer(length(x$strata))
   for (i in 1:length(x$strata)) {
@@ -4515,7 +4515,7 @@ print.survfitDistributed = function(x, ...) {
 
 #' @rdname survfitDistributed
 #' @export
-survfitDistributed.stats = function(x) {
+survfitDistributed.stats <- function(x) {
   surv          = list()
   surv$n        = x$strata$end - x$strata$start + 1
   for (i in 1:nrow(x$strata)) {
@@ -4551,7 +4551,7 @@ survfitDistributed.stats = function(x) {
 
 #' @rdname survfitDistributed
 #' @export
-survfitDistributed.formula = function(x, formula, data) {
+survfitDistributed.formula <- function(x, formula, data) {
   surv = list()
   vars = all.vars(formula)
   if ("." %in% vars) {
@@ -4700,7 +4700,7 @@ survfitDistributed.formula = function(x, formula, data) {
 #' print(sfit)
 #' plot(sfit, merge = TRUE)
 #' @export
-survfitDistributed = function(x = NULL, formula = NULL, data = NULL) {
+survfitDistributed <- function(x = NULL, formula = NULL, data = NULL) {
   if (class(x) != "vdracox") {
     warning("The first parameter must be a vdracox object.")
     return(invisible(NULL))

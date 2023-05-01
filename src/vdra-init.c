@@ -1,5 +1,5 @@
 #include <R_ext/Rdynload.h>
-#include "computeCox.h"
+#include "compute_cox.h"
 
 
 static const R_CallMethodDef Callentries[] = {

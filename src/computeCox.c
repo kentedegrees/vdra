@@ -10,7 +10,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include "computeCox.h"
+#include "compute_cox.h"
 
 void flush_console() {
 #if !defined(WIN32) && !defined(__WIN32) && !defined(__WIN32__)
@@ -43,17 +43,17 @@ int printInitialMessage(int verbose) {
   return(0);
 }
 
-int printMessage(int stepCounter, int numEvents, int currentPercent, int verbose)
+int printMessage(int stepCounter, int num_events, int currentPercent, int verbose)
 {
-  int newPercent = 100 * stepCounter / (float)numEvents;
-  int stars      = 20 * stepCounter  / (float)numEvents;
+  int newPercent = 100 * stepCounter / (float)num_events;
+  int stars      = 20 * stepCounter  / (float)num_events;
   if (newPercent > currentPercent) {
     if (verbose) {
       Rprintf("Processing W*X               : %3d%%|", newPercent);
       for (int i = 0; i < stars; i++ ) { Rprintf("#"); }
       for (int i = stars; i < 20; i++) { Rprintf(" "); }
       Rprintf("|\r");
-      if (stepCounter == numEvents) {
+      if (stepCounter == num_events) {
         Rprintf("\n\n");
       }
     }
@@ -64,9 +64,9 @@ int printMessage(int stepCounter, int numEvents, int currentPercent, int verbose
 }
 
 
-SEXP ComputeCox(SEXP _strata, SEXP _X, SEXP _w,
+SEXP compute_cox_SEXP _strata, SEXP _X, SEXP _w,
                 SEXP _deltal, SEXP _wx, SEXP _n,
-                SEXP _p, SEXP _numEvents, SEXP _verbose)
+                SEXP _p, SEXP _num_events, SEXP _verbose)
 {
   int verbose = INTEGER(_verbose)[0] == 1;
   bool ok = strata_ok(_strata);
@@ -78,7 +78,7 @@ SEXP ComputeCox(SEXP _strata, SEXP _X, SEXP _w,
   }
   int n          = INTEGER(_n)[0];  // use asInteger(_n);
   int p          = INTEGER(_p)[0];  // use asInteger(_p);
-  int numEvents  = INTEGER(_numEvents)[0]; // use asInteger(_numEvents);
+  int num_events  = INTEGER(_num_events)[0]; // use asInteger(_num_events);
   double *X      = REAL(_X);
   double *w      = REAL(_w);
   double *deltal = REAL(_deltal);
@@ -166,8 +166,8 @@ SEXP ComputeCox(SEXP _strata, SEXP _X, SEXP _w,
           }
         }
         stepCounter += nj;
-        //Rprintf("%d %d %d\n", stepCounter, numEvents, currentPercent);
-        currentPercent = printMessage(stepCounter, numEvents, currentPercent, verbose);
+        //Rprintf("%d %d %d\n", stepCounter, num_events, currentPercent);
+        currentPercent = printMessage(stepCounter, num_events, currentPercent, verbose);
       }
     }
   }

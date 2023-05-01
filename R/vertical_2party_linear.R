@@ -1,6 +1,6 @@
 ################### DISTRIBUTED LINEAR REGRESSION FUNCTIONS ###################
 
-prepare_folder_linear_a2 = function(params, monitor_folder) {
+prepare_folder_linear_a2 <- function(params, monitor_folder) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_folder_linear_a2\n\n")
   params$dp_local_path   <- file.path(monitor_folder, "dplocal")
   params$r_programs_path <- file.path(monitor_folder, "rprograms")
@@ -64,7 +64,7 @@ prepare_folder_linear_a2 = function(params, monitor_folder) {
 }
 
 
-prepare_folder_linear_b2 = function(params, monitor_folder) {
+prepare_folder_linear_b2 <- function(params, monitor_folder) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_folder_linear_b2\n\n")
 
   params$dp_local_path   = file.path(monitor_folder, "dplocal")
@@ -132,7 +132,7 @@ prepare_folder_linear_b2 = function(params, monitor_folder) {
 }
 
 #' @importFrom stats model.matrix sd
-prepare_data_linear_a23 = function(params, data, y_name = NULL) {
+prepare_data_linear_a23 <- function(params, data, y_name = NULL) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_data_linear_a23\n\n")
 
   workdata = list()
@@ -184,7 +184,7 @@ prepare_data_linear_a23 = function(params, data, y_name = NULL) {
 }
 
 #' @importFrom stats model.matrix sd
-prepare_data_linear_b23 = function(params, data) {
+prepare_data_linear_b23 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_data_linear_b23\n\n")
 
   workdata = list()
@@ -223,14 +223,14 @@ prepare_data_linear_b23 = function(params, data) {
   return(workdata)
 }
 
-prepare_params_linear_b2 = function(params, data) {
+prepare_params_linear_b2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_b2\n\n")
   params$failed         = FALSE
   params$halted         = FALSE
   params$singular_matrix = FALSE
 
   params$n             = nrow(data$X)
-  params$numEvents     = 0
+  params$num_events     = 0
   params$p1            = 0
   params$p2            = ncol(data$X)
   params$p             = params$p1 + params$p2
@@ -266,7 +266,7 @@ prepare_params_linear_b2 = function(params, data) {
 }
 
 
-prepare_params_linear_a2 = function(params, data) {
+prepare_params_linear_a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_a2\n\n")
 
   params$halted          = FALSE
@@ -335,7 +335,7 @@ prepare_params_linear_a2 = function(params, data) {
 }
 
 
-prepare_blocks_linear_a2 = function(params, blocksize) {
+prepare_blocks_linear_a2 <- function(params, blocksize) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_blocks_linear_a2\n\n")
   # For now, assuming that p1 > 0 and p2 > 0
   n  = params$n
@@ -395,7 +395,7 @@ prepare_blocks_linear_a2 = function(params, blocksize) {
 }
 
 
-get_z_linear_a2 = function(params, data) {
+get_z_linear_a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "get_z_linear_a2\n\n")
   write_time <- 0
   write_size <- 0
@@ -429,7 +429,7 @@ get_z_linear_a2 = function(params, data) {
 }
 
 
-FinalizeParamsLinear.b2 = function(params, data) {
+FinalizeParamsLinear.b2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "FinalizeParamsLinear.b2\n\n")
   pa = NULL
   read_time <- proc.time()[3]
@@ -450,7 +450,7 @@ FinalizeParamsLinear.b2 = function(params, data) {
 }
 
 
-prepare_blocks_linear_b2 = function(params) {
+prepare_blocks_linear_b2 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_blocks_linear_b2\n\n")
   blocksize = NULL
   # For now, assuming that p1 > 0 and p2 > 0
@@ -465,7 +465,7 @@ prepare_blocks_linear_b2 = function(params) {
 }
 
 
-GetWLinear.b2 = function(params, data) {
+GetWLinear.b2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetWLinear.b2\n\n")
   read_time <- 0
   read_size <- 0
@@ -529,7 +529,7 @@ GetWLinear.b2 = function(params, data) {
 }
 
 
-GetProductsLinear.a2 = function(params, data) {
+GetProductsLinear.a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetProductsLinear.a2\n\n")
   n  = params$n
   p1 = params$p1
@@ -574,15 +574,15 @@ GetProductsLinear.a2 = function(params, data) {
     pbar <- MakeProgressBar2(i, pbar, params$verbose)
   }
 
-  XTX = rbind(cbind(XATXA, XATXB), cbind(t(XATXB), xb_t_xb))
+  xtx = rbind(cbind(XATXA, XATXB), cbind(t(XATXB), xb_t_xb))
   XTY = rbind(XATY, t(YTXB))
 
   # lasso: x is standardized but needs to be divided by sqrt(n - 1),
   # y is standardized
-  XTXLasso = XTX / (n - 1)
+  XTXLasso = xtx / (n - 1)
   XTYLasso = params$sdy * XTY / sqrt(n - 1)
 
-  params$xtx = XTX
+  params$xtx = xtx
   params$xty = XTY
   params$xtxLasso = XTXLasso
   params$xtyLasso = XTYLasso
@@ -594,7 +594,7 @@ GetProductsLinear.a2 = function(params, data) {
 }
 
 #' @importFrom  stats pf pt
-ComputeResultsLinear.a2 = function(params, data) {
+ComputeResultsLinear.a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLinear.a2\n\n")
   stats    = params$stats
   stats$converged = params$converged
@@ -726,7 +726,7 @@ ComputeResultsLinear.a2 = function(params, data) {
 }
 
 
-get_results_linear_b2 = function(params) {
+get_results_linear_b2 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "get_results_linear_b2\n\n")
   params$converged = TRUE
   stats = NULL
@@ -745,7 +745,7 @@ get_results_linear_b2 = function(params) {
 
 ############################## PARENT FUNCTIONS ###############################
 
-PartyAProcess2Linear = function(data,
+PartyAProcess2Linear <- function(data,
                                 y_name                 = NULL,
                                 monitor_folder         = NULL,
                                 msreqid               = "v_default_00_0000",
@@ -761,7 +761,7 @@ PartyAProcess2Linear = function(data,
   params <- initialize_log_2p(params)
   params <- initialize_time_stamps_2p(params)
   params <- initialize_tracking_table_2p(params)
-  Header(params)
+  header(params)
 
   params   = prepare_folder_linear_a2(params, monitor_folder)
   if (params$failed) {
@@ -832,7 +832,7 @@ PartyAProcess2Linear = function(data,
   return(params$stats)
 }
 
-PartyBProcess2Linear = function(data,
+PartyBProcess2Linear <- function(data,
                                 monitor_folder       = NULL,
                                 sleep_time           = 10,
                                 max_waiting_time      = 24 * 60 * 60,
@@ -846,7 +846,7 @@ PartyBProcess2Linear = function(data,
   params <- initialize_time_stamps_2p(params)
   params <- initialize_tracking_table_2p(params)
 
-  Header(params)
+  header(params)
   params   = prepare_folder_linear_b2(params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)

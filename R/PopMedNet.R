@@ -23,14 +23,14 @@
 #'   \code{\link{AnalysisCenter.3Party}} \code{\link{AnalysisCenter.KParty}}
 #' @importFrom utils read.csv
 #' @export
-pmn = function(num_party, directory = NULL, verbose = TRUE) {
+pmn <- function(num_party, directory = NULL, verbose = TRUE) {
   sleep_time = 0.5
 
-  hms = function(time) {
-    time = round(time, 1)
-    ss = time %% 60
-    mm = time %/% 60 %% 60
-    hh = time %/% 3600
+  hms <- function(time) {
+    time <- round(time, 1)
+    ss <- time %% 60
+    mm <- time %/% 60 %% 60
+    hh <- time %/% 3600
     paste0(formatC(hh, width = 2, flag = "0"), ":",
            formatC(mm, width = 2, flag = "0"), ":",
            formatC(ss, width = 4, digits = 1, flag = "0", format = "f"))

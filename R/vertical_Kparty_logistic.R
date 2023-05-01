@@ -1,6 +1,6 @@
 ################### DISTRIBUTED LOGISTIC REGRESSION FUNCTIONS ###################
 
-GetProductsLogistic.AC = function(params) {
+GetProductsLogistic.AC <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetProductsLogistic.AC\n\n")
   read_time <- 0
   read_size <- 0
@@ -87,7 +87,7 @@ GetProductsLogistic.AC = function(params) {
 }
 
 
-CheckColinearityLogistic.AC = function(params) {
+CheckColinearityLogistic.AC <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "CheckColinearityLogistic.AC\n\n")
   sts = params$sts
   sty = params$sty
@@ -175,7 +175,7 @@ CheckColinearityLogistic.AC = function(params) {
 
 
 #' @importFrom stats runif
-ComputeInitialBetasLogistic.AC = function(params) {
+ComputeInitialBetasLogistic.AC <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeInitialBetasLogistic.AC\n\n")
   write_time <- 0
   write_size <- 0
@@ -200,7 +200,7 @@ ComputeInitialBetasLogistic.AC = function(params) {
 }
 
 
-UpdateParamsLogistic.DP = function(params) {
+UpdateParamsLogistic.DP <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateParamsLogistic.DP\n\n")
   indicies = NULL
   u = NULL
@@ -220,7 +220,7 @@ UpdateParamsLogistic.DP = function(params) {
 }
 
 
-UpdateDataLogistic.DP = function(params, data) {
+UpdateDataLogistic.DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateDataLogistic.DP\n\n")
   if (params$data_partner_id == 1) {
     data$Y = data$X[, 1, drop = FALSE]
@@ -236,7 +236,7 @@ UpdateDataLogistic.DP = function(params, data) {
 
 
 #' @importFrom stats rnorm runif
-ComputeSbetaLogistic.DP = function(params, data) {
+ComputeSbetaLogistic.DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeSbetaLogistic.DP\n\n")
   set.seed(params$seed + params$algIterationCounter, kind = "Mersenne-Twister")
   V = matrix(rnorm(params$n, mean = runif(n = 1, min = -1, max = 1), sd = 10), ncol = 1)
@@ -257,7 +257,7 @@ ComputeSbetaLogistic.DP = function(params, data) {
 }
 
 
-ComputeWeightsLogistic.AC = function(params) {
+ComputeWeightsLogistic.AC <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeWeightsLogistic.AC\n\n")
   Sbeta = 0
   read_time <- 0
@@ -284,7 +284,7 @@ ComputeWeightsLogistic.AC = function(params) {
 
 
 #' @importFrom stats rnorm
-ComputeStWSLogistic.DP = function(params, data) {
+ComputeStWSLogistic.DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeStWSLogistic.DP\n\n")
   pi_ = NULL
   read_time <- proc.time()[3]
@@ -332,7 +332,7 @@ ComputeStWSLogistic.DP = function(params, data) {
 }
 
 
-ComputeStWSLogistic.AC = function(params) {
+ComputeStWSLogistic.AC <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeStWSLogistic.AC\n\n")
   read_time <- 0
   read_size <- 0
@@ -429,7 +429,7 @@ ComputeStWSLogistic.AC = function(params) {
 
 
 #' @importFrom stats rnorm runif
-UpdateBetaLogistic.DP = function(params) {
+UpdateBetaLogistic.DP <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateBetaLogistic.DP\n\n")
   I = IDt = NULL
   read_time <- proc.time()[3]
@@ -466,7 +466,7 @@ UpdateBetaLogistic.DP = function(params) {
 }
 
 
-ComputeConvergeStatusLogistic.AC = function(params) {
+ComputeConvergeStatusLogistic.AC <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeConvergeStatusLogistic.AC\n\n")
   read_time <- 0
   read_size <- 0
@@ -495,7 +495,7 @@ ComputeConvergeStatusLogistic.AC = function(params) {
 }
 
 
-GetConvergeStatusLogistic.DP = function(params) {
+GetConvergeStatusLogistic.DP <- function(params) {
   converged = NULL
   if (params$trace) cat(as.character(Sys.time()), "GetconvergeStatusLogistic.DP\n\n")
   u = converge = maxIterExceeded = NULL
@@ -510,7 +510,7 @@ GetConvergeStatusLogistic.DP = function(params) {
   return(params)
 }
 
-SendFinalBetasLogistic.DP = function(params) {
+SendFinalBetasLogistic.DP <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "SendFinalBetasLogistic.DP\n\n")
   betas = params$betas
   write_time <-proc.time()[3]
@@ -521,7 +521,7 @@ SendFinalBetasLogistic.DP = function(params) {
   return(params)
 }
 
-ComputeFinalSBetaLogistic.AC = function(params) {
+ComputeFinalSBetaLogistic.AC <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeFinalSBetaLogistic.AC\n\n")
   Sbeta = 0
   read_time <- 0
@@ -545,7 +545,7 @@ ComputeFinalSBetaLogistic.AC = function(params) {
 }
 
 
-ComputeResultsLogistic.DP = function(params, data) {
+ComputeResultsLogistic.DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLogistic.DP\n\n")
   sbeta = NULL
   read_time <- proc.time()[3]
@@ -572,7 +572,7 @@ ComputeResultsLogistic.DP = function(params, data) {
 }
 
 #' @importFrom stats pnorm
-ComputeResultsLogistic.AC = function(params) {
+ComputeResultsLogistic.AC <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLogistic.AC\n\n")
   nulldev = NULL
   resdev  = NULL
@@ -649,7 +649,7 @@ ComputeResultsLogistic.AC = function(params) {
 }
 
 
-GetResultsLogistic.DP = function(params, data) {
+GetResultsLogistic.DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetResultsLogistic.DP\n\n")
   stats = NULL
   read_time <- proc.time()[3]
@@ -667,7 +667,7 @@ GetResultsLogistic.DP = function(params, data) {
 
 ############################## PARENT FUNCTIONS ###############################
 
-DataPartnerKLogistic = function(data,
+DataPartnerKLogistic <- function(data,
                                 y_name           = NULL,
                                 numDataPartners = NULL,
                                 data_partner_id   = NULL,
@@ -687,7 +687,7 @@ DataPartnerKLogistic = function(data,
   params <- initialize_log_kp(params)
   params <- initialize_time_stamps_kp(params)
   params <- initialize_tracking_table_kp(params)
-  Header(params)
+  header(params)
 
   params   = PrepareFolder.ACDP(params, monitor_folder)
 
@@ -809,7 +809,7 @@ DataPartnerKLogistic = function(data,
 }
 
 
-AnalysisCenterKLogistic = function(numDataPartners = NULL,
+AnalysisCenterKLogistic <- function(numDataPartners = NULL,
                                    monitor_folder   = NULL,
                                    msreqid         = "v_default_0_000",
                                    cutoff          = 1E-8,
@@ -831,7 +831,7 @@ AnalysisCenterKLogistic = function(numDataPartners = NULL,
   params <- initialize_log_kp(params)
   params <- initialize_time_stamps_kp(params)
   params <- initialize_tracking_table_kp(params)
-  Header(params)
+  header(params)
 
   params   = PrepareFolder.ACDP(params, monitor_folder)
 
