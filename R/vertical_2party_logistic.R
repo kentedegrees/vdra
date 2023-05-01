@@ -2,132 +2,132 @@
 
 PrepareFolderLogistic.A2 = function(params, monitorFolder) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareFolderLogistic.A2\n\n")
-	params$dplocalPath   = file.path(monitorFolder, "dplocal")
-	params$rprogramsPath = file.path(monitorFolder, "rprograms")
-	params$macrosPath    = file.path(monitorFolder, "macros")
-	params$writePath     = file.path(monitorFolder, "inputfiles")
-	params$readPath      = file.path(monitorFolder, "msoc1")
+  params$dplocalPath   = file.path(monitorFolder, "dplocal")
+  params$rprogramsPath = file.path(monitorFolder, "rprograms")
+  params$macrosPath    = file.path(monitorFolder, "macros")
+  params$writePath     = file.path(monitorFolder, "inputfiles")
+  params$readPath      = file.path(monitorFolder, "msoc1")
 
-	if (is.null(monitorFolder)) {
-	  warning("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.")
-	  params$failed = TRUE
-	  return(params)
-	}
-	if (class(monitorFolder) != "character") {
-	  warning("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.")
-	  params$failed = TRUE
-	  return(params)
-	}
-	while (!dir.exists(monitorFolder)) {
-	  Sys.sleep(1)
-	}
-	params$errorMessage = NULL
-	if (!CreateIOLocation(monitorFolder, "dplocal")) {
-		params$failed = TRUE
-		params$errorMessage = paste(params$errorMessage,
-																"Could not create directory",
-																paste0(params$dplocalPath, "."),
-																"Check the path and restart the program.")
-	}
-	if (!CreateIOLocation(monitorFolder, "rprograms")) {
-		params$failed = TRUE
-		params$errorMessage = paste(params$errorMessage,
-																"Could not create directory",
-																paste0(params$rprogramsPath, "."),
-																"Check the path and restart the program.")
-	}
-	if (!CreateIOLocation(monitorFolder, "macros")) {
-		params$failed = TRUE
-		params$errorMessage = paste(params$errorMessage,
-																"Could not create directory",
-																paste0(params$macrosPath, "."),
-																"Check the path and restart the program.")
-	}
-	if (!CreateIOLocation(monitorFolder, "inputfiles")) {
-		params$failed = TRUE
-		params$errorMessage = paste(params$errorMessage,
-																"Could not create directory",
-																paste0(params$writePath, "."),
-																"Check the path and restart the program.")
-	}
-	if (!CreateIOLocation(monitorFolder, "msoc1")) {
-		params$failed = TRUE
-		params$errorMessage = paste(params$errorMessage,
-																"Could not create directory",
-																paste0(params$readPath, "."),
-																"Check the path and restart the program.")
-	}
+  if (is.null(monitorFolder)) {
+    warning("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.")
+    params$failed = TRUE
+    return(params)
+  }
+  if (class(monitorFolder) != "character") {
+    warning("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.")
+    params$failed = TRUE
+    return(params)
+  }
+  while (!dir.exists(monitorFolder)) {
+    Sys.sleep(1)
+  }
+  params$errorMessage = NULL
+  if (!CreateIOLocation(monitorFolder, "dplocal")) {
+    params$failed = TRUE
+    params$errorMessage = paste(params$errorMessage,
+                                "Could not create directory",
+                                paste0(params$dplocalPath, "."),
+                                "Check the path and restart the program.")
+  }
+  if (!CreateIOLocation(monitorFolder, "rprograms")) {
+    params$failed = TRUE
+    params$errorMessage = paste(params$errorMessage,
+                                "Could not create directory",
+                                paste0(params$rprogramsPath, "."),
+                                "Check the path and restart the program.")
+  }
+  if (!CreateIOLocation(monitorFolder, "macros")) {
+    params$failed = TRUE
+    params$errorMessage = paste(params$errorMessage,
+                                "Could not create directory",
+                                paste0(params$macrosPath, "."),
+                                "Check the path and restart the program.")
+  }
+  if (!CreateIOLocation(monitorFolder, "inputfiles")) {
+    params$failed = TRUE
+    params$errorMessage = paste(params$errorMessage,
+                                "Could not create directory",
+                                paste0(params$writePath, "."),
+                                "Check the path and restart the program.")
+  }
+  if (!CreateIOLocation(monitorFolder, "msoc1")) {
+    params$failed = TRUE
+    params$errorMessage = paste(params$errorMessage,
+                                "Could not create directory",
+                                paste0(params$readPath, "."),
+                                "Check the path and restart the program.")
+  }
 
-	params = AddToLog(params, "PrepareDataLogistic.A23, PrepareFolderLogistic.A2", 0, 0, 0, 0)
-	return(params)
+  params = AddToLog(params, "PrepareDataLogistic.A23, PrepareFolderLogistic.A2", 0, 0, 0, 0)
+  return(params)
 }
 
 
 PrepareFolderLogistic.B2 = function(params, monitorFolder) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareFolderLogistic.B2\n\n")
 
-	params$dplocalPath   = file.path(monitorFolder, "dplocal")
-	params$rprogramsPath = file.path(monitorFolder, "rprograms")
-	params$macrosPath    = file.path(monitorFolder, "macros")
-	params$writePath     = file.path(monitorFolder, "msoc")
-	params$readPath      = file.path(monitorFolder, "inputfiles")
+  params$dplocalPath   = file.path(monitorFolder, "dplocal")
+  params$rprogramsPath = file.path(monitorFolder, "rprograms")
+  params$macrosPath    = file.path(monitorFolder, "macros")
+  params$writePath     = file.path(monitorFolder, "msoc")
+  params$readPath      = file.path(monitorFolder, "inputfiles")
 
-	if (is.null(monitorFolder)) {
-	  warning("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.")
-	  params$failed = TRUE
-	  return(params)
-	}
-	if (class(monitorFolder) != "character") {
-	  warning("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.")
-	  params$failed = TRUE
-	  return(params)
-	}
-	while (!dir.exists(monitorFolder)) {
-	  Sys.sleep(1)
-	}
-	params$errorMessage = NULL
-	if (!CreateIOLocation(monitorFolder, "dplocal")) {
-		params$failed = TRUE
-		params$errorMessage = paste(params$errorMessage,
-																"Could not create directory",
-																paste0(params$dplocalPath, "."),
-																"Check the path and restart the program.")
-	}
-	if (!CreateIOLocation(monitorFolder, "rprograms")) {
-		params$failed = TRUE
-		params$errorMessage = paste(params$errorMessage,
-																"Could not create directory",
-																paste0(params$rprogramsPath, "."),
-																"Check the path and restart the program.")
-	}
-	if (!CreateIOLocation(monitorFolder, "macros")) {
-		params$failed = TRUE
-		params$errorMessage = paste(params$errorMessage,
-																"Could not create directory",
-																paste0(params$macrosPath, "."),
-																"Check the path and restart the program.")
-	}
-	if (!CreateIOLocation(monitorFolder, "msoc")) {
-		params$failed = TRUE
-		params$errorMessage = paste(params$errorMessage,
-																"Could not create directory",
-																paste0(params$writePath, "."),
-																"Check the path and restart the program.")
-	}
-	if (!CreateIOLocation(monitorFolder, "inputfiles")) {
-		params$failed = TRUE
-		params$errorMessage = paste(params$errorMessage,
-																"ould not create directory",
-																paste0(params$readPath, "."),
-																"Check the path and restart the program.")
-	}
+  if (is.null(monitorFolder)) {
+    warning("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.")
+    params$failed = TRUE
+    return(params)
+  }
+  if (class(monitorFolder) != "character") {
+    warning("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.")
+    params$failed = TRUE
+    return(params)
+  }
+  while (!dir.exists(monitorFolder)) {
+    Sys.sleep(1)
+  }
+  params$errorMessage = NULL
+  if (!CreateIOLocation(monitorFolder, "dplocal")) {
+    params$failed = TRUE
+    params$errorMessage = paste(params$errorMessage,
+                                "Could not create directory",
+                                paste0(params$dplocalPath, "."),
+                                "Check the path and restart the program.")
+  }
+  if (!CreateIOLocation(monitorFolder, "rprograms")) {
+    params$failed = TRUE
+    params$errorMessage = paste(params$errorMessage,
+                                "Could not create directory",
+                                paste0(params$rprogramsPath, "."),
+                                "Check the path and restart the program.")
+  }
+  if (!CreateIOLocation(monitorFolder, "macros")) {
+    params$failed = TRUE
+    params$errorMessage = paste(params$errorMessage,
+                                "Could not create directory",
+                                paste0(params$macrosPath, "."),
+                                "Check the path and restart the program.")
+  }
+  if (!CreateIOLocation(monitorFolder, "msoc")) {
+    params$failed = TRUE
+    params$errorMessage = paste(params$errorMessage,
+                                "Could not create directory",
+                                paste0(params$writePath, "."),
+                                "Check the path and restart the program.")
+  }
+  if (!CreateIOLocation(monitorFolder, "inputfiles")) {
+    params$failed = TRUE
+    params$errorMessage = paste(params$errorMessage,
+                                "ould not create directory",
+                                paste0(params$readPath, "."),
+                                "Check the path and restart the program.")
+  }
 
-	Sys.sleep(1)
-	DeleteTrigger("files_done.ok", params$readPath)
+  Sys.sleep(1)
+  DeleteTrigger("files_done.ok", params$readPath)
 
-	params = AddToLog(params, "PrepareDataLogisitc.B23, PrepareFolderLogistic.B2", 0, 0, 0, 0)
+  params = AddToLog(params, "PrepareDataLogisitc.B23, PrepareFolderLogistic.B2", 0, 0, 0, 0)
 
-	return(params)
+  return(params)
 }
 
 
@@ -163,16 +163,14 @@ PrepareDataLogistic.A23 = function(params, data, yname = NULL) {
 
   means = apply(X, 2, mean)
   sd    = apply(X, 2, sd)
-  sd    = sapply(sd, function(x) { ifelse(x > 0, x, 1)})
+  sd    = sapply(sd, function(x) {
+    ifelse(x > 0, x, 1)
+  })
   workdata$Y      = X[, 2, drop = FALSE]
   workdata$X      = X[, covariateIndex, drop = FALSE]
-  # workdata$meansy = means[2]
-  # workdata$sdy    = sd[2]
   workdata$means  = means[covariateIndex]
   workdata$sd     = sd[covariateIndex]
   workdata$yty    = t(workdata$Y) %*% workdata$Y
-
-  # workdata$Y      = (workdata$Y - workdata$meansy) / workdata$sdy
 
   if (ncol(workdata$X) >= 2) {
     for (i in 2:ncol(workdata$X)) {
@@ -209,7 +207,9 @@ PrepareDataLogistic.B23 = function(params, data) {
   workdata$X = workdata$X[, -1, drop = FALSE]
   workdata$means = apply(workdata$X, 2, mean)
   workdata$sd    = apply(workdata$X, 2, sd)
-  workdata$sd    = sapply(workdata$sd, function(x) { ifelse(x > 0, x, 1)})
+  workdata$sd    = sapply(workdata$sd, function(x) {
+    ifelse(x > 0, x, 1)
+  })
 
   for (i in 1:ncol(workdata$X)) {
     workdata$X[, i] = (workdata$X[, i] - workdata$means[i]) / workdata$sd[i]
@@ -591,10 +591,10 @@ CheckColinearityLogistic.A2 = function(params, data) {
   nrow = nrow(XTX)
   indicies = c(1)
   for (i in 2:nrow) {
-  	tempIndicies = c(indicies, i)
-  	if (rcond(XTX[tempIndicies, tempIndicies]) > 10^8 * .Machine$double.eps) {
-  		indicies = c(indicies, i)
-  	}
+    tempIndicies = c(indicies, i)
+    if (rcond(XTX[tempIndicies, tempIndicies]) > 10^8 * .Machine$double.eps) {
+      indicies = c(indicies, i)
+    }
   }
 
   XTX = XTX[indicies, indicies]
@@ -902,9 +902,13 @@ GetIILogistic.A2 = function(params, data) {
   params$xtwx = XTWX
 
   II = NULL
-  tryCatch({II = solve(params$xtwx)}, # dims are 1 + p1 + p2
-           error = function(err) { II = NULL }
-          )
+  tryCatch({
+    II = solve(params$xtwx)
+  }, # dims are 1 + p1 + p2
+  error = function(err) {
+    II = NULL
+  }
+  )
   if (is.null(II)) {
     params$singularMatrix = TRUE
     params$failed = TRUE
@@ -1079,7 +1083,7 @@ ComputeResultsLogistic.A2 = function(params, data) {
   betas = c(betasA, betasB)
 
   AFinalFitted = t(sdA * t(data$X) + meansA) %*% betasA -
-  	             t(sdA[1] * t(data$X[, 1]) + meansA[1]) %*% betasA[1]
+    t(sdA[1] * t(data$X[, 1]) + meansA[1]) %*% betasA[1]
   FinalFitted = AFinalFitted + BFinalFitted + betas[1]
   params$FinalFitted = FinalFitted
 
@@ -1161,16 +1165,16 @@ GetResultsLogistic.B2 = function(params) {
 
 PartyAProcess2Logistic = function(data,
                                   yname                 = NULL,
-																	monitorFolder         = NULL,
-																	msreqid               = "v_default_00_000",
+                                  monitorFolder         = NULL,
+                                  msreqid               = "v_default_00_000",
                                   blocksize             = 500,
                                   cutoff                = 1e-8,
                                   maxIterations         = 25,
                                   sleepTime             = 10,
                                   maxWaitingTime        = 24 * 60 * 60,
-																	popmednet             = TRUE,
-																	trace                 = FALSE,
-																	verbose               = TRUE) {
+                                  popmednet             = TRUE,
+                                  trace                 = FALSE,
+                                  verbose               = TRUE) {
   params = PrepareParams.2p("logistic", "A", msreqid = msreqid,
                             popmednet = popmednet, trace = trace, verbose = verbose)
   params = InitializeLog.2p(params)
@@ -1179,8 +1183,8 @@ PartyAProcess2Logistic = function(data,
   Header(params)
   params   = PrepareFolderLogistic.A2(params, monitorFolder)
   if (params$failed) {
-  	warning(params$errorMessage)
-  	return(invisible(NULL))
+    warning(params$errorMessage)
+    return(invisible(NULL))
   }
   data = PrepareDataLogistic.A23(params, data, yname)
 
@@ -1195,15 +1199,15 @@ PartyAProcess2Logistic = function(data,
   }
 
   if (data$failed) {
-  	params$completed = TRUE
-  	message = "Error in processing the data for Party A."
-  	MakeErrorMessage(params$writePath, message)
-  	files = c("errorMessage.rdata")
-  	params$pmnStepCounter = 1
-  	params = SendPauseContinue.2p(params, files, sleepTime = sleepTime)
-  	params = SendPauseQuit.2p(params, sleepTime = sleepTime, job_failed = TRUE)
-  	SummarizeLog.2p(params)
-  	return(params$stats)
+    params$completed = TRUE
+    message = "Error in processing the data for Party A."
+    MakeErrorMessage(params$writePath, message)
+    files = c("errorMessage.rdata")
+    params$pmnStepCounter = 1
+    params = SendPauseContinue.2p(params, files, sleepTime = sleepTime)
+    params = SendPauseQuit.2p(params, sleepTime = sleepTime, job_failed = TRUE)
+    SummarizeLog.2p(params)
+    return(params$stats)
   }
 
   params = PrepareParamsLogistic.A2(params, data, cutoff, maxIterations)
@@ -1293,12 +1297,12 @@ PartyAProcess2Logistic = function(data,
 }
 
 PartyBProcess2Logistic = function(data,
-																	monitorFolder       = "v_default_00_000",
+                                  monitorFolder       = "v_default_00_000",
                                   sleepTime           = 10,
                                   maxWaitingTime      = 24 * 60 * 60,
-																	popmednet           = TRUE,
-																	trace               = FALSE,
-																	verbose             = TRUE) {
+                                  popmednet           = TRUE,
+                                  trace               = FALSE,
+                                  verbose             = TRUE) {
   params = PrepareParams.2p("logistic", "B",
                             popmednet = popmednet, trace = trace, verbose = verbose)
   params = InitializeLog.2p(params)
@@ -1307,8 +1311,8 @@ PartyBProcess2Logistic = function(data,
   Header(params)
   params   = PrepareFolderLogistic.B2(params, monitorFolder)
   if (params$failed) {
-  	warning(params$errorMessage)
-  	return(invisible(NULL))
+    warning(params$errorMessage)
+    return(invisible(NULL))
   }
   data = PrepareDataLogistic.B23(params, data)
 

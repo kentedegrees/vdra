@@ -147,8 +147,6 @@ AnalysisCenter.2Party = function(regression            = "linear",
                                  popmednet             = TRUE,
                                  trace                 = FALSE,
                                  verbose               = TRUE) {
-  # digits.secs = getOption("digits.secs")
-  # options(digits.secs = 2)
   startTime = proc.time()
   stats = list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
@@ -174,7 +172,6 @@ AnalysisCenter.2Party = function(regression            = "linear",
   elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
-  # options(digits.secs = digits.secs)
   return(stats)
 }
 
@@ -190,8 +187,6 @@ DataPartner.2Party = function(regression          = "linear",
                               popmednet           = TRUE,
                               trace               = FALSE,
                               verbose             = TRUE) {
-  # digits.secs = getOption("digits.secs")
-  # options(digits.secs = 2)
   startTime = proc.time()
   stats = list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
@@ -214,7 +209,6 @@ DataPartner.2Party = function(regression          = "linear",
   elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
-  # options(digits.secs = digits.secs)
   return(stats)
 }
 
@@ -234,8 +228,6 @@ DataPartner1.3Party = function(regression            = "linear",
                                trace                 = FALSE,
                                verbose               = TRUE) {
 
-  # digits.secs = getOption("digits.secs")
-  # options(digits.secs = 2)
   startTime = proc.time()
   stats = list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
@@ -260,7 +252,6 @@ DataPartner1.3Party = function(regression            = "linear",
   elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
-  # options(digits.secs = digits.secs)
   return(stats)
 }
 
@@ -277,8 +268,6 @@ DataPartner2.3Party = function(regression          = "linear",
                                popmednet           = TRUE,
                                trace               = FALSE,
                                verbose             = TRUE) {
-  # digits.secs = getOption("digits.secs")
-  # options(digits.secs = 2)
   startTime = proc.time()
   stats = list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
@@ -303,7 +292,6 @@ DataPartner2.3Party = function(regression          = "linear",
   elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
-  # options(digits.secs = digits.secs)
   return(stats)
 }
 
@@ -482,8 +470,6 @@ AnalysisCenter.3Party = function(regression            = "linear",
                                  popmednet             = TRUE,
                                  trace                 = FALSE,
                                  verbose               = TRUE) {
-  # digits.secs = getOption("digits.secs")
-  # options(digits.secs = 2)
   startTime = proc.time()
   stats = list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
@@ -508,7 +494,6 @@ AnalysisCenter.3Party = function(regression            = "linear",
   elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
-  # options(digits.secs = digits.secs)
   return(stats)
 }
 
@@ -529,8 +514,6 @@ DataPartner.KParty = function(regression            = "linear",
                               popmednet             = TRUE,
                               trace                 = FALSE,
                               verbose               = TRUE) {
-  # digits.secs = getOption("digits.secs")
-  # options(digits.secs = 2)
   startTime = proc.time()
   stats = list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
@@ -562,7 +545,6 @@ DataPartner.KParty = function(regression            = "linear",
   elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
-  # options(digits.secs = digits.secs)
   return(stats)
 }
 
@@ -751,8 +733,6 @@ AnalysisCenter.KParty = function(regression            = "linear",
                                  popmednet             = TRUE,
                                  trace                 = FALSE,
                                  verbose               = TRUE) {
-  # digits.secs = getOption("digits.secs")
-  # options(digits.secs = 2)
   startTime = proc.time()
   stats = list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
@@ -779,7 +759,6 @@ AnalysisCenter.KParty = function(regression            = "linear",
   elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
-  # options(digits.secs = digits.secs)
   return(stats)
 }
 
@@ -1023,10 +1002,10 @@ PrepareParams.kp = function(analysis, dataPartnerID, numDataPartners,
   params$stats$failed        = TRUE
   params$stats$converged     = FALSE
   if (((class(numDataPartners) != "integer" &&
-       class(numDataPartners) != "numeric") ||
-      numDataPartners <= 0 ||
-      is.infinite(numDataPartners) ||
-      round(numDataPartners) != numDataPartners)) {
+        class(numDataPartners) != "numeric") ||
+       numDataPartners <= 0 ||
+       is.infinite(numDataPartners) ||
+       round(numDataPartners) != numDataPartners)) {
     params$failed = TRUE
     params$errorMessage = "numDataPartners must be a positive integer, and must equal the number of data partners providing data."
   }
@@ -1313,11 +1292,13 @@ Standby = function(triggerName, triggerLocation,
 
   found = FALSE
 
-  if (is.null(maxWaitingTime)) { maxWaitingTime = 60 * 60 * 24 }
+  if (is.null(maxWaitingTime)) {
+    maxWaitingTime <- 60 * 60 * 24
+  }
 
-  fpath = file.path(triggerLocation, triggerName)
-  startTime = proc.time()[3]
-  elapsedTime = 0
+  fpath <- file.path(triggerLocation, triggerName)
+  startTime <- proc.time()[3]
+  elapsedTime <- 0
 
   while (!found) {
     found = all(file.exists(fpath))
@@ -1352,7 +1333,7 @@ CopyFile = function(readDirectory, writeDirectory, filename) {
     file.copy(source, destination, overwrite = TRUE)
   } else {
     stop(paste0("These files do not exist:\n",
-                   paste0(source[!file.exists(source)], collapse = ", "), "\n"))
+                paste0(source[!file.exists(source)], collapse = ", "), "\n"))
   }
 }
 
@@ -1444,7 +1425,6 @@ SendPauseQuit.2p = function(params,
                             "Tracking Table")
   WriteStampsCSV(params)
   WriteStampsRaw(params)
-  # Sys.sleep(sleepTime)
   if (job_failed)  {
     MakeTrigger("job_fail.ok",  params$writePath)
   } else {
@@ -1481,7 +1461,6 @@ SendPauseContinue.2p = function(params,
   WriteStampsCSV(params)
   WriteStampsRaw(params)
   params$pmnStepCounter      = params$pmnStepCounter + 2
-  # Sys.sleep(sleepTime)
   if (job_started) {
     MakeTrigger("job_started.ok", params$writePath)
   } else {
@@ -2069,15 +2048,14 @@ GetUTCOffsetSeconds = function() {
 
 
 ConvertUTCtoRoundTripTime = function(t) {
-  if (t$mon  < 9)  {  month = paste0("0", t$mon + 1)  } else { month = t$mon + 1}
-  if (t$mday < 10) {  day   = paste0("0", t$mday)     } else { day   = t$mday }
-  if (t$hour < 10) {  hour  = paste0("0", t$hour)     } else { hour  = t$hour }
-  if (t$min  < 10) {  min   = paste0("0", t$min)      } else { min   = t$min }
-  if (t$sec  < 10) {  sec   = paste0("0", t$sec)      } else { sec   = t$sec }
-  t = paste0(t$year + 1900, "-", month, "-", day, " ", hour, ":",
-             min, ":", sec)
+  month <- ifelse(t$mon  < 9,  paste0("0", t$mon + 1), t$mon + 1)
+  day   <- ifelse(t$mday < 10, paste0("0", t$mday),    t$mday)
+  hour  <- ifelse(t$hour < 10, paste0("0", t$hour),    t$hour)
+  min   <- ifelse(t$min  < 10, paste0("0", t$min),     t$min)
+  sec   <- ifelse(t$sec  < 10, paste0("0", t$sec),     t$sec)
+  t <- paste0(t$year + 1900, "-", month, "-", day, " ", hour, ":",
+              min, ":", sec)
 }
-
 
 GetRoundTripTime = function() {
   return(ConvertUTCtoRoundTripTime(GetUTCTime()))
@@ -3181,7 +3159,9 @@ SummarizeLog.kp = function(params) {
       Start.Time = log$Start.Time[index[1]]
       End.Time   = log$End.Time[index[length(index)]]
       Total.Time = round(as.numeric(difftime(End.Time, Start.Time, units = "secs")), digits = 2)
-      if (party == 0) { total.time.0 = Total.Time }
+      if (party == 0) {
+        total.time.0 = Total.Time
+      }
       Reading.Time = sum(log$Read.Time[index])
       Writing.Time = sum(log$Write.Time[index])
       Computing.Time = sum(log$Computation.Time[index])
@@ -3556,8 +3536,12 @@ validFormula = function(expression) {
   # var1 ~ var2 + var2 are equivalent to var1 ~ var2
 
   # Check to make sure this is a valid expression
-  if (tryCatch({is.expression(expression); FALSE},
-               error = function(err) { TRUE })) {
+  if (tryCatch({
+    is.expression(expression); FALSE
+  },
+  error = function(err) {
+    TRUE
+  })) {
     return(FALSE)
   }
   vars = all.vars(expression)
@@ -3578,8 +3562,12 @@ validFormula = function(expression) {
 validFormula2 = function(expression) {
   # This function takes and expression and checks that it is of the form ~ var1 + var2 + ... + varN
   # Duplicate variables are ignored.  That is, ~ var1 + var1 is equivalent to ~ var1
-  if (tryCatch({is.expression(expression); FALSE},
-               error = function(err) { TRUE })) {
+  if (tryCatch({
+    is.expression(expression); FALSE
+  },
+  error = function(err) {
+    TRUE
+  })) {
     return(FALSE)
   }
   vars = all.vars(expression)
@@ -3718,7 +3706,7 @@ print.vdralogistic = function(x, ...) {
   }
   if (!x$converged) {
     warning(paste("Warning: Distributed logistic regression did not converge in",
-        x$iter, "iterations. Reported statistics are approximate."))
+                  x$iter, "iterations. Reported statistics are approximate."))
   }
 
   cat("Coefficients:\n")
@@ -3816,7 +3804,7 @@ print.summary.vdralogistic = function(x, lion = FALSE, ...) {
   }
   if (!x$converged) {
     warning(paste("Warning: Distributed logistic regression did not converge in",
-        x$iter, "iterations. Reported statistics are approximate."))
+                  x$iter, "iterations. Reported statistics are approximate."))
   }
   x$stars = sapply(x$pvals, function(x) {
     if (is.na(x)) ''
@@ -4198,7 +4186,7 @@ differentModel = function(formula = NULL, x = NULL) {
 
 
 #' @importFrom  stats pchisq quantile
-HoslemInternal = function(x, data = NULL, nGroups = 10){
+HoslemInternal = function(x, data = NULL, nGroups = 10) {
   #            y:  response (vector, length n)
   #  finalFitted:  finalFitted from getFinalCoefA(...)  (vector, length n)
   #            p:  number of covariates pA + pB
@@ -4259,11 +4247,6 @@ HoslemInternal = function(x, data = NULL, nGroups = 10){
 
 
 print.hoslemdistributed = function(x, ...) {
-  # if (!x$converged) {
-  #   cat("Warning: Process did not converge.\n")
-  #   cat("         Cannot perform Hosmer and Lemeshow goodness of fit test.\n")
-  #   return(invisible(NULL))
-  # }
   cat("Hosmer and Lemeshow goodness of fit (GOF) test\n",
       "       Chi-squared:", x$hoslem[1], "with DF",
       paste0(x$hoslem[2],","), " p-value:", x$hoslem[3], "\n")
@@ -4314,7 +4297,7 @@ HoslemTest = function(x = NULL, nGroups = 10) {
 }
 
 
-RocInternal = function(x, data = NULL, bins = 500){
+RocInternal = function(x, data = NULL, bins = 500) {
   #             y:  response vector (numeric, not factor, length n)
   #   finalFitted:  final_fitted from getFinalCoefA(...)  (vector, length n)
   #    thresholds:  how smooth the curve should be
@@ -4358,10 +4341,6 @@ RocInternal = function(x, data = NULL, bins = 500){
 
 #' @importFrom graphics axis lines text plot
 print.rocdistributed = function(x, ...) {
-  # if (!x$converged) {
-  #   cat("Warning: Process did not converge.  Cannot generate ROC.\n")
-  #   return(invisible(NULL))
-  # }
   rtrn = x$roc
   plot(rtrn[, 1], rtrn[, 2], xaxt = "n", yaxt = "n",
        xlim = c(-0.2, 1.2), ylim = c(0,1 ),
@@ -4411,7 +4390,6 @@ RocTest = function(x = NULL, bins = 10) {
     temp = list()
     temp = RocInternal(x, bins = bins)
     class(temp) = "rocdistributed"
-    # temp$singularMatrix = x$singularMatrix
     return(temp)
   }
 }
@@ -4597,7 +4575,9 @@ survfitDistributed.formula = function(x, formula, data) {
   for (i in 1:ncol(data)) {
     levels = levels(as.factor(data[, i]))
     legend[[colnames(data)[i]]] = levels
-    data2[, i] = sapply(data[, i], function(x) { which(levels %in% x)})
+    data2[, i] = sapply(data[, i], function(x) {
+      which(levels %in% x)
+    })
   }
   ranks = which(apply(abs(apply(data2, 2, diff)), 1, sum) > 0)
   ranks = c(ranks, nrow(data2))
@@ -4727,13 +4707,12 @@ survfitDistributed = function(x = NULL, formula = NULL, data = NULL) {
   }
   if (!("matrix" %in% class(data)) && !("data.frame" %in% class(data))) {
     warning(paste("the data must either be a matrix or a data.frame.",
-        "Please use the same data that you used for the distributed regression."))
+                  "Please use the same data that you used for the distributed regression."))
     return(invisible(NULL))
   }
   if (class(formula) != "formula" || !validFormula2(formula)) {
     warning(paste("The formula must be of the form \"~ var1 + ... + vark\" where the variables",
-        "are found in the data. The formula can also be \"~ 1\"."))
+                  "are found in the data. The formula can also be \"~ 1\"."))
   }
   return(survfitDistributed.formula(x, formula, data))
 }
-

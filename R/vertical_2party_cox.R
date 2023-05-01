@@ -2,133 +2,133 @@
 
 PrepareFolderCox.A2 = function(params, monitorFolder) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareFolderCox.A2\n\n")
-	params$dplocalPath   = file.path(monitorFolder, "dplocal")
-	params$rprogramsPath = file.path(monitorFolder, "rprograms")
-	params$macrosPath    = file.path(monitorFolder, "macros")
-	params$writePath     = file.path(monitorFolder, "inputfiles")
-	params$readPath      = file.path(monitorFolder, "msoc1")
+  params$dplocalPath   = file.path(monitorFolder, "dplocal")
+  params$rprogramsPath = file.path(monitorFolder, "rprograms")
+  params$macrosPath    = file.path(monitorFolder, "macros")
+  params$writePath     = file.path(monitorFolder, "inputfiles")
+  params$readPath      = file.path(monitorFolder, "msoc1")
 
-	if (is.null(monitorFolder)) {
-	  warning("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.")
-	  params$failed = TRUE
-	  return(params)
-	}
-	if (class(monitorFolder) != "character") {
-	  warning("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.")
-	  params$failed = TRUE
-	  return(params)
-	}
-	while (!dir.exists(monitorFolder)) {
-	  Sys.sleep(1)
-	}
-	params$errorMessage = NULL
-	if (!CreateIOLocation(monitorFolder, "dplocal")) {
-		params$failed = TRUE
-		params$errorMessage = paste(params$errorMessage,
-																"Could not create directory",
-																paste0(params$dplocalPath, "."),
-																"Check the path and restart the program.")
-	}
-	if (!CreateIOLocation(monitorFolder, "rprograms")) {
-		params$failed = TRUE
-		params$errorMessage = paste(params$errorMessage,
-																"Could not create directory",
-																paste0(params$rprogramsPath, "."),
-																"Check the path and restart the program.")
-	}
-	if (!CreateIOLocation(monitorFolder, "macros")) {
-		params$failed = TRUE
-		params$errorMessage = paste(params$errorMessage,
-																"Could not create directory",
-																paste0(params$macrosPath, "."),
-																"Check the path and restart the program.")
-	}
-	if (!CreateIOLocation(monitorFolder, "inputfiles")) {
-		params$failed = TRUE
-		params$errorMessage = paste(params$errorMessage,
-																"Could not create directory",
-																paste0(params$writePath, "."),
-																"Check the path and restart the program.")
-	}
-	if (!CreateIOLocation(monitorFolder, "msoc1")) {
-		params$failed = TRUE
-		params$errorMessage = paste(params$errorMessage,
-																"Could not create directory",
-																paste0(params$readPath, "."),
-																"Check the path and restart the program.")
-	}
+  if (is.null(monitorFolder)) {
+    warning("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.")
+    params$failed = TRUE
+    return(params)
+  }
+  if (class(monitorFolder) != "character") {
+    warning("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.")
+    params$failed = TRUE
+    return(params)
+  }
+  while (!dir.exists(monitorFolder)) {
+    Sys.sleep(1)
+  }
+  params$errorMessage = NULL
+  if (!CreateIOLocation(monitorFolder, "dplocal")) {
+    params$failed = TRUE
+    params$errorMessage = paste(params$errorMessage,
+                                "Could not create directory",
+                                paste0(params$dplocalPath, "."),
+                                "Check the path and restart the program.")
+  }
+  if (!CreateIOLocation(monitorFolder, "rprograms")) {
+    params$failed = TRUE
+    params$errorMessage = paste(params$errorMessage,
+                                "Could not create directory",
+                                paste0(params$rprogramsPath, "."),
+                                "Check the path and restart the program.")
+  }
+  if (!CreateIOLocation(monitorFolder, "macros")) {
+    params$failed = TRUE
+    params$errorMessage = paste(params$errorMessage,
+                                "Could not create directory",
+                                paste0(params$macrosPath, "."),
+                                "Check the path and restart the program.")
+  }
+  if (!CreateIOLocation(monitorFolder, "inputfiles")) {
+    params$failed = TRUE
+    params$errorMessage = paste(params$errorMessage,
+                                "Could not create directory",
+                                paste0(params$writePath, "."),
+                                "Check the path and restart the program.")
+  }
+  if (!CreateIOLocation(monitorFolder, "msoc1")) {
+    params$failed = TRUE
+    params$errorMessage = paste(params$errorMessage,
+                                "Could not create directory",
+                                paste0(params$readPath, "."),
+                                "Check the path and restart the program.")
+  }
 
-	params = AddToLog(params, "PrepareDataCox.A23, PrepareFolderCox.A2", 0, 0, 0, 0)
-	return(params)
+  params = AddToLog(params, "PrepareDataCox.A23, PrepareFolderCox.A2", 0, 0, 0, 0)
+  return(params)
 }
 
 
 PrepareFolderCox.B2 = function(params, monitorFolder) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareFolderCox.B2\n\n")
 
-	params$dplocalPath   = file.path(monitorFolder, "dplocal")
-	params$rprogramsPath = file.path(monitorFolder, "rprograms")
-	params$macrosPath    = file.path(monitorFolder, "macros")
-	params$writePath     = file.path(monitorFolder, "msoc")
-	params$readPath      = file.path(monitorFolder, "inputfiles")
+  params$dplocalPath   = file.path(monitorFolder, "dplocal")
+  params$rprogramsPath = file.path(monitorFolder, "rprograms")
+  params$macrosPath    = file.path(monitorFolder, "macros")
+  params$writePath     = file.path(monitorFolder, "msoc")
+  params$readPath      = file.path(monitorFolder, "inputfiles")
 
-	if (is.null(monitorFolder)) {
-	  warning("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.")
-	  params$failed = TRUE
-	  return(params)
-	}
-	if (class(monitorFolder) != "character") {
-	  warning("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.")
-	  params$failed = TRUE
-	  return(params)
-	}
-	while (!dir.exists(monitorFolder)) {
-	  Sys.sleep(1)
-	}
+  if (is.null(monitorFolder)) {
+    warning("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.")
+    params$failed = TRUE
+    return(params)
+  }
+  if (class(monitorFolder) != "character") {
+    warning("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.")
+    params$failed = TRUE
+    return(params)
+  }
+  while (!dir.exists(monitorFolder)) {
+    Sys.sleep(1)
+  }
 
-	params$errorMessage = NULL
-	if (!CreateIOLocation(monitorFolder, "dplocal")) {
-		params$failed = TRUE
-		params$errorMessage = paste(params$errorMessage,
-																"Could not create directory",
-																paste0(params$dplocalPath, "."),
-																"Check the path and restart the program.")
-	}
-	if (!CreateIOLocation(monitorFolder, "rprograms")) {
-		params$failed = TRUE
-		params$errorMessage = paste(params$errorMessage,
-																"Could not create directory",
-																paste0(params$rprogramsPath, "."),
-																"Check the path and restart the program.")
-	}
-	if (!CreateIOLocation(monitorFolder, "macros")) {
-		params$failed = TRUE
-		params$errorMessage = paste(params$errorMessage,
-																"Could not create directory",
-																paste0(params$macrosPath, "."),
-																"Check the path and restart the program.")
-	}
-	if (!CreateIOLocation(monitorFolder, "msoc")) {
-		params$failed = TRUE
-		params$errorMessage = paste(params$errorMessage,
-																"Could not create directory",
-																paste0(params$writePath, "."),
-																"Check the path and restart the program.")
-	}
-	if (!CreateIOLocation(monitorFolder, "inputfiles")) {
-		params$failed = TRUE
-		params$errorMessage = paste(params$errorMessage,
-																"Could not create directory",
-																paste0(params$readPath, "."),
-																"Check the path and restart the program.")
-	}
+  params$errorMessage = NULL
+  if (!CreateIOLocation(monitorFolder, "dplocal")) {
+    params$failed = TRUE
+    params$errorMessage = paste(params$errorMessage,
+                                "Could not create directory",
+                                paste0(params$dplocalPath, "."),
+                                "Check the path and restart the program.")
+  }
+  if (!CreateIOLocation(monitorFolder, "rprograms")) {
+    params$failed = TRUE
+    params$errorMessage = paste(params$errorMessage,
+                                "Could not create directory",
+                                paste0(params$rprogramsPath, "."),
+                                "Check the path and restart the program.")
+  }
+  if (!CreateIOLocation(monitorFolder, "macros")) {
+    params$failed = TRUE
+    params$errorMessage = paste(params$errorMessage,
+                                "Could not create directory",
+                                paste0(params$macrosPath, "."),
+                                "Check the path and restart the program.")
+  }
+  if (!CreateIOLocation(monitorFolder, "msoc")) {
+    params$failed = TRUE
+    params$errorMessage = paste(params$errorMessage,
+                                "Could not create directory",
+                                paste0(params$writePath, "."),
+                                "Check the path and restart the program.")
+  }
+  if (!CreateIOLocation(monitorFolder, "inputfiles")) {
+    params$failed = TRUE
+    params$errorMessage = paste(params$errorMessage,
+                                "Could not create directory",
+                                paste0(params$readPath, "."),
+                                "Check the path and restart the program.")
+  }
 
   Sys.sleep(1)
-	DeleteTrigger("files_done.ok", params$readPath)
+  DeleteTrigger("files_done.ok", params$readPath)
 
-	params = AddToLog(params, "PrepareDataCox.B23, PrepareFolderCox.B2", 0, 0, 0, 0)
+  params = AddToLog(params, "PrepareDataCox.B23, PrepareFolderCox.B2", 0, 0, 0, 0)
 
-	return(params)
+  return(params)
 }
 
 
@@ -168,7 +168,10 @@ extractStrata = function(params, data, stratas, mask) {
             levels = sample(levels)
             strata$legend[[colnames(strata$X)[i]]] = rep("NA", length(levels))
           }
-          strata$X[, i] = sapply(strata$X[, i], function(x) { which(levels %in% x)})
+          strata$X[, i] = sapply(strata$X[, i],
+                                 function(x) {
+                                   which(levels %in% x)
+                                 })
         }
       }
     }
@@ -310,8 +313,7 @@ CheckStrataCox.A2 = function(params, data) {
         paste("Party A and Party B have", length(AcapB), "variable(s) with the same name which are used in the strata.",
               "These variable(s) are <", paste0(AcapB, collapse = ", "), ">.",
               "Make sure the variables from each party have distinct names.")
-    }
-    else if (length(BcapA) > 0) {
+    } else if (length(BcapA) > 0) {
       params$errorMessage =
         paste("Party A and Party B have specified", length(BcapA), "variable(s) for the strata which are not found in the data.",
               "These variable(s) are <", paste0(BcapA, collapse = ", "), ">.",
@@ -507,12 +509,6 @@ PrepareParamsCox.A2 = function(params, data, cutoff = 0.01, maxIterations = 25) 
   if (params$survivalInstalled & !("package:survival" %in% search())) {
     attachNamespace("survival")
   }
-
-  # if (requireNamespace("survival", quietly = TRUE)) {
-  #   params$survivalInstalled = TRUE
-  # } else {
-  #   params$survivalInstalled = FALSE
-  # }
 
   pa = list()
   pa$p1 = params$p1
@@ -784,10 +780,10 @@ CheckColinearityCox.A2 = function(params, data) {
   nrow = nrow(XTX)
   indicies = 1:length(data$survival$strata)
   for (i in (1 + length(data$survival$strata)):nrow) {
-  	tempIndicies = c(indicies, i)
-  	if (rcond(XTX[tempIndicies, tempIndicies]) > 10^8 * .Machine$double.eps) {
-  		indicies = c(indicies, i)
-  	}
+    tempIndicies = c(indicies, i)
+    if (rcond(XTX[tempIndicies, tempIndicies]) > 10^8 * .Machine$double.eps) {
+      indicies = c(indicies, i)
+    }
   }
 
   numStrata = length(data$survival$strata)
@@ -825,20 +821,6 @@ CheckColinearityCox.A2 = function(params, data) {
     params$failed = TRUE
     params$errorMessage = "After removing colinear covariates, Party B has no covariates."
   }
-  # if (length(unique(tags)) < 2) {
-  #   params$failed = TRUE
-  #   params$errorMessage = "After removing colinear covariates, Party B has 1 or fewer covariates.\n\n"
-  # } else if (!("numeric" %in% names(tags))) {
-  #   params$failed = TRUE
-  #   params$errorMessage = "After removing colinear covariates, Party B has no continuous covariates.\n\n"
-  # }
-
-#
-#   if (params$p2 == 0) {
-#     params$failed = TRUE
-#     params$errorMessage = "All of party B's covariates are either linear or are colinear with Party A's covariates."
-#     warning("All of Party B's covariates are either linear or are colinear with Party A's covariates.")
-#   }
   params = AddToLog(params, "CheckColinearityCox.A2", readTime, readSize, writeTime, writeSize)
   return(params)
 }
@@ -937,8 +919,8 @@ ComputeLogLikelihoodCox.A2 = function(params, data) {
   stepCounter = 0
 
   .Call("ComputeCox", data$survival$strata, data$X, w, deltal, W.XA,
-  			as.integer(n), as.integer(p1), as.integer(numEvents),
-  			as.integer(params$verbose))
+        as.integer(n), as.integer(p1), as.integer(numEvents),
+        as.integer(params$verbose))
 
   params$loglikelihood = loglikelihood
   params$deltal = deltal
@@ -1023,8 +1005,8 @@ ComputeLogLikelihoodCox.B2 = function(params, data) {
   W.XB = matrix(0, n, p2)
 
   .Call("ComputeCox", data$survival$strata, data$X, w, deltal, W.XB,
-  			as.integer(n), as.integer(p2), as.integer(numEvents),
-  			as.integer(params$verbose))
+        as.integer(n), as.integer(p2), as.integer(numEvents),
+        as.integer(params$verbose))
 
   pbar = MakeProgressBar1(params$blocks$numBlocks, "(I-Z*Z')WX", params$verbose)
   containerCt.Z = 0
@@ -1115,7 +1097,7 @@ ComputeInverseCox.A2 = function(params, data) {
 
     readTime = readTime - proc.time()[3]
     IZ.tZ.W.XB = matrix(readBin(con = toRead, what = numeric(), n = n2 * p2,
-                        endian = "little"), nrow = n2, ncol = p2)
+                                endian = "little"), nrow = n2, ncol = p2)
     readTime = readTime + proc.time()[3]
 
     tXA.W.XB = tXA.W.XB + t(data$X[strt:stp, ]) %*% IZ.tZ.W.XB
@@ -1134,12 +1116,16 @@ ComputeInverseCox.A2 = function(params, data) {
   params$XtWX = M
 
 
- 	inv = NULL
- 	tryCatch({inv = solve(M)},
- 					 error = function(err) { inv = NULL } )
-	M = inv
-	if (is.null(M)) {
-		params$failed = TRUE
+  inv = NULL
+  tryCatch({
+    inv = solve(M)
+  },
+  error = function(err) {
+    inv = NULL
+  } )
+  M = inv
+  if (is.null(M)) {
+    params$failed = TRUE
     params$errorMessage = "The matrix XWX is singular.  This is probably due to divergence of the coefficients."
     warning(params$errorMessage)
 
@@ -1221,7 +1207,7 @@ ComputeBetaCox.A2 = function(params, data) {
   params$betasA = params$betasA + params$M[1:p1, 1:p1] %*% params$tXA.deltal + M2.tXB.deltal
 
   converged = abs(params$loglikelihood - params$loglikelihood.old) /
-              (abs(params$loglikelihood) + 0.1) < params$cutoff
+    (abs(params$loglikelihood) + 0.1) < params$cutoff
   params$converged = converged
 
   params$XA.betasA = data$X %*% params$betasA
@@ -1484,10 +1470,10 @@ CheckColinearityCox.B2 = function(params, data) {
   nrow = nrow(XTX)
   indicies = 1:numStrata
   for (i in (numStrata + 1):nrow) {
-  	tempIndicies = c(indicies, i)
-  	if (rcond(XTX[tempIndicies, tempIndicies]) > 10^8 * .Machine$double.eps) {
-  		indicies = c(indicies, i)
-  	}
+    tempIndicies = c(indicies, i)
+    if (rcond(XTX[tempIndicies, tempIndicies]) > 10^8 * .Machine$double.eps) {
+      indicies = c(indicies, i)
+    }
   }
   indicies = indicies[-(1:numStrata)] - numStrata  # Get rid of the Strata
 
@@ -1530,14 +1516,20 @@ ComputeCoxFromSurvival.B2 = function(params, data) {
   f = paste(c("Surv(rank, status) ~ strata(strata)", paste0("V", 1:ncol(data$X))), collapse = " + ")
 
   error = tryCatch(
-    {fit = survival::coxph(as.formula(f),
-                 data = data.frame(rank = data$survival$rank,
-                                   status = data$survival$status,
-                                   strata = strata,
-                                   data$X),
-                 iter.max = params$maxIterations)},
-    error = function(e) { return(TRUE)},
-    warning = function(e) { return(FALSE)}
+    {
+      fit = survival::coxph(as.formula(f),
+                            data = data.frame(rank = data$survival$rank,
+                                              status = data$survival$status,
+                                              strata = strata,
+                                              data$X),
+                            iter.max = params$maxIterations)
+    },
+    error = function(e) {
+      return(TRUE)
+    },
+    warning = function(e) {
+      return(FALSE)
+    }
   )
 
   if ((class(error) == "logical" && error)) {
@@ -1546,16 +1538,16 @@ ComputeCoxFromSurvival.B2 = function(params, data) {
     params$errorMessage = "Coxph in the survival package failed to converge."
     warning(params$errorMessage)
   } else {
-  	params$converged = TRUE
-  	if (class(error) == "logical") {
-  	  fit = suppressWarnings(survival::coxph(as.formula(f),
-  								data = data.frame(rank = data$survival$rank,
-  																	status = data$survival$status,
-  																	strata = strata,
-  																	data$X),
-  								iter.max = params$maxIterations))
-  		params$converged = FALSE
-  	}
+    params$converged = TRUE
+    if (class(error) == "logical") {
+      fit = suppressWarnings(survival::coxph(as.formula(f),
+                                             data = data.frame(rank = data$survival$rank,
+                                                               status = data$survival$status,
+                                                               strata = strata,
+                                                               data$X),
+                                             iter.max = params$maxIterations))
+      params$converged = FALSE
+    }
     fit$linear.predictors = NULL
     fit$residuals = NULL
     fit$y = NULL
@@ -1584,58 +1576,58 @@ ComputeCox.B2 = function(params, data) {
 
 
   while (params$algIterationCounter <= params$maxIterations && !params$converged) {
-  	BeginningIteration(params)
-  	loglikelihood = 0
-  	stepSize = 1
-  	w = exp(X.betas)
-  	while (max(w) == Inf) {
-  		if (params$verbose) cat("Step Halving\n\n")
-  		X.betas = (X.betas + X.betas.old) * 0.5
-  		stepSize = stepSize * 0.5
-  		w = exp(X.betas)
-  	}
-  	computeLoglikelihood = TRUE
-  	while (computeLoglikelihood) {
-  		numEvents = sum(data$survival$status)
-  		stepCounter = 0
-  		pbar = MakeProgressBar1(numEvents, "Loglikelihood", params$verbose)
-  		loglikelihood = 0
-  		for (i in 1:length(data$survival$strata)) {                    ##!
-  			if (data$survival$strata[[i]]$J > 0) {                       ##!
-  				for (j in 1:data$survival$strata[[i]]$J) {                 ##!
-  					nj = data$survival$strata[[i]]$nfails[j]                 ##!
-  					yIndex = data$survival$strata[[i]]$start0[j]:data$survival$strata[[i]]$end      ##!
-  					zIndex = data$survival$strata[[i]]$start1[j]:data$survival$strata[[i]]$stop1[j] ##!
-  					Aj1 = sum(w[yIndex])
-  					Aj2 = sum(w[zIndex]) / nj
-  					loglikelihood = loglikelihood + sum(log(w[zIndex]))
-  					for (r in 0:(nj - 1)) {
-  						Ajr = Aj1 - r * Aj2
-  						loglikelihood = loglikelihood - log(Ajr)
-  					}
-  					stepCounter = stepCounter + nj
-  					pbar = MakeProgressBar2(stepCounter, pbar, params$verbose)
-  				}
-  			}
-  		}
-  		if (loglikelihood > loglikelihood.old || stepSize < 0.5^6) {
-  			computeLoglikelihood = FALSE
-  		} else {
-  			if (params$verbose) cat("Step Halving\n\n")
-  			X.betas = (X.betas + X.betas.old) * 0.5
-  			stepSize = stepSize * 0.5
-  			w = exp(X.betas)
-  		}
-  	}
-  	numEvents = sum(data$survival$status)
-  	deltal = as.numeric(data$survival$status)
-  	deltal[1] = deltal[1]  # This is to force R to make a copy since we are exploiting
-  	# a pass by reference with the C call.
-  	W.XB = matrix(0, n, p2)
+    BeginningIteration(params)
+    loglikelihood = 0
+    stepSize = 1
+    w = exp(X.betas)
+    while (max(w) == Inf) {
+      if (params$verbose) cat("Step Halving\n\n")
+      X.betas = (X.betas + X.betas.old) * 0.5
+      stepSize = stepSize * 0.5
+      w = exp(X.betas)
+    }
+    computeLoglikelihood = TRUE
+    while (computeLoglikelihood) {
+      numEvents = sum(data$survival$status)
+      stepCounter = 0
+      pbar = MakeProgressBar1(numEvents, "Loglikelihood", params$verbose)
+      loglikelihood = 0
+      for (i in 1:length(data$survival$strata)) {                    ##!
+        if (data$survival$strata[[i]]$J > 0) {                       ##!
+          for (j in 1:data$survival$strata[[i]]$J) {                 ##!
+            nj = data$survival$strata[[i]]$nfails[j]                 ##!
+            yIndex = data$survival$strata[[i]]$start0[j]:data$survival$strata[[i]]$end      ##!
+            zIndex = data$survival$strata[[i]]$start1[j]:data$survival$strata[[i]]$stop1[j] ##!
+            Aj1 = sum(w[yIndex])
+            Aj2 = sum(w[zIndex]) / nj
+            loglikelihood = loglikelihood + sum(log(w[zIndex]))
+            for (r in 0:(nj - 1)) {
+              Ajr = Aj1 - r * Aj2
+              loglikelihood = loglikelihood - log(Ajr)
+            }
+            stepCounter = stepCounter + nj
+            pbar = MakeProgressBar2(stepCounter, pbar, params$verbose)
+          }
+        }
+      }
+      if (loglikelihood > loglikelihood.old || stepSize < 0.5^6) {
+        computeLoglikelihood = FALSE
+      } else {
+        if (params$verbose) cat("Step Halving\n\n")
+        X.betas = (X.betas + X.betas.old) * 0.5
+        stepSize = stepSize * 0.5
+        w = exp(X.betas)
+      }
+    }
+    numEvents = sum(data$survival$status)
+    deltal = as.numeric(data$survival$status)
+    deltal[1] = deltal[1]  # This is to force R to make a copy since we are exploiting
+    # a pass by reference with the C call.
+    W.XB = matrix(0, n, p2)
 
-  	.Call("ComputeCox", data$survival$strata, data$X, w, deltal, W.XB,
-  				as.integer(n), as.integer(p2), as.integer(numEvents),
-  				as.integer(params$verbose))
+    .Call("ComputeCox", data$survival$strata, data$X, w, deltal, W.XB,
+          as.integer(n), as.integer(p2), as.integer(numEvents),
+          as.integer(params$verbose))
 
     M = t(data$X) %*% W.XB
 
@@ -1644,11 +1636,15 @@ ComputeCox.B2 = function(params, data) {
       params$nullHessian = M
     }
 
-  	inv = NULL
-  	tryCatch({inv = solve(M)},
-  					 error = function(err) { inv = NULL } )
-  	M = inv
-		if (is.null(M)) {
+    inv = NULL
+    tryCatch({
+      inv = solve(M)
+    },
+    error = function(err) {
+      inv = NULL
+    } )
+    M = inv
+    if (is.null(M)) {
       params$failed = TRUE
       params$errorMessage = "The matrix t(X)WX is singular.  This is probably due to divergence of the coefficients."
       warning(params$errorMessage)
@@ -1657,9 +1653,6 @@ ComputeCox.B2 = function(params, data) {
       betas[params$BIndiciesKeep] = betasB
       betas = data.frame(betas)
       rownames(betas) = params$Bcolnames.old
-      # if (params$verbose) cat("Current Parameters:\n")
-      # if (params$verbose) print(betas)
-      # if (params$verbose) cat("\n")
       params = AddToLog(params, "ComputeCox.B2", 0, 0, 0, 0)
       return(params)
     }
@@ -1827,19 +1820,19 @@ GetResultsCox.A2 = function(params) {
 
 
 PartyAProcess2Cox = function(data,
-														 yname          = NULL,
-														 strata         = NULL,
-														 mask           = TRUE,
-														 monitorFolder  = NULL,
-														 msreqid        = "v_default_00_000",
-														 blocksize      = 500,
-														 cutoff         = 1e-8,
-														 maxIterations  = 25,
-														 sleepTime      = 10,
-														 maxWaitingTime = 24 * 60 * 60,
-														 popmednet      = TRUE,
-														 trace          = FALSE,
-														 verbose        = TRUE) {
+                             yname          = NULL,
+                             strata         = NULL,
+                             mask           = TRUE,
+                             monitorFolder  = NULL,
+                             msreqid        = "v_default_00_000",
+                             blocksize      = 500,
+                             cutoff         = 1e-8,
+                             maxIterations  = 25,
+                             sleepTime      = 10,
+                             maxWaitingTime = 24 * 60 * 60,
+                             popmednet      = TRUE,
+                             trace          = FALSE,
+                             verbose        = TRUE) {
   params = PrepareParams.2p("cox", "A", msreqid = msreqid,
                             popmednet = popmednet, trace = trace, verbose = verbose)
   params = InitializeLog.2p(params)
@@ -1848,8 +1841,8 @@ PartyAProcess2Cox = function(data,
   Header(params)
   params   = PrepareFolderCox.A2(params, monitorFolder)
   if (params$failed) {
-  	warning(params$errorMessage)
-  	return(invisible(NULL))
+    warning(params$errorMessage)
+    return(invisible(NULL))
   }
   data = PrepareDataCox.23(params, data, yname, strata, mask)
 
@@ -1864,15 +1857,15 @@ PartyAProcess2Cox = function(data,
   }
 
   if (data$failed) {
-  	params$complete = TRUE
-  	message = "Error in processing the data for Party A."
-  	MakeErrorMessage(params$writePath, message)
-  	files = c("errorMessage.rdata")
-  	params$pmnStepCounter = 1
-  	params = SendPauseContinue.2p(params, files, sleepTime, maxWaitingTime)
-  	params = SendPauseQuit.2p(params, sleepTime = sleepTime, job_failed = TRUE)
-  	SummarizeLog.2p(params)
-  	return(params$stats)
+    params$complete = TRUE
+    message = "Error in processing the data for Party A."
+    MakeErrorMessage(params$writePath, message)
+    files = c("errorMessage.rdata")
+    params$pmnStepCounter = 1
+    params = SendPauseContinue.2p(params, files, sleepTime, maxWaitingTime)
+    params = SendPauseQuit.2p(params, sleepTime = sleepTime, job_failed = TRUE)
+    SummarizeLog.2p(params)
+    return(params$stats)
   }
 
   params = CheckStrataCox.A2(params, data)
@@ -1896,7 +1889,7 @@ PartyAProcess2Cox = function(data,
 
   data = PrepareStrataCox.A2(params, data)
   params = AddToLog(params, "PrepareStrataCox.A2", data$readTime,
-                     data$readSize, data$writeTime, data$writeSize)
+                    data$readSize, data$writeTime, data$writeSize)
 
   if (params$p1 == 0) { # Check for $p1 == 0 => no covariates, only strata
     MakeTransferMessage(params$writePath)
@@ -1929,16 +1922,13 @@ PartyAProcess2Cox = function(data,
 
   params = GetZCox.A2(params, data)
 
-  #This works even in the case that we send no blocks over.  Just set
-  #Filebreak.Z = c()
+  # This works even in the case that we send no blocks over.  Just set
+  # Filebreak.Z = c()
   files = c("pa.rdata", "blocksize.rdata", "survival.rdata",
             SeqZW("cz_", length(params$container$filebreak.Z)))
   params = SendPauseContinue.2p(params, files, sleepTime, maxWaitingTime)
 
   params = CheckColinearityCox.A2(params, data)
-  # if (params$verbose) cat(params$failed,"\n")
-
-
 
   if (params$failed) { # Check for CheckColinearityCox.A2() failed
     params$complete = TRUE
@@ -2023,12 +2013,12 @@ PartyAProcess2Cox = function(data,
 PartyBProcess2Cox = function(data,
                              strata              = NULL,
                              mask                = TRUE,
-														 monitorFolder       = NULL,
-														 sleepTime           = 10,
+                             monitorFolder       = NULL,
+                             sleepTime           = 10,
                              maxWaitingTime      = 24 * 60 * 60,
-														 popmednet           = TRUE,
-														 trace               = FALSE,
-														 verbose             = TRUE) {
+                             popmednet           = TRUE,
+                             trace               = FALSE,
+                             verbose             = TRUE) {
   params = PrepareParams.2p("cox", "B", popmednet = popmednet, trace = trace,
                             verbose = verbose)
   params = InitializeLog.2p(params)
@@ -2037,8 +2027,8 @@ PartyBProcess2Cox = function(data,
   Header(params)
   params = PrepareFolderCox.B2(params, monitorFolder)
   if (params$failed) {
-  	warning(params$errorMessage)
-  	return(invisible(NULL))
+    warning(params$errorMessage)
+    return(invisible(NULL))
   }
   data = PrepareDataCox.23(params, data, NULL, strata, mask)
 
@@ -2077,7 +2067,7 @@ PartyBProcess2Cox = function(data,
 
   data = SortDataCox.B2(params, data)
   params = AddToLog(params, "SortDataCox.B2", data$readTime,
-                     data$readSize, 0, 0)
+                    data$readSize, 0, 0)
 
   if (file.exists(file.path(params$readPath, "transferControl.rdata"))) {
     params = FinalizeParams2Cox.B2(params, data)

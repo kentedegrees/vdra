@@ -1,2 +1,3 @@
-.onUnload <- function(libpath)
-    library.dynam.unload("vdra", libpath)
+.onUnload <- function(libpath) {
+  library.dynam.unload("vdra", libpath)
+}

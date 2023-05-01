@@ -100,13 +100,6 @@ pmn = function(numParty, directory = NULL, verbose = TRUE) {
     while (sum(source) > 0) {  # We are waiting parties to write
       for (i in 1:numParty) {
         if (source[i]) {
-          # if (file.exists(file.path(writeDirectory[i], "job_started.ok"))) {
-          # 	Sys.sleep(sleepTime)
-          # 	file.remove(file.path(writeDirectory[i], "job_started.ok"))
-          # 	if (verbose) cat("  Party", partyName[i], "- job_started.ok\n")
-          # 	source[i] = FALSE
-          # 	if (sum(source) > 0 && verbose) cat("Waiting for", partyName[source], "\n")
-          # }
           if (file.exists(file.path(writeDirectory[i], "files_done.ok"))) {
             Sys.sleep(sleepTime)
             files = read.csv(file.path(writeDirectory[i], "file_list.csv"))
@@ -134,7 +127,6 @@ pmn = function(numParty, directory = NULL, verbose = TRUE) {
                 filesToSend = rbind(filesToSend, files)
               }
             }
-            # Sys.sleep(sleepTime)
             file.remove(file.path(writeDirectory[i], "files_done.ok"))
             if (verbose) cat("  Party", partyName[i], "- files_done.ok\n")
             source[i] = FALSE
@@ -148,9 +140,6 @@ pmn = function(numParty, directory = NULL, verbose = TRUE) {
     }
 
     if (quit) break
-
-    # if (verbose) cat("Simulating PMN Delay\n")
-    # Sys.sleep(runif(n = 1, min = 0, max = 15))
 
     sink   = rep(FALSE, numParty)
 

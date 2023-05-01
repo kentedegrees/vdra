@@ -148,8 +148,8 @@ kable(data.frame(`file_nm` = c("stats.rdata",
 kable(data.frame(`file_nm` = c("dl_track_tbl.csv",
                                "file_list.csv",
                                "job_done.ok"),
-                 `transfer_to_site` = c("10","10","10"),
-                 `dp_cd_list` = c("10","10","10")), 
+                 `transfer_to_site` = c("10", "10", "10"),
+                 `dp_cd_list` = c("10", "10", "10")), 
       caption = "file_list.csv for dp0 ending the PopMedNet request.")
 ```
 

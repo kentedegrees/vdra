@@ -41,5 +41,3 @@
 #' }
 #' @keywords data vdra_data
 NULL
-
-
