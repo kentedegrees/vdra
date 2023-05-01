@@ -116,7 +116,7 @@ library(vdra)
 fit = AnalysisCenter.2Party(regression    = "linear",
                             data          = vdra_data[, c(1, 5:7)],
                             response      = "Change_BMI",
-                            monitorFolder = "~/vdra/dp0",
+                            monitor_folder = "~/vdra/dp0",
                             popmednet     = FALSE)
 summary(fit)
 ```
@@ -128,7 +128,7 @@ Now, run the following code in the third R session simultaneously with the other
 library(vdra)
 fit = DataPartner.2Party(regression    = "linear",
                          data          = vdra_data[, 8:11],
-                         monitorFolder = "~/vdra/dp1",
+                         monitor_folder = "~/vdra/dp1",
                          popmednet     = FALSE)
 summary(fit)
 ```
@@ -217,7 +217,7 @@ library(vdra)
 fit = AnalysisCenter.2Party(regression    = "logistic",
                             data          = vdra_data[, c(2, 5:7)],
                             response      = "WtLost",
-                            monitorFolder = "~/vdra/dp0",
+                            monitor_folder = "~/vdra/dp0",
                             popmednet     = FALSE)
 summary(fit)
 ```
@@ -229,7 +229,7 @@ Now, run the following code in the third R session simultaneously with the other
 library(vdra)
 fit = DataPartner.2Party(regression    = "logistic",
                          data          = vdra_data[, 8:11],
-                         monitorFolder = "~/vdra/dp1",
+                         monitor_folder = "~/vdra/dp1",
                          popmednet     = FALSE)
 summary(fit)
 ```
@@ -327,7 +327,7 @@ library(vdra)
 fit = AnalysisCenter.2Party(regression    = "cox",
                             data          = vdra_data[, c(3:4, 5:7)],
                             response      = c("Time", "Status"),
-                            monitorFolder = "~/vdra/dp0",
+                            monitor_folder = "~/vdra/dp0",
                             popmednet     = FALSE)
 summary(fit)
 ```
@@ -339,7 +339,7 @@ Now, run the following code in the third R session simultaneously with the other
 library(vdra)
 fit = DataPartner.2Party(regression    = "cox",
                          data          = vdra_data[, 8:11],
-                         monitorFolder = "~/vdra/dp1",
+                         monitor_folder = "~/vdra/dp1",
                          popmednet     = FALSE)
 summary(fit)
 ```
@@ -461,7 +461,7 @@ In order to perform linear regression in a $2^T$-party setting run the following
 ```r
 library(vdra)
 fit = AnalysisCenter.3Party(regression    = "linear",
-                            monitorFolder = "~/vdra/dp0",
+                            monitor_folder = "~/vdra/dp0",
                             popmednet     = FALSE)
 summary(fit)
 ```
@@ -474,7 +474,7 @@ library(vdra)
 fit = DataPartner1.3Party(regression    = "linear",
                           data          = vdra_data[, c(1, 5:7)],
                           response      = "Change_BMI",
-                          monitorFolder = "~/vdra/dp1",
+                          monitor_folder = "~/vdra/dp1",
                           popmednet     = FALSE)
 summary(fit)
 ```
@@ -486,7 +486,7 @@ Finally, run the following code in the fourth R session simultaneously with the 
 library(vdra)
 fit = DataPartner2.3Party(regression    = "linear",
                           data          = vdra_data[, 8:11],
-                          monitorFolder = "~/vdra/dp2",
+                          monitor_folder = "~/vdra/dp2",
                           popmednet     = FALSE)
 summary(fit)
 ```
@@ -511,7 +511,7 @@ In order to perform logistic regression in a $2^T$-party setting run the followi
 ```r
 library(vdra)
 fit = AnalysisCenter.3Party(regression    = "logistic",
-                            monitorFolder = "~/vdra/dp0",
+                            monitor_folder = "~/vdra/dp0",
                             popmednet     = FALSE)
 summary(fit)
 ```
@@ -524,7 +524,7 @@ library(vdra)
 fit = DataPartner1.3Party(regression    = "logistic",
                           data          = vdra_data[, c(2, 5:7)],
                           response      = "WtLost",
-                          monitorFolder = "~/vdra/dp1",
+                          monitor_folder = "~/vdra/dp1",
                           popmednet     = FALSE)
 summary(fit)
 ```
@@ -536,7 +536,7 @@ Finally, run the following code in the fourth R session simultaneously with the 
 library(vdra)
 fit = DataPartner2.3Party(regression    = "logistic",
                           data          = vdra_data[, 8:11],
-                          monitorFolder = "~/vdra/dp2",
+                          monitor_folder = "~/vdra/dp2",
                           popmednet     = FALSE)
 summary(fit)
 ```
@@ -560,7 +560,7 @@ In order to perform Cox regression in a $2^T$-party setting run the following co
 ```r
 library(vdra)
 fit = AnalysisCenter.3Party(regression    = "cox",
-                            monitorFolder = "~/vdra/dp0",
+                            monitor_folder = "~/vdra/dp0",
                             popmednet     = FALSE)
 summary(fit)
 ```
@@ -573,7 +573,7 @@ library(vdra)
 fit = DataPartner1.3Party(regression    = "cox",
                           data          = vdra_data[, c(3:4, 5:7)],
                           response      = c("Time", "Status"),
-                          monitorFolder = "~/vdra/dp1",
+                          monitor_folder = "~/vdra/dp1",
                           popmednet     = FALSE)
 summary(fit)
 ```
@@ -585,7 +585,7 @@ Finally, run the following code in the fourth R session simultaneously with the 
 library(vdra)
 fit = DataPartner2.3Party(regression    = "cox",
                           data          = vdra_data[, 8:11],
-                          monitorFolder = "~/vdra/dp2",
+                          monitor_folder = "~/vdra/dp2",
                           popmednet     = FALSE)
 summary(fit)
 ```
@@ -620,7 +620,7 @@ In order to perform linear regression in a $k^T$-party setting run the following
 library(vdra)
 fit = AnalysisCenter.KParty(regression      = "linear",
                             numDataPartners = 2,
-                            monitorFolder   = "~/vdra/dp0",
+                            monitor_folder   = "~/vdra/dp0",
                             popmednet       = FALSE)
 summary(fit)
 ```
@@ -635,7 +635,7 @@ fit = DataPartner.KParty(regression      = "linear",
                          response        = "Change_BMI",
                          numDataPartners = 2,
                          dataPartnerID   = 1,
-                         monitorFolder   = "~/vdra/dp1",
+                         monitor_folder   = "~/vdra/dp1",
                          popmednet       = FALSE)
 summary(fit)
 ```
@@ -649,7 +649,7 @@ fit = DataPartner.KParty(regression      = "linear",
                          data            = vdra_data[, 8:11],
                          numDataPartners = 2,
                          dataPartnerID   = 2,
-                         monitorFolder   = "~/vdra/dp2",
+                         monitor_folder   = "~/vdra/dp2",
                          popmednet       = FALSE)
 summary(fit)
 ```
@@ -672,7 +672,7 @@ In order to perform logistic regression in a $k^T$-party setting run the followi
 library(vdra)
 fit = AnalysisCenter.KParty(regression      = "logistic",
                             numDataPartners = 2,
-                            monitorFolder   = "~/vdra/dp0",
+                            monitor_folder   = "~/vdra/dp0",
                             popmednet       = FALSE)
 summary(fit)
 ```
@@ -687,7 +687,7 @@ fit = DataPartner.KParty(regression      = "logistic",
                          response        = "WtLost",
                          numDataPartners = 2,
                          dataPartnerID   = 1,
-                         monitorFolder   = "~/vdra/dp1",
+                         monitor_folder   = "~/vdra/dp1",
                          popmednet       = FALSE)
 summary(fit)
 ```
@@ -701,7 +701,7 @@ fit = DataPartner.KParty(regression      = "logistic",
                          data            = vdra_data[, 8:11],
                          numDataPartners = 2,
                          dataPartnerID   = 2,
-                         monitorFolder   = "~/vdra/dp2",
+                         monitor_folder   = "~/vdra/dp2",
                          popmednet       = FALSE)
 summary(fit)
 ```
@@ -724,7 +724,7 @@ In order to perform Cox regression in a $k^T$-party setting run the following co
 library(vdra)
 fit = AnalysisCenter.KParty(regression      = "cox",
                             numDataPartners = 2,
-                            monitorFolder   = "~/vdra/dp0",
+                            monitor_folder   = "~/vdra/dp0",
                             popmednet       = FALSE)
 summary(fit)
 ```
@@ -740,7 +740,7 @@ fit = DataPartner.KParty(regression      = "cox",
                          response        = c("Time", "Status"),
                          numDataPartners = 2,
                          dataPartnerID   = 1,
-                         monitorFolder   = "~/vdra/dp1",
+                         monitor_folder   = "~/vdra/dp1",
                          popmednet       = FALSE)
 summary(fit)
 ```
@@ -754,7 +754,7 @@ fit = DataPartner.KParty(regression      = "cox",
                          data            = vdra_data[, 8:11],
                          numDataPartners = 2,
                          dataPartnerID   = 2,
-                         monitorFolder   = "~/vdra/dp2",
+                         monitor_folder   = "~/vdra/dp2",
                          popmednet       = FALSE)
 summary(fit)
 ```

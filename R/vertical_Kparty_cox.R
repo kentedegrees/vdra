@@ -1456,7 +1456,7 @@ DataPartnerKCox = function(data,
                            mask            = TRUE,
                            numDataPartners = NULL,
                            dataPartnerID   = NULL,
-                           monitorFolder   = NULL,
+                           monitor_folder   = NULL,
                            sleep_time       = 10,
                            maxWaitingTime  = 24 * 60 * 60,
                            popmednet       = TRUE,
@@ -1474,7 +1474,7 @@ DataPartnerKCox = function(data,
   params <- InitializeTrackingTable.kp(params)
   Header(params)
 
-  params   = PrepareFolder.ACDP(params, monitorFolder)
+  params   = PrepareFolder.ACDP(params, monitor_folder)
 
   if (params$failed) {
     warning(params$errorMessage)
@@ -1663,7 +1663,7 @@ DataPartnerKCox = function(data,
 
 
 AnalysisCenterKCox = function(numDataPartners = NULL,
-                              monitorFolder   = NULL,
+                              monitor_folder   = NULL,
                               msreqid         = "v_default_0_000",
                               cutoff          = 1E-8,
                               maxIterations   = 25,
@@ -1686,7 +1686,7 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
   params <- InitializeTrackingTable.kp(params)
   Header(params)
 
-  params   = PrepareFolder.ACDP(params, monitorFolder)
+  params   = PrepareFolder.ACDP(params, monitor_folder)
 
   if (params$failed) {
     warning(params$errorMessage)

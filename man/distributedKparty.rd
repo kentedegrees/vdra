@@ -14,7 +14,7 @@ DataPartner.KParty(
   mask = TRUE,
   numDataPartners = NULL,
   dataPartnerID = NULL,
-  monitorFolder = NULL,
+  monitor_folder = NULL,
   sleepTime = 10,
   maxWaitingTime = 86400,
   popmednet = TRUE,
@@ -25,7 +25,7 @@ DataPartner.KParty(
 AnalysisCenter.KParty(
   regression = "linear",
   numDataPartners = NULL,
-  monitorFolder = NULL,
+  monitor_folder = NULL,
   msreqid = "v_default_00_000",
   tol = 1e-08,
   maxIterations = 25,
@@ -77,7 +77,7 @@ partner with the response variable(s) must have \code{dataPartnerID = 1}.
 All other data partners must have an integer value from 2 to
 \code{numDataPartners}.}
 
-\item{monitorFolder}{the folder where the directories \code{dplocal},
+\item{monitor_folder}{the folder where the directories \code{dplocal},
 \code{inputfiles}, \code{macros}, \code{msoc}, and \code{rprograms} are
 located.}
 
@@ -139,7 +139,7 @@ Returns an object of \code{\link{class}} \code{\link{vdralinear}} for linear
 
 fit = AnalysisCenter.KParty(regression = "linear",
                             numDataPartners = 2,
-                            monitorFolder = tempdir())
+                            monitor_folder = tempdir())
 
 # Data Partner 1 -- To be run in second instand of R, on perhaps a different
 # machine. The working directory should be the same as specified in the
@@ -150,7 +150,7 @@ fit = DataPartner.KParty(regression = "linear",
                          response = "Change_BMI",
                          numDataPartners = 2,
                          dataPartnerID = 1,
-                         monitorFolder = tempdir())
+                         monitor_folder = tempdir())
 
 # Data Partner 2 -- To be run in third instand of R, on perhaps a different
 # machine. The working directory should be the same as specified in the
@@ -160,7 +160,7 @@ fit = DataPartner.KParty(regression = "linear",
                          data = vdra_data[, 8:11],
                          numDataPartners = 2,
                          dataPartnerID = 2,
-                         monitorFolder = tempdir())
+                         monitor_folder = tempdir())
 
 ## 3 party logistic regression
 
@@ -170,7 +170,7 @@ fit = DataPartner.KParty(regression = "linear",
 
 fit = AnalysisCenter.KParty(regression = "logistic",
                             numDataPartners = 2,
-                            monitorFolder = tempdir())
+                            monitor_folder = tempdir())
 
 # Data Partner 1 -- To be run in second instand of R, on perhaps a different
 # machine. The working directory should be the same as specified in the
@@ -181,7 +181,7 @@ fit = DataPartner.KParty(regression = "logistic",
                          response = "WtLost",
                          numDataPartners = 2,
                          dataPartnerID = 1,
-                         monitorFolder = tempdir())
+                         monitor_folder = tempdir())
 
 # Data Partner 2 -- To be run in third instand of R, on perhaps a different
 # machine. The working directory should be the same as specified in the
@@ -191,7 +191,7 @@ fit = DataPartner.KParty(regression = "logistic",
                          data = vdra_data[, 8:11],
                          numDataPartners = 2,
                          dataPartnerID = 2,
-                         monitorFolder = tempdir())
+                         monitor_folder = tempdir())
 
 ## 3 party cox regression
 
@@ -201,7 +201,7 @@ fit = DataPartner.KParty(regression = "logistic",
 
 fit = AnalysisCenter.KParty(regression = "cox",
                             numDataPartners = 2,
-                            monitorFolder = tempdir())
+                            monitor_folder = tempdir())
 
 # Data Partner 1 -- To be run in second instand of R, on perhaps a different
 # machine. The working directory should be the same as specified in the
@@ -213,7 +213,7 @@ fit = DataPartner.KParty(regression = "cox",
                          strata = c("Exposure", "Sex"),
                          numDataPartners = 2,
                          dataPartnerID = 1,
-                         monitorFolder = tempdir())
+                         monitor_folder = tempdir())
 
 # Data Partner 2 -- To be run in third instand of R, on perhaps a different
 # machine. The working directory should be the same as specified in the
@@ -224,7 +224,7 @@ fit = DataPartner.KParty(regression = "cox",
                          strata = c("Exposure", "Sex"),
                          numDataPartners = 2,
                          dataPartnerID = 2,
-                         monitorFolder = tempdir())
+                         monitor_folder = tempdir())
 }
 }
 \seealso{

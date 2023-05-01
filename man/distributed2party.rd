@@ -12,7 +12,7 @@ AnalysisCenter.2Party(
   response = NULL,
   strata = NULL,
   mask = TRUE,
-  monitorFolder = NULL,
+  monitor_folder = NULL,
   msreqid = "v_default_00_000",
   blocksize = 500,
   tol = 1e-08,
@@ -29,7 +29,7 @@ DataPartner.2Party(
   data = NULL,
   strata = NULL,
   mask = TRUE,
-  monitorFolder = NULL,
+  monitor_folder = NULL,
   sleepTime = 10,
   maxWaitingTime = 86400,
   popmednet = TRUE,
@@ -69,7 +69,7 @@ by name. If \code{TRUE}, levels for the strata which belong to the party
 which specified \code{TRUE} will be put in a random order and level names
 will be changed to \code{NA}.}
 
-\item{monitorFolder}{the folder where the directories \code{dplocal},
+\item{monitor_folder}{the folder where the directories \code{dplocal},
 \code{inputfiles}, \code{macros}, \code{msoc}, and \code{rprograms} are
 located.}
 
@@ -134,14 +134,14 @@ Returns an object of \code{\link{class}} \code{\link{vdralinear}} for
 fit = AnalysisCenter.2Party(regression = "linear",
                             data = vdra_data[, c(1, 5:7)],
                             response = "Change_BMI",
-                            monitorFolder = tempdir())
+                            monitor_folder = tempdir())
 
 # Data Partner -- To be run in second instand of R, on perhaps a different
 # machine. The working directory should be the same as specified in the
 # PopMedNet request for the data partner.
 
 fit = DataPartner.2Party(regression = "linear", data = vdra_data[, 8:11],
-                            monitorFolder = tempdir())
+                            monitor_folder = tempdir())
 
 ## 2 party logistic regression
 
@@ -152,7 +152,7 @@ fit = DataPartner.2Party(regression = "linear", data = vdra_data[, 8:11],
 fit = AnalysisCenter.2Party(regression = "logistic",
                             data = vdra_data[, c(2, 5:7)],
                             response = "WtLost",
-                            monitorFolder = tempdir())
+                            monitor_folder = tempdir())
 
 # Data Partner -- To be run in second instand of R, on perhaps a different
 # machine. The working directory should be the same as specified in the
@@ -160,7 +160,7 @@ fit = AnalysisCenter.2Party(regression = "logistic",
 
 fit = DataPartner.2Party(regression = "logistic",
                          data = vdra_data[, 8:11],
-                         monitorFolder = tempdir())
+                         monitor_folder = tempdir())
 
 ## 2 party cox regression
 
@@ -172,7 +172,7 @@ fit = AnalysisCenter.2Party(regression = "cox",
                             data = vdra_data[, c(3:4, 5:7)],
                             response = c("Time", "Status"),
                             strata = c("Exposure", "Sex"),
-                            monitorFolder = tempdir())
+                            monitor_folder = tempdir())
 
 # Data Partner -- To be run in second instand of R, on perhaps a different
 # machine. The working directory should be the same as specified in the
@@ -181,7 +181,7 @@ fit = AnalysisCenter.2Party(regression = "cox",
    fit = DataPartner.2Party(regression = "cox",
                             data = vdra_data[, 8:11],
                             strata = c("Exposure", "Sex"),
-                            monitorFolder = tempdir())
+                            monitor_folder = tempdir())
 }
 }
 \seealso{

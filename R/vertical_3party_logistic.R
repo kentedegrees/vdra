@@ -846,7 +846,7 @@ GetResultsLogistic.B3 = function(params) {
 
 PartyAProcess3Logistic = function(data,
                                   yname          = NULL,
-                                  monitorFolder  = NULL,
+                                  monitor_folder  = NULL,
                                   sleep_time      = 10,
                                   maxWaitingTime = 24 * 60 * 60,
                                   popmednet      = TRUE,
@@ -860,7 +860,7 @@ PartyAProcess3Logistic = function(data,
   params <- InitializeTrackingTable.3p(params)
   Header(params)
 
-  params   = PrepareFolderLinear.A3(params, monitorFolder)
+  params   = PrepareFolderLinear.A3(params, monitor_folder)
   if (params$failed) {
     warning(params$errorMessage)
     return(invisible(NULL))
@@ -957,7 +957,7 @@ PartyAProcess3Logistic = function(data,
 
 
 PartyBProcess3Logistic = function(data,
-                                  monitorFolder  = NULL,
+                                  monitor_folder  = NULL,
                                   sleep_time      = 10,
                                   maxWaitingTime = 24 * 60 * 60,
                                   popmednet      = TRUE,
@@ -970,7 +970,7 @@ PartyBProcess3Logistic = function(data,
   params <- InitializeTrackingTable.3p(params)
 
   Header(params)
-  params   = PrepareFolderLinear.B3(params, monitorFolder)
+  params   = PrepareFolderLinear.B3(params, monitor_folder)
   if (params$failed) {
     warning(params$errorMessage)
     return(invisible(NULL))
@@ -1057,7 +1057,7 @@ PartyBProcess3Logistic = function(data,
 }
 
 
-PartyTProcess3Logistic = function(monitorFolder         = NULL,
+PartyTProcess3Logistic = function(monitor_folder         = NULL,
                                   msreqid               = "v_default_0_000",
                                   blocksize             = 500,
                                   cutoff                = 1e-8,
@@ -1074,7 +1074,7 @@ PartyTProcess3Logistic = function(monitorFolder         = NULL,
   params <- InitializeTrackingTable.3p(params)
 
   Header(params)
-  params   = PrepareFolderLinear.T3(params, monitorFolder)
+  params   = PrepareFolderLinear.T3(params, monitor_folder)
   if (params$failed) {
     warning(params$errorMessage)
     return(invisible(NULL))

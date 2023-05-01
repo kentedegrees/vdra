@@ -1,56 +1,56 @@
 #################### DISTRIBUTED COX REGRESSION FUNCTIONS ####################
 
-PrepareFolderCox.A2 = function(params, monitorFolder) {
+PrepareFolderCox.A2 = function(params, monitor_folder) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareFolderCox.A2\n\n")
-  params$dplocalPath   = file.path(monitorFolder, "dplocal")
-  params$rprogramsPath = file.path(monitorFolder, "rprograms")
-  params$macrosPath    = file.path(monitorFolder, "macros")
-  params$writePath     = file.path(monitorFolder, "inputfiles")
-  params$readPath      = file.path(monitorFolder, "msoc1")
+  params$dplocalPath   = file.path(monitor_folder, "dplocal")
+  params$rprogramsPath = file.path(monitor_folder, "rprograms")
+  params$macrosPath    = file.path(monitor_folder, "macros")
+  params$writePath     = file.path(monitor_folder, "inputfiles")
+  params$readPath      = file.path(monitor_folder, "msoc1")
 
-  if (is.null(monitorFolder)) {
-    warning("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.")
+  if (is.null(monitor_folder)) {
+    warning("monitor_folder must be specified.  Please use the same monitor_folder as the DataMart Client.")
     params$failed = TRUE
     return(params)
   }
-  if (class(monitorFolder) != "character") {
-    warning("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.")
+  if (class(monitor_folder) != "character") {
+    warning("monitor_folder directory is not valid.  Please use the same monitor_folder as the DataMart Client.")
     params$failed = TRUE
     return(params)
   }
-  while (!dir.exists(monitorFolder)) {
+  while (!dir.exists(monitor_folder)) {
     Sys.sleep(1)
   }
   params$errorMessage = NULL
-  if (!CreateIOLocation(monitorFolder, "dplocal")) {
+  if (!CreateIOLocation(monitor_folder, "dplocal")) {
     params$failed = TRUE
     params$errorMessage = paste(params$errorMessage,
                                 "Could not create directory",
                                 paste0(params$dplocalPath, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitorFolder, "rprograms")) {
+  if (!CreateIOLocation(monitor_folder, "rprograms")) {
     params$failed = TRUE
     params$errorMessage = paste(params$errorMessage,
                                 "Could not create directory",
                                 paste0(params$rprogramsPath, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitorFolder, "macros")) {
+  if (!CreateIOLocation(monitor_folder, "macros")) {
     params$failed = TRUE
     params$errorMessage = paste(params$errorMessage,
                                 "Could not create directory",
                                 paste0(params$macrosPath, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitorFolder, "inputfiles")) {
+  if (!CreateIOLocation(monitor_folder, "inputfiles")) {
     params$failed = TRUE
     params$errorMessage = paste(params$errorMessage,
                                 "Could not create directory",
                                 paste0(params$writePath, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitorFolder, "msoc1")) {
+  if (!CreateIOLocation(monitor_folder, "msoc1")) {
     params$failed = TRUE
     params$errorMessage = paste(params$errorMessage,
                                 "Could not create directory",
@@ -63,59 +63,59 @@ PrepareFolderCox.A2 = function(params, monitorFolder) {
 }
 
 
-PrepareFolderCox.B2 = function(params, monitorFolder) {
+PrepareFolderCox.B2 = function(params, monitor_folder) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareFolderCox.B2\n\n")
 
-  params$dplocalPath   = file.path(monitorFolder, "dplocal")
-  params$rprogramsPath = file.path(monitorFolder, "rprograms")
-  params$macrosPath    = file.path(monitorFolder, "macros")
-  params$writePath     = file.path(monitorFolder, "msoc")
-  params$readPath      = file.path(monitorFolder, "inputfiles")
+  params$dplocalPath   = file.path(monitor_folder, "dplocal")
+  params$rprogramsPath = file.path(monitor_folder, "rprograms")
+  params$macrosPath    = file.path(monitor_folder, "macros")
+  params$writePath     = file.path(monitor_folder, "msoc")
+  params$readPath      = file.path(monitor_folder, "inputfiles")
 
-  if (is.null(monitorFolder)) {
-    warning("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.")
+  if (is.null(monitor_folder)) {
+    warning("monitor_folder must be specified.  Please use the same monitor_folder as the DataMart Client.")
     params$failed = TRUE
     return(params)
   }
-  if (class(monitorFolder) != "character") {
-    warning("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.")
+  if (class(monitor_folder) != "character") {
+    warning("monitor_folder directory is not valid.  Please use the same monitor_folder as the DataMart Client.")
     params$failed = TRUE
     return(params)
   }
-  while (!dir.exists(monitorFolder)) {
+  while (!dir.exists(monitor_folder)) {
     Sys.sleep(1)
   }
 
   params$errorMessage = NULL
-  if (!CreateIOLocation(monitorFolder, "dplocal")) {
+  if (!CreateIOLocation(monitor_folder, "dplocal")) {
     params$failed = TRUE
     params$errorMessage = paste(params$errorMessage,
                                 "Could not create directory",
                                 paste0(params$dplocalPath, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitorFolder, "rprograms")) {
+  if (!CreateIOLocation(monitor_folder, "rprograms")) {
     params$failed = TRUE
     params$errorMessage = paste(params$errorMessage,
                                 "Could not create directory",
                                 paste0(params$rprogramsPath, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitorFolder, "macros")) {
+  if (!CreateIOLocation(monitor_folder, "macros")) {
     params$failed = TRUE
     params$errorMessage = paste(params$errorMessage,
                                 "Could not create directory",
                                 paste0(params$macrosPath, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitorFolder, "msoc")) {
+  if (!CreateIOLocation(monitor_folder, "msoc")) {
     params$failed = TRUE
     params$errorMessage = paste(params$errorMessage,
                                 "Could not create directory",
                                 paste0(params$writePath, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitorFolder, "inputfiles")) {
+  if (!CreateIOLocation(monitor_folder, "inputfiles")) {
     params$failed = TRUE
     params$errorMessage = paste(params$errorMessage,
                                 "Could not create directory",
@@ -143,7 +143,7 @@ extractStrata = function(params, data, stratas, mask) {
     }
     if (length(stratas) > 0) {
       idx = stratas %in% colnames(data)
-      if (!is.null(params$partyName) && params$partyName == "A")  {
+      if (!is.null(params$party_name) && params$party_name == "A")  {
         strata$strataFromA = stratas[idx]
         strata$strataFromB = stratas[!idx]
       } else {
@@ -201,7 +201,7 @@ PrepareDataCox.23 = function(params, data, yname, strata, mask) {
   strataIndex = workdata$strata$strataIndex
   responseIndex = numeric()
 
-  if (params$partyName == "A") {
+  if (params$party_name == "A") {
     responseIndex = CheckResponse(params, data, yname)
 
     if (is.null(responseIndex)) {
@@ -222,7 +222,7 @@ PrepareDataCox.23 = function(params, data, yname, strata, mask) {
   covariateIndex = setdiff(1:ncol(data), union(strataIndex, responseIndex))
 
   if (length(covariateIndex) == 0) {
-    if (params$partyName == "A") {
+    if (params$party_name == "A") {
       workdata$X = matrix(0, nrow = nrow(data), ncol = 0)
     } else {
       warning("After removing strata, data is empty.  Party B must supply at least one non-strata covariate.")
@@ -231,7 +231,7 @@ PrepareDataCox.23 = function(params, data, yname, strata, mask) {
     }
   } else {
     workdata$tags = CreateModelMatrixTags(data[, covariateIndex, drop = FALSE])
-    if (params$partyName == "B" & (ncol(data) < 2 | !("numeric" %in% names(workdata$tags)))) {
+    if (params$party_name == "B" & (ncol(data) < 2 | !("numeric" %in% names(workdata$tags)))) {
       warning("The data partner that does not have the response must have at least 2 covariates at least one of which must be numeric.")
       workdata$failed = TRUE
       return(workdata)
@@ -1691,7 +1691,7 @@ ComputeResultsCox.B2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsCox.B2\n\n")
   stats = params$stats
   stats$converged = params$converged
-  stats$partyName = params$partyName
+  stats$party_name <- params$party_name
   stats$failed    = FALSE
 
   fitExists = !is.null(params$fit)
@@ -1809,7 +1809,7 @@ GetResultsCox.A2 = function(params) {
   load(file.path(params$readPath, "stats.rdata"))
   readSize = file.size(file.path(params$readPath, "stats.rdata"))
   readTime = proc.time()[3] - readTime
-  stats$partyName = params$partyName
+  stats$party_name <- params$party_name
   params$stats = stats
   params <- AddToLog(params, "GetResultsCox.A2", readTime, readSize, 0, 0)
   return(params)
@@ -1823,7 +1823,7 @@ PartyAProcess2Cox = function(data,
                              yname          = NULL,
                              strata         = NULL,
                              mask           = TRUE,
-                             monitorFolder  = NULL,
+                             monitor_folder  = NULL,
                              msreqid        = "v_default_00_000",
                              blocksize      = 500,
                              cutoff         = 1e-8,
@@ -1839,7 +1839,7 @@ PartyAProcess2Cox = function(data,
   params <- InitializeStamps.2p(params)
   params <- InitializeTrackingTable.2p(params)
   Header(params)
-  params   = PrepareFolderCox.A2(params, monitorFolder)
+  params   = PrepareFolderCox.A2(params, monitor_folder)
   if (params$failed) {
     warning(params$errorMessage)
     return(invisible(NULL))
@@ -2013,7 +2013,7 @@ PartyAProcess2Cox = function(data,
 PartyBProcess2Cox = function(data,
                              strata              = NULL,
                              mask                = TRUE,
-                             monitorFolder       = NULL,
+                             monitor_folder       = NULL,
                              sleep_time           = 10,
                              maxWaitingTime      = 24 * 60 * 60,
                              popmednet           = TRUE,
@@ -2025,7 +2025,7 @@ PartyBProcess2Cox = function(data,
   params <- InitializeStamps.2p(params)
   params <- InitializeTrackingTable.2p(params)
   Header(params)
-  params <- PrepareFolderCox.B2(params, monitorFolder)
+  params <- PrepareFolderCox.B2(params, monitor_folder)
   if (params$failed) {
     warning(params$errorMessage)
     return(invisible(NULL))

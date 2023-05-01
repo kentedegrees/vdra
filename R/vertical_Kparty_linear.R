@@ -1,61 +1,61 @@
 ################### DISTRIBUTED LINEAR REGRESSION FUNCTIONS ###################
 
-PrepareFolder.ACDP = function(params, monitorFolder) {
+PrepareFolder.ACDP = function(params, monitor_folder) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareFolder.ACDP\n\n")
-  if (is.null(monitorFolder)) {
-    warning("monitorFolder must be specified.  Please use the same monitorFolder as the DataMart Client.")
+  if (is.null(monitor_folder)) {
+    warning("monitor_folder must be specified.  Please use the same monitor_folder as the DataMart Client.")
     params$failed = TRUE
     return(params)
   }
-  if (class(monitorFolder) != "character") {
-    warning("monitorFolder directory is not valid.  Please use the same monitorFolder as the DataMart Client.")
+  if (class(monitor_folder) != "character") {
+    warning("monitor_folder directory is not valid.  Please use the same monitor_folder as the DataMart Client.")
     params$failed = TRUE
     return(params)
   }
-  while (!dir.exists(monitorFolder)) {
+  while (!dir.exists(monitor_folder)) {
     Sys.sleep(1)
   }
 
-  params$dplocalPath   = file.path(monitorFolder, "dplocal")
-  params$rprogramsPath = file.path(monitorFolder, "rprograms")
-  params$macrosPath    = file.path(monitorFolder, "macros")
+  params$dplocalPath   = file.path(monitor_folder, "dplocal")
+  params$rprogramsPath = file.path(monitor_folder, "rprograms")
+  params$macrosPath    = file.path(monitor_folder, "macros")
   if (params$dataPartnerID == 0) {
-    params$writePath   = file.path(monitorFolder, "inputfiles")
+    params$writePath   = file.path(monitor_folder, "inputfiles")
   } else {
-    params$writePath   = file.path(monitorFolder, "msoc")
+    params$writePath   = file.path(monitor_folder, "msoc")
   }
-  params$readPathAC    = file.path(monitorFolder, "inputfiles")
-  params$readPathDP    = file.path(monitorFolder, paste0("msoc", 1:params$numDataPartners))
+  params$readPathAC    = file.path(monitor_folder, "inputfiles")
+  params$readPathDP    = file.path(monitor_folder, paste0("msoc", 1:params$numDataPartners))
 
-  if (!CreateIOLocation(monitorFolder, "dplocal")) {
+  if (!CreateIOLocation(monitor_folder, "dplocal")) {
     params$failed = TRUE
     params$errorMessage = paste(params$errorMessage,
                                 "Could not create directory",
                                 paste0(params$dplocalPath, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitorFolder, "rprograms")) {
+  if (!CreateIOLocation(monitor_folder, "rprograms")) {
     params$failed = TRUE
     params$errorMessage = paste(params$errorMessage,
                                 "Could not create directory",
                                 paste0(params$rprogramsPath, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitorFolder, "macros")) {
+  if (!CreateIOLocation(monitor_folder, "macros")) {
     params$failed = TRUE
     params$errorMessage = paste(params$errorMessage,
                                 "Could not create directory",
                                 paste0(params$macrosPath, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitorFolder, "inputfiles")) {
+  if (!CreateIOLocation(monitor_folder, "inputfiles")) {
     params$failed = TRUE
     params$errorMessage = paste(params$errorMessage,
                                 "Could not create directory",
                                 paste0(params$readPathAC, "."),
                                 "Check the path and restart the program.")
   }
-  if (!CreateIOLocation(monitorFolder, "msoc")) {
+  if (!CreateIOLocation(monitor_folder, "msoc")) {
     params$failed = TRUE
     params$errorMessage = paste(params$errorMessage,
                                 "Could not create directory",
@@ -63,7 +63,7 @@ PrepareFolder.ACDP = function(params, monitorFolder) {
                                 "Check the path and restart the program.")
   }
   for (id in 1:params$numDataPartners) {
-    if (!CreateIOLocation(monitorFolder, paste0("msoc", id))) {
+    if (!CreateIOLocation(monitor_folder, paste0("msoc", id))) {
       params$failed = TRUE
       params$errorMessage = paste(params$errorMessage,
                                   "Could not create directory",
@@ -587,7 +587,7 @@ DataPartnerKLinear = function(data,
                               yname           = NULL,
                               numDataPartners = NULL,
                               dataPartnerID   = NULL,
-                              monitorFolder   = NULL,
+                              monitor_folder   = NULL,
                               sleep_time       = 10,
                               maxWaitingTime  = 24 * 60 * 60,
                               popmednet      = TRUE,
@@ -605,7 +605,7 @@ DataPartnerKLinear = function(data,
   params <- InitializeTrackingTable.kp(params)
   Header(params)
 
-  params   = PrepareFolder.ACDP(params, monitorFolder)
+  params   = PrepareFolder.ACDP(params, monitor_folder)
 
   if (params$failed) {
     warning(params$errorMessage)
@@ -671,7 +671,7 @@ DataPartnerKLinear = function(data,
 
 
 AnalysisCenterKLinear = function(numDataPartners = NULL,
-                                 monitorFolder   = NULL,
+                                 monitor_folder   = NULL,
                                  msreqid         = "v_default_0_000",
                                  sleep_time       = 10,
                                  maxWaitingTime  = 24 * 60 * 60,
@@ -689,7 +689,7 @@ AnalysisCenterKLinear = function(numDataPartners = NULL,
   params <- InitializeTrackingTable.kp(params)
   Header(params)
 
-  params   = PrepareFolder.ACDP(params, monitorFolder)
+  params   = PrepareFolder.ACDP(params, monitor_folder)
 
   if (params$failed) {
     warning(params$errorMessage)

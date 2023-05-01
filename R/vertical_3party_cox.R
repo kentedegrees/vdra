@@ -1552,7 +1552,7 @@ ComputeResultsCox.B3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsCox.B3\n\n")
   stats = params$stats
   stats$converged = params$converged
-  stats$partyName = params$partyName
+  stats$party_name <- params$party_name
   stats$failed    = FALSE
 
   fitExists = !is.null(params$fit)
@@ -1689,7 +1689,7 @@ PartyAProcess3Cox = function(data,
                              yname                 = NULL,
                              strata                = NULL,
                              mask                  = TRUE,
-                             monitorFolder         = NULL,
+                             monitor_folder         = NULL,
                              sleep_time             = 10,
                              maxWaitingTime        = 24 * 60 * 60,
                              popmednet             = TRUE,
@@ -1701,7 +1701,7 @@ PartyAProcess3Cox = function(data,
   params <- InitializeStamps.3p(params)
   params <- InitializeTrackingTable.3p(params)
   Header(params)
-  params   = PrepareFolderLinear.A3(params, monitorFolder)
+  params   = PrepareFolderLinear.A3(params, monitor_folder)
   if (params$failed) {
     warning(params$errorMessage)
     return(invisible(NULL))
@@ -1829,7 +1829,7 @@ PartyAProcess3Cox = function(data,
 PartyBProcess3Cox = function(data,
                              strata              = NULL,
                              mask                = TRUE,
-                             monitorFolder       = NULL,
+                             monitor_folder       = NULL,
                              sleep_time           = 10,
                              maxWaitingTime      = 24 * 60 * 60,
                              popmednet           = TRUE,
@@ -1841,7 +1841,7 @@ PartyBProcess3Cox = function(data,
   params <- InitializeStamps.3p(params)
   params <- InitializeTrackingTable.3p(params)
   Header(params)
-  params <- PrepareFolderLinear.B3(params, monitorFolder)
+  params <- PrepareFolderLinear.B3(params, monitor_folder)
   if (params$failed) {
     warning(params$errorMessage)
     return(invisible(NULL))
@@ -2010,7 +2010,7 @@ PartyBProcess3Cox = function(data,
 }
 
 
-PartyTProcess3Cox = function(monitorFolder         = NULL,
+PartyTProcess3Cox = function(monitor_folder         = NULL,
                              msreqid               = "v_default_0_000",
                              blocksize             = 500,
                              cutoff                = 1e-8,
@@ -2027,7 +2027,7 @@ PartyTProcess3Cox = function(monitorFolder         = NULL,
   Tparams <- InitializeTrackingTable.3p(Tparams)
 
   Header(Tparams)
-  params   = PrepareFolderLinear.T3(Tparams, monitorFolder)
+  params   = PrepareFolderLinear.T3(Tparams, monitor_folder)
   if (params$failed) {
     warning(params$errorMessage)
     return(invisible(NULL))

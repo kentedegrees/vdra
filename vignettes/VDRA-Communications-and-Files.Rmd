@@ -51,9 +51,9 @@ knitr::include_graphics("CommunicationRound.png")
 
 # The Local Directory Structure
 
-The DataMart Client is configured to both read from and write to a specific directory on the machine to which each party is running.  When running this R-script, this directory is set using the parameter `monitorFolder`.  The author of the package prefers to use the directories `D:/vdra/dp0`, `D:/vdra/dp1`, etc. for data partners `dp0`, `dp1`, etc. respectively.  More information on configuring the DataMart Client can be found in the vignette "How to Use the VDRA Package with PopMedNet".
+The DataMart Client is configured to both read from and write to a specific directory on the machine to which each party is running.  When running this R-script, this directory is set using the parameter `monitor_folder`.  The author of the package prefers to use the directories `D:/vdra/dp0`, `D:/vdra/dp1`, etc. for data partners `dp0`, `dp1`, etc. respectively.  More information on configuring the DataMart Client can be found in the vignette "How to Use the VDRA Package with PopMedNet".
 
-Every request initiated by PopMedNet has a unique Request ID.  When a DataMart Client receives the initial payload from PopMedNet, it will create a sub-directory under `monitorFolder` which is named after the Request ID.  The Request ID is specified in the R-script using the parameter `msreqid`.  This allows a single client to start with a clean directory structure each time it participates in a new request from PopMedNet.  (If the PopMedNet simulator `pmn()` is being used to test out the package instead of PopMedNet, then `msreqid` is not included in the directory structure.)
+Every request initiated by PopMedNet has a unique Request ID.  When a DataMart Client receives the initial payload from PopMedNet, it will create a sub-directory under `monitor_folder` which is named after the Request ID.  The Request ID is specified in the R-script using the parameter `msreqid`.  This allows a single client to start with a clean directory structure each time it participates in a new request from PopMedNet.  (If the PopMedNet simulator `pmn()` is being used to test out the package instead of PopMedNet, then `msreqid` is not included in the directory structure.)
 
 
 The directory specified by `msreqid` contains the further sub-directories `inputfiles`, `msoc`, `msoc1`, $\dots$, `msoc(k)`.  The analysis center (`dp0`) writes files to `inputfiles` and the data partners all write files to `msoc`.  For all clients (both the analysis center and the data partners), files which are received from the analysis center are written to `inputfiles`, files which are received from `dp1` are written to `msoc1`, files which received from `dp2` are written to `msoc2`, etc.  
@@ -64,7 +64,7 @@ Three other folder, `dplocal`, `macros`, and `rprograms`, are included in the di
 ```
 Directory Structure
 
-└───monitorFolder
+└───monitor_folder
     └───msreqid
         ├───inputfiles
         ├───msoc

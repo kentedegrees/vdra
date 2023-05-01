@@ -39,7 +39,7 @@
 #'   by name. If \code{TRUE}, levels for the strata which belong to the party
 #'   which specified \code{TRUE} will be put in a random order and level names
 #'   will be changed to \code{NA}.
-#' @param monitorFolder the folder where the directories \code{dplocal},
+#' @param monitor_folder the folder where the directories \code{dplocal},
 #'   \code{inputfiles}, \code{macros}, \code{msoc}, and \code{rprograms} are
 #'   located.
 #' @param msreqid a character string specifying the name of the \emph{Request
@@ -82,14 +82,14 @@
 #' fit = AnalysisCenter.2Party(regression = "linear",
 #'                             data = vdra_data[, c(1, 5:7)],
 #'                             response = "Change_BMI",
-#'                             monitorFolder = tempdir())
+#'                             monitor_folder = tempdir())
 #'
 #' # Data Partner -- To be run in second instand of R, on perhaps a different
 #' # machine. The working directory should be the same as specified in the
 #' # PopMedNet request for the data partner.
 #'
 #' fit = DataPartner.2Party(regression = "linear", data = vdra_data[, 8:11],
-#'                             monitorFolder = tempdir())
+#'                             monitor_folder = tempdir())
 #'
 #' ## 2 party logistic regression
 #'
@@ -100,7 +100,7 @@
 #' fit = AnalysisCenter.2Party(regression = "logistic",
 #'                             data = vdra_data[, c(2, 5:7)],
 #'                             response = "WtLost",
-#'                             monitorFolder = tempdir())
+#'                             monitor_folder = tempdir())
 #'
 #' # Data Partner -- To be run in second instand of R, on perhaps a different
 #' # machine. The working directory should be the same as specified in the
@@ -108,7 +108,7 @@
 #'
 #' fit = DataPartner.2Party(regression = "logistic",
 #'                          data = vdra_data[, 8:11],
-#'                          monitorFolder = tempdir())
+#'                          monitor_folder = tempdir())
 #'
 #' ## 2 party cox regression
 #'
@@ -120,7 +120,7 @@
 #'                             data = vdra_data[, c(3:4, 5:7)],
 #'                             response = c("Time", "Status"),
 #'                             strata = c("Exposure", "Sex"),
-#'                             monitorFolder = tempdir())
+#'                             monitor_folder = tempdir())
 #'
 #' # Data Partner -- To be run in second instand of R, on perhaps a different
 #' # machine. The working directory should be the same as specified in the
@@ -129,7 +129,7 @@
 #'    fit = DataPartner.2Party(regression = "cox",
 #'                             data = vdra_data[, 8:11],
 #'                             strata = c("Exposure", "Sex"),
-#'                             monitorFolder = tempdir())
+#'                             monitor_folder = tempdir())
 #' }
 #' @export
 AnalysisCenter.2Party = function(regression            = "linear",
@@ -137,7 +137,7 @@ AnalysisCenter.2Party = function(regression            = "linear",
                                  response              = NULL,
                                  strata                = NULL,
                                  mask                  = TRUE,
-                                 monitorFolder         = NULL,
+                                 monitor_folder         = NULL,
                                  msreqid               = "v_default_00_000",
                                  blocksize             = 500,
                                  tol                   = 1e-8,
@@ -147,29 +147,29 @@ AnalysisCenter.2Party = function(regression            = "linear",
                                  popmednet             = TRUE,
                                  trace                 = FALSE,
                                  verbose               = TRUE) {
-  startTime = proc.time()
+  start_time <- proc.time()
   stats = list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
-  if (is.null(monitorFolder)) {
-    warning("monitorFolder must be specified.")
+  if (is.null(monitor_folder)) {
+    warning("monitor_folder must be specified.")
   } else if (regression == "cox") {
-    stats = PartyAProcess2Cox(data, response, strata, mask, monitorFolder,
+    stats = PartyAProcess2Cox(data, response, strata, mask, monitor_folder,
                               msreqid, blocksize, tol, maxIterations,
                               sleep_time, maxWaitingTime, popmednet, trace,
                               verbose)
   } else if (regression == "linear") {
-    stats = PartyAProcess2Linear(data, response, monitorFolder, msreqid,
+    stats = PartyAProcess2Linear(data, response, monitor_folder, msreqid,
                                  blocksize, sleep_time, maxWaitingTime,
                                  popmednet, trace, verbose)
   } else if (regression == "logistic") {
-    stats = PartyAProcess2Logistic(data, response, monitorFolder, msreqid,
+    stats = PartyAProcess2Logistic(data, response, monitor_folder, msreqid,
                                    blocksize, tol, maxIterations, sleep_time,
                                    maxWaitingTime, popmednet, trace, verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
+  elp = GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -181,32 +181,32 @@ DataPartner.2Party = function(regression          = "linear",
                               data                = NULL,
                               strata              = NULL,
                               mask                = TRUE,
-                              monitorFolder       = NULL,
+                              monitor_folder       = NULL,
                               sleep_time           = 10,
                               maxWaitingTime      = 86400,
                               popmednet           = TRUE,
                               trace               = FALSE,
                               verbose             = TRUE) {
-  startTime = proc.time()
+  start_time <- proc.time()
   stats = list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
-  if (is.null(monitorFolder)) {
-    warning("monitorFolder must be specified.")
+  if (is.null(monitor_folder)) {
+    warning("monitor_folder must be specified.")
   } else if (regression == "cox") {
     stats = PartyBProcess2Cox(data, strata, mask,
-                              monitorFolder, sleep_time, maxWaitingTime,
+                              monitor_folder, sleep_time, maxWaitingTime,
                               popmednet, trace, verbose)
   } else if (regression == "linear") {
-    stats = PartyBProcess2Linear(data, monitorFolder, sleep_time, maxWaitingTime,
+    stats = PartyBProcess2Linear(data, monitor_folder, sleep_time, maxWaitingTime,
                                  popmednet, trace, verbose)
   } else if (regression == "logistic") {
-    stats = PartyBProcess2Logistic(data, monitorFolder, sleep_time, maxWaitingTime,
+    stats = PartyBProcess2Logistic(data, monitor_folder, sleep_time, maxWaitingTime,
                                    popmednet, trace, verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
+  elp = GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -221,35 +221,35 @@ DataPartner1.3Party = function(regression            = "linear",
                                response              = NULL,
                                strata                = NULL,
                                mask                  = TRUE,
-                               monitorFolder         = NULL,
+                               monitor_folder         = NULL,
                                sleep_time             = 10,
                                maxWaitingTime        = 86400,
                                popmednet             = TRUE,
                                trace                 = FALSE,
                                verbose               = TRUE) {
 
-  startTime = proc.time()
+  start_time <- proc.time()
   stats = list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
-  if (is.null(monitorFolder)) {
-    warning("monitorFolder must be specified.")
+  if (is.null(monitor_folder)) {
+    warning("monitor_folder must be specified.")
   } else if (regression == "cox") {
-    stats = PartyAProcess3Cox(data, response, strata, mask, monitorFolder,
+    stats = PartyAProcess3Cox(data, response, strata, mask, monitor_folder,
                               sleep_time, maxWaitingTime, popmednet, trace,
                               verbose)
   } else if (regression == "linear") {
-    stats = PartyAProcess3Linear(data, response, monitorFolder,
+    stats = PartyAProcess3Linear(data, response, monitor_folder,
                                  sleep_time, maxWaitingTime, popmednet, trace,
                                  verbose)
   } else  if (regression == "logistic") {
-    stats = PartyAProcess3Logistic(data, response, monitorFolder,
+    stats = PartyAProcess3Logistic(data, response, monitor_folder,
                                    sleep_time, maxWaitingTime, popmednet, trace,
                                    verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
+  elp = GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -262,34 +262,34 @@ DataPartner2.3Party = function(regression          = "linear",
                                data                = NULL,
                                strata              = NULL,
                                mask                = TRUE,
-                               monitorFolder       = NULL,
+                               monitor_folder       = NULL,
                                sleep_time           = 10,
                                maxWaitingTime      = 86400,
                                popmednet           = TRUE,
                                trace               = FALSE,
                                verbose             = TRUE) {
-  startTime = proc.time()
+  start_time <- proc.time()
   stats = list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
-  if (is.null(monitorFolder)) {
-    warning("monitorFolder must be specified.")
+  if (is.null(monitor_folder)) {
+    warning("monitor_folder must be specified.")
   } else if (regression == "cox") {
-    stats = PartyBProcess3Cox(data, strata, mask, monitorFolder,
+    stats = PartyBProcess3Cox(data, strata, mask, monitor_folder,
                               sleep_time, maxWaitingTime, popmednet, trace,
                               verbose)
   } else if (regression == "linear") {
-    stats = PartyBProcess3Linear(data, monitorFolder,
+    stats = PartyBProcess3Linear(data, monitor_folder,
                                  sleep_time, maxWaitingTime, popmednet, trace,
                                  verbose)
   } else if (regression == "logistic") {
-    stats = PartyBProcess3Logistic(data, monitorFolder,
+    stats = PartyBProcess3Logistic(data, monitor_folder,
                                    sleep_time, maxWaitingTime, popmednet, trace,
                                    verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
+  elp = GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -343,7 +343,7 @@ DataPartner2.3Party = function(regression          = "linear",
 #'   by name. If \code{TRUE}, levels for the strata which belong to the party
 #'   which specified \code{TRUE} will be put in a random order and level names
 #'   will be changed to \code{NA}.
-#' @param monitorFolder the folder where the directories \code{dplocal},
+#' @param monitor_folder the folder where the directories \code{dplocal},
 #'   \code{inputfiles}, \code{macros}, \code{msoc}, and \code{rprograms} are
 #'   located.
 #' @param msreqid a character string specifying the name of the \emph{Request
@@ -385,7 +385,7 @@ DataPartner2.3Party = function(regression          = "linear",
 #' # requset for the analysis center.
 #'
 #' fit = AnalysisCenter.3Party(regression = "linear",
-#'                             monitorFolder = tempdir())
+#'                             monitor_folder = tempdir())
 #'
 #' # Data Partner 1 -- To be run in second instand of R, on perhaps a different
 #' # machine. The working directory should be the same as specified in the
@@ -394,7 +394,7 @@ DataPartner2.3Party = function(regression          = "linear",
 #' fit = DataPartner1.3Party(regression = "linear",
 #'                           data = vdra_data[, c(1, 5:7)],
 #'                           response = "Change_BMI",
-#'                           monitorFolder = tempdir())
+#'                           monitor_folder = tempdir())
 #'
 #' # Data Partner 2 -- To be run in third instand of R, on perhaps a different
 #' # machine. The working directory should be the same as specified in the
@@ -402,7 +402,7 @@ DataPartner2.3Party = function(regression          = "linear",
 #'
 #' fit = DataPartner2.3Party(regression = "linear",
 #'                           data = vdra_data[, 8:11],
-#'                           monitorFolder = tempdir())
+#'                           monitor_folder = tempdir())
 #'
 #' ## 3 party logistic regression
 #'
@@ -411,7 +411,7 @@ DataPartner2.3Party = function(regression          = "linear",
 #' # requset for the analysis center.
 #'
 #' fit = AnalysisCenter.3Party(regression = "logistic",
-#'                             monitorFolder = tempdir())
+#'                             monitor_folder = tempdir())
 #'
 #' # Data Partner 1 -- To be run in second instand of R, on perhaps a different
 #' # machine. The working directory should be the same as specified in the
@@ -420,7 +420,7 @@ DataPartner2.3Party = function(regression          = "linear",
 #' fit = DataPartner1.3Party(regression = "logistic",
 #'                           data = vdra_data[, c(2, 5:7)],
 #'                           response = "WtLost",
-#'                           monitorFolder = tempdir())
+#'                           monitor_folder = tempdir())
 #'
 #' # Data Partner 2 -- To be run in third instand of R, on perhaps a different
 #' # machine. The working directory should be the same as specified in the
@@ -428,7 +428,7 @@ DataPartner2.3Party = function(regression          = "linear",
 #'
 #' fit = DataPartner2.3Party(regression = "logistic",
 #'                           data = vdra_data[, 8:11],
-#'                           monitorFolder = tempdir())
+#'                           monitor_folder = tempdir())
 #'
 #' ## 3 party cox regression
 #'
@@ -437,7 +437,7 @@ DataPartner2.3Party = function(regression          = "linear",
 #' # requset for the analysis center.
 #'
 #' fit = AnalysisCenter.3Party(regression = "cox",
-#'                             monitorFolder = tempdir())
+#'                             monitor_folder = tempdir())
 #'
 #' # Data Partner 1 -- To be run in second instand of R, on perhaps a different
 #' # machine. The working directory should be the same as specified in the
@@ -447,7 +447,7 @@ DataPartner2.3Party = function(regression          = "linear",
 #'                           data = vdra_data[, c(3:4, 5:7)],
 #'                           response = c("Time", "Status"),
 #'                           strata = c("Exposure", "Sex"),
-#'                           monitorFolder = tempdir())
+#'                           monitor_folder = tempdir())
 #'
 #' # Data Partner 2 -- To be run in third instand of R, on perhaps a different
 #' # machine. The working directory should be the same as specified in the
@@ -456,11 +456,11 @@ DataPartner2.3Party = function(regression          = "linear",
 #' fit = DataPartner2.3Party(regression = "cox",
 #'                           data = vdra_data[, 8:11],
 #'                           strata = c("Exposure", "Sex"),
-#'                           monitorFolder = tempdir())
+#'                           monitor_folder = tempdir())
 #' }
 #' @export
 AnalysisCenter.3Party = function(regression            = "linear",
-                                 monitorFolder         = NULL,
+                                 monitor_folder         = NULL,
                                  msreqid               = "v_default_00_000",
                                  blocksize             = 500,
                                  tol                   = 1e-8,
@@ -470,28 +470,28 @@ AnalysisCenter.3Party = function(regression            = "linear",
                                  popmednet             = TRUE,
                                  trace                 = FALSE,
                                  verbose               = TRUE) {
-  startTime = proc.time()
+  start_time <- proc.time()
   stats = list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
-  if (is.null(monitorFolder)) {
-    warning("monitorFolder must be specified.")
+  if (is.null(monitor_folder)) {
+    warning("monitor_folder must be specified.")
   } else if (regression == "cox") {
-    stats = PartyTProcess3Cox(monitorFolder, msreqid, blocksize, tol,
+    stats = PartyTProcess3Cox(monitor_folder, msreqid, blocksize, tol,
                               maxIterations, sleep_time, maxWaitingTime,
                               popmednet, trace, verbose)
   } else if (regression == "linear") {
-    stats = PartyTProcess3Linear(monitorFolder, msreqid, blocksize,
+    stats = PartyTProcess3Linear(monitor_folder, msreqid, blocksize,
                                  sleep_time, maxWaitingTime, popmednet, trace,
                                  verbose)
   } else if (regression == "logistic") {
-    stats = PartyTProcess3Logistic(monitorFolder, msreqid, blocksize, tol,
+    stats = PartyTProcess3Logistic(monitor_folder, msreqid, blocksize, tol,
                                    maxIterations, sleep_time, maxWaitingTime,
                                    popmednet, trace, verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
+  elp = GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -508,41 +508,41 @@ DataPartner.KParty = function(regression            = "linear",
                               mask                  = TRUE,
                               numDataPartners       = NULL,
                               dataPartnerID         = NULL,
-                              monitorFolder         = NULL,
+                              monitor_folder         = NULL,
                               sleep_time             = 10,
                               maxWaitingTime        = 86400,
                               popmednet             = TRUE,
                               trace                 = FALSE,
                               verbose               = TRUE) {
-  startTime = proc.time()
+  start_time <- proc.time()
   stats = list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
-  if (is.null(monitorFolder)) {
-    warning("monitorFolder must be specified.")
+  if (is.null(monitor_folder)) {
+    warning("monitor_folder must be specified.")
   } else if (is.null(numDataPartners)) {
     warning("numDataPartners must be specified")
   } else if (is.null(dataPartnerID)) {
     warning("dataPartnerID must be specified")
   } else if (regression == "cox") {
     stats = DataPartnerKCox(data, response, strata, mask, numDataPartners,
-                            dataPartnerID, monitorFolder,
+                            dataPartnerID, monitor_folder,
                             sleep_time, maxWaitingTime, popmednet, trace,
                             verbose)
   } else if (regression == "linear") {
     stats = DataPartnerKLinear(data, response, numDataPartners,
-                               dataPartnerID, monitorFolder,
+                               dataPartnerID, monitor_folder,
                                sleep_time, maxWaitingTime, popmednet, trace,
                                verbose)
   } else  if (regression == "logistic") {
     stats = DataPartnerKLogistic(data, response, numDataPartners,
-                                 dataPartnerID, monitorFolder,
+                                 dataPartnerID, monitor_folder,
                                  sleep_time, maxWaitingTime, popmednet, trace,
                                  verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
+  elp = GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -595,7 +595,7 @@ DataPartner.KParty = function(regression            = "linear",
 #'   partner with the response variable(s) must have \code{dataPartnerID = 1}.
 #'   All other data partners must have an integer value from 2 to
 #'   \code{numDataPartners}.
-#' @param monitorFolder the folder where the directories \code{dplocal},
+#' @param monitor_folder the folder where the directories \code{dplocal},
 #'   \code{inputfiles}, \code{macros}, \code{msoc}, and \code{rprograms} are
 #'   located.
 #' @param msreqid a character string specifying the name of the \emph{Request
@@ -634,7 +634,7 @@ DataPartner.KParty = function(regression            = "linear",
 #'
 #' fit = AnalysisCenter.KParty(regression = "linear",
 #'                             numDataPartners = 2,
-#'                             monitorFolder = tempdir())
+#'                             monitor_folder = tempdir())
 #'
 #' # Data Partner 1 -- To be run in second instand of R, on perhaps a different
 #' # machine. The working directory should be the same as specified in the
@@ -645,7 +645,7 @@ DataPartner.KParty = function(regression            = "linear",
 #'                          response = "Change_BMI",
 #'                          numDataPartners = 2,
 #'                          dataPartnerID = 1,
-#'                          monitorFolder = tempdir())
+#'                          monitor_folder = tempdir())
 #'
 #' # Data Partner 2 -- To be run in third instand of R, on perhaps a different
 #' # machine. The working directory should be the same as specified in the
@@ -655,7 +655,7 @@ DataPartner.KParty = function(regression            = "linear",
 #'                          data = vdra_data[, 8:11],
 #'                          numDataPartners = 2,
 #'                          dataPartnerID = 2,
-#'                          monitorFolder = tempdir())
+#'                          monitor_folder = tempdir())
 #'
 #' ## 3 party logistic regression
 #'
@@ -665,7 +665,7 @@ DataPartner.KParty = function(regression            = "linear",
 #'
 #' fit = AnalysisCenter.KParty(regression = "logistic",
 #'                             numDataPartners = 2,
-#'                             monitorFolder = tempdir())
+#'                             monitor_folder = tempdir())
 #'
 #' # Data Partner 1 -- To be run in second instand of R, on perhaps a different
 #' # machine. The working directory should be the same as specified in the
@@ -676,7 +676,7 @@ DataPartner.KParty = function(regression            = "linear",
 #'                          response = "WtLost",
 #'                          numDataPartners = 2,
 #'                          dataPartnerID = 1,
-#'                          monitorFolder = tempdir())
+#'                          monitor_folder = tempdir())
 #'
 #' # Data Partner 2 -- To be run in third instand of R, on perhaps a different
 #' # machine. The working directory should be the same as specified in the
@@ -686,7 +686,7 @@ DataPartner.KParty = function(regression            = "linear",
 #'                          data = vdra_data[, 8:11],
 #'                          numDataPartners = 2,
 #'                          dataPartnerID = 2,
-#'                          monitorFolder = tempdir())
+#'                          monitor_folder = tempdir())
 #'
 #' ## 3 party cox regression
 #'
@@ -696,7 +696,7 @@ DataPartner.KParty = function(regression            = "linear",
 #'
 #' fit = AnalysisCenter.KParty(regression = "cox",
 #'                             numDataPartners = 2,
-#'                             monitorFolder = tempdir())
+#'                             monitor_folder = tempdir())
 #'
 #' # Data Partner 1 -- To be run in second instand of R, on perhaps a different
 #' # machine. The working directory should be the same as specified in the
@@ -708,7 +708,7 @@ DataPartner.KParty = function(regression            = "linear",
 #'                          strata = c("Exposure", "Sex"),
 #'                          numDataPartners = 2,
 #'                          dataPartnerID = 1,
-#'                          monitorFolder = tempdir())
+#'                          monitor_folder = tempdir())
 #'
 #' # Data Partner 2 -- To be run in third instand of R, on perhaps a different
 #' # machine. The working directory should be the same as specified in the
@@ -719,12 +719,12 @@ DataPartner.KParty = function(regression            = "linear",
 #'                          strata = c("Exposure", "Sex"),
 #'                          numDataPartners = 2,
 #'                          dataPartnerID = 2,
-#'                          monitorFolder = tempdir())
+#'                          monitor_folder = tempdir())
 #' }
 
 AnalysisCenter.KParty = function(regression            = "linear",
                                  numDataPartners       = NULL,
-                                 monitorFolder         = NULL,
+                                 monitor_folder         = NULL,
                                  msreqid               = "v_default_00_000",
                                  tol                   = 1e-8,
                                  maxIterations         = 25,
@@ -733,30 +733,30 @@ AnalysisCenter.KParty = function(regression            = "linear",
                                  popmednet             = TRUE,
                                  trace                 = FALSE,
                                  verbose               = TRUE) {
-  startTime = proc.time()
+  start_time <- proc.time()
   stats = list()
   if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
-  if (is.null(monitorFolder)) {
-    warning("monitorFolder must be specified.")
+  if (is.null(monitor_folder)) {
+    warning("monitor_folder must be specified.")
   } else if (is.null(numDataPartners)) {
     warning("numDataPartners must be specified.")
   } else if (regression == "cox") {
-    stats = AnalysisCenterKCox(numDataPartners, monitorFolder, msreqid, tol,
+    stats = AnalysisCenterKCox(numDataPartners, monitor_folder, msreqid, tol,
                                maxIterations, sleep_time, maxWaitingTime,
                                popmednet, trace, verbose)
   } else if (regression == "linear") {
-    stats = AnalysisCenterKLinear(numDataPartners, monitorFolder, msreqid,
+    stats = AnalysisCenterKLinear(numDataPartners, monitor_folder, msreqid,
                                   sleep_time, maxWaitingTime, popmednet, trace,
                                   verbose)
   } else if (regression == "logistic") {
-    stats = AnalysisCenterKLogistic(numDataPartners, monitorFolder, msreqid, tol,
+    stats = AnalysisCenterKLogistic(numDataPartners, monitor_folder, msreqid, tol,
                                     maxIterations, sleep_time, maxWaitingTime,
                                     popmednet, trace, verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp = GetElapsedTime(proc.time() - startTime, final = TRUE, timeOnly = FALSE)
+  elp = GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -765,8 +765,8 @@ AnalysisCenter.KParty = function(regression            = "linear",
 ############################ SHARED SETUP FUNCTIONS ############################
 
 #' @importFrom utils file_test
-CreateIOLocation = function(monitorFolder, folder) {
-  location = file.path(monitorFolder, folder)
+CreateIOLocation = function(monitor_folder, folder) {
+  location = file.path(monitor_folder, folder)
   if (!dir.exists(location) && !file.exists(location)) {
     # directory does not exist, so create it.
     dir.create(location)
@@ -918,7 +918,7 @@ CreateModelMatrixTags = function(data) {
 PrepareParams.2p = function(analysis, party, msreqid = "v_default_00_000",
                             popmednet = TRUE, trace = FALSE, verbose = TRUE) {
   params                     = list()
-  params$partyName           = party
+  params$party_name           = party
   params$analysis            = analysis
   params$msreqid             = msreqid
   params$popmednet           = popmednet
@@ -948,7 +948,7 @@ PrepareParams.2p = function(analysis, party, msreqid = "v_default_00_000",
 PrepareParams.3p = function(analysis, party, msreqid = "v_default_00_000",
                             popmednet = TRUE, trace = FALSE, verbose = TRUE) {
   params                     = list()
-  params$partyName           = party
+  params$party_name           = party
   params$analysis            = analysis
   params$msreqid             = msreqid
   params$popmednet           = popmednet
@@ -1297,7 +1297,7 @@ Standby = function(triggerName, triggerLocation,
   }
 
   fpath <- file.path(triggerLocation, triggerName)
-  startTime <- proc.time()[3]
+  start_time <- proc.time()[3]
   elapsedTime <- 0
 
   while (!found) {
@@ -1309,7 +1309,7 @@ Standby = function(triggerName, triggerLocation,
 
     if (!found) {
       Sys.sleep(sleep_time)
-      elapsedTime = round(proc.time()[3] - startTime, 0)
+      elapsedTime = round(proc.time()[3] - start_time, 0)
     }
 
     if (verbose) cat("Elapsed Time:", HMS(elapsedTime), "\r")
@@ -1326,9 +1326,9 @@ Standby = function(triggerName, triggerLocation,
 }
 
 # This function is never called!  (?)
-CopyFile = function(readDirectory, writeDirectory, filename) {
-  source      = file.path(readDirectory, filename)
-  destination = file.path(writeDirectory, filename)
+CopyFile = function(read_directory, write_directory, filename) {
+  source      = file.path(read_directory, filename)
+  destination = file.path(write_directory, filename)
   if (all(file.exists(source))) {
     file.copy(source, destination, overwrite = TRUE)
   } else {
@@ -1354,12 +1354,12 @@ DeleteTrigger = function(triggerName, triggerPath) {
   targets = file.path(triggerPath, triggerName)
   for (target in targets) {
     if (file.exists(target)) {
-      startTime = proc.time()[3]
+      start_time <- proc.time()[3]
       repeat {
         result = suppressWarnings(try(file.remove(target)))
         if (result) break
         Sys.sleep(1)
-        if (proc.time()[3] - startTime > 60) {
+        if (proc.time()[3] - start_time > 60) {
           stop(paste("Could not delete the file", target, "after 60 seconds."))
         }
       }
@@ -1398,7 +1398,7 @@ SendPauseQuit.2p = function(params,
   params$lastIteration = TRUE
   files = c(files, "stamps.rdata", "log.rdata", "file_list.csv")
   transfer = c(rep(1, length(files) - 1), 10)
-  if (params$partyName == "A") {
+  if (params$party_name == "A") {
     if (job_failed) {
       files = c(files, "job_fail.ok")
       params <- StoreStampsEntry(params, "Job failed trigger file", "Trigger File created")
@@ -1408,7 +1408,7 @@ SendPauseQuit.2p = function(params,
     }
     transfer = c(transfer, 10)
   }
-  if (params$partyName == "A") {
+  if (params$party_name == "A") {
     files = c(files, "dl_track_tbl.csv")
     transfer = c(transfer, 10)
     destination = rep(1, length(files))
@@ -1445,7 +1445,7 @@ SendPauseContinue.2p = function(params,
   WriteLogRaw(params)
   files = c(files, "stamps.rdata", "log.rdata", "file_list.csv")
   transfer = c(rep(1, length(files) - 1), 10)
-  if (params$partyName == "A") {
+  if (params$party_name == "A") {
     files = c(files, "dl_track_tbl.csv")
     transfer = c(transfer, 10)
     destination = rep(1, length(files))
@@ -1466,7 +1466,7 @@ SendPauseContinue.2p = function(params,
   } else {
     MakeTrigger("files_done.ok", params$writePath)
   }
-  if (params$partyName == "A") {
+  if (params$party_name == "A") {
     if (params$verbose) cat("Waiting for data partner\n")
   } else {
     if (params$verbose) cat("Waiting for analysis center\n")
@@ -1480,7 +1480,7 @@ SendPauseContinue.2p = function(params,
   params <- NewLogEntry.2p(params)
   params <- ReadStampsRaw.2p(params)
   params <- StoreStampsEntry(params, "R program execution begins", "Tracking Table")
-  if (params$partyName == "A") {
+  if (params$party_name == "A") {
     params <- ReadTrackingTableUpdate.2p(params)
   }
   return(params)
@@ -1490,7 +1490,7 @@ SendPauseContinue.2p = function(params,
 PauseContinue.2p = function(params, maxWaitingTime) {
   params <- StoreLogEntry.2p(params, "")
   WriteLogCSV(params)
-  if (params$partyName == "A") {
+  if (params$party_name == "A") {
     if (params$verbose) cat("Waiting for data partner\n")
   } else {
     if (params$verbose) cat("Waiting for analysis center\n")
@@ -1512,10 +1512,10 @@ PauseContinue.2p = function(params, maxWaitingTime) {
 
 WaitForTurn.3p = function(params, sleep_time) {
   Sys.sleep(sleep_time)
-  if ((params$partyName == "T") || (!params$popmednet)) return(NULL)
+  if ((params$party_name == "T") || (!params$popmednet)) return(NULL)
 
   if (params$verbose) cat("Waiting For Turn\n")
-  startTime = proc.time()[3]
+  start_time <- proc.time()[3]
   if (params$verbose) cat("Elapsed Time:", HMS(0), "\r")
 
   if (exists("partyOffset")) {
@@ -1526,12 +1526,12 @@ WaitForTurn.3p = function(params, sleep_time) {
   partyOffset = 15
 
   modulus   = 2 * partyOffset
-  if (params$partyName == "A") targetTime = 0
-  if (params$partyName == "B") targetTime = partyOffset
+  if (params$party_name == "A") targetTime = 0
+  if (params$party_name == "B") targetTime = partyOffset
 
 
   while (as.integer(Sys.time()) %% modulus != targetTime) {
-    elapsedTime = round(proc.time()[3] - startTime, 0)
+    elapsedTime = round(proc.time()[3] - start_time, 0)
     if (params$verbose) cat("Elapsed Time:", HMS(elapsedTime), "\r")
     Sys.sleep(0.1)
   }
@@ -1576,7 +1576,7 @@ SendPauseQuit.3p = function(params,
   WriteLogCSV(params)
   WriteLogRaw(params)
 
-  if (params$partyName == "T") {
+  if (params$party_name == "T") {
     WriteTrackingTableCSV(params)
     files = c(files, "dl_track_tbl.csv")
     transfer = c(transfer, 10)
@@ -1646,7 +1646,7 @@ SendPauseContinue.3p = function(params,
     transfer = c(transfer, 1, 1, 1)
     destination = c(destination, 0, 0, 0)
   }
-  if (params$partyName == "T") {
+  if (params$party_name == "T") {
     WriteTrackingTableCSV(params)
     files = c(files, "dl_track_tbl.csv")
     transfer    = c(transfer, 10)
@@ -1735,7 +1735,7 @@ WaitForTurn.kp = function(params, sleep_time) {
   if (!params$popmednet) return(NULL)
 
   if (params$verbose) cat("Waiting For Turn\n")
-  startTime = proc.time()[3]
+  start_time <- proc.time()[3]
   if (params$verbose) cat("Elapsed Time:", HMS(0), "\r")
 
   if (exists("partyOffset")) {
@@ -1750,7 +1750,7 @@ WaitForTurn.kp = function(params, sleep_time) {
 
   if (params$verbose) cat("Elapsed Time:", HMS(0), "\r")
   while (as.integer(Sys.time()) %% modulus != targetTime) {
-    elapsedTime = round(proc.time()[3] - startTime, 0)
+    elapsedTime = round(proc.time()[3] - start_time, 0)
     if (params$verbose) cat("Elapsed Time:", HMS(elapsedTime), "\r")
     Sys.sleep(0.1)
   }
@@ -2400,7 +2400,7 @@ InitializeStamps.2p = function(params) {
   stamps = list()
   stamps$blank = data.frame(#Iteration   = params$pmnIterationCounter,
     Step        = params$pmnStepCounter,
-    Source      = paste("Org", params$partyName, "Dist Reg"),
+    Source      = paste("Org", params$party_name, "Dist Reg"),
     Description = "R program execution begins",
     Time        = GetRoundTripTime(),
     Type        = "Tracking Table")
@@ -2435,7 +2435,7 @@ InitializeStamps.3p = function(params) {
   stamps = list()
   stamps$blank = data.frame(#Iteration   = params$pmnIterationCounter,
     Step        = params$pmnStepCounter,
-    Source      = paste("Org", params$partyName, "Dist Reg"),
+    Source      = paste("Org", params$party_name, "Dist Reg"),
     Description = "R program execution begins",
     Time        = GetRoundTripTime(),
     Type        = "Tracking Table")
@@ -2607,7 +2607,7 @@ InitializeLog.2p = function(params) {
 
 NewLogEntry.2p = function(params) {
   params$log$current = params$log$blank
-  params$log$current$Party         = params$partyName
+  params$log$current$Party         = params$party_name
   params$log$current$Start.Time    = GetUTCTime()
   return(params)
 }
@@ -2616,7 +2616,7 @@ NewLogEntry.2p = function(params) {
 StoreLogEntry.2p = function(params, files) {
   params$log$current$Step          = params$pmnStepCounter
   params$log$current$Iteration.alg = params$algIterationCounter
-  params$log$current$Party = params$partyName
+  params$log$current$Party = params$party_name
   params$log$current$End.Time = GetUTCTime()
   params$log$current$Computation.Time = round(as.numeric(difftime(
     params$log$current$End.Time, params$log$current$Start.Time, units = "secs")) -
@@ -2810,7 +2810,7 @@ InitializeLog.3p = function(params) {
 
 NewLogEntry.3p = function(params) {
   params$log$current = params$log$blank
-  params$log$current$Party         = params$partyName
+  params$log$current$Party         = params$party_name
   params$log$current$Start.Time    = GetUTCTime()
   return(params)
 }
@@ -2819,7 +2819,7 @@ NewLogEntry.3p = function(params) {
 StoreLogEntry.3p = function(params, files) {
   params$log$current$Step          = params$pmnStepCounter
   params$log$current$Iteration.alg = params$algIterationCounter
-  params$log$current$Party = params$partyName
+  params$log$current$Party = params$party_name
   params$log$current$End.Time = GetUTCTime()
   params$log$current$Computation.Time = round(as.numeric(difftime(
     params$log$current$End.Time, params$log$current$Start.Time, units = "secs")) -
@@ -3153,8 +3153,8 @@ SummarizeLog.kp = function(params) {
 
   total.time.0 = 0
   for (party in 0:params$numDataPartners) {
-    partyName = paste0("dp", party)
-    index = which(log$Party == partyName)
+    party_name <- paste0("dp", party)
+    index = which(log$Party == party_name)
     if (length(index) > 0) {
       Start.Time = log$Start.Time[index[1]]
       End.Time   = log$End.Time[index[length(index)]]
@@ -3173,19 +3173,19 @@ SummarizeLog.kp = function(params) {
       Waiting.Time.HMS = ConvertSecsToHMS(Waiting.Time, timeOnly = TRUE)
       Bytes.Read = sum(log$Read.Size[index])
       Bytes.Written = sum(log$Write.Size[index])
-      WriteToLogSummary(c1 = paste(partyName, "Start Time"), c2 = Start.Time, writePath = writePath)
-      WriteToLogSummary(c1 = paste(partyName, "End Time"), c2 = End.Time, writePath = writePath)
-      WriteToLogSummary(c1 = paste(partyName, "Total Run Time"), c2 = Total.Time,
+      WriteToLogSummary(c1 = paste(party_name, "Start Time"), c2 = Start.Time, writePath = writePath)
+      WriteToLogSummary(c1 = paste(party_name, "End Time"), c2 = End.Time, writePath = writePath)
+      WriteToLogSummary(c1 = paste(party_name, "Total Run Time"), c2 = Total.Time,
                         c3 = Total.Time.HMS, writePath = writePath)
-      WriteToLogSummary(c1 = paste(partyName, "Total Reading Time"), c2 = Reading.Time,
+      WriteToLogSummary(c1 = paste(party_name, "Total Reading Time"), c2 = Reading.Time,
                         c3 = Reading.Time.HMS, writePath = writePath)
-      WriteToLogSummary(c1 = paste(partyName, "Total Bytes Read"), c2 = Bytes.Read, writePath = writePath)
-      WriteToLogSummary(c1 = paste(partyName, "Total Writing Time"), c2 = Writing.Time,
+      WriteToLogSummary(c1 = paste(party_name, "Total Bytes Read"), c2 = Bytes.Read, writePath = writePath)
+      WriteToLogSummary(c1 = paste(party_name, "Total Writing Time"), c2 = Writing.Time,
                         c3 = Writing.Time.HMS, writePath = writePath)
-      WriteToLogSummary(c1 = paste(partyName, "Total Bytes Written"), c2 = Bytes.Written, writePath = writePath)
-      WriteToLogSummary(c1 = paste(partyName, "Total Computing Time"), c2 = Computing.Time,
+      WriteToLogSummary(c1 = paste(party_name, "Total Bytes Written"), c2 = Bytes.Written, writePath = writePath)
+      WriteToLogSummary(c1 = paste(party_name, "Total Computing Time"), c2 = Computing.Time,
                         c3 = Computing.Time.HMS, writePath = writePath)
-      WriteToLogSummary(c1 = paste(partyName, "Total Waiting Time"), c2 = Waiting.Time,
+      WriteToLogSummary(c1 = paste(party_name, "Total Waiting Time"), c2 = Waiting.Time,
                         c3 = Waiting.Time.HMS, writePath = writePath)
       WriteToLogSummary(writePath = writePath)
     }
@@ -3249,11 +3249,11 @@ WriteTrackingTableCSV = function(params) {
 
 InitializeTrackingTable.2p = function(params) {
   trackingTable = list()
-  trackingTable$current = data.frame(DP_CD              = ifelse(params$partyName == "A", 0, 1),
+  trackingTable$current = data.frame(DP_CD              = ifelse(params$party_name == "A", 0, 1),
                                      MSREQID            = params$msreqid,
                                      RUNID              = "dl",
                                      ITER_NB            = 0,  # params$pmnIterationCounter
-                                     STEP_NB            = 0, # ifelse(params$partyName == "A", 2, 1),
+                                     STEP_NB            = 0, # ifelse(params$party_name == "A", 2, 1),
                                      START_DTM          = GetUTCTime(), # from log$Start.Time
                                      END_DTM            = GetUTCTime(), # from log$End.Time
                                      CURR_STEP_IN       = 0,
@@ -3290,7 +3290,7 @@ StoreTrackingTableEntry.2p = function(params) {
   }
   params$trackingTable$current$LAST_ITER_IN = ifelse(params$lastIteration, 1, 0)
 
-  if (params$partyName == "A") {
+  if (params$party_name == "A") {
     if (class(params$trackingTable$history) == "data.frame") {
       params$trackingTable$history = rbind(params$trackingTable$history,
                                            params$trackingTable$current)
@@ -3323,8 +3323,8 @@ ReadTrackingTableUpdate.2p = function(params) {
 
 InitializeTrackingTable.3p = function(params) {
   trackingTable = list()
-  trackingTable$current = data.frame(DP_CD              = ifelse(params$partyName == "T", 0,
-                                                                 ifelse(params$partyName == "A", 1, 2)),
+  trackingTable$current = data.frame(DP_CD              = ifelse(params$party_name == "T", 0,
+                                                                 ifelse(params$party_name == "A", 1, 2)),
                                      MSREQID            = params$msreqid,
                                      RUNID              = "dl",
                                      ITER_NB            = 0,  # params$pmnIterationCounter

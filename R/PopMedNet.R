@@ -36,7 +36,7 @@ pmn = function(num_party, directory = NULL, verbose = TRUE) {
            formatC(ss, width = 4, digits = 1, flag = "0", format = "f"))
   }
 
-  startTime = proc.time()[3]
+  start_time <- proc.time()[3]
 
 
   if (missing(num_party) ||
@@ -51,8 +51,8 @@ pmn = function(num_party, directory = NULL, verbose = TRUE) {
     )
     return(invisible(NULL))
   }
-  partyName = paste0("dp", 0:(num_party - 1))
-  paths = file.path(directory, partyName)
+  party_name <- paste0("dp", 0:(num_party - 1))
+  paths = file.path(directory, party_name)
 
   if (is.null(directory) || !dir.exists(directory)) {
     warning(
@@ -71,19 +71,19 @@ pmn = function(num_party, directory = NULL, verbose = TRUE) {
     }
   }
 
-  writeDirectory = rep("", num_party)
-  readDirectory  = matrix("", num_party, num_party)
-  names(writeDirectory) = partyName
-  colnames(readDirectory) = partyName
-  rownames(readDirectory) = partyName
+  write_directory <- rep("", num_party)
+  read_directory <- matrix("", num_party, num_party)
+  names(write_directory) = party_name
+  colnames(read_directory) = party_name
+  rownames(read_directory) = party_name
   for (i in 1:num_party) {
-    writeDirectory[i] = file.path(paths[i], ifelse(i == 1, "inputfiles", "msoc"))
-    if (!dir.exists(writeDirectory[i])) dir.create(writeDirectory[i])
+    write_directory[i] = file.path(paths[i], ifelse(i == 1, "inputfiles", "msoc"))
+    if (!dir.exists(write_directory[i])) dir.create(write_directory[i])
     for (j in 1:num_party) {
-      readDirectory[i, j] = file.path(paths[j], ifelse(i == 1, "inputfiles", paste0("msoc", i - 1)))
-      if (!dir.exists(readDirectory[i, j])) dir.create(readDirectory[i, j])
+      read_directory[i, j] = file.path(paths[j], ifelse(i == 1, "inputfiles", paste0("msoc", i - 1)))
+      if (!dir.exists(read_directory[i, j])) dir.create(read_directory[i, j])
     }
-    readDirectory[i, i] = NA
+    read_directory[i, i] = NA
   }
 
   source = c(FALSE, rep(TRUE, num_party - 1))
@@ -95,14 +95,14 @@ pmn = function(num_party, directory = NULL, verbose = TRUE) {
     # look for files_done.ok -> remove the file and add everything to the copy list
     # job_started.ok -> just remove the file and add nothing to the copy list
 
-    filesToSend = NULL
-    if (verbose) cat("\nWaiting for", partyName[source], "-", hms(proc.time()[3] - startTime), "\n")
+    files_to_send <- NULL
+    if (verbose) cat("\nWaiting for", party_name[source], "-", hms(proc.time()[3] - start_time), "\n")
     while (sum(source) > 0) {  # We are waiting parties to write
       for (i in 1:num_party) {
         if (source[i]) {
-          if (file.exists(file.path(writeDirectory[i], "files_done.ok"))) {
+          if (file.exists(file.path(write_directory[i], "files_done.ok"))) {
             Sys.sleep(sleep_time)
-            files = read.csv(file.path(writeDirectory[i], "file_list.csv"))
+            files = read.csv(file.path(write_directory[i], "file_list.csv"))
             if (verbose) cat("\n")
             if (verbose) print(files)
             if (verbose) cat("\n")
@@ -121,17 +121,17 @@ pmn = function(num_party, directory = NULL, verbose = TRUE) {
               files = files[idx, c(1, 3)]
               files$dp_cd_list = files$dp_cd_list + 1
               files$source = i
-              if (is.null(filesToSend)) {
-                filesToSend = files
+              if (is.null(files_to_send)) {
+                files_to_send <- files
               } else {
-                filesToSend = rbind(filesToSend, files)
+                files_to_send <- rbind(files_to_send, files)
               }
             }
-            file.remove(file.path(writeDirectory[i], "files_done.ok"))
-            if (verbose) cat("  Party", partyName[i], "- files_done.ok\n")
+            file.remove(file.path(write_directory[i], "files_done.ok"))
+            if (verbose) cat("  Party", party_name[i], "- files_done.ok\n")
             source[i] = FALSE
             if (sum(source) > 0) {
-              if (verbose) cat("Waiting for", partyName[source], "-", hms(proc.time()[3] - startTime), "\n")
+              if (verbose) cat("Waiting for", party_name[source], "-", hms(proc.time()[3] - start_time), "\n")
             }
           }
         }
@@ -143,29 +143,29 @@ pmn = function(num_party, directory = NULL, verbose = TRUE) {
 
     sink   = rep(FALSE, num_party)
 
-    if (is.null(filesToSend) || nrow(filesToSend) == 0) {
+    if (is.null(files_to_send) || nrow(files_to_send) == 0) {
       warning("No files to transfer and job_done.ok not specified.")
       quit = TRUE
     } else {
-      if (verbose) cat("\nCOPYING", paste0("(", copyit, ") -"),  hms(proc.time()[3] - startTime), "\n")
+      if (verbose) cat("\nCOPYING", paste0("(", copyit, ") -"),  hms(proc.time()[3] - start_time), "\n")
       copyit = copyit + 1
       mark = matrix(FALSE, num_party, num_party)
-      for (i in 1:nrow(filesToSend)) {
-        origin      = filesToSend$source[i]
-        destination = filesToSend$dp_cd_list[i]
-        fn          = filesToSend$file_nm[i]
-        exists = file.exists(file.path(writeDirectory[origin], fn))
+      for (i in 1:nrow(files_to_send)) {
+        origin      = files_to_send$source[i]
+        destination = files_to_send$dp_cd_list[i]
+        fn          = files_to_send$file_nm[i]
+        exists = file.exists(file.path(write_directory[origin], fn))
         if (exists) {
           if (verbose) cat("  ")
         } else {
           if (verbose) cat("X ")
         }
-        size = format(file.size(file.path(writeDirectory[origin], fn)), big.mark = ",", scientific = FALSE)
+        size = format(file.size(file.path(write_directory[origin], fn)), big.mark = ",", scientific = FALSE)
         space = paste0(rep(" ", 33 - nchar(size) - nchar(as.character(fn))), collapse = "")
 
-        if (verbose) cat(partyName[origin], "->", partyName[destination], ":", as.character(fn), space, size, "\n")
-        file.copy(file.path(writeDirectory[origin], fn),
-                  file.path(readDirectory[origin, destination], fn),
+        if (verbose) cat(party_name[origin], "->", party_name[destination], ":", as.character(fn), space, size, "\n")
+        file.copy(file.path(write_directory[origin], fn),
+                  file.path(read_directory[origin, destination], fn),
                   overwrite = TRUE)
         mark[origin, destination] = TRUE
         sink[destination] = TRUE
@@ -173,7 +173,7 @@ pmn = function(num_party, directory = NULL, verbose = TRUE) {
       for (origin in 1:num_party) {
         for (destination in 1:num_party) {
           if (mark[origin, destination]) {
-            save(sink, file = file.path(readDirectory[origin, destination], "files_done.ok"))
+            save(sink, file = file.path(read_directory[origin, destination], "files_done.ok"))
           }
         }
       }
@@ -182,7 +182,7 @@ pmn = function(num_party, directory = NULL, verbose = TRUE) {
     source = sink
   }
 
-  if (verbose) cat("\nFinished -", hms(proc.time()[3] - startTime), "\n")
+  if (verbose) cat("\nFinished -", hms(proc.time()[3] - start_time), "\n")
 
   return(invisible(NULL))
 }
