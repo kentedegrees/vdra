@@ -924,12 +924,12 @@ compute_log_likelihood_cox_a2 <- function(params, data) {
 
   params$loglikelihood = loglikelihood
   params$deltal = deltal
-  params$tXA.w_xa = t(data$x) %*% w_xa
-  params$tXA.deltal = t(data$x) %*% deltal
+  params$t_xa_w_xa = t(data$x) %*% w_xa
+  params$t_xa_delta_l = t(data$x) %*% deltal
 
   if (params$alg_iteration_counter == 1) {
     params$nullLoglikelihood = loglikelihood
-    params$nullScore = params$tXA.deltal
+    params$nullScore = params$t_xa_delta_l
   }
   params$x_betas = x_betas
   params$step_size <- step_size
@@ -1052,9 +1052,9 @@ compute_log_likelihood_cox_b2 <- function(params, data) {
   }
   params$deltal = deltal
   params$txb_w_xb   = t(data$x) %*% w_xb
-  params$tXB.deltal = t(data$x) %*% deltal
+  params$t_xb_delta_l = t(data$x) %*% deltal
   if (params$alg_iteration_counter == 1) {
-    params$nullScore = params$tXB.deltal
+    params$nullScore = params$t_xb_delta_l
   }
 
   txb_w_xb = params$txb_w_xb
@@ -1107,7 +1107,7 @@ compute_inverse_cox_a2 <- function(params, data) {
     }
   }
 
-  m = rbind(cbind(params$tXA.w_xa, txa_w_xb),
+  m = rbind(cbind(params$t_xa_w_xa, txa_w_xb),
             cbind(t(txa_w_xb), txb_w_xb))
 
   if (params$alg_iteration_counter == 1) {
@@ -1138,7 +1138,7 @@ compute_inverse_cox_a2 <- function(params, data) {
   }
   m3 = m[(p1 + 1):(p1 + p2), 1:p1]
   params$m = m
-  params$m3_txa_delta_l = m3 %*% params$tXA.deltal
+  params$m3_txa_delta_l = m3 %*% params$t_xa_delta_l
   m3_txa_delta_l = params$m3_txa_delta_l
   write_time <- write_time - proc.time()[3]
   save(m, m3_txa_delta_l, file = file.path(params$write_path, "M.rdata"))
@@ -1170,8 +1170,8 @@ compute_beta_cox_b2 <- function(params, data) {
   m4 = m[(p1 + 1):(p1 + p2), (p1 + 1):(p1 + p2)]
   m2 = m[1:p1, (p1 + 1):(p1 + p2)]
 
-  params$m2_txb_deta_l = m2 %*% params$tXB.deltal
-  params$betas_b = params$betas_b + m3_txa_delta_l + m4 %*% params$tXB.deltal
+  params$m2_txb_deta_l = m2 %*% params$t_xb_delta_l
+  params$betas_b = params$betas_b + m3_txa_delta_l + m4 %*% params$t_xb_delta_l
 
   params$xb_betas_b = data$x %*% params$betas_b
 
@@ -1204,7 +1204,7 @@ compute_beta_cox_a2 <- function(params, data) {
   }
 
   params$betas_a_old = params$betas_a
-  params$betas_a = params$betas_a + params$m[1:p1, 1:p1] %*% params$tXA.deltal + m2_txb_deta_l
+  params$betas_a = params$betas_a + params$m[1:p1, 1:p1] %*% params$t_xa_delta_l + m2_txb_deta_l
 
   converged = abs(params$loglikelihood - params$loglikelihood_old) /
     (abs(params$loglikelihood) + 0.1) < params$cutoff

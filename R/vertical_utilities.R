@@ -1267,7 +1267,7 @@ FindOrthogonalVectors <- function(x, g) {
 
 
 #' @importFrom stats runif
-RandomOrthonomalMatrix <- function(size) {
+random_orthonormal_matrix <- function(size) {
   return(qr.Q(qr(matrix(runif(size * size), size, size)), complete = TRUE))
 }
 
@@ -2177,10 +2177,10 @@ CreateContainers <- function(pA, pB, blocks) {
   littleBlockG = blocks$gLittleBlock
 
   littleFilesize.z   = 8 * littleBlocksize * littleBlockG
-  littleFilesize.w   = 8 * littleBlocksize * pB # used for w, v, RW, WR, RV, Cox
+  littleFilesize.w   = 8 * littleBlocksize * pB # used for w, v, RW, wr, rv, Cox
   littleFilesize.RZ  = 8 * littleBlocksize^2
-  littleFilesize.PR  = 8 * (pA + 1) * pB        # I think this is not used anymore
-  littleFilesize.XR = 8 * pA * pB
+  littleFilesize.pr  = 8 * (pA + 1) * pB        # I think this is not used anymore
+  littleFilesize_xr = 8 * pA * pB
 
   numContainers.z <- ceiling(num_blocks * littleFilesize.z / maximumFilesize)
   num_blocksSmallContainer.z <- trunc(num_blocks / numContainers.z)
@@ -2200,17 +2200,17 @@ CreateContainers <- function(pA, pB, blocks) {
   numLargeContainer.rz <- num_blocks %% numContainers.RZ
   numSmallContainer.rz <- numContainers.RZ - numLargeContainer.RZ
 
-  numContainers.PR = ceiling(num_blocks * littleFilesize.PR / maximumFilesize)
-  num_blocksSmallContainer.PR = trunc(num_blocks / numContainers.PR)
-  num_blocksLargeContainer.PR = num_blocksSmallContainer.PR + 1
-  numLargeContainer.PR = num_blocks %% numContainers.PR
-  numSmallContainer.PR = numContainers.PR - numLargeContainer.PR
+  numContainers.pr = ceiling(num_blocks * littleFilesize_pr / maximumFilesize)
+  num_blocksSmallContainer.pr = trunc(num_blocks / numContainers_pr)
+  num_blocksLargeContainer.pr = num_blocksSmallContainer_pr + 1
+  numLargeContainer.pr = num_blocks %% numContainers_pr
+  numSmallContainer.pr = numContainers_pr - numLargeContainer_pr
 
-  numContainers.XR = ceiling(num_blocks * littleFilesize.XR / maximumFilesize)
-  num_blocksSmallContainer.XR = trunc(num_blocks / numContainers.XR)
-  num_blocksLargeContainer.XR = num_blocksSmallContainer.XR + 1
-  numLargeContainer.XR = num_blocks %% numContainers.XR
-  numSmallContainer.XR = numContainers.XR - numLargeContainer.XR
+  numContainers_xr = ceiling(num_blocks * littleFilesize_xr / maximumFilesize)
+  num_blocksSmallContainer_xr = trunc(num_blocks / numContainers_xr)
+  num_blocksLargeContainer_xr = num_blocksSmallContainer_xr + 1
+  numLargeContainer_xr = num_blocks %% numContainers_xr
+  numSmallContainer_xr = numContainers_xr - numLargeContainer_xr
 
   if (numLargeContainer.z > 0) {
     file_break_z = c(0:(numLargeContainer.z - 1) * num_blocksLargeContainer.z + 1,
@@ -2239,35 +2239,35 @@ CreateContainers <- function(pA, pB, blocks) {
                        numLargeContainer.RZ * num_blocksLargeContainer.RZ)
   }
 
-  if (numLargeContainer.PR > 0) {
-    filebreak.PR = c(0:(numLargeContainer.PR - 1) * num_blocksLargeContainer.PR + 1,
-                     0:(numSmallContainer.PR - 1) * num_blocksSmallContainer.PR + 1 +
-                       numLargeContainer.PR * num_blocksLargeContainer.PR)
+  if (numLargeContainer.pr > 0) {
+    filebreak.pr = c(0:(numLargeContainer_pr - 1) * num_blocksLargeContainer_pr + 1,
+                     0:(numSmallContainer.pr - 1) * num_blocksSmallContainer_pr + 1 +
+                       numLargeContainer.pr * num_blocksLargeContainer_pr)
   } else {
-    filebreak.PR = c(0:(numSmallContainer.PR - 1) * num_blocksSmallContainer.PR + 1 +
-                       numLargeContainer.PR * num_blocksLargeContainer.PR)
+    filebreak.pr = c(0:(numSmallContainer_pr - 1) * num_blocksSmallContainer_pr + 1 +
+                       numLargeContainer.pr * num_blocksLargeContainer_pr)
   }
 
-  if (numLargeContainer.XR > 0) {
-    filebreak.XR = c(0:(numLargeContainer.XR - 1) * num_blocksLargeContainer.XR + 1,
-                     0:(numSmallContainer.XR - 1) * num_blocksSmallContainer.XR + 1 +
-                       numLargeContainer.XR * num_blocksLargeContainer.XR)
+  if (numLargeContainer_xr > 0) {
+    filebreak_xr = c(0:(numLargeContainer_xr - 1) * num_blocksLargeContainer_xr + 1,
+                     0:(numSmallContainer_xr - 1) * num_blocksSmallContainer_xr + 1 +
+                       numLargeContainer_xr * num_blocksLargeContainer_xr)
   } else {
-    filebreak.XR = c(0:(numSmallContainer.XR - 1) * num_blocksSmallContainer.XR + 1 +
-                       numLargeContainer.XR * num_blocksLargeContainer.XR)
+    filebreak_xr = c(0:(numSmallContainer_xr - 1) * num_blocksSmallContainer_xr + 1 +
+                       numLargeContainer_xr * num_blocksLargeContainer_xr)
   }
 
   containers$file_break_z   = file_break_z
   containers$filebreak.w   = filebreak.w
   containers$filebreak.RZ  = filebreak.RZ
-  containers$filebreak.PR  = filebreak.PR # I think we are not using this anymore
+  containers$filebreak.pr  = filebreak_pr # I think we are not using this anymore
   containers$filebreak.v   = filebreak.w
   containers$filebreak.RW  = filebreak.w
-  containers$filebreak.WR  = filebreak.w
-  containers$filebreak.RV  = filebreak.w
-  containers$filebreak.VR  = filebreak.w
+  containers$filebreak.wr  = filebreak.w
+  containers$filebreak.rv  = filebreak.w
+  containers$filebreak_vr  = filebreak.w
   containers$filebreak.Cox = filebreak.w
-  containers$filebreak.XR = filebreak.XR
+  containers$filebreak_xr = filebreak_xr
 
   return(containers)
 }

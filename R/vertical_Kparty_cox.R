@@ -464,8 +464,8 @@ GetStrata.AC <- function(params) {
 }
 
 
-GetProductsCox.AC <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "GetProductsCox.AC\n\n")
+get_products_cox_AC <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "get_products_cox_AC\n\n")
   read_time <- 0
   read_size <- 0
   p = 0
@@ -539,7 +539,7 @@ GetProductsCox.AC <- function(params) {
 
   params$halfshare    = allhalfshare
 
-  params <- add_to_log(params, "GetProductsCox.AC", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "get_products_cox_AC", read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -1145,8 +1145,8 @@ ComputeStWSCox.AC <- function(params) {
   if (params$alg_iteration_counter == 1) {
     params$score = t(params$tS.deltal.R) %*% I %*% params$tS.deltal.R
   }
-  params$maxIterExceeded = params$alg_iteration_counter > params$max_iterations
-  maxIterExceeded = params$maxIterExceeded
+  params$max_iter_exceeded = params$alg_iteration_counter > params$max_iterations
+  max_iter_exceeded = params$max_iter_exceeded
 
   write_time <- 0
   write_size <- 0
@@ -1155,7 +1155,7 @@ ComputeStWSCox.AC <- function(params) {
     IDt.part = IDt[params$idx[[id]], , drop = FALSE]
     write_time <- write_time - proc.time()[3]
     save(I.part, IDt.part, file = file.path(params$write_path, paste0("update", id, ".rdata")))
-    save(maxIterExceeded, file = file.path(params$write_path, "maxiterexceeded.rdata"))
+    save(max_iter_exceeded, file = file.path(params$write_path, "maxiterexceeded.rdata"))
     write_size <- write_size + file.size(file.path(params$write_path, paste0("update", id, ".rdata"))) +
       file.size(file.path(params$write_path, "maxiterexceeded.rdata"))
     write_time <- write_time + proc.time()[3]
@@ -1171,7 +1171,7 @@ UpdateConvergeStatus.DP <- function(params) {
   read_size <- 0
   scale    = NULL
   converged = NULL
-  maxIterExceeded = NULL
+  max_iter_exceeded = NULL
   if (params$data_partner_id > 1) {
     read_time <- proc.time()[3]
     load(file.path(params$readPathDP[1], "converged.rdata"))
@@ -1184,7 +1184,7 @@ UpdateConvergeStatus.DP <- function(params) {
   load(file.path(params$readPathAC, "maxiterexceeded.rdata"))
   read_size <- read_size + file.size(file.path(params$readPathAC, "maxiterexceeded.rdata"))
   read_time <- read_time + proc.time()[3]
-  params$maxIterExceeded = maxIterExceeded
+  params$max_iter_exceeded = max_iter_exceeded
   params <- add_to_log(params, "UpdateConvergeStatus.DP", read_time, read_size, 0, 0)
 }
 
@@ -1586,7 +1586,7 @@ DataPartnerKCox <- function(data,
   params <- add_to_log(params, "update_data_cox_DP", 0, 0, 0, 0)
 
   params$alg_iteration_counter = 1
-  while (!params$converged && !params$maxIterExceeded) {
+  while (!params$converged && !params$max_iter_exceeded) {
     BeginningIteration(params)
     params <- ComputeSBetaCox.DP(params, data)
 
@@ -1643,7 +1643,7 @@ DataPartnerKCox <- function(data,
     params <- UpdateConvergeStatus.DP(params)
     params <- UpdateBetasCox.DP(params)
 
-    if (params$converged || params$maxIterExceeded) {
+    if (params$converged || params$max_iter_exceeded) {
       files <- "betas.rdata"
     } else {
       files <- "u.rdata"
@@ -1742,7 +1742,7 @@ AnalysisCenterKCox <- function(numDataPartners = NULL,
   }
 
   params <- GetStrata.AC(params)
-  params <- GetProductsCox.AC(params)
+  params <- get_products_cox_AC(params)
   params <- check_colinearity_cox_AC(params)
 
   if (params$failed) {
@@ -1757,7 +1757,7 @@ AnalysisCenterKCox <- function(numDataPartners = NULL,
   }
 
   params$alg_iteration_counter = 1
-  while (!params$converged && !params$maxIterExceeded) {
+  while (!params$converged && !params$max_iter_exceeded) {
     BeginningIteration(params)
     params <- ComputeUCox.AC(params)
 

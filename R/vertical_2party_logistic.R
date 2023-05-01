@@ -998,7 +998,7 @@ get_coef_logistic_a2 <- function(params, data) {
   if (deltabeta < params$cutoff)  {
     params$converged = TRUE
   } else if (params$alg_iteration_counter >= params$max_iterations) {
-    params$maxIterExceeded = TRUE
+    params$max_iter_exceeded = TRUE
     warning(paste("Failed to converged in", params$max_iterations, "iterations."))
   }
 
@@ -1026,7 +1026,7 @@ get_converged_status_logistic_b2 <- function(params) {
   if (deltabeta < params$cutoff)  {
     params$converged = TRUE
   } else if (params$alg_iteration_counter >= params$max_iterations) {
-    params$maxIterExceeded = TRUE
+    params$max_iter_exceeded = TRUE
     warning(paste("Failed to converged in", params$max_iterations, "iterations."))
   }
 
@@ -1259,7 +1259,7 @@ party_a_process_2_logistic <- function(data,
   files <- c("indicies.rdata", "Bbetas_xty.rdata")
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
-  while (!params$converged && !params$maxIterExceeded) {
+  while (!params$converged && !params$max_iter_exceeded) {
     BeginningIteration(params)
     params <- get_weights_logistic_a2(params, data)
     files <- c("pi_.rdata")
@@ -1356,7 +1356,7 @@ party_b_process_2_logistic <- function(data,
   params <- add_to_log(params, "update_data_logistic_b2", 0, 0, 0, 0)
 
   params$alg_iteration_counter = 1
-  while (!params$converged && !params$maxIterExceeded) {
+  while (!params$converged && !params$max_iter_exceeded) {
     BeginningIteration(params)
     params <- get_x_beta_logistic_b2(params, data)
 
