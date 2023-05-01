@@ -1184,7 +1184,7 @@ GetLion <- function(p) {
 
 
 #' @importFrom stats flush.console
-MakeProgressBar1 <- function(steps, message, verbose) {
+make_progress_bar_1 <- function(steps, message, verbose) {
   pb <- list()
   messageLength    = 18
   pb$numSteps      = steps
@@ -1209,7 +1209,7 @@ MakeProgressBar1 <- function(steps, message, verbose) {
 
 
 #' @importFrom stats flush.console
-MakeProgressBar2 <- function(i, pb, verbose) {
+make_progress_bar_1 <- function(i, pb, verbose) {
   percent = floor(100 * i / pb$numSteps)
   if (percent == pb$percent) {
     return(pb)
@@ -1510,7 +1510,7 @@ PauseContinue.2p <- function(params, max_waiting_time) {
 
 ###################### 3 PARTY PMN COMMUNICATION FUNCTIONS ######################
 
-WaitForTurn.3p <- function(params, sleep_time) {
+wait_for_turn.3p <- function(params, sleep_time) {
   Sys.sleep(sleep_time)
   if ((params$party_name == "T") || (!params$popmednet)) return(NULL)
 
@@ -1545,7 +1545,7 @@ send_pause_quit_3p <- function(params,
                                filesT = NULL,
                                sleep_time = 10,
                                job_failed = FALSE,
-                               waitForTurn = FALSE) {
+                               wait_for_turn = FALSE) {
 
   params$lastIteration = TRUE
   params$completed     = TRUE
@@ -1591,9 +1591,9 @@ send_pause_quit_3p <- function(params,
   params <- store_stamp_entry(params, "Files done trigger file", "Trigger File Created")
   params <- store_stamp_entry(params, "R program execution complete, output files written",
                              "Tracking Table")
-  if (waitForTurn) {
+  if (wait_for_turn) {
     params <- store_stamp_entry(params, "R program execution delayed", "Tracking Table")
-    WaitForTurn.3p(params, sleep_time)
+    wait_for_turn.3p(params, sleep_time)
     params <- store_stamp_entry(params, "R program execution restarted", "Tracking Table")
   }
   WriteStampsCSV(params)
@@ -1617,7 +1617,7 @@ send_pause_continue_3p <- function(params,
                                    sleep_time = 10,
                                    max_waiting_time = 24 * 60 * 60,
                                    job_started = FALSE,
-                                   waitForTurn = FALSE) {
+                                   wait_for_turn = FALSE) {
   params <- StoreLogEntry.3p(params, c(files_a, files_b, filesT))
   params <- StoreTrackingTableEntry.3p(params)
   WriteLogCSV(params)
@@ -1654,9 +1654,9 @@ send_pause_continue_3p <- function(params,
   }
   MakeCSV(files, transfer, destination, params$write_path)
   params <- store_stamp_entry(params, "Files done trigger file", "Trigger File created")
-  if (waitForTurn) {
+  if (wait_for_turn) {
     params <- store_stamp_entry(params, "R program execution delayed", "Tracking Table")
-    WaitForTurn.3p(params, sleep_time)
+    wait_for_turn.3p(params, sleep_time)
     params <- store_stamp_entry(params, "R program execution restarted", "Tracking Table")
   }
   WriteStampsCSV(params)
@@ -1729,7 +1729,7 @@ UpdateCounters.3p <- function(params) {
 
 ###################### K PARTY PMN COMMUNICATION FUNCTIONS ######################
 
-WaitForTurn.kp <- function(params, sleep_time) {
+wait_for_turn.kp <- function(params, sleep_time) {
   Sys.sleep(sleep_time)
 
   if (!params$popmednet) return(NULL)
@@ -1763,7 +1763,7 @@ send_pause_quit_kp <- function(params,
                                filesDP = NULL,
                                sleep_time = 10,
                                job_failed = FALSE,
-                               waitForTurn = FALSE) {
+                               wait_for_turn = FALSE) {
 
   # Assumes that upon quitting, same thing is sent to everyone, so filesDP cannot be a list
 
@@ -1809,9 +1809,9 @@ send_pause_quit_kp <- function(params,
   params <- store_stamp_entry(params, "Files done trigger file", "Trigger File Created")
   params <- store_stamp_entry(params, "R program execution complete, output files written",
                              "Tracking Table")
-  if (waitForTurn) {
+  if (wait_for_turn) {
     params <- store_stamp_entry(params, "R program execution delayed", "Tracking Table")
-    WaitForTurn.kp(params, sleep_time)
+    wait_for_turn.kp(params, sleep_time)
     params <- store_stamp_entry(params, "R program execution restarted", "Tracking Table")
   }
   WriteStampsCSV(params)
@@ -1835,7 +1835,7 @@ send_pause_continue_kp <- function(params,
                                    sleep_time = 10,
                                    max_waiting_time = 24 * 60 * 60,
                                    job_started = FALSE,
-                                   waitForTurn = FALSE) {
+                                   wait_for_turn = FALSE) {
   if (class(filesDP) != "list") {
     params <- StoreLogEntry.kp(params, c(filesAC, filesDP))
     params <- StoreTrackingTableEntry.kp(params)
@@ -1898,9 +1898,9 @@ send_pause_continue_kp <- function(params,
   }
   MakeCSV(files, transfer, destination, params$write_path)
   params <- store_stamp_entry(params, "Files done trigger file", "Trigger File created")
-  if (waitForTurn) {
+  if (wait_for_turn) {
     params <- store_stamp_entry(params, "R program execution delayed", "Tracking Table")
-    WaitForTurn.kp(params, sleep_time)
+    wait_for_turn.kp(params, sleep_time)
     params <- store_stamp_entry(params, "R program execution restarted", "Tracking Table")
   }
   WriteStampsCSV(params)
@@ -4191,7 +4191,7 @@ differentModel <- function(formula = NULL, x = NULL) {
 #' @importFrom  stats pchisq quantile
 HoslemInternal <- function(x, data = NULL, nGroups = 10) {
   #            y:  response (vector, length n)
-  #  finalFitted:  finalFitted from getFinalCoefA(...)  (vector, length n)
+  #  final_fitted:  final_fitted from getFinalCoefA(...)  (vector, length n)
   #            p:  number of covariates pA + pB
   #      nGroups:  number of groups, specified by user
   #                or chosen automatically if unspecified.
@@ -4300,9 +4300,9 @@ HoslemTest <- function(x = NULL, nGroups = 10) {
 }
 
 
-RocInternal <- function(x, data = NULL, bins = 500) {
+roc_internal <- function(x, data = NULL, bins = 500) {
   #             y:  response vector (numeric, not factor, length n)
-  #   finalFitted:  final_fitted from getFinalCoefA(...)  (vector, length n)
+  #   final_fitted:  final_fitted from getFinalCoefA(...)  (vector, length n)
   #    thresholds:  how smooth the curve should be
   #
   #  Returns myRocObject (object$auc to get AUC)
@@ -4391,7 +4391,7 @@ RocTest <- function(x = NULL, bins = 10) {
     return(invisible(NULL))
   } else if (is.numeric(bins)) {
     temp <- list()
-    temp <- RocInternal(x, bins = bins)
+    temp <- roc_internal(x, bins = bins)
     class(temp) = "rocdistributed"
     return(temp)
   }

@@ -238,23 +238,23 @@ prepare_folder_linear_t3 <- function(params, monitor_folder = NULL) {
 
 prepare_params_linear_a3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_a3\n\n")
-  params$n     = nrow(data$x)
-  params$p     = ncol(data$x)
-  params$means = data$means
-  params$sd    = data$sd
+  params$n     <- nrow(data$x)
+  params$p     <- ncol(data$x)
+  params$means <- data$means
+  params$sd    <- data$sd
 
   pa          <- list()
-  pa$analysis = params$analysis
-  pa$n        = params$n
-  pa$p        = params$p
-  pa$means    = data$means
-  pa$sd       = data$sd
-  pa$yty      = data$yty
-  pa$means_y   = data$means_y
-  pa$sdy      = data$sdy
-  pa$y_name    = data$y_name
-  pa$colnames = colnames(data$x)
-  pa$tags     = data$tags
+  pa$analysis <- params$analysis
+  pa$n        <- params$n
+  pa$p        <- params$p
+  pa$means    <- data$means
+  pa$sd       <- data$sd
+  pa$yty      <- data$yty
+  pa$means_y   <- data$means_y
+  pa$sdy       <- data$sdy
+  pa$y_name    <- data$y_name
+  pa$colnames  <- colnames(data$x)
+  pa$tags      <- data$tags
 
   write_time <- proc.time()[3]
   save(pa, file = file.path(params$write_path, "pa.rdata"))
@@ -267,19 +267,19 @@ prepare_params_linear_a3 <- function(params, data) {
 
 prepare_params_linear_b3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_b3\n\n")
-  params$n     = nrow(data$x)
-  params$p     = ncol(data$x)
-  params$means = data$means
-  params$sd    = data$sd
+  params$n     <- nrow(data$x)
+  params$p     <- ncol(data$x)
+  params$means <- data$means
+  params$sd    <- data$sd
 
   pb           <- list()
-  pb$analysis  = params$analysis
-  pb$n         = params$n
-  pb$p         = params$p
-  pb$means     = data$means
-  pb$sd        = data$sd
-  pb$colnames  = colnames(data$x)
-  pb$tags      = data$tags
+  pb$analysis  <- params$analysis
+  pb$n         <- params$n
+  pb$p         <- params$p
+  pb$means     <- data$means
+  pb$sd        <- data$sd
+  pb$colnames  <- colnames(data$x)
+  pb$tags      <- data$tags
 
   write_time <- proc.time()[3]
   save(pb, file = file.path(params$write_path, "pb.rdata"))
@@ -313,27 +313,27 @@ prepare_params_linear_t3 <- function(params, cutoff = 1e-8, max_iterations = 25)
                                        "observtions and Party B has", pb$n,
                                        "observations."))
   }
-  params$analysis      = pa$analysis
-  params$n             = pa$n
-  params$p1            = pa$p
-  params$p2            = pb$p
-  params$p1_old        = params$p1
-  params$p2_old        = params$p2
-  params$p             = pa$p + pb$p
-  params$means_a        = pa$means
-  params$sda           = pa$sd
-  params$means_b        = pb$means
-  params$sdb           = pb$sd
-  params$means_y        = pa$means_y
-  params$sdy           = pa$sdy
-  params$yty           = pa$yty
-  params$colnamesA     = pa$colnames
-  params$colnamesB     = pb$colnames
-  params$a_tags         = pa$tags
-  params$b_tags         = pb$tags
-  params$y_name         = pa$y_name
-  params$cutoff        = cutoff
-  params$max_iterations = max_iterations
+  params$analysis      <- pa$analysis
+  params$n             <- pa$n
+  params$p1            <- pa$p
+  params$p2            <- pb$p
+  params$p1_old        <- params$p1
+  params$p2_old        <- params$p2
+  params$p             <- pa$p + pb$p
+  params$means_a       <- pa$means
+  params$sda           <- pa$sd
+  params$means_b       <- pb$means
+  params$sdb           <- pb$sd
+  params$means_y        <- pa$means_y
+  params$sdy           <- pa$sdy
+  params$yty           <- pa$yty
+  params$colnamesA     <- pa$colnames
+  params$colnamesB     <- pb$colnames
+  params$a_tags         <- pa$tags
+  params$b_tags         <- pb$tags
+  params$y_name         <- pa$y_name
+  params$cutoff        <- cutoff
+  params$max_iterations <- max_iterations
 
   params <- add_to_log(params, "prepare_params_linear_t3", read_time, read_size, 0, 0)
   return(params)
@@ -360,7 +360,7 @@ prepare_blocks_linear_t3 <- function(params, blocksize) {
             paste0(minimum_block_size, ".\n"),
             "Decrease the number of A covariates to", max_a_covariates, "or less.")
 
-    b = n - 2 * p1 - 2
+    b <- n - 2 * p1 - 2
     discrim <- b^2 - 4 * (p1 + 1)^2
     if (discrim >= 0) {
       min_b_covariates <- trunc(1 + (b - sqrt(discrim)) / 2)
@@ -392,8 +392,8 @@ prepare_blocks_linear_t3 <- function(params, blocksize) {
 
   params$blocks    <- create_blocks(p1, p2, n, blocksize)
   params$container <- create_containers(p1, p2, params$blocks)
-  blocks     = params$blocks
-  containers = params$container
+  blocks     <- params$blocks
+  containers <- params$container
   write_time <- proc.time()[3]
   save(blocks, containers, file = file.path(params$write_path, "blocks.rdata"))
   write_size <- file.size(file.path(params$write_path, "blocks.rdata"))
@@ -405,15 +405,15 @@ prepare_blocks_linear_t3 <- function(params, blocksize) {
 
 prepare_blocks_linear_a3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_blocks_linear_a3\n\n")
-  blocks     = NULL
-  containers = NULL
+  blocks     <- NULL
+  containers <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "blocks.rdata"))
   read_size <- file.size(file.path(params$read_path[["T"]], "blocks.rdata"))
   read_time <- proc.time()[3] - read_time
 
-  params$blocks = blocks
-  params$containers = containers
+  params$blocks <- blocks
+  params$containers <- containers
   params <- add_to_log(params, "prepare_blocks_linear_a3", read_time, read_size, 0, 0)
   return(params)
 }
@@ -425,7 +425,7 @@ get_z_linear_a3 <- function(params, data) {
   write_size <- 0
 
   num_blocks <- params$blocks$num_blocks
-  pbar = MakeProgressBar1(num_blocks, "z", params$verbose)
+  pbar <- make_progress_bar_1(num_blocks, "z", params$verbose)
   container_ct_z <- 0
   for (i in 1:num_blocks) {
     if (i %in% params$container$file_break_z) {
@@ -435,8 +435,8 @@ get_z_linear_a3 <- function(params, data) {
     }
     strt <- params$blocks$starts[i]
     stp <- params$blocks$stops[i]
-    n = stp - strt + 1
-    g = params$blocks$g[i]
+    n <- stp - strt + 1
+    g <- params$blocks$g[i]
     z <- FindOrthogonalVectors(cbind(data$Y[strt:stp, ], data$x[strt:stp, ]), g)
 
     write_time <- write_time - proc.time()[3]
@@ -446,7 +446,7 @@ get_z_linear_a3 <- function(params, data) {
       close(to_write)
       write_size <- write_size + file.size(file.path(params$write_path, filename))
     }
-    pbar = MakeProgressBar2(i, pbar, params$verbose)
+    pbar <- make_progress_bar_1(i, pbar, params$verbose)
   }
   params <- add_to_log(params, "get_z_linear_a3", 0, 0, write_time, write_size)
   return(params)
@@ -460,37 +460,37 @@ process_z_linear_t3 <- function(params) {
   write_time <- 0
   write_size <- 0
   num_blocks <- params$blocks$num_blocks
-  pbar = MakeProgressBar1(num_blocks, "R(I-z*z')", params$verbose)
+  pbar <- make_progress_bar_1(num_blocks, "R(I-z*z')", params$verbose)
   container_ct_z <- 0
   container_ct_rz <- 0
   for (i in 1:num_blocks) {
     if (i %in% params$container$file_break_z) {
       container_ct_z <- container_ct_z + 1
       filename1 <- paste0("cz_", container_ct_z, ".rdata")
-      to_read = file(file.path(params$read_path[["A"]], filename1), "rb")
+      to_read <- file(file.path(params$read_path[["A"]], filename1), "rb")
     }
     if (i %in% params$container$filebreak_rz) {
       container_ct_rz <- container_ct_RZ + 1
       filename2 <- paste0("crz_", container_ct_RZ, ".rdata")
       to_write <- file(file.path(params$write_path, filename2), "wb")
     }
-    filename3 = paste0("r1_", i, ".rdata")
+    filename3 <- paste0("r1_", i, ".rdata")
 
     strt <- params$blocks$starts[i]
     stp <- params$blocks$stops[i]
-    n = stp - strt + 1
-    g = params$blocks$g[i]
+    n <- stp - strt + 1
+    g <- params$blocks$g[i]
 
     read_time <- read_time - proc.time()[3]
     z <- matrix(readBin(con = to_read, what = numeric(), n = n * g,
                        endian = "little"), nrow = n, ncol = g)
     read_time <- read_time + proc.time()[3]
-    r = random_orthonormal_matrix(n)
+    r <- random_orthonormal_matrix(n)
     rz <- r - (r %*% z) %*% t(z)
 
     write_time <- write_time - proc.time()[3]
     writeBin(as.vector(rz), con = to_write, endian = "little")
-    to_write2 = file(file.path(params$dp_local_path, filename3), "wb")
+    to_write2 <- file(file.path(params$dp_local_path, filename3), "wb")
     writeBin(as.vector(r), con = to_write2, endian = "little")
     close(to_write2)
     write_size <- write_size + file.size(file.path(params$dp_local_path, filename3))
@@ -505,7 +505,7 @@ process_z_linear_t3 <- function(params) {
       write_size <- write_size + file.size(file.path(params$write_path, filename2))
     }
 
-    pbar = MakeProgressBar2(i, pbar, params$verbose)
+    pbar <- make_progress_bar_1(i, pbar, params$verbose)
   }
 
   params <- add_to_log(params, "process_z_linear_t3", read_time, read_size, write_time, write_size)
@@ -515,15 +515,15 @@ process_z_linear_t3 <- function(params) {
 
 prepare_blocks_linear_b3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_blocks_linear_b3\n\n")
-  blocks     = NULL
-  containers = NULL
+  blocks     <- NULL
+  containers <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "blocks.rdata"))
   read_size <- file.size(file.path(params$read_path[["T"]], "blocks.rdata"))
   read_time <- proc.time()[3] - read_time
 
-  params$blocks = blocks
-  params$containers = containers
+  params$blocks <- blocks
+  params$containers <- containers
   params <- add_to_log(params, "prepare_blocks_linear_b3", read_time, read_size, 0, 0)
   return(params)
 }
@@ -543,32 +543,32 @@ get_rw_linear_b3 <- function(params, data) {
   write_size <- file.size(file.path(params$write_path, "xbtxb.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  pbar = MakeProgressBar1(num_blocks, "R(I-z*z')XB", params$verbose)
+  pbar <- make_progress_bar_1(num_blocks, "R(I-z*z')XB", params$verbose)
   container_ct_rz <- 0
-  container_ct_rw = 0
+  container_ct_rw <- 0
   for (i in 1:num_blocks) {
     if (i %in% params$container$filebreak_rz) {
       container_ct_rz <- container_ct_RZ + 1
       filename1 <- paste0("crz_", container_ct_RZ, ".rdata")
-      to_read = file(file.path(params$read_path[["T"]], filename1), "rb")
+      to_read <- file(file.path(params$read_path[["T"]], filename1), "rb")
     }
     if (i %in% params$container$filebreak_rw) {
-      container_ct_rw = container_ct_rw + 1
+      container_ct_rw <- container_ct_rw + 1
       filename2 <- paste0("crw_", container_ct_rw, ".rdata")
       to_write <- file(file.path(params$write_path, filename2), "wb")
     }
     strt <- params$blocks$starts[i]
-    stp  = params$blocks$stops[i]
-    n    = stp - strt + 1
-    g = params$blocks$g[i]
+    stp  <- params$blocks$stops[i]
+    n    <- stp - strt + 1
+    g <- params$blocks$g[i]
 
-    xb <- data$x[strt:stp, , drop = FALSE]
+    xb <- data$x[strt:stp, , drop <- FALSE]
     read_time <- read_time - proc.time()[3]
     rz <- matrix(readBin(con = to_read, what = numeric(), n = n * n,
                         endian = "little"), nrow = n, ncol = n)
     read_time <- read_time + proc.time()[3]
 
-    rw = rz %*% xb
+    rw <- rz %*% xb
 
     write_time <- write_time - proc.time()[3]
     writeBin(as.vector(rw), con = to_write, endian = "little")
@@ -582,7 +582,7 @@ get_rw_linear_b3 <- function(params, data) {
       write_size <- write_size + file.size(file.path(params$write_path, filename2))
     }
 
-    pbar = MakeProgressBar2(i, pbar, params$verbose)
+    pbar <- make_progress_bar_1(i, pbar, params$verbose)
   }
 
   params <- add_to_log(params, "get_rw_linear_b3", read_time, read_size, write_time, write_size)
@@ -605,31 +605,31 @@ process_w_linear_t3 <- function(params) {
   write_time <- proc.time()[3] - write_time
 
   num_blocks <- params$blocks$num_blocks
-  pbar = MakeProgressBar1(num_blocks, "(I-z*z')XB*R", params$verbose)
+  pbar <- make_progress_bar_1(num_blocks, "(I-z*z')XB*R", params$verbose)
 
-  container_ct_rw = 0
-  container_ct_wr = 0
+  container_ct_rw <- 0
+  container_ct_wr <- 0
   for (i in 1:num_blocks) {
     if (i %in% params$container$filebreak_rw) {
-      container_ct_rw = container_ct_rw + 1
+      container_ct_rw <- container_ct_rw + 1
       filename2 <- paste0("crw_", container_ct_rw, ".rdata")
-      to_read_2 = file(file.path(params$read_path[["B"]], filename2), "rb")
+      to_read_2 <- file(file.path(params$read_path[["B"]], filename2), "rb")
     }
     if (i %in% params$container$filebreak.wr) {
-      container_ct_wr = container_ct_wr + 1
-      filename3 = paste0("cwr_", container_ct_wr, ".rdata")
-      to_write3 = file(file.path(params$write_path, filename3), "wb")
+      container_ct_wr <- container_ct_wr + 1
+      filename3 <- paste0("cwr_", container_ct_wr, ".rdata")
+      to_write3 <- file(file.path(params$write_path, filename3), "wb")
     }
 
     strt <- params$blocks$starts[i]
     stp <- params$blocks$stops[i]
-    n = stp - strt + 1
+    n <- stp - strt + 1
 
     filename1 <- paste0("r1_", i, ".rdata")
-    filename4 = paste0("r2_", i, ".rdata")
+    filename4 <- paste0("r2_", i, ".rdata")
 
     read_time <- read_time - proc.time()[3]
-    to_read_1 = file(file.path(params$dp_local_path, filename1), "rb")
+    to_read_1 <- file(file.path(params$dp_local_path, filename1), "rb")
     r1  <- matrix(readBin(con = to_read_1, what = numeric(), n = n * n,
                         endian = "little"), nrow = n, ncol = n)
     read_size <- read_size + file.size(file.path(params$dp_local_path, filename1))
@@ -638,12 +638,12 @@ process_w_linear_t3 <- function(params) {
                         endian = "little"), nrow = n, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
-    w = t(r1) %*% rw
-    r2 = random_orthonormal_matrix(p2)
-    wr2 = w %*% r2
+    w <- t(r1) %*% rw
+    r2 <- random_orthonormal_matrix(p2)
+    wr2 <- w %*% r2
 
     write_time <- write_time - proc.time()[3]
-    to_write4 = file(file.path(params$dp_local_path, filename4), "wb")
+    to_write4 <- file(file.path(params$dp_local_path, filename4), "wb")
     writeBin(as.vector(r2), con = to_write4, endian = "little")
     close(to_write4)
     write_size <- write_size + file.size(file.path(params$dp_local_path, filename4))
@@ -658,7 +658,7 @@ process_w_linear_t3 <- function(params) {
       write_size <- write_size + file.size(file.path(params$write_path, filename3))
     }
 
-    pbar = MakeProgressBar2(i, pbar, params$verbose)
+    pbar <- make_progress_bar_1(i, pbar, params$verbose)
   }
 
   params <- add_to_log(params, "process_w_linear_t3", read_time, read_size, write_time, write_size)
@@ -675,32 +675,32 @@ get_wr_linear_a3 <- function(params, data) {
   write_size <- file.size(file.path(params$write_path, "xatxa.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  p2 = NULL
+  p2 <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "p2.rdata"))
   read_size <- file.size(file.path(params$read_path[["T"]], "p2.rdata"))
   read_time <- proc.time()[3] - read_time
 
   num_blocks <- params$blocks$num_blocks
-  pbar = MakeProgressBar1(num_blocks, "XA'(I-z*z')XB*R", params$verbose)
+  pbar <- make_progress_bar_1(num_blocks, "XA'(I-z*z')XB*R", params$verbose)
 
-  container_ct_wr = 0
-  container_ct_pr = 0
+  container_ct_wr <- 0
+  container_ct_pr <- 0
   for (i in 1:num_blocks) {
     if (i %in% params$container$filebreak.wr) {
-      container_ct_wr = container_ct_wr + 1
+      container_ct_wr <- container_ct_wr + 1
       filename1 <- paste0("cwr_", container_ct_wr, ".rdata")
-      to_read = file(file.path(params$read_path[["T"]], filename1), "rb")
+      to_read <- file(file.path(params$read_path[["T"]], filename1), "rb")
     }
     if (i %in% params$container$filebreak.pr) {
-      container_ct_pr = container_ct_pr + 1
+      container_ct_pr <- container_ct_pr + 1
       filename2 <- paste0("cpr_", container_ct_pr, ".rdata")
       to_write <- file(file.path(params$write_path, filename2), "wb")
     }
 
     strt <- params$blocks$starts[i]
     stp <- params$blocks$stops[i]
-    n = stp - strt + 1
+    n <- stp - strt + 1
 
     read_time <- read_time - proc.time()[3]
     wr  <- matrix(readBin(con = to_read, what = numeric(), n = n * p2,
@@ -708,7 +708,7 @@ get_wr_linear_a3 <- function(params, data) {
     read_time <- read_time + proc.time()[3]
 
     y_xa <- cbind(data$Y[strt:stp, ], data$x[strt:stp, ])
-    pr = t(y_xa) %*% wr
+    pr <- t(y_xa) %*% wr
     write_time <- write_time - proc.time()[3]
     writeBin(as.vector(pr), con = to_write, endian = "little")
     write_time <- write_time + proc.time()[3]
@@ -722,7 +722,7 @@ get_wr_linear_a3 <- function(params, data) {
       write_size <- write_size + file.size(file.path(params$write_path, filename2))
     }
 
-    pbar = MakeProgressBar2(i, pbar, params$verbose)
+    pbar <- make_progress_bar_1(i, pbar, params$verbose)
   }
   params <- add_to_log(params, "get_wr_linear_a3", read_time, read_size, write_time, write_size)
   return(params)
@@ -734,10 +734,10 @@ get_products_linear_t3 <- function(params) {
   n <- params$n
   p1 <- params$p1
   p2 <- params$p2
-  xa_t_xa = 0
+  xa_t_xa <- 0
   xb_t_xb <- 0
-  xa_t_y  = 0
-  y_xa_t_xb = 0
+  xa_t_y  <- 0
+  y_xa_t_xb <- 0
 
   num_blocks <- params$blocks$num_blocks
   read_time <- proc.time()[3]
@@ -747,21 +747,21 @@ get_products_linear_t3 <- function(params) {
                  file.size(file.path(params$read_path[["A"]], "xatxa.rdata")))
   read_time <- proc.time()[3] - read_time
 
-  pbar = MakeProgressBar1(num_blocks, "X'X", params$verbose)
+  pbar <- make_progress_bar_1(num_blocks, "X'X", params$verbose)
 
-  container_ct_pr = 0
+  container_ct_pr <- 0
   for (i in 1:num_blocks) {
     if (i %in% params$container$filebreak.pr) {
-      container_ct_pr = container_ct_pr + 1
+      container_ct_pr <- container_ct_pr + 1
       filename1 <- paste0("cpr_", container_ct_pr, ".rdata")
-      to_read = file(file.path(params$read_path[["A"]], filename1), "rb")
+      to_read <- file(file.path(params$read_path[["A"]], filename1), "rb")
       read_size <- read_size + file.size(file.path(params$read_path[["A"]], filename1))
     }
 
     filename1 <- paste0("r2_", i, ".rdata")
 
     read_time <- read_time - proc.time()[3]
-    to_read_1 = file(file.path(params$dp_local_path, filename1), "rb")
+    to_read_1 <- file(file.path(params$dp_local_path, filename1), "rb")
     r2  <- matrix(readBin(con = to_read_1, what = numeric(), n = p2 * p2,
                         endian = "little"), p2, p2)
     read_size <- read_size + file.size(file.path(params$dp_local_path, filename1))
@@ -770,29 +770,29 @@ get_products_linear_t3 <- function(params) {
                         endian = "little"), p1 + 1, p2)
     read_time <- read_time + proc.time()[3]
 
-    y_xa_t_xb = y_xa_t_xb + pr %*% t(r2)
+    y_xa_t_xb <- y_xa_t_xb + pr %*% t(r2)
 
     if ((i + 1) %in% params$container$filebreak.pr || i == num_blocks) {
       close(to_read)
     }
 
-    pbar = MakeProgressBar2(i, pbar, params$verbose)
+    pbar <- make_progress_bar_1(i, pbar, params$verbose)
   }
 
-  y_t_xb = y_xa_t_xb[1, , drop = FALSE]
-  xa_t_xb = y_xa_t_xb[-1, , drop = FALSE]
+  y_t_xb <- y_xa_t_xb[1, , drop = FALSE]
+  xa_t_xb <- y_xa_t_xb[-1, , drop = FALSE]
   xtx <- rbind(cbind(xa_t_xa, xa_t_xb), cbind(t(xa_t_xb), xb_t_xb))
-  x_t_y = rbind(xa_t_y, t(y_t_xb))
+  x_t_y <- rbind(xa_t_y, t(y_t_xb))
 
-  x_t_x_lasso = xtx / (n - 1)
-  x_t_y_lasso = params$sdy * x_t_y / sqrt(n - 1)
+  x_t_x_lasso <- xtx / (n - 1)
+  x_t_y_lasso <- params$sdy * x_t_y / sqrt(n - 1)
 
   params$xtx <- xtx
-  params$xty = x_t_y
-  params$xtxLasso = x_t_x_lasso
-  params$xtyLasso = x_t_y_lasso
+  params$xty <- x_t_y
+  params$xtxLasso <- x_t_x_lasso
+  params$xtyLasso <- x_t_y_lasso
 
-  params$converged = TRUE
+  params$converged <- TRUE
 
   params <- add_to_log(params, "get_products_linear_t3", read_time, read_size, 0, 0)
   return(params)
@@ -804,33 +804,33 @@ compute_results_linear_t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "compute_results_linear_t3\n\n")
   stats    <- params$stats
   stats$converged <- params$converged
-  stats$failed    = FALSE
-  a_names   = params$colnamesA
-  b_names   = params$colnamesB
-  n        = params$n
-  yty      = params$yty
-  xty      = params$xty
-  xtx      = params$xtx
-  sdy      = params$sdy
-  sda      = params$sda
-  sdb      = params$sdb
-  means_y   = params$means_y
-  means_a   = params$means_a
-  means_b   = params$means_b
+  stats$failed    <- FALSE
+  a_names   <- params$colnamesA
+  b_names   <- params$colnamesB
+  n        <- params$n
+  yty      <- params$yty
+  xty      <- params$xty
+  xtx      <- params$xtx
+  sdy      <- params$sdy
+  sda      <- params$sda
+  sdb      <- params$sdb
+  means_y   <- params$means_y
+  means_a   <- params$means_a
+  means_b   <- params$means_b
 
   # First we de-standardize.
   xtx <- diag(c(sda, sdb)) %*% xtx %*% diag(c(sda, sdb))
   offset  <- matrix(c(means_a, means_b), ncol = 1) %*%
     matrix(c(means_a, means_b), nrow = 1) * n
-  offset[1, 1] = 0
+  offset[1, 1] <- 0
   xtx <- xtx + offset
 
-  xty = diag(c(sda, sdb)) %*% xty * sdy
-  offset = n * means_y * matrix(c(means_a, means_b), ncol = 1)
-  xty = xty + offset
+  xty <- diag(c(sda, sdb)) %*% xty * sdy
+  offset <- n * means_y * matrix(c(means_a, means_b), ncol = 1)
+  xty <- xty + offset
 
   # Now, we check for colinearity
-  nrow = nrow(xtx)
+  nrow <- nrow(xtx)
   indicies <- c(1)
   for (i in 2:nrow) {
     temp_indicies <- c(indicies, i)
@@ -841,29 +841,29 @@ compute_results_linear_t3 <- function(params) {
 
 
   a_index        <- which(indicies <= length(a_names))
-  a_indicies_keep = indicies[a_index]
-  b_indicies_keep = indicies[-a_index] - length(a_names)
-  names_old     = c(a_names, b_names)
-  p             = length(indicies)
-  xtx_old       = xtx
-  xty_old       = xty
-  xtx           = xtx[indicies, indicies, drop = FALSE]
+  a_indicies_keep <- indicies[a_index]
+  b_indicies_keep <- indicies[-a_index] - length(a_names)
+  names_old     <- c(a_names, b_names)
+  p             <- length(indicies)
+  xtx_old       <- xtx
+  xty_old       <- xty
+  xtx           <- xtx[indicies, indicies, drop = FALSE]
   xty            <- matrix(xty[indicies, ], ncol = 1)
 
   invxtx <- solve(xtx)
-  betas  = drop(invxtx %*% xty)
+  betas  <- drop(invxtx %*% xty)
 
   num_covariates <- p - 1
 
   #   # If true sse is approximately 0, random variations could cause this
   #   # calculation to be less than 0
   #   # If calculated sse is less than 0, we set it equal to 0.
-  sse     = max(drop(yty - 2 * t(xty) %*% betas + (t(betas) %*% xtx) %*% betas), 0)
-  rstderr = drop(sqrt(sse / (n - num_covariates - 1)))
-  sst     = drop(yty - means_y^2 * n)
-  ssr     = sst - sse
-  df1     = num_covariates
-  df2     = n - num_covariates - 1
+  sse     <- max(drop(yty - 2 * t(xty) %*% betas + (t(betas) %*% xtx) %*% betas), 0)
+  rstderr <- drop(sqrt(sse / (n - num_covariates - 1)))
+  sst     <- drop(yty - means_y^2 * n)
+  ssr     <- sst - sse
+  df1     <- num_covariates
+  df2     <- n - num_covariates - 1
   if (sse == 0) {
     f_stat <- Inf
   } else {
@@ -877,39 +877,39 @@ compute_results_linear_t3 <- function(params) {
   }
   adj_r_sq <- drop(1 - (n - 1) / (n - num_covariates - 1) * (1 - r_sq))
   if (rstderr == 0) {
-    tvals = rep(Inf, num_covariates + 1)
+    tvals <- rep(Inf, num_covariates + 1)
   } else {
-    tvals   = betas / (rstderr * sqrt(diag(invxtx)))
+    tvals   <- betas / (rstderr * sqrt(diag(invxtx)))
   }
 
-  secoef  = tvals^-1 * betas
-  pvals   = 2 * pt(abs(tvals), n - num_covariates - 1, lower.tail = FALSE)
-  stats$party                  = c(rep("dp1", params$p1_old),
+  secoef  <- tvals^-1 * betas
+  pvals   <- 2 * pt(abs(tvals), n - num_covariates - 1, lower.tail = FALSE)
+  stats$party                  <- c(rep("dp1", params$p1_old),
                                    rep("dp2", params$p2_old))
-  stats$responseParty          = "dp1"
-  stats$coefficients           = rep(NA, params$p)
-  stats$tvals                  = rep(NA, params$p)
-  stats$secoef                 = rep(NA, params$p)
-  stats$pvals                  = rep(NA, params$p)
+  stats$responseParty          <- "dp1"
+  stats$coefficients           <- rep(NA, params$p)
+  stats$tvals                  <- rep(NA, params$p)
+  stats$secoef                 <- rep(NA, params$p)
+  stats$pvals                  <- rep(NA, params$p)
 
-  stats$sse                    = sse
-  stats$coefficients[indicies] = betas
-  stats$tvals[indicies]        = tvals
-  stats$secoef[indicies]       = secoef
-  stats$pvals[indicies]        = pvals
-  stats$rstderr                = rstderr
-  stats$rsquare                = r_sq
-  stats$adjrsquare             = adj_r_sq
-  stats$f_stat                  = f_stat
+  stats$sse                    <- sse
+  stats$coefficients[indicies] <- betas
+  stats$tvals[indicies]        <- tvals
+  stats$secoef[indicies]       <- secoef
+  stats$pvals[indicies]        <- pvals
+  stats$rstderr                <- rstderr
+  stats$rsquare                <- r_sq
+  stats$adjrsquare             <- adj_r_sq
+  stats$f_stat                  <- f_stat
   stats$f_pval <- f_pval
-  stats$df1                    = df1
-  stats$df2                    = df2
-  stats$n                      = params$n
-  stats$xtx                    = xtx_old
-  stats$xty                    = xty_old
-  stats$yty                    = yty
-  stats$means_y                 = means_y
-  stats$means                  = c(means_a, means_b)
+  stats$df1                    <- df1
+  stats$df2                    <- df2
+  stats$n                      <- params$n
+  stats$xtx                    <- xtx_old
+  stats$xty                    <- xty_old
+  stats$yty                    <- yty
+  stats$means_y                 <- means_y
+  stats$means                  <- c(means_a, means_b)
 
   names(stats$party)           <- names_old
   names(stats$coefficients)    <- names_old
@@ -919,7 +919,7 @@ compute_results_linear_t3 <- function(params) {
 
   colnames(stats$xtx)          <- names_old
   rownames(stats$xtx)          <- names_old
-  colnames(stats$xty)          = colnames(params$xty)
+  colnames(stats$xty)          <- colnames(params$xty)
   rownames(stats$xty)          <- names_old
 
   params$stats <- stats
@@ -934,7 +934,7 @@ compute_results_linear_t3 <- function(params) {
     params$error_message <- "After removing colinear covariates, Party B has no continuous covariates."
   }
 
-  stats$failed = params$failed
+  stats$failed <- params$failed
 
   write_time <- proc.time()[3]
   save(stats, file = file.path(params$write_path, "stats.rdata"))
@@ -948,7 +948,7 @@ compute_results_linear_t3 <- function(params) {
 
 get_results_linear_a3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "get_results_linear_a3\n\n")
-  params$converged = TRUE
+  params$converged <- TRUE
   stats <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "stats.rdata"))
@@ -963,7 +963,7 @@ get_results_linear_a3 <- function(params) {
 
 get_results_linear_b3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "get_results_linear_b3\n\n")
-  params$converged = TRUE
+  params$converged <- TRUE
   stats <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "stats.rdata"))
@@ -995,7 +995,7 @@ party_a_process_3_linear <- function(data,
   params <- initialize_tracking_table_3p(params)
   header(params)
 
-  params   = prepare_folder_linear_a3(params, monitor_folder)
+  params   <- prepare_folder_linear_a3(params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
@@ -1007,18 +1007,18 @@ party_a_process_3_linear <- function(data,
     message <- "Error in processing the data for Party A."
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
-    params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
+    params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, wait_for_turn = TRUE)
     return(params$stats)
   }
 
   params <- prepare_params_linear_a3(params, data)
   files <- "pa.rdata"
   params <- send_pause_continue_3p(params, filesT = files, from = "T",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
     warning(read_error_message(params$read_path[["T"]]))
-    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, wait_for_turn = TRUE)
     return(params$stats)
   }
 
@@ -1035,12 +1035,12 @@ party_a_process_3_linear <- function(data,
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
     warning(read_error_message(params$read_path[["T"]]))
-    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, wait_for_turn = TRUE)
     return(params$stats)
   }
 
   params <- get_results_linear_a3(params)
-  params <- send_pause_quit_3p(params, sleep_time = sleep_time, waitForTurn = TRUE)
+  params <- send_pause_quit_3p(params, sleep_time = sleep_time, wait_for_turn = TRUE)
   return(params$stats)
 }
 
@@ -1059,7 +1059,7 @@ party_b_process_3_linear <- function(data,
   params <- initialize_tracking_table_3p(params)
 
   header(params)
-  params   = prepare_folder_linear_b3(params, monitor_folder)
+  params   <- prepare_folder_linear_b3(params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
@@ -1072,19 +1072,19 @@ party_b_process_3_linear <- function(data,
     message <- "Error in processing the data for Party B."
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
-    params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
+    params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, wait_for_turn = TRUE)
     return(params$stats)
   }
 
   params <- prepare_params_linear_b3(params, data)
   files <- "pb.rdata"
   params <- send_pause_continue_3p(params, filesT = files, from = "T",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
     warning(read_error_message(params$read_path[["T"]]))
-    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, wait_for_turn = TRUE)
     return(params$stats)
   }
 
@@ -1096,12 +1096,12 @@ party_b_process_3_linear <- function(data,
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
     warning(read_error_message(params$read_path[["T"]]))
-    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, wait_for_turn = TRUE)
     return(params$stats)
   }
 
   params <- get_results_linear_b3(params)
-  params <- send_pause_quit_3p(params, sleep_time = sleep_time, waitForTurn = TRUE)
+  params <- send_pause_quit_3p(params, sleep_time = sleep_time, wait_for_turn = TRUE)
   return(params$stats)
 }
 
@@ -1121,7 +1121,7 @@ party_t_process_3_linear <- function(monitor_folder         = NULL,
   params <- initialize_tracking_table_3p(params)
 
   header(params)
-  params   = prepare_folder_linear_t3(params, monitor_folder)
+  params   <- prepare_folder_linear_t3(params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
@@ -1160,7 +1160,7 @@ party_t_process_3_linear <- function(monitor_folder         = NULL,
     return(params$stats)
   }
 
-  params   = prepare_params_linear_t3(params)
+  params   <- prepare_params_linear_t3(params)
   if (!params$failed) params <- prepare_blocks_linear_t3(params, blocksize)
 
   if (params$failed) {

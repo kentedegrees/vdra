@@ -567,7 +567,7 @@ compute_results_linear_AC <- function(params) {
 
 get_results_linear_DP <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "get_results_linear_DP\n\n")
-  params$converged = TRUE
+  params$converged <- TRUE
   stats <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$readPathAC, "stats.rdata"))
@@ -626,45 +626,45 @@ DataPartnerKLinear <- function(data,
     make_error_message(params$write_path, params$error_message)
     files <- "error_message.rdata"
     params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
     params$error_message <- read_error_message(params$readPathAC)
     warning(params$error_message)
-    params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, wait_for_turn = TRUE)
     return(params$stats)
   }
 
   params <- SendBasicInfo.DP(params, data)
   files <- "n_analysis.rdata"
   params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
     params$error_message <- possibleError$message
     warning(possibleError$message)
-    params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, wait_for_turn = TRUE)
     return(params$stats)
   }
 
   params <- prepare_params_linear_DP(params, data)
   files <- "p_scaler_seed.rdata"
   params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
   params <- PrepareSharesLinear.DP(params, data)
   files <- c("products.rdata", "halfshare.rdata", "colstats.rdata")
   params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
     params$error_message <- possibleError$message
     warning(possibleError$message)
-    params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, wait_for_turn = TRUE)
     return(params$stats)
   } else {
     params <- get_results_linear_DP(params)
-    params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, wait_for_turn = TRUE)
     return(params$stats)
   }
 }

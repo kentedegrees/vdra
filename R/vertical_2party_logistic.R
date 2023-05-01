@@ -1122,7 +1122,7 @@ compute_results_logistic_a2 <- function(params, data) {
   stats$nulldev <- nulldev
   stats$resdev  <- resdev
   stats$hoslem  <- HoslemInternal(params, data)
-  stats$ROC     <- RocInternal(params, data)
+  stats$ROC     <- roc_internal(params, data)
   stats$iter    <- params$alg_iteration_counter - 1
 
   names_old <- c(a_names, b_names)

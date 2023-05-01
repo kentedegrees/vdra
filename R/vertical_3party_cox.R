@@ -1403,7 +1403,7 @@ compute_cox_from_survival_b3 <- function(params, data) {
                                                                strata = strata,
                                                                data$x),
                                              iter.max = max_iterations))
-      params$converged = FALSE
+      params$converged <- FALSE
     }
     fit$linear.predictors <- NULL
     fit$residuals <- NULL
@@ -1716,7 +1716,7 @@ party_a_process_3_cox <- function(data,
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
     params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time,
-                              job_failed = TRUE, waitForTurn = TRUE)
+                              job_failed = TRUE, wait_for_turn = TRUE)
     return(params$stats)
   }
 
@@ -1724,13 +1724,13 @@ party_a_process_3_cox <- function(data,
   files <- "pa.rdata"
   params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time,
-                                waitForTurn = TRUE)
+                                wait_for_turn = TRUE)
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
     params$complete <- TRUE
     warning(read_error_message(params$read_path[["T"]]))
     params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE,
-                              waitForTurn = TRUE)
+                              wait_for_turn = TRUE)
     return(params$stats)
   }
 
@@ -1738,7 +1738,7 @@ party_a_process_3_cox <- function(data,
   files <- "Astrata.rdata"
   params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time,
-                                waitForTurn = TRUE)
+                                wait_for_turn = TRUE)
 
   if (file.exists(file.path(params$read_path[["T"]], "stats.rdata"))) {
     params$alg_iteration_counter <- 1
@@ -1752,7 +1752,7 @@ party_a_process_3_cox <- function(data,
     params$complete <- TRUE
     warning(read_error_message(params$read_path[["T"]]))
     params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE,
-                              waitForTurn = TRUE)
+                              wait_for_turn = TRUE)
     return(params$stats)
   }
 
@@ -1782,7 +1782,7 @@ party_a_process_3_cox <- function(data,
     params$complete <- TRUE
     warning(read_error_message(params$read_path[["T"]]))
     params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE,
-                              waitForTurn = TRUE)
+                              wait_for_turn = TRUE)
     return(params$stats)
   }
 
@@ -1800,13 +1800,13 @@ party_a_process_3_cox <- function(data,
     files <- c("xabetaa.rdata")
     params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time,
-                                  waitForTurn = TRUE)
+                                  wait_for_turn = TRUE)
 
     params <- compute_xa_delta_l_cox_a3(params, data)
     files <- "tXA_w_XA.rdata"
     params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time,
-                                  waitForTurn = TRUE)
+                                  wait_for_turn = TRUE)
 
     params <- get_xr_cox_a3(params, data)
     files <- seq_zw("cxr_", length(params$container$filebreak_xr))
@@ -1816,7 +1816,7 @@ party_a_process_3_cox <- function(data,
     if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
       warning(read_error_message(params$read_path[["T"]]))
       params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE,
-                                waitForTurn = TRUE)
+                                wait_for_turn = TRUE)
       return(params$stats)
     }
     EndingIteration(params)
@@ -1824,7 +1824,7 @@ party_a_process_3_cox <- function(data,
   }
 
   params <- get_results_cox_a3(params)
-  params <- send_pause_quit_3p(params, sleep_time = sleep_time, waitForTurn = TRUE)
+  params <- send_pause_quit_3p(params, sleep_time = sleep_time, wait_for_turn = TRUE)
   return(params$stats)
 }
 
@@ -1856,7 +1856,7 @@ party_b_process_3_cox <- function(data,
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
     params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time,
-                              job_failed = TRUE, waitForTurn = TRUE)
+                              job_failed = TRUE, wait_for_turn = TRUE)
     return(params$stats)
   }
 
@@ -1864,13 +1864,13 @@ party_b_process_3_cox <- function(data,
   files <- "pb.rdata"
   params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time,
-                                waitForTurn = TRUE)
+                                wait_for_turn = TRUE)
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
     params$complete <- TRUE
     warning(read_error_message(params$read_path[["T"]]))
     params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE,
-                              waitForTurn = TRUE)
+                              wait_for_turn = TRUE)
     return(params$stats)
   }
 
@@ -1879,7 +1879,7 @@ party_b_process_3_cox <- function(data,
   files <- "Bstrata.rdata"
   params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time,
-                                waitForTurn = TRUE)
+                                wait_for_turn = TRUE)
 
   if (file.exists(file.path(params$read_path[["T"]], "transferControl.rdata"))) {
     params$alg_iteration_counter <- 1
@@ -1926,7 +1926,7 @@ party_b_process_3_cox <- function(data,
     params$complete <- TRUE
     warning(read_error_message(params$read_path[["T"]]))
     params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE,
-                              waitForTurn = TRUE)
+                              wait_for_turn = TRUE)
     return(params$stats)
   }
 
@@ -1944,7 +1944,7 @@ party_b_process_3_cox <- function(data,
     params$complete <- TRUE
     warning(read_error_message(params$read_path[["T"]]))
     params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE,
-                              waitForTurn = TRUE)
+                              wait_for_turn = TRUE)
     return(params$stats)
   }
 
@@ -1988,18 +1988,18 @@ party_b_process_3_cox <- function(data,
     files <- "xbbetab.rdata"
     params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time,
-                                  waitForTurn = TRUE)
+                                  wait_for_turn = TRUE)
 
     params <- compute_xb_delta_l_cox_b3(params, data)
     files <- c("txb_w_xb.rdata", seq_zw("cCox_", length(params$container$filebreak.Cox)))
     params <- send_pause_continue_3p(params, filesT = files, from = "T",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time,
-                                  waitForTurn = TRUE)
+                                  wait_for_turn = TRUE)
 
     if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
       warning(read_error_message(params$read_path[["T"]]))
       params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE,
-                                waitForTurn = TRUE)
+                                wait_for_turn = TRUE)
       return(params$stats)
     }
     EndingIteration(params)
@@ -2007,7 +2007,7 @@ party_b_process_3_cox <- function(data,
   }
 
   params <- get_results_cox_b3(params)
-  params <- send_pause_quit_3p(params, sleep_time = sleep_time, waitForTurn = TRUE)
+  params <- send_pause_quit_3p(params, sleep_time = sleep_time, wait_for_turn = TRUE)
   return(params$stats)
 }
 
@@ -2029,7 +2029,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
   t_params <- initialize_tracking_table_3p(t_params)
 
   header(t_params)
-  params   = prepare_folder_linear_t3(t_params, monitor_folder)
+  params   <- prepare_folder_linear_t3(t_params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
@@ -2068,7 +2068,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
     return(params$stats)
   }
 
-  params   = prepare_params_cox_t3(params, cutoff, max_iterations)
+  params   <- prepare_params_cox_t3(params, cutoff, max_iterations)
 
   if (!params$failed) params <- check_strata_cox_t3(params)
 
@@ -2189,8 +2189,8 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
 
   params <- compute_initial_betas_cox_t3(params)
 
-  files_a = c("Aindicies.rdata", "betasA.rdata", "converged.rdata")
-  files_b = c("Bindicies.rdata", "betasB.rdata", "converged.rdata")
+  files_a <- c("Aindicies.rdata", "betasA.rdata", "converged.rdata")
+  files_b <- c("Bindicies.rdata", "betasB.rdata", "converged.rdata")
   params <- send_pause_continue_3p(params, files_a = files_a, files_b = files_b,
                                 from = c("A", "B"),
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
@@ -2198,8 +2198,8 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
   while (!params$converged && !params$max_iter_exceeded) {
     BeginningIteration(params)
     if (params$alg_iteration_counter > 1) {
-      files_a = c("converged.rdata", "betasA.rdata")
-      files_b = c("converged.rdata", "betasB.rdata")
+      files_a <- c("converged.rdata", "betasA.rdata")
+      files_b <- c("converged.rdata", "betasB.rdata")
       params <- send_pause_continue_3p(params, files_a = files_a, files_b = files_b,
                                     from = c("A", "B"),
                                     sleep_time = sleep_time, max_waiting_time = max_waiting_time)
@@ -2235,8 +2235,8 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
 
   params <- compute_results_cox_t3(params)
 
-  files_a = c("converged.rdata", "betasA.rdata", "stats.rdata")
-  files_b = c("converged.rdata", "betasB.rdata", "stats.rdata")
+  files_a <- c("converged.rdata", "betasA.rdata", "stats.rdata")
+  files_b <- c("converged.rdata", "betasB.rdata", "stats.rdata")
   params <- send_pause_continue_3p(params, files_a = files_a, files_b = files_b,
                                 from = c("A", "B"),
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)

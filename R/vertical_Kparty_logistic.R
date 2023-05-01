@@ -560,7 +560,7 @@ compute_results_logistic_DP <- function(params, data) {
   nulldev = -2 * (ct * log(ct / n) + (n - ct) * log(1 - ct / n))
 
   hoslem  = HoslemInternal(params, data)
-  ROC     = RocInternal(params, data)
+  ROC     = roc_internal(params, data)
 
   write_time <- proc.time()[3]
   save(resdev, nulldev, hoslem, ROC, file = file.path(params$write_path, "logisticstats.rdata"))
@@ -711,41 +711,41 @@ DataPartnerKLogistic <- function(data,
     make_error_message(params$write_path, params$error_message)
     files <- "error_message.rdata"
     params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
     params$error_message <- read_error_message(params$readPathAC)
     warning(params$error_message)
-    params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, wait_for_turn = TRUE)
     return(params$stats)
   }
 
   params <- SendBasicInfo.DP(params, data)
   files <- "n_analysis.rdata"
   params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
     params$error_message <- possibleError$message
     warning(possibleError$message)
-    params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, wait_for_turn = TRUE)
     return(params$stats)
   }
 
   params <- prepare_params_linear_DP(params, data)
   files <- "p_scaler_seed.rdata"
   params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
   params <- PrepareSharesLinear.DP(params, data)
   files <- c("products.rdata", "halfshare.rdata", "colstats.rdata")
   params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
     params$error_message <- possibleError$message
     warning(possibleError$message)
-    params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, wait_for_turn = TRUE)
     return(params$stats)
   }
 
@@ -761,25 +761,25 @@ DataPartnerKLogistic <- function(data,
     params <- ComputeSbetaLogistic.DP(params, data)
     files <- "Sbeta.rdata"
     params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
     params <- ComputeStWSLogistic.DP(params, data)
     files <- "stwsshare.rdata"
     params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
     possibleError = ReceivedError.kp(params, from = "AC")
     if (possibleError$error) {
       params$error_message <- possibleError$message
       warning(possibleError$message)
-      params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+      params <- send_pause_quit_kp(params, sleep_time = sleep_time, wait_for_turn = TRUE)
       return(params$stats)
     }
 
     params <- update_beta_logistic_DP(params)
     files <- "u_converge.rdata"
     params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
 
     params <- GetConvergeStatusLogistic.DP(params)
@@ -794,7 +794,7 @@ DataPartnerKLogistic <- function(data,
 
   files <- c("sbeta.rdata", "finalbetas.rdata")
   params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
   if (data_partner_id == 1) {
     params <- compute_results_logistic_DP(params, data)
@@ -804,7 +804,7 @@ DataPartnerKLogistic <- function(data,
   }
 
   params <- get_results_logistic_DP(params, data)
-  params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+  params <- send_pause_quit_kp(params, sleep_time = sleep_time, wait_for_turn = TRUE)
   return(params$stats)
 }
 

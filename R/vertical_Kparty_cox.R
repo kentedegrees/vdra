@@ -790,7 +790,7 @@ compute_log_likelihood_cox_DP <- function(params, data) {
     w = exp(sBeta)
     loglikelihood <- 0
     step_counter <- 0
-    pbar = MakeProgressBar1(params$survival$num_events, "loglikelihood", params$verbose)
+    pbar <- make_progress_bar_1(params$survival$num_events, "loglikelihood", params$verbose)
     for (i in 1:length(params$survival$strata)) {
       if (params$survival$strata[[i]]$J > 0) {
         for (j in 1:params$survival$strata[[i]]$J) {
@@ -805,7 +805,7 @@ compute_log_likelihood_cox_DP <- function(params, data) {
             loglikelihood <- loglikelihood - log(a_jr)
           }
           step_counter <- step_counter + nj
-          pbar = MakeProgressBar2(step_counter, pbar, params$verbose)
+          pbar <- make_progress_bar_1(step_counter, pbar, params$verbose)
         }
       }
     }
@@ -1489,30 +1489,30 @@ DataPartnerKCox <- function(data,
     make_error_message(params$write_path, params$error_message)
     files <- "error_message.rdata"
     params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
     params$error_message <- read_error_message(params$readPathAC)
     warning(params$error_message)
-    params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, wait_for_turn = TRUE)
     return(params$stats)
   }
 
   params <- SendBasicInfo.DP(params, data)
   files <- "n_analysis.rdata"
   params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
     params$error_message <- possibleError$message
     warning(possibleError$message)
-    params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, wait_for_turn = TRUE)
     return(params$stats)
   }
 
   if (params$data_partner_id == 1) {
     params <- DoNothing.ACDP(params)
     params <- send_pause_continue_kp(params, filesAC = "empty.rdata", from = "DP",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
     params <- check_strata_cox_DP(params, data)
 
@@ -1523,7 +1523,7 @@ DataPartnerKCox <- function(data,
       files <- "empty.rdata"
     }
     params <- send_pause_continue_kp(params, filesDP = files, from = "AC",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
     params <- DoNothing.ACDP(params)
 
@@ -1543,14 +1543,14 @@ DataPartnerKCox <- function(data,
     filesList = rep(list(list()), numDataPartners)
     filesList[[1]] = "strata_names.rdata"
     params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP1",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
 
     possibleError = ReceivedError.kp(params, from = "DP1")
     if (possibleError$error) {
       params$error_message <- possibleError$message
       warning(possibleError$message)
-      params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+      params <- send_pause_quit_kp(params, sleep_time = sleep_time, wait_for_turn = TRUE)
       return(params$stats)
     }
 
@@ -1558,12 +1558,12 @@ DataPartnerKCox <- function(data,
     filesList = rep(list(list()), numDataPartners)
     filesList[[1]] = "strata.rdata"
     params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP1",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
   }
 
   params <- prepare_params_cox_DP(params, data)
   params <- send_pause_continue_kp(params, filesDP = "p_scaler_seed.rdata", from = "DP",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
   params <- PrepareSharesCox.DP(params, data)
   files <- c("products.rdata", "halfshare.rdata", "colstats.rdata")
@@ -1571,13 +1571,13 @@ DataPartnerKCox <- function(data,
     files <- c(files, "survival.rdata")
   }
   params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
     params$error_message <- possibleError$message
     warning(possibleError$message)
-    params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time, wait_for_turn = TRUE)
     return(params$stats)
   }
 
@@ -1593,30 +1593,30 @@ DataPartnerKCox <- function(data,
     if (params$data_partner_id == 1) {
       files <- "sbeta.rdata"
       params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
       params <- compute_log_likelihood_cox_DP(params, data)
 
       files <- "sbeta.rdata"
       params <- send_pause_continue_kp(params, filesAC = files, from = "DP2",
-                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
       params <- ComputeSDelLCox.DP(params, data)
 
       files <- c("tsdeltal.rdata", "scaledwsll.rdata", "converged.rdata")
       params <- send_pause_continue_kp(params, filesDP = files, from = "AC",
-                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
     } else if (params$data_partner_id == 2) {
       files <- "sbeta.rdata"
       params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
       params <- DoNothing.ACDP(params)
 
       filesList = rep(list(list()), numDataPartners)
       filesList[[1]] = "empty.rdata"
       params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP1",
-                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
     } else {
       files <- "sbeta.rdata"
       params <- send_pause_continue_kp(params, filesAC = files, from = "DP1",
@@ -1630,13 +1630,13 @@ DataPartnerKCox <- function(data,
       files <- c("products.rdata")
     }
     params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
     possibleError = ReceivedError.kp(params, from = "AC")
     if (possibleError$error) {
       params$error_message <- possibleError$message
       warning(possibleError$message)
-      params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+      params <- send_pause_quit_kp(params, sleep_time = sleep_time, wait_for_turn = TRUE)
       return(params$stats)
     }
 
@@ -1649,7 +1649,7 @@ DataPartnerKCox <- function(data,
       files <- "u.rdata"
     }
     params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
     EndingIteration(params)
     params$alg_iteration_counter <- params$alg_iteration_counter + 1
   }
@@ -1657,7 +1657,7 @@ DataPartnerKCox <- function(data,
   params$completed <- TRUE
 
   params <- get_results_cox_DP(params)
-  send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
+  send_pause_quit_kp(params, sleep_time = sleep_time, wait_for_turn = TRUE)
   return(params$stats)
 }
 
@@ -1780,7 +1780,7 @@ AnalysisCenterKCox <- function(numDataPartners = NULL,
     filesList = rep(list(list()), numDataPartners)
     filesList[[1]] = "wsr1.rdata"
     params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
+                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
     params <- UpdateConvergeStatus.AC(params)
     params <- ComputeStWSCox.AC(params)
