@@ -2,8 +2,8 @@
 
 GetProductsLogistic.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetProductsLogistic.AC\n\n")
-  readTime = 0
-  readSize = 0
+  read_time = 0
+  read_size = 0
   p = 0
   n = 0
   pi = c()
@@ -18,15 +18,15 @@ GetProductsLogistic.AC = function(params) {
   colmin = colrange = colsum = colnames = NULL
   party = NULL
   for (id in 1:params$numDataPartners) {
-    readTime = readTime - proc.time()[3]
+    read_time = read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "products.rdata"))
     load(file.path(params$readPathDP[id], "halfshare.rdata"))
     load(file.path(params$readPathDP[id], "colstats.rdata"))
-    readSize = readSize + sum(file.size(file.path(params$readPathDP[id],
+    read_size = read_size + sum(file.size(file.path(params$readPathDP[id],
                                                   c("products.rdata",
                                                     "halfshare.rdata",
                                                     "colstats.rdata"))))
-    readTime = readTime + proc.time()[3]
+    read_time = read_time + proc.time()[3]
 
     allproducts[[id]]  = products
     allhalfshare[[id]] = halfshare
@@ -82,7 +82,7 @@ GetProductsLogistic.AC = function(params) {
   params$party        = party[-1]
   params$tags         = alltags
 
-  params <- AddToLog(params, "GetProductsLogistic.AC", readTime, readSize, 0, 0)
+  params <- add_to_log(params, "GetProductsLogistic.AC", read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -135,19 +135,19 @@ CheckColinearityLogistic.AC = function(params) {
     min = max + 1
   }
 
-  params$errorMessage = ""
+  params$error_message = ""
   if ((length(unique(tags[[1]])) == 1) | (length(unique(tags[[1]])) >= 2 & !("numeric" %in% names(tags[[1]])))) {
     params$failed = TRUE
-    params$errorMessage = "Data Partner 1 must have no covariates or at least 2 covariates at least one of which is continuous.\n"
+    params$error_message = "Data Partner 1 must have no covariates or at least 2 covariates at least one of which is continuous.\n"
   }
   for (id in 2:params$numDataPartners) {
     if (length(unique(tags[[id]])) < 2) {
       params$failed = TRUE
-      params$errorMessage = paste0(params$errorMessage,
+      params$error_message = paste0(params$error_message,
                                    paste("After removing colinear covariates, Data Partner", id, "has 1 or fewer covariates.\n"))
     } else if (!("numeric" %in% names(tags[[id]]))) {
       params$failed = TRUE
-      params$errorMessage = paste0(params$errorMessage,
+      params$error_message = paste0(params$error_message,
                                    paste("After removing colinear covariates, Data Partner", id, "has no continuous covariates.\n"))
     }
   }
@@ -163,12 +163,12 @@ CheckColinearityLogistic.AC = function(params) {
     params$halfshare[[id]] = params$halfshare[[id]][, indicies[[id]], drop = FALSE]
   }
 
-  writeTime = proc.time()[3]
-  save(indicies, file = file.path(params$writePath, "indicies.rdata"))
-  writeSize = file.size(file.path(params$writePath, "indicies.rdata"))
-  writeTime = proc.time()[3] - writeTime
+  write_time = proc.time()[3]
+  save(indicies, file = file.path(params$write_path, "indicies.rdata"))
+  write_size = file.size(file.path(params$write_path, "indicies.rdata"))
+  write_time = proc.time()[3] - write_time
 
-  params <- AddToLog(params, "CheckColinearityLogistic.AC", 0, 0, writeTime, writeSize)
+  params <- add_to_log(params, "CheckColinearityLogistic.AC", 0, 0, write_time, write_size)
 
   return(params)
 }
@@ -177,8 +177,8 @@ CheckColinearityLogistic.AC = function(params) {
 #' @importFrom stats runif
 ComputeInitialBetasLogistic.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeInitialBetasLogistic.AC\n\n")
-  writeTime = 0
-  writeSize = 0
+  write_time = 0
+  write_size = 0
   colsumS = (params$colsum - params$n * params$colmin) / params$colran
   beta = 4 * solve(params$sts) %*% (params$sty - 0.5 * colsumS)
 
@@ -189,13 +189,13 @@ ComputeInitialBetasLogistic.AC = function(params) {
     end = start + length(params$indicies[[id]]) - 1
     betas = beta[start:end]
 
-    writeTime = writeTime - proc.time()[3]
-    save(u, betas, file = file.path(params$writePath, paste0("u_beta_", id, ".rdata")))
-    writeSize = writeSize + file.size(file.path(params$writePath, paste0("u_beta_", id, ".rdata")))
-    writeTime = writeTime + proc.time()[3]
+    write_time = write_time - proc.time()[3]
+    save(u, betas, file = file.path(params$write_path, paste0("u_beta_", id, ".rdata")))
+    write_size = write_size + file.size(file.path(params$write_path, paste0("u_beta_", id, ".rdata")))
+    write_time = write_time + proc.time()[3]
     start = end + 1
   }
-  params <- AddToLog(params, "ComputeInitialBetasLogistic.AC", 0, 0, writeTime, writeSize)
+  params <- add_to_log(params, "ComputeInitialBetasLogistic.AC", 0, 0, write_time, write_size)
   return(params)
 }
 
@@ -205,17 +205,17 @@ UpdateParamsLogistic.DP = function(params) {
   indicies = NULL
   u = NULL
   betas = NULL
-  readTime = proc.time()[3]
+  read_time = proc.time()[3]
   load(file.path(params$readPathAC, "indicies.rdata"))
   filename = paste0("u_beta_", params$dataPartnerID, ".rdata")
   load(file.path(params$readPathAC, filename))
-  readSize = file.size(file.path(params$readPathAC, "indicies.rdata")) +
+  read_size = file.size(file.path(params$readPathAC, "indicies.rdata")) +
     file.size(file.path(params$readPathAC, filename))
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3] - read_time
   params$u = u
   params$betas = betas
   params$indicies = indicies
-  params <- AddToLog(params, "UpdateParamsLogistic.DP", readTime, readSize, 0, 0)
+  params <- add_to_log(params, "UpdateParamsLogistic.DP", read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -248,11 +248,11 @@ ComputeSbetaLogistic.DP = function(params, data) {
 
   Sbeta = (data$X %*% params$betas + params$u) / (2 * params$u) + V - params$scaler / sum(params$scalers) * Vsum
 
-  writeTime = proc.time()[3]
-  save(Sbeta, file = file.path(params$writePath, "sbeta.rdata"))
-  writeSize = file.size(file.path(params$writePath, "sbeta.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "ComputeSbetaLogistic.DP", 0, 0, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(Sbeta, file = file.path(params$write_path, "sbeta.rdata"))
+  write_size = file.size(file.path(params$write_path, "sbeta.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "ComputeSbetaLogistic.DP", 0, 0, write_time, write_size)
   return(params)
 }
 
@@ -260,25 +260,25 @@ ComputeSbetaLogistic.DP = function(params, data) {
 ComputeWeightsLogistic.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeWeightsLogistic.AC\n\n")
   Sbeta = 0
-  readTime = 0
-  readSize = 0
+  read_time = 0
+  read_size = 0
   sbeta = 0
   for (id in 1:params$numDataPartners) {
-    readTime = readTime - proc.time()[3]
+    read_time = read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "sbeta.rdata"))
-    readSize = readSize + file.size(file.path(params$readPathDP[id], "sbeta.rdata"))
-    readTime = readTime + proc.time()[3]
+    read_size = read_size + file.size(file.path(params$readPathDP[id], "sbeta.rdata"))
+    read_time = read_time + proc.time()[3]
     sbeta = sbeta + Sbeta
   }
   sbeta = 2 * params$u * sbeta - params$numDataPartners * params$u
   pi_ = 1 / (1 + exp(-sbeta))
   params$pi_ = pi_
 
-  writeTime = proc.time()[3]
-  save(pi_, file = file.path(params$writePath, "pi.rdata"))
-  writeSize = file.size(file.path(params$writePath, "pi.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "ComptueWeightsLogistic.AC", readTime, readSize, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(pi_, file = file.path(params$write_path, "pi.rdata"))
+  write_size = file.size(file.path(params$write_path, "pi.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "ComptueWeightsLogistic.AC", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -287,10 +287,10 @@ ComputeWeightsLogistic.AC = function(params) {
 ComputeStWSLogistic.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeStWSLogistic.DP\n\n")
   pi_ = NULL
-  readTime = proc.time()[3]
+  read_time = proc.time()[3]
   load(file.path(params$readPathAC, "pi.rdata"))
-  readSize = file.size(file.path(params$readPathAC, "pi.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_size = file.size(file.path(params$readPathAC, "pi.rdata"))
+  read_time = proc.time()[3] - read_time
   params$pi_ = pi_
 
   W = pi_ * (1 - pi_)
@@ -323,19 +323,19 @@ ComputeStWSLogistic.DP = function(params, data) {
     }
   }
 
-  writeTime = proc.time()[3]
-  save(C, file = file.path(params$writePath, "stwsshare.rdata"))
-  writeSize = file.size(file.path(params$writePath, "stwsshare.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "ComputeStWSLogistic.DP", readTime, readSize, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(C, file = file.path(params$write_path, "stwsshare.rdata"))
+  write_size = file.size(file.path(params$write_path, "stwsshare.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "ComputeStWSLogistic.DP", read_time, read_size, write_time, write_size)
   return(params)
 }
 
 
 ComputeStWSLogistic.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeStWSLogistic.AC\n\n")
-  readTime = 0
-  readSize = 0
+  read_time = 0
+  read_size = 0
   C        = NULL
   W = params$pi_ * (1 - params$pi_)
   StWS = matrix(0, sum(params$pReduct), sum(params$pReduct))
@@ -344,10 +344,10 @@ ComputeStWSLogistic.AC = function(params) {
     end = sum(params$pReduct[1:id1])
     start = end - params$pReduct[id1] + 1
     idx1 = start:end
-    readTime = readTime - proc.time()[3]
+    read_time = read_time - proc.time()[3]
     load(file.path(params$readPathDP[id1], "stwsshare.rdata"))
-    readSize = readSize + file.size(file.path(params$readPathDP[id1], "stwsshare.rdata"))
-    readTime = readTime + proc.time()[3]
+    read_size = read_size + file.size(file.path(params$readPathDP[id1], "stwsshare.rdata"))
+    read_time = read_time + proc.time()[3]
     for (id2 in 1:params$numDataPartners) {
       end = sum(params$pReduct[1:id2])
       start = end - params$pReduct[id2] + 1
@@ -385,7 +385,7 @@ ComputeStWSLogistic.AC = function(params) {
   if (is.null(I)) {
     params$failed = TRUE
     params$singularMatrix = TRUE
-    params$errorMessage =
+    params$error_message =
       paste0("The matrix t(X)*W*X is not invertible.\n",
              "       This may be due to one of two possible problems.\n",
              "       1. Poor random initialization of the security matrices.\n",
@@ -396,7 +396,7 @@ ComputeStWSLogistic.AC = function(params) {
              "          duplicates for both parties and / or reduce the\n",
              "          number of variables used. Once this is done,\n",
              "          rerun the data analysis.")
-    params <- AddToLog(params, "ComputeStWSLogistic.AC", readTime, readSize, 0, 0)
+    params <- add_to_log(params, "ComputeStWSLogistic.AC", read_time, read_size, 0, 0)
     return(params)
   }
   params$I = I
@@ -408,22 +408,22 @@ ComputeStWSLogistic.AC = function(params) {
   Itemp = I
   IDttemp = IDt
 
-  writeTime = 0
-  writeSize = 0
+  write_time = 0
+  write_size = 0
   start = 1
   stop  = params$pReduct[1]
   for (id in 1:params$numDataPartners) {
     I = Itemp[start:stop, , drop = FALSE]
     IDt = IDttemp[start:stop, , drop = FALSE]
-    writeTime = writeTime - proc.time()[3]
-    save(I, IDt, file = file.path(params$writePath, paste0("ID", id, ".rdata")))
-    writeSize = writeSize + file.size(file.path(params$writePath, paste0("ID", id, ".rdata")))
-    writeTime = writeTime + proc.time()[3]
+    write_time = write_time - proc.time()[3]
+    save(I, IDt, file = file.path(params$write_path, paste0("ID", id, ".rdata")))
+    write_size = write_size + file.size(file.path(params$write_path, paste0("ID", id, ".rdata")))
+    write_time = write_time + proc.time()[3]
     start = stop + 1
     stop = stop + params$pReduct[id + 1]
   }
 
-  params <- AddToLog(params, "ComputeStWSLogistic.AC", readTime, readSize, writeTime, writeSize)
+  params <- add_to_log(params, "ComputeStWSLogistic.AC", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -432,10 +432,10 @@ ComputeStWSLogistic.AC = function(params) {
 UpdateBetaLogistic.DP = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateBetaLogistic.DP\n\n")
   I = IDt = NULL
-  readTime = proc.time()[3]
+  read_time = proc.time()[3]
   load(file.path(params$readPathAC, paste0("ID", params$dataPartnerID, ".rdata")))
-  readSize = file.size(file.path(params$readPathAC, paste0("ID", params$dataPartnerID, ".rdata")))
-  readTime = proc.time()[3] - readTime
+  read_size = file.size(file.path(params$readPathAC, paste0("ID", params$dataPartnerID, ".rdata")))
+  read_time = proc.time()[3] - read_time
 
   id = 1
   set.seed(params$seeds[id], kind = "Mersenne-Twister")
@@ -456,29 +456,29 @@ UpdateBetaLogistic.DP = function(params) {
   maxdifference = max(abs(deltaBeta) / (abs(params$betas) + .1))
   utemp = sum(runif(length(deltaBeta), min = 1, max = 5) * abs(params$betas))
 
-  writeTime = proc.time()[3]
-  save(utemp, maxdifference, file = file.path(params$writePath, "u_converge.rdata"))
-  writeSize = file.size(file.path(params$writePath, "u_converge.rdata"))
-  writeTime = proc.time()[3] - writeTime
+  write_time = proc.time()[3]
+  save(utemp, maxdifference, file = file.path(params$write_path, "u_converge.rdata"))
+  write_size = file.size(file.path(params$write_path, "u_converge.rdata"))
+  write_time = proc.time()[3] - write_time
 
-  params <- AddToLog(params, "UpdateBetaLogistic.DP", readTime, readSize, writeTime, writeSize)
+  params <- add_to_log(params, "UpdateBetaLogistic.DP", read_time, read_size, write_time, write_size)
   return(params)
 }
 
 
 ComputeConvergeStatusLogistic.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeConvergeStatusLogistic.AC\n\n")
-  readTime = 0
-  readSize = 0
+  read_time = 0
+  read_size = 0
   u = 0
   converged = TRUE
   utemp = NULL
   maxdifference = NULL
   for (id in 1:params$numDataPartners) {
-    readTime = readTime - proc.time()[3]
+    read_time = read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "u_converge.rdata"))
-    readSize = readSize + file.size(file.path(params$readPathDP[id], "u_converge.rdata"))
-    readTime = readTime + proc.time()[3]
+    read_size = read_size + file.size(file.path(params$readPathDP[id], "u_converge.rdata"))
+    read_time = read_time + proc.time()[3]
     u = u + utemp
     converged = converged && (maxdifference < params$cutoff)
   }
@@ -486,11 +486,11 @@ ComputeConvergeStatusLogistic.AC = function(params) {
   params$maxIterExceeded = maxIterExceeded
   params$u = u
   params$converged = converged
-  writeTime = proc.time()[3]
-  save(u, converged, maxIterExceeded, file = file.path(params$writePath, "u_converge.rdata"))
-  writeSize = file.size(file.path(params$writePath, "u_converge.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "ComputeConvergeStatusLogistic.AC", readTime, readSize, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(u, converged, maxIterExceeded, file = file.path(params$write_path, "u_converge.rdata"))
+  write_size = file.size(file.path(params$write_path, "u_converge.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "ComputeConvergeStatusLogistic.AC", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -499,48 +499,48 @@ GetConvergeStatusLogistic.DP = function(params) {
   converged = NULL
   if (params$trace) cat(as.character(Sys.time()), "GetconvergeStatusLogistic.DP\n\n")
   u = converge = maxIterExceeded = NULL
-  readTime = proc.time()[3]
+  read_time = proc.time()[3]
   load(file.path(params$readPathAC, "u_converge.rdata"))
-  readSize = file.size(file.path(params$readPathAC, "u_converge.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_size = file.size(file.path(params$readPathAC, "u_converge.rdata"))
+  read_time = proc.time()[3] - read_time
   params$u = u
   params$converged = converged
   params$maxIterExceeded = maxIterExceeded
-  params <- AddToLog(params, "GetConvergeStatusLogistic.DP", readTime, readSize, 0, 0)
+  params <- add_to_log(params, "GetConvergeStatusLogistic.DP", read_time, read_size, 0, 0)
   return(params)
 }
 
 SendFinalBetasLogistic.DP = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "SendFinalBetasLogistic.DP\n\n")
   betas = params$betas
-  writeTime = proc.time()[3]
-  save(betas, file = file.path(params$writePath, "finalbetas.rdata"))
-  writeSize = file.size(file.path(params$writePath, "finalbetas.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "SendFinalBetasLogistic.DP", 0, 0, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(betas, file = file.path(params$write_path, "finalbetas.rdata"))
+  write_size = file.size(file.path(params$write_path, "finalbetas.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "SendFinalBetasLogistic.DP", 0, 0, write_time, write_size)
   return(params)
 }
 
 ComputeFinalSBetaLogistic.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeFinalSBetaLogistic.AC\n\n")
   Sbeta = 0
-  readTime = 0
-  readSize = 0
+  read_time = 0
+  read_size = 0
   sbeta = 0
   for (id in 1:params$numDataPartners) {
-    readTime = readTime - proc.time()[3]
+    read_time = read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "sbeta.rdata"))
-    readSize = readSize + file.size(file.path(params$readPathDP[id], "sbeta.rdata"))
-    readTime = readTime + proc.time()[3]
+    read_size = read_size + file.size(file.path(params$readPathDP[id], "sbeta.rdata"))
+    read_time = read_time + proc.time()[3]
     sbeta = sbeta + Sbeta
   }
   sbeta = 2 * params$u * sbeta - params$numDataPartners * params$u
 
-  writeTime = proc.time()[3]
-  save(sbeta, file = file.path(params$writePath, "sbeta.rdata"))
-  writeSize = file.size(file.path(params$writePath, "sbeta.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "ComputeFinalSBetaLogistic.AC", readTime, readSize, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(sbeta, file = file.path(params$write_path, "sbeta.rdata"))
+  write_size = file.size(file.path(params$write_path, "sbeta.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "ComputeFinalSBetaLogistic.AC", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -548,10 +548,10 @@ ComputeFinalSBetaLogistic.AC = function(params) {
 ComputeResultsLogistic.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLogistic.DP\n\n")
   sbeta = NULL
-  readTime = proc.time()[3]
+  read_time = proc.time()[3]
   load(file.path(params$readPathAC, "sbeta.rdata"))
-  readSize = file.size(file.path(params$readPathAC, "sbeta.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_size = file.size(file.path(params$readPathAC, "sbeta.rdata"))
+  read_time = proc.time()[3] - read_time
 
   n       = params$n
   ct      = sum(data$Y)
@@ -562,12 +562,12 @@ ComputeResultsLogistic.DP = function(params, data) {
   hoslem  = HoslemInternal(params, data)
   ROC     = RocInternal(params, data)
 
-  writeTime = proc.time()[3]
-  save(resdev, nulldev, hoslem, ROC, file = file.path(params$writePath, "logisticstats.rdata"))
-  writeSize = file.size(file.path(params$writePath, "logisticstats.rdata"))
-  writeTime = proc.time()[3] - writeTime
+  write_time = proc.time()[3]
+  save(resdev, nulldev, hoslem, ROC, file = file.path(params$write_path, "logisticstats.rdata"))
+  write_size = file.size(file.path(params$write_path, "logisticstats.rdata"))
+  write_time = proc.time()[3] - write_time
 
-  params <- AddToLog(params, "ComputeResultsLogistic.DP", readTime, readSize, writeTime, writeSize)
+  params <- add_to_log(params, "ComputeResultsLogistic.DP", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -578,18 +578,18 @@ ComputeResultsLogistic.AC = function(params) {
   resdev  = NULL
   hoslem  = NULL
   ROC     = NULL
-  readTime = proc.time()[3]
+  read_time = proc.time()[3]
   load(file.path(params$readPathDP[1], "logisticstats.rdata"))
-  readSize = file.size(file.path(params$readPathDP[1], "logisticstats.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_size = file.size(file.path(params$readPathDP[1], "logisticstats.rdata"))
+  read_time = proc.time()[3] - read_time
   coefficients = c()
   p            = 0
   betas = NULL
   for (id in 1:params$numDataPartners) {
-    readTime = readTime - proc.time()[3]
+    read_time = read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "finalbetas.rdata"))
-    readSize = readSize + file.size(file.path(params$readPathDP[id], "finalbetas.rdata"))
-    readTime = readTime + proc.time()[3]
+    read_size = read_size + file.size(file.path(params$readPathDP[id], "finalbetas.rdata"))
+    read_time = read_time + proc.time()[3]
     coefficients = c(coefficients, betas)
     p            = p + length(params$indicies[[id]])
   }
@@ -637,14 +637,14 @@ ComputeResultsLogistic.AC = function(params) {
   names(stats$tvals) = params$colnames
   names(stats$pvals) = params$colnames
 
-  writeTime = proc.time()[3]
-  save(stats, file = file.path(params$writePath, "stats.rdata"))
-  writeSize = file.size(file.path(params$writePath, "stats.rdata"))
-  writeTime = proc.time()[3] - writeTime
+  write_time = proc.time()[3]
+  save(stats, file = file.path(params$write_path, "stats.rdata"))
+  write_size = file.size(file.path(params$write_path, "stats.rdata"))
+  write_time = proc.time()[3] - write_time
 
   params$stats      = stats
 
-  params <- AddToLog(params, "ComputeResultsLogistic.AC", readTime, readSize, writeTime, writeSize)
+  params <- add_to_log(params, "ComputeResultsLogistic.AC", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -652,16 +652,16 @@ ComputeResultsLogistic.AC = function(params) {
 GetResultsLogistic.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetResultsLogistic.DP\n\n")
   stats = NULL
-  readTime = proc.time()[3]
+  read_time = proc.time()[3]
   load(file.path(params$readPathAC, "stats.rdata"))
-  readSize = file.size(file.path(params$readPathAC, "stats.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_size = file.size(file.path(params$readPathAC, "stats.rdata"))
+  read_time = proc.time()[3] - read_time
   if (params$dataPartnerID == 1) {
     stats$Y           = data$Y # For Hoslem and ROC
     stats$FinalFitted = params$FinalFitted
   }
   params$stats      = stats
-  params <- AddToLog(params, "GetResultsLogistic.DP", readTime, readSize, 0, 0)
+  params <- add_to_log(params, "GetResultsLogistic.DP", read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -681,7 +681,7 @@ DataPartnerKLogistic = function(data,
   params <- PrepareParams.kp("logistic", dataPartnerID, numDataPartners, ac = FALSE,
                             popmednet = popmednet, trace = trace, verbose = verbose)
   if (params$failed) {
-    warning(params$errorMessage)
+    warning(params$error_message)
     return(invisible(NULL))
   }
   params <- InitializeLog.kp(params)
@@ -692,28 +692,28 @@ DataPartnerKLogistic = function(data,
   params   = PrepareFolder.ACDP(params, monitor_folder)
 
   if (params$failed) {
-    warning(params$errorMessage)
+    warning(params$error_message)
     return(invisible(NULL))
   }
 
   if (dataPartnerID == 1) {
     data = PrepareDataLinLog.DP1(params, data, yname)
-    params <- AddToLog(params, "PrepareParamsLinLog.DP1", 0, 0, 0, 0)
+    params <- add_to_log(params, "PrepareParamsLinLog.DP1", 0, 0, 0, 0)
   } else {
     data = PrepareDataLinLog.DPk(params, data)
-    params <- AddToLog(params, "PrepareParamsLinLog.DPk", 0, 0, 0, 0)
+    params <- add_to_log(params, "PrepareParamsLinLog.DPk", 0, 0, 0, 0)
   }
 
-  params <- AddToLog(params, "PrepareParamsLinear.DP", 0, 0, 0, 0)
+  params <- add_to_log(params, "PrepareParamsLinear.DP", 0, 0, 0, 0)
 
   if (data$failed) {
-    params$errorMessage = paste("Error processing data for data partner", params$dataPartnerID, "\n")
-    MakeErrorMessage(params$writePath, params$errorMessage)
-    files = "errorMessage.rdata"
+    params$error_message = paste("Error processing data for data partner", params$dataPartnerID, "\n")
+    MakeErrorMessage(params$write_path, params$error_message)
+    files = "error_message.rdata"
     params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
                                   sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
-    params$errorMessage = ReadErrorMessage(params$readPathAC)
-    warning(params$errorMessage)
+    params$error_message = ReadErrorMessage(params$readPathAC)
+    warning(params$error_message)
     params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
   }
@@ -725,7 +725,7 @@ DataPartnerKLogistic = function(data,
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
-    params$errorMessage = possibleError$message
+    params$error_message = possibleError$message
     warning(possibleError$message)
     params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
@@ -743,7 +743,7 @@ DataPartnerKLogistic = function(data,
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
-    params$errorMessage = possibleError$message
+    params$error_message = possibleError$message
     warning(possibleError$message)
     params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
@@ -752,7 +752,7 @@ DataPartnerKLogistic = function(data,
   params <- UpdateParamsLogistic.DP(params)
 
   data = UpdateDataLogistic.DP(params, data)
-  params <- AddToLog(params, "UpdateDataLogistic.DP", 0, 0, 0, 0)
+  params <- add_to_log(params, "UpdateDataLogistic.DP", 0, 0, 0, 0)
 
   params$algIterationCounter = 1
   while (!params$converged && !params$maxIterExceeded) {
@@ -770,7 +770,7 @@ DataPartnerKLogistic = function(data,
 
     possibleError = ReceivedError.kp(params, from = "AC")
     if (possibleError$error) {
-      params$errorMessage = possibleError$message
+      params$error_message = possibleError$message
       warning(possibleError$message)
       params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
       return(params$stats)
@@ -825,7 +825,7 @@ AnalysisCenterKLogistic = function(numDataPartners = NULL,
   params <- PrepareParams.kp("logistic", 0, numDataPartners, msreqid, cutoff, maxIterations, ac = TRUE,
                             popmednet = popmednet, trace = trace, verbose = verbose)
   if (params$failed) {
-    warning(params$errorMessage)
+    warning(params$error_message)
     return(invisible(NULL))
   }
   params <- InitializeLog.kp(params)
@@ -836,7 +836,7 @@ AnalysisCenterKLogistic = function(numDataPartners = NULL,
   params   = PrepareFolder.ACDP(params, monitor_folder)
 
   if (params$failed) {
-    warning(params$errorMessage)
+    warning(params$error_message)
     return(invisible(NULL))
   }
 
@@ -844,10 +844,10 @@ AnalysisCenterKLogistic = function(numDataPartners = NULL,
 
   possibleError = ReceivedError.kp(params, from = "DP")
   if (possibleError$error) {
-    params$errorMessage = possibleError$message
+    params$error_message = possibleError$message
     warning(possibleError$message)
-    MakeErrorMessage(params$writePath, possibleError$message)
-    files = "errorMessage.rdata"
+    MakeErrorMessage(params$write_path, possibleError$message)
+    files = "error_message.rdata"
     params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
                                   sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
     params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
@@ -858,9 +858,9 @@ AnalysisCenterKLogistic = function(numDataPartners = NULL,
   params <- CheckAgreement.AC(params)
 
   if (params$failed) {
-    MakeErrorMessage(params$writePath, params$errorMessage)
-    files = "errorMessage.rdata"
-    warning(params$errorMessage)
+    MakeErrorMessage(params$write_path, params$error_message)
+    files = "error_message.rdata"
+    warning(params$error_message)
     params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
                                   sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
     params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
@@ -878,9 +878,9 @@ AnalysisCenterKLogistic = function(numDataPartners = NULL,
   params <- CheckColinearityLogistic.AC(params)
 
   if (params$failed) {
-    MakeErrorMessage(params$writePath, params$errorMessage)
-    files = "errorMessage.rdata"
-    warning(params$errorMessage)
+    MakeErrorMessage(params$write_path, params$error_message)
+    files = "error_message.rdata"
+    warning(params$error_message)
     params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
                                   sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
     params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
@@ -908,9 +908,9 @@ AnalysisCenterKLogistic = function(numDataPartners = NULL,
     params <- ComputeStWSLogistic.AC(params)
 
     if (params$failed) {
-      MakeErrorMessage(params$writePath, params$errorMessage)
-      files = "errorMessage.rdata"
-      warning(params$errorMessage)
+      MakeErrorMessage(params$write_path, params$error_message)
+      files = "error_message.rdata"
+      warning(params$error_message)
       params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
                                     sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
       params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)

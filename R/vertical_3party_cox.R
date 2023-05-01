@@ -1,7 +1,7 @@
 #################### DISTRIBUTED COX REGRESSION FUNCTIONS ####################
 
-PrepareParamsCox.A3 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareParamsCox.A3\n\n")
+prepare_params_cox_A3 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "prepare_params_cox_A3\n\n")
   params$n = nrow(data$X)
   params$p1 = ncol(data$X)
   params$p2 = 0
@@ -17,21 +17,21 @@ PrepareParamsCox.A3 = function(params, data) {
   pa$n         = params$n
   pa$analysis  = params$analysis
   pa$colnames  = params$colnames
-  pa$strataFromA = data$strata$strataFromA
-  pa$strataFromB = data$strata$strataFromB
+  pa$strata_from_a = data$strata$strata_from_a
+  pa$strata_from_b = data$strata$strata_from_b
   pa$tags      = data$tags
 
-  writeTime = proc.time()[3]
-  save(pa, file = file.path(params$writePath, "pa.rdata"))
-  writeSize = sum(file.size(file.path(params$writePath, "pa.rdata")))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "PrepareParamsCox.A3", 0, 0, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(pa, file = file.path(params$write_path, "pa.rdata"))
+  write_size = sum(file.size(file.path(params$write_path, "pa.rdata")))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "prepare_params_cox_A3", 0, 0, write_time, write_size)
   return(params)
 }
 
 
-PrepareParamsCox.B3 = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareParamsCox.B3\n\n")
+prepare_params_cox_B3 = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "prepare_params_cox_B3\n\n")
   params$n = nrow(data$X)
   params$p1 = 0
   params$p2 = ncol(data$X)
@@ -47,38 +47,38 @@ PrepareParamsCox.B3 = function(params, data) {
   pb$n         = params$n
   pb$analysis  = params$analysis
   pb$colnames  = params$colnames
-  pb$strataFromA = data$strata$strataFromA
-  pb$strataFromB = data$strata$strataFromB
+  pb$strata_from_a = data$strata$strata_from_a
+  pb$strata_from_b = data$strata$strata_from_b
   pb$tags      = data$tags
 
-  writeTime = proc.time()[3]
-  save(pb, file = file.path(params$writePath, "pb.rdata"))
-  writeSize = sum(file.size(file.path(params$writePath, "pb.rdata")))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "PrepareParamsCox.B3", 0, 0, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(pb, file = file.path(params$write_path, "pb.rdata"))
+  write_size = sum(file.size(file.path(params$write_path, "pb.rdata")))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "prepare_params_cox_B3", 0, 0, write_time, write_size)
   return(params)
 }
 
 
-PrepareParamsCox.T3 = function(params, cutoff, maxIterations) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareParamsCox.T3\n\n")
+prepare_params_cox_T3 = function(params, cutoff, maxIterations) {
+  if (params$trace) cat(as.character(Sys.time()), "prepare_params_cox_T3\n\n")
   pa = NULL
   pb = NULL
-  readTime = proc.time()[3]
-  load(file.path(params$readPath[["A"]], "pa.rdata"))
-  load(file.path(params$readPath[["B"]], "pb.rdata"))
-  readSize = file.size(file.path(params$readPath[["A"]], "pa.rdata")) +
-    file.size(file.path(params$readPath[["B"]], "pb.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3]
+  load(file.path(params$read_path[["A"]], "pa.rdata"))
+  load(file.path(params$read_path[["B"]], "pb.rdata"))
+  read_size = file.size(file.path(params$read_path[["A"]], "pa.rdata")) +
+    file.size(file.path(params$read_path[["B"]], "pb.rdata"))
+  read_time = proc.time()[3] - read_time
   if (length(table(c(pa$analysis, pb$analysis, params$analysis))) > 1) {
     params$failed = TRUE
-    params$errorMessage = paste("Party A specified", pa$analysis, "regression, ",
+    params$error_message = paste("Party A specified", pa$analysis, "regression, ",
                                 "Party B specified", pb$analysis, "regression, ",
                                 "and Party T specified", params$analysis, "regression. ")
   }
   if (pa$n != pb$n) {
     params$failed = TRUE
-    params$errorMessage = paste0(params$errorMessage,
+    params$error_message = paste0(params$error_message,
                                  paste("Party A has", pa$n,
                                        "observtions and Party B has", pb$n,
                                        "observations."))
@@ -100,60 +100,60 @@ PrepareParamsCox.T3 = function(params, cutoff, maxIterations) {
   params$cutoff        = cutoff
   params$maxIterations = maxIterations
 
-  params$AstrataFromA  = pa$strataFromA
-  params$AstrataFromB  = pa$strataFromB
-  params$BstrataFromA  = pb$strataFromA
-  params$BstrataFromB  = pb$strataFromB
+  params$Astrata_from_a  = pa$strata_from_a
+  params$Astrata_from_b  = pa$strata_from_b
+  params$Bstrata_from_a  = pb$strata_from_a
+  params$Bstrata_from_b  = pb$strata_from_b
 
   params$Atags         = pa$tags
   params$Btags         = pb$tags
 
-  writeTime = proc.time()[3]
-  save(cutoff, maxIterations, file = file.path(params$writePath, "maxiterations.rdata"))
-  writeSize = file.size(file.path(params$writePath, "maxiterations.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "PrepareParamsCox.T3", readTime, readSize, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(cutoff, maxIterations, file = file.path(params$write_path, "maxiterations.rdata"))
+  write_size = file.size(file.path(params$write_path, "maxiterations.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "prepare_params_cox_T3", read_time, read_size, write_time, write_size)
   return(params)
 }
 
 
 CheckStrataCox.T3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "CheckStrataCox.T3\n\n")
-  if (length(params$AstrataFromA) == length(params$BstrataFromA) &&
-      length(params$AstrataFromB) == length(params$BstrataFromB) &&
-      ifelse(length(params$AstrataFromA) == 0, TRUE,
-             order(params$AstrataFromA) == order(params$BstrataFromA)) &&
-      ifelse(length(params$AstrataFromB) == 0, TRUE,
-             order(params$AstrataFromB) == order(params$BstrataFromB))) {
-    params$strataFromA = params$AstrataFromA
-    params$strataFromB = params$BstrataFromB
-    params$AstrataFromA = params$AstrataFromB =
-      params$BstrataFromA = params$BstrataFromB = NULL
+  if (length(params$Astrata_from_a) == length(params$Bstrata_from_a) &&
+      length(params$Astrata_from_b) == length(params$Bstrata_from_b) &&
+      ifelse(length(params$Astrata_from_a) == 0, TRUE,
+             order(params$Astrata_from_a) == order(params$Bstrata_from_a)) &&
+      ifelse(length(params$Astrata_from_b) == 0, TRUE,
+             order(params$Astrata_from_b) == order(params$Bstrata_from_b))) {
+    params$strata_from_a = params$Astrata_from_a
+    params$strata_from_b = params$Bstrata_from_b
+    params$Astrata_from_a = params$Astrata_from_b =
+      params$Bstrata_from_a = params$Bstrata_from_b = NULL
     params$getStrata = TRUE
   } else {
     params$getStrata = FALSE
-    AcapB = intersect(params$AstrataFromA, params$BstrataFromB)
-    BcapA = intersect(params$BstrataFromA, params$AstrataFromB)
+    AcapB = intersect(params$Astrata_from_a, params$Bstrata_from_b)
+    BcapA = intersect(params$Bstrata_from_a, params$Astrata_from_b)
     if (length(AcapB) > 0) {
-      params$errorMessage =
+      params$error_message =
         paste("Party A and Party B have", length(AcapB), "variable(s) with the same name which are used in the strata.",
               "These variable(s) are <", paste0(AcapB, collapse = ", "), ">.",
               "Make sure the variables from each party have distinct names.")
     } else if (length(BcapA) > 0) {
-      params$errorMessage =
+      params$error_message =
         paste("Party A and Party B have specified", length(BcapA), "variable(s) for the strata which are not found in the data.",
               "These variable(s) are <", paste0(BcapA, collapse = ", "), ">.",
               "Check the spelling of the variables names and / or remove them from the strata.")
     } else {
-      params$errorMessage =
+      params$error_message =
         paste("Party A and Party B have specified different strata.",
               "Verify that both parties specify the same strata.")
     }
     params$failed = TRUE
   }
   empty = 0
-  save(empty, file = file.path(params$writePath, "empty.rdata"))
-  params <- AddToLog(params, "CheckStrataCox.T3", 0, 0, 0, 0)
+  save(empty, file = file.path(params$write_path, "empty.rdata"))
+  params <- add_to_log(params, "CheckStrataCox.T3", 0, 0, 0, 0)
   return(params)
 }
 
@@ -162,11 +162,11 @@ SendStrataCox.A3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "SendStrataCox.A3\n\n")
   Astrata = data$strata
   survival = data$survival
-  writeTime = proc.time()[3]
-  save(Astrata, survival, file = file.path(params$writePath, "Astrata.rdata"))
-  writeSize = file.size(file.path(params$writePath, "Astrata.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "SendStrataCox.A3", 0, 0, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(Astrata, survival, file = file.path(params$write_path, "Astrata.rdata"))
+  write_size = file.size(file.path(params$write_path, "Astrata.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "SendStrataCox.A3", 0, 0, write_time, write_size)
   return(params)
 }
 
@@ -174,11 +174,11 @@ SendStrataCox.A3 = function(params, data) {
 SendStrataCox.B3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "SendStrataCox.B3\n\n")
   Bstrata = data$strata
-  writeTime = proc.time()[3]
-  save(Bstrata, file = file.path(params$writePath, "Bstrata.rdata"))
-  writeSize = file.size(file.path(params$writePath, "Bstrata.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "SendStrataCox.B3", 0, 0, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(Bstrata, file = file.path(params$write_path, "Bstrata.rdata"))
+  write_size = file.size(file.path(params$write_path, "Bstrata.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "SendStrataCox.B3", 0, 0, write_time, write_size)
   return(params)
 }
 
@@ -190,21 +190,21 @@ PrepareStrataCox.T3 = function(params) {
   survival = NULL
   strataTemp   = list()
 
-  readTime = proc.time()[3]
-  load(file.path(params$readPath[["A"]], "Astrata.rdata"))
-  load(file.path(params$readPath[["B"]], "Bstrata.rdata"))
-  readSize = file.size(file.path(params$readPath[["A"]], "Astrata.rdata")) +
-    file.size(file.path(params$readPath[["B"]], "Bstrata.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3]
+  load(file.path(params$read_path[["A"]], "Astrata.rdata"))
+  load(file.path(params$read_path[["B"]], "Bstrata.rdata"))
+  read_size = file.size(file.path(params$read_path[["A"]], "Astrata.rdata")) +
+    file.size(file.path(params$read_path[["B"]], "Bstrata.rdata"))
+  read_time = proc.time()[3] - read_time
 
 
-  if (length(params$strataFromA) == 0 && length(params$strataFromB) == 0) {
+  if (length(params$strata_from_a) == 0 && length(params$strata_from_b) == 0) {
     strataTemp$X = data.frame(const__ = rep(1, params$n))
     strataTemp$legend = FALSE
-  } else if (length(params$strataFromA) == 0) {
+  } else if (length(params$strata_from_a) == 0) {
     strataTemp$X = Bstrata$X
     strataTemp$legend = Bstrata$legend
-  } else if (length(params$strataFromB) == 0) {
+  } else if (length(params$strata_from_b) == 0) {
     strataTemp$X = Astrata$X
     strataTemp$legend = Astrata$legend
   } else {
@@ -275,12 +275,12 @@ PrepareStrataCox.T3 = function(params) {
   survival$strata = strata
   params$survival = survival
 
-  writeTime = proc.time()[3]
-  save(survival, file = file.path(params$writePath, "survival.rdata"))
-  writeSize = file.size(file.path(params$writePath, "survival.rdata"))
-  writeTime = proc.time()[3] - writeTime
+  write_time = proc.time()[3]
+  save(survival, file = file.path(params$write_path, "survival.rdata"))
+  write_size = file.size(file.path(params$write_path, "survival.rdata"))
+  write_time = proc.time()[3] - write_time
 
-  params <- AddToLog(params, "PrepareStrataCox.T3", readTime, readSize, writeTime, writeSize)
+  params <- add_to_log(params, "PrepareStrataCox.T3", read_time, read_size, write_time, write_size)
 
   return(params)
 }
@@ -289,22 +289,22 @@ PrepareStrataCox.T3 = function(params) {
 SortDataCox.A3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "SortDataCox.A3\n\n")
   survival = NULL
-  readTime = proc.time()[3]
-  load(file.path(params$readPath[["T"]], "survival.rdata"))
-  readSize = file.size(file.path(params$readPath[["T"]], "survival.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3]
+  load(file.path(params$read_path[["T"]], "survival.rdata"))
+  read_size = file.size(file.path(params$read_path[["T"]], "survival.rdata"))
+  read_time = proc.time()[3] - read_time
   data$X = data$X[survival$sorted, , drop = FALSE]
   data$survival = survival
-  data$readTime = readTime
-  data$readSize = readSize
+  data$read_time = read_time
+  data$read_size = read_size
   return(data)
 }
 
 
 GetZCox.A3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetZCox.A3\n\n")
-  writeTime = 0
-  writeSize = 0
+  write_time = 0
+  write_size = 0
 
   numBlocks = params$blocks$numBlocks
   pbar = MakeProgressBar1(numBlocks, "Z", params$verbose)
@@ -313,7 +313,7 @@ GetZCox.A3 = function(params, data) {
     if (i %in% params$container$filebreak.Z) {
       containerCt.Z = containerCt.Z + 1
       filename = paste0("cz_", containerCt.Z, ".rdata")
-      toWrite = file(file.path(params$writePath, filename), "wb")
+      toWrite = file(file.path(params$write_path, filename), "wb")
     }
     strt = params$blocks$starts[i]
     stp = params$blocks$stops[i]
@@ -321,16 +321,16 @@ GetZCox.A3 = function(params, data) {
     g = params$blocks$g[i]
     Z = FindOrthogonalVectors(data$X[strt:stp, ], g)
 
-    writeTime = writeTime - proc.time()[3]
+    write_time = write_time - proc.time()[3]
     writeBin(as.vector(Z), con = toWrite, endian = "little")
-    writeTime = writeTime + proc.time()[3]
+    write_time = write_time + proc.time()[3]
     if ((i + 1) %in% params$container$filebreak.Z || i == numBlocks) {
       close(toWrite)
-      writeSize = writeSize + file.size(file.path(params$writePath, filename))
+      write_size = write_size + file.size(file.path(params$write_path, filename))
     }
     pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
-  params <- AddToLog(params, "GetZCox.A3", 0, 0, writeTime, writeSize)
+  params <- add_to_log(params, "GetZCox.A3", 0, 0, write_time, write_size)
   return(params)
 }
 
@@ -338,14 +338,14 @@ GetZCox.A3 = function(params, data) {
 SortDataCox.B3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "SortDataCox.B3\n\n")
   survival = NULL
-  readTime = proc.time()[3]
-  load(file.path(params$readPath[["T"]], "survival.rdata"))
-  readSize = file.size(file.path(params$readPath[["T"]], "survival.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3]
+  load(file.path(params$read_path[["T"]], "survival.rdata"))
+  read_size = file.size(file.path(params$read_path[["T"]], "survival.rdata"))
+  read_time = proc.time()[3] - read_time
   data$X = data$X[survival$sorted, , drop = FALSE]
   data$survival = survival
-  data$readTime = readTime
-  data$readSize = readSize
+  data$read_time = read_time
+  data$read_size = read_size
   return(data)
 }
 
@@ -357,11 +357,11 @@ GetSXBCox.B3 = function(params, data) {
     S[data$survival$strata[[i]]$start:data$survival$strata[[i]]$end, i] = 1
   }
   STXB = t(S) %*% data$X
-  writeTime = proc.time()[3]
-  save(STXB, file = file.path(params$writePath, "sxb.rdata"))
-  writeSize = file.size(file.path(params$writePath, "sxb.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "GetSXBCox.B3", 0, 0, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(STXB, file = file.path(params$write_path, "sxb.rdata"))
+  write_size = file.size(file.path(params$write_path, "sxb.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "GetSXBCox.B3", 0, 0, write_time, write_size)
   return(params)
 }
 
@@ -369,16 +369,16 @@ GetSXBCox.B3 = function(params, data) {
 GetWRCox.A3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetWRCox.A3\n\n")
   XATXA = t(data$X) %*% data$X
-  writeTime = proc.time()[3]
-  save(XATXA, file = file.path(params$writePath, "xatxa.rdata"))
-  writeSize = file.size(file.path(params$writePath, "xatxa.rdata"))
-  writeTime = proc.time()[3] - writeTime
+  write_time = proc.time()[3]
+  save(XATXA, file = file.path(params$write_path, "xatxa.rdata"))
+  write_size = file.size(file.path(params$write_path, "xatxa.rdata"))
+  write_time = proc.time()[3] - write_time
 
   p2 = NULL
-  readTime = proc.time()[3]
-  load(file.path(params$readPath[["T"]], "p2.rdata"))
-  readSize = file.size(file.path(params$readPath[["T"]], "p2.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3]
+  load(file.path(params$read_path[["T"]], "p2.rdata"))
+  read_size = file.size(file.path(params$read_path[["T"]], "p2.rdata"))
+  read_time = proc.time()[3] - read_time
   params$p2 = p2
 
   numBlocks = params$blocks$numBlocks
@@ -390,40 +390,40 @@ GetWRCox.A3 = function(params, data) {
     if (i %in% params$container$filebreak.WR) {
       containerCt.WR = containerCt.WR + 1
       filename1 = paste0("cwr_", containerCt.WR, ".rdata")
-      toRead = file(file.path(params$readPath[["T"]], filename1), "rb")
+      toRead = file(file.path(params$read_path[["T"]], filename1), "rb")
     }
     if (i %in% params$container$filebreak.PR) {
       containerCt.PR = containerCt.PR + 1
       filename2 = paste0("cpr_", containerCt.PR, ".rdata")
-      toWrite = file(file.path(params$writePath, filename2), "wb")
+      toWrite = file(file.path(params$write_path, filename2), "wb")
     }
 
     strt = params$blocks$starts[i]
     stp = params$blocks$stops[i]
     n = stp - strt + 1
 
-    readTime = readTime - proc.time()[3]
+    read_time = read_time - proc.time()[3]
     WR = matrix(readBin(con = toRead, what = numeric(), n = n * p2,
                         endian = "little"), nrow = n, ncol = p2)
-    readTime = readTime + proc.time()[3]
+    read_time = read_time + proc.time()[3]
 
     PR = t(data$X[strt:stp, ]) %*% WR
-    writeTime = writeTime - proc.time()[3]
+    write_time = write_time - proc.time()[3]
     writeBin(as.vector(PR), con = toWrite, endian = "little")
-    writeTime = writeTime + proc.time()[3]
+    write_time = write_time + proc.time()[3]
 
     if ((i + 1) %in% params$container$filebreak.WR || i == numBlocks) {
       close(toRead)
-      readSize = readSize + file.size(file.path(params$readPath[["T"]], filename1))
+      read_size = read_size + file.size(file.path(params$read_path[["T"]], filename1))
     }
     if ((i + 1) %in% params$container$filebreak.PR || i == numBlocks) {
       close(toWrite)
-      writeSize = writeSize + file.size(file.path(params$writePath, filename2))
+      write_size = write_size + file.size(file.path(params$write_path, filename2))
     }
 
     pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
-  params <- AddToLog(params, "GetWRCox.A3", readTime, readSize, writeTime, writeSize)
+  params <- add_to_log(params, "GetWRCox.A3", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -435,11 +435,11 @@ GetSXACox.A3 = function(params, data) {
     S[data$survival$strata[[i]]$start:data$survival$strata[[i]]$end, i] = 1
   }
   STXA = t(S) %*% data$X
-  writeTime = proc.time()[3]
-  save(STXA, file = file.path(params$writePath, "sxa.rdata"))
-  writeSize = file.size(file.path(params$writePath, "sxa.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "GetSXACox.A3", 0, 0, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(STXA, file = file.path(params$write_path, "sxa.rdata"))
+  write_size = file.size(file.path(params$write_path, "sxa.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "GetSXACox.A3", 0, 0, write_time, write_size)
   return(params)
 }
 
@@ -455,16 +455,16 @@ GetProductsCox.T3 = function(params) {
   STXB  = 0
 
   numBlocks = params$blocks$numBlocks
-  readTime = proc.time()[3]
-  load(file.path(params$readPath[["A"]], "xatxa.rdata"))
-  load(file.path(params$readPath[["B"]], "xbtxb.rdata"))
-  load(file.path(params$readPath[["A"]], "sxa.rdata"))
-  load(file.path(params$readPath[["B"]], "sxb.rdata"))
-  readSize = sum(file.size(file.path(params$readPath[["B"]], "xbtxb.rdata")),
-                 file.size(file.path(params$readPath[["A"]], "xatxa.rdata")),
-                 file.size(file.path(params$readPath[["B"]], "sxb.rdata")),
-                 file.size(file.path(params$readPath[["A"]], "sxa.rdata")))
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3]
+  load(file.path(params$read_path[["A"]], "xatxa.rdata"))
+  load(file.path(params$read_path[["B"]], "xbtxb.rdata"))
+  load(file.path(params$read_path[["A"]], "sxa.rdata"))
+  load(file.path(params$read_path[["B"]], "sxb.rdata"))
+  read_size = sum(file.size(file.path(params$read_path[["B"]], "xbtxb.rdata")),
+                 file.size(file.path(params$read_path[["A"]], "xatxa.rdata")),
+                 file.size(file.path(params$read_path[["B"]], "sxb.rdata")),
+                 file.size(file.path(params$read_path[["A"]], "sxa.rdata")))
+  read_time = proc.time()[3] - read_time
 
   pbar = MakeProgressBar1(numBlocks, "X'X", params$verbose)
 
@@ -473,20 +473,20 @@ GetProductsCox.T3 = function(params) {
     if (i %in% params$container$filebreak.PR) {
       containerCt.PR = containerCt.PR + 1
       filename1 = paste0("cpr_", containerCt.PR, ".rdata")
-      toRead = file(file.path(params$readPath[["A"]], filename1), "rb")
-      readSize = readSize + file.size(file.path(params$readPath[["A"]], filename1))
+      toRead = file(file.path(params$read_path[["A"]], filename1), "rb")
+      read_size = read_size + file.size(file.path(params$read_path[["A"]], filename1))
     }
 
     filename1 = paste0("r2_", i, ".rdata")
-    readTime = readTime - proc.time()[3]
+    read_time = read_time - proc.time()[3]
     toRead1 = file(file.path(params$dplocalPath, filename1), "rb")
     R2 = matrix(readBin(con = toRead1, what = numeric(), n = p2 * p2,
                         endian = "little"), p2, p2)
-    readSize = readSize + file.size(file.path(params$dplocalPath, filename1))
+    read_size = read_size + file.size(file.path(params$dplocalPath, filename1))
     close(toRead1)
     PR = matrix(readBin(con = toRead, what = numeric(), n = p1 * p2,
                         endian = "little"), p1, p2)
-    readTime = readTime + proc.time()[3]
+    read_time = read_time + proc.time()[3]
     XATXB = XATXB + PR %*% t(R2)
     if ((i + 1) %in% params$container$filebreak.PR || i == numBlocks) {
       close(toRead)
@@ -506,7 +506,7 @@ GetProductsCox.T3 = function(params) {
 
   params$xtx = XTX
 
-  params <- AddToLog(params, "GetProductsCox.T3", readTime, readSize, 0, 0)
+  params <- add_to_log(params, "GetProductsCox.T3", read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -551,20 +551,20 @@ CheckColinearityCox.T3 = function(params) {
   colnamesA.old = params$colnamesA.old
   p2 = params$p2
 
-  writeTime = proc.time()[3]
-  save(p2, Aindicies, file = file.path(params$writePath, "Aindicies.rdata"))
-  save(colnamesA.old, Bindicies, file = file.path(params$writePath, "Bindicies.rdata"))
-  writeSize = sum(file.size(file.path(params$writePath, c("Aindicies.rdata",
+  write_time = proc.time()[3]
+  save(p2, Aindicies, file = file.path(params$write_path, "Aindicies.rdata"))
+  save(colnamesA.old, Bindicies, file = file.path(params$write_path, "Bindicies.rdata"))
+  write_size = sum(file.size(file.path(params$write_path, c("Aindicies.rdata",
                                                           "Bindicies.rdata"))))
 
   tags = params$Btags[Bindicies]
 
   if (length(unique(tags)) == 0) {
     params$failed = TRUE
-    params$errorMessage = "After removing colinear covariates, Party B has no covariates."
+    params$error_message = "After removing colinear covariates, Party B has no covariates."
   }
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "CheckColinearityCox.T3", 0, 0, writeTime, writeSize)
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "CheckColinearityCox.T3", 0, 0, write_time, write_size)
   return(params)
 }
 
@@ -586,17 +586,17 @@ ComputeInitialBetasCox.T3 = function(params) {
   converged              = FALSE
   maxIterExceeded        = FALSE
 
-  writeTime = proc.time()[3]
-  save(Abetas, file = file.path(params$writePath, "betasA.rdata"))
-  save(Bbetas, file = file.path(params$writePath, "betasB.rdata"))
+  write_time = proc.time()[3]
+  save(Abetas, file = file.path(params$write_path, "betasA.rdata"))
+  save(Bbetas, file = file.path(params$write_path, "betasB.rdata"))
   save(converged, maxIterExceeded,
-       file = file.path(params$writePath, "converged.rdata"))
-  writeSize = sum(file.size(file.path(params$writePath, c("betasA.rdata",
+       file = file.path(params$write_path, "converged.rdata"))
+  write_size = sum(file.size(file.path(params$write_path, c("betasA.rdata",
                                                           "betasB.rdata",
                                                           "converged.rdata"))))
-  writeTime = proc.time()[3] - writeTime
+  write_time = proc.time()[3] - write_time
 
-  params <- AddToLog(params, "ComputeInitialBetasCox.T3", 0, 0, writeTime, writeSize)
+  params <- add_to_log(params, "ComputeInitialBetasCox.T3", 0, 0, write_time, write_size)
 }
 
 
@@ -604,16 +604,16 @@ UpdateParamsCox.A3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateParamsCox.A3\n\n")
   Aindicies = NULL
   p2        = NULL
-  readTime = proc.time()[3]
-  load(file.path(params$readPath[["T"]], "Aindicies.rdata"))
-  readSize = file.size(file.path(params$readPath[["T"]], "Aindicies.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3]
+  load(file.path(params$read_path[["T"]], "Aindicies.rdata"))
+  read_size = file.size(file.path(params$read_path[["T"]], "Aindicies.rdata"))
+  read_time = proc.time()[3] - read_time
   params$p             = length(Aindicies)
   params$p2            = p2
   params$colnames.old  = params$colnames
   params$colnames      = params$colnames[Aindicies]
   params$AIndiciesKeep = Aindicies
-  params <- AddToLog(params, "UpdateParamsCox.A3, UpdateDataCox.A3", readTime, readSize, 0, 0)
+  params <- add_to_log(params, "UpdateParamsCox.A3, UpdateDataCox.A3", read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -622,16 +622,16 @@ UpdateParamsCox.B3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateParamsCox.B3\n\n")
   Bindicies     = NULL
   colnamesA.old = NULL
-  readTime = proc.time()[3]
-  load(file.path(params$readPath[["T"]], "Bindicies.rdata"))
-  readSize = file.size(file.path(params$readPath[["T"]], "Bindicies.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3]
+  load(file.path(params$read_path[["T"]], "Bindicies.rdata"))
+  read_size = file.size(file.path(params$read_path[["T"]], "Bindicies.rdata"))
+  read_time = proc.time()[3] - read_time
   params$p             = length(Bindicies)
   params$colnamesA.old = colnamesA.old
   params$colnames.old  = params$colnames
   params$colnames      = params$colnames[Bindicies]
   params$BIndiciesKeep = Bindicies
-  params <- AddToLog(params, "UpdateParamsCox.B3", readTime, readSize, 0, 0)
+  params <- add_to_log(params, "UpdateParamsCox.B3", read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -655,16 +655,16 @@ GetBetaACox.A3 = function(params) {
   converged = NULL
   maxIterExceeded = NULL
   Abetas = NULL
-  readTime = proc.time()[3]
-  load(file.path(params$readPath[["T"]], "converged.rdata"))
-  load(file.path(params$readPath[["T"]], "betasA.rdata"))
-  readSize = sum(file.size(file.path(params$readPath[["T"]], c("converged.rdata",
+  read_time = proc.time()[3]
+  load(file.path(params$read_path[["T"]], "converged.rdata"))
+  load(file.path(params$read_path[["T"]], "betasA.rdata"))
+  read_size = sum(file.size(file.path(params$read_path[["T"]], c("converged.rdata",
                                                                "betasA.rdata"))))
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3] - read_time
   params$converged = converged
   params$maxIterExceeded = maxIterExceeded
   params$betas = Abetas
-  params <- AddToLog(params, "GetBetaACox.A3", readTime, readSize, 0, 0)
+  params <- add_to_log(params, "GetBetaACox.A3", read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -674,16 +674,16 @@ GetBetaBCox.B3 = function(params) {
   converged       = NULL
   maxIterExceeded = NULL
   Bbetas          = NULL
-  readTime = proc.time()[3]
-  load(file.path(params$readPath[["T"]], "converged.rdata"))
-  load(file.path(params$readPath[["T"]], "betasB.rdata"))
-  readSize = sum(file.size(file.path(params$readPath[["T"]], c("converged.rdata",
+  read_time = proc.time()[3]
+  load(file.path(params$read_path[["T"]], "converged.rdata"))
+  load(file.path(params$read_path[["T"]], "betasB.rdata"))
+  read_size = sum(file.size(file.path(params$read_path[["T"]], c("converged.rdata",
                                                                "betasB.rdata"))))
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3] - read_time
   params$converged = converged
   params$maxIterExceeded = maxIterExceeded
   params$betas = Bbetas
-  params <- AddToLog(params, "GetBetaBCox.B3", readTime, readSize, 0, 0)
+  params <- add_to_log(params, "GetBetaBCox.B3", read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -691,11 +691,11 @@ GetBetaBCox.B3 = function(params) {
 GetXABetaACox.A3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetXABetaACox.A3\n\n")
   XAbetaA = data$X %*% params$betas
-  writeTime = proc.time()[3]
-  save(XAbetaA, file = file.path(params$writePath, "xabetaa.rdata"))
-  writeSize = file.size(file.path(params$writePath, "xabetaa.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "GetXABetaACox.A3", 0, 0, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(XAbetaA, file = file.path(params$write_path, "xabetaa.rdata"))
+  write_size = file.size(file.path(params$write_path, "xabetaa.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "GetXABetaACox.A3", 0, 0, write_time, write_size)
   return(params)
 }
 
@@ -703,11 +703,11 @@ GetXABetaACox.A3 = function(params, data) {
 GetXBBetaBCox.B3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetXBBetaBCox.B3\n\n")
   XBbetaB = data$X %*% params$betas
-  writeTime = proc.time()[3]
-  save(XBbetaB, file = file.path(params$writePath, "xbbetab.rdata"))
-  writeSize = file.size(file.path(params$writePath, "xbbetab.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "GetXBBetaBCox.B3", 0, 0, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(XBbetaB, file = file.path(params$write_path, "xbbetab.rdata"))
+  write_size = file.size(file.path(params$write_path, "xbbetab.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "GetXBBetaBCox.B3", 0, 0, write_time, write_size)
   return(params)
 }
 
@@ -717,12 +717,12 @@ ComputeLogLikelihoodCox.T3 = function(params) {
   n  = params$n
   XAbetaA = NULL
   XBbetaB = NULL
-  readTime = proc.time()[3]
-  load(file.path(params$readPath[["A"]], "xabetaa.rdata"))
-  load(file.path(params$readPath[["B"]], "xbbetab.rdata"))
-  readSize = file.size(file.path(params$readPath[["A"]], "xabetaa.rdata")) +
-    file.size(file.path(params$readPath[["B"]], "xbbetab.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3]
+  load(file.path(params$read_path[["A"]], "xabetaa.rdata"))
+  load(file.path(params$read_path[["B"]], "xbbetab.rdata"))
+  read_size = file.size(file.path(params$read_path[["A"]], "xabetaa.rdata")) +
+    file.size(file.path(params$read_path[["B"]], "xbbetab.rdata"))
+  read_time = proc.time()[3] - read_time
   params$Xbeta.old = params$Xbeta
   Xbeta = XAbetaA + XBbetaB
   params$Xbeta = Xbeta
@@ -775,11 +775,11 @@ ComputeLogLikelihoodCox.T3 = function(params) {
   }
   params$Xbeta = Xbeta
   params$stepSize = stepSize
-  writeTime = proc.time()[3]
-  save(Xbeta, file = file.path(params$writePath, "Xbeta.rdata"))
-  writeSize = file.size(file.path(params$writePath, "Xbeta.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "ComputeLogLikelihoodCox.T3", readTime, readSize, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(Xbeta, file = file.path(params$write_path, "Xbeta.rdata"))
+  write_size = file.size(file.path(params$write_path, "Xbeta.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "ComputeLogLikelihoodCox.T3", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -790,10 +790,10 @@ ComputeXBDeltaLCox.B3 = function(params, data) {
   p2 = params$p
   n = params$n
 
-  readTime = proc.time()[3]
-  load(file.path(params$readPath[["T"]], "Xbeta.rdata"))
-  readSize = file.size(file.path(params$readPath[["T"]], "Xbeta.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3]
+  load(file.path(params$read_path[["T"]], "Xbeta.rdata"))
+  read_size = file.size(file.path(params$read_path[["T"]], "Xbeta.rdata"))
+  read_time = proc.time()[3] - read_time
 
   numEvents = sum(data$survival$status)
 
@@ -809,44 +809,44 @@ ComputeXBDeltaLCox.B3 = function(params, data) {
 
   containerCt.RZ = 0
   containerCt.Cox = 0
-  writeSize = 0
-  writeTime = 0
+  write_size = 0
+  write_time = 0
 
   pbar = MakeProgressBar1(params$blocks$numBlocks, "R*(I-Z*Z')W*XB", params$verbose)
   for (i in 1:params$blocks$numBlocks) {
     if (i %in% params$container$filebreak.RZ) {
       containerCt.RZ = containerCt.RZ + 1
       filename1 = paste0("crz_", containerCt.RZ, ".rdata")
-      toRead = file(file.path(params$readPath[["T"]], filename1), "rb")
+      toRead = file(file.path(params$read_path[["T"]], filename1), "rb")
     }
     if (i %in% params$container$filebreak.Cox) {
       containerCt.Cox = containerCt.Cox + 1
       filename2 = paste0("cCox_", containerCt.Cox, ".rdata")
-      toWrite = file(file.path(params$writePath, filename2), "wb")
+      toWrite = file(file.path(params$write_path, filename2), "wb")
     }
     strt = params$blocks$starts[i]
     stp = params$blocks$stops[i]
     n2 = stp - strt + 1
     g = params$blocks$g[i]
 
-    readTime = readTime - proc.time()[3]
+    read_time = read_time - proc.time()[3]
     RZ = matrix(readBin(con = toRead, what = numeric(), n = n2 * n2,
                         endian = "little"), nrow = n2, ncol = n2)
-    readTime = readTime + proc.time()[3]
+    read_time = read_time + proc.time()[3]
 
     IZ.tZ.W.XBtemp = RZ %*% W.XB[strt:stp, , drop = FALSE]
 
-    writeTime = writeTime - proc.time()[3]
+    write_time = write_time - proc.time()[3]
     writeBin(as.vector(IZ.tZ.W.XBtemp), con = toWrite, endian = "little")
-    writeTime = writeTime + proc.time()[3]
+    write_time = write_time + proc.time()[3]
 
     if ((i + 1) %in% params$container$filebreak.RZ || i == params$blocks$numBlocks) {
       close(toRead)
-      readSize = readSize + file.size(file.path(params$readPath[["T"]], filename1))
+      read_size = read_size + file.size(file.path(params$read_path[["T"]], filename1))
     }
     if ((i + 1) %in% params$container$filebreak.Cox || i == params$blocks$numBlocks) {
       close(toWrite)
-      writeSize = writeSize = file.size(file.path(params$writePath, filename2))
+      write_size = write_size = file.size(file.path(params$write_path, filename2))
     }
     pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
@@ -854,12 +854,12 @@ ComputeXBDeltaLCox.B3 = function(params, data) {
   tXB.W.XB = t(data$X) %*% W.XB
   tXB.deltal = t(data$X) %*% deltal
 
-  writeTime = writeTime - proc.time()[3]
-  save(tXB.deltal, tXB.W.XB, file = file.path(params$writePath, "tXB_W_XB.rdata"))
-  writeSize = writeSize + file.size(file.path(params$writePath, "tXB_W_XB.rdata"))
-  writeTime = writeTime + proc.time()[3]
+  write_time = write_time - proc.time()[3]
+  save(tXB.deltal, tXB.W.XB, file = file.path(params$write_path, "tXB_W_XB.rdata"))
+  write_size = write_size + file.size(file.path(params$write_path, "tXB_W_XB.rdata"))
+  write_time = write_time + proc.time()[3]
 
-  params <- AddToLog(params, "ComputeXBDeltaLCox.B3", readTime, readSize, writeTime, writeSize)
+  params <- add_to_log(params, "ComputeXBDeltaLCox.B3", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -870,10 +870,10 @@ ComputeXADeltaLCox.A3 = function(params, data) {
   p1 = params$p
   n = params$n
 
-  readTime = proc.time()[3]
-  load(file.path(params$readPath[["T"]], "Xbeta.rdata"))
-  readSize = file.size(file.path(params$readPath[["T"]], "Xbeta.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3]
+  load(file.path(params$read_path[["T"]], "Xbeta.rdata"))
+  read_size = file.size(file.path(params$read_path[["T"]], "Xbeta.rdata"))
+  read_time = proc.time()[3] - read_time
 
   numEvents = sum(data$survival$status)
 
@@ -890,21 +890,21 @@ ComputeXADeltaLCox.A3 = function(params, data) {
   tXA.W.XA = t(data$X) %*% W.XA
   tXA.deltal = t(data$X) %*% deltal
 
-  writeTime = proc.time()[3]
-  save(tXA.deltal, tXA.W.XA, file = file.path(params$writePath, "tXA_W_XA.rdata"))
-  writeSize = file.size(file.path(params$writePath, "tXA_W_XA.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "ComputeXADeltaLCox.A3", readTime, readSize, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(tXA.deltal, tXA.W.XA, file = file.path(params$write_path, "tXA_W_XA.rdata"))
+  write_size = file.size(file.path(params$write_path, "tXA_W_XA.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "ComputeXADeltaLCox.A3", read_time, read_size, write_time, write_size)
   return(params)
 }
 
 
 ProcessVCox.T3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ProcessVCox.T3\n\n")
-  writeTime = 0
-  writeSize = 0
-  readTime  = 0
-  readSize  = 0
+  write_time = 0
+  write_size = 0
+  read_time  = 0
+  read_size  = 0
   p2 = params$p2
 
   numBlocks = params$blocks$numBlocks
@@ -916,12 +916,12 @@ ProcessVCox.T3 = function(params) {
     if (i %in% params$container$filebreak.RV) {
       containerCt.RV = containerCt.RV + 1
       filename2 = paste0("cCox_", containerCt.RV, ".rdata")
-      toRead2 = file(file.path(params$readPath[["B"]], filename2), "rb")
+      toRead2 = file(file.path(params$read_path[["B"]], filename2), "rb")
     }
     if (i %in% params$container$filebreak.VR) {
       containerCt.VR = containerCt.VR + 1
       filename3 = paste0("cvr_", containerCt.VR, ".rdata")
-      toWrite3 = file(file.path(params$writePath, filename3), "wb")
+      toWrite3 = file(file.path(params$write_path, filename3), "wb")
     }
 
     strt = params$blocks$starts[i]
@@ -931,49 +931,49 @@ ProcessVCox.T3 = function(params) {
     filename1 = paste0("r1_", i, ".rdata")
     filename4 = paste0("r3_", i, ".rdata")
 
-    readTime = readTime - proc.time()[3]
+    read_time = read_time - proc.time()[3]
     toRead1 = file(file.path(params$dplocalPath, filename1), "rb")
     R2 = matrix(readBin(con = toRead1, what = numeric(), n = n * n,
                         endian = "little"), nrow = n, ncol = n)
-    readSize = readSize + file.size(file.path(params$dplocalPath, filename1))
+    read_size = read_size + file.size(file.path(params$dplocalPath, filename1))
     close(toRead1)
     RV = matrix(readBin(con = toRead2, what = numeric(), n = n * p2,
                         endian = "little"), nrow = n, ncol = p2)
-    readTime = readTime + proc.time()[3]
+    read_time = read_time + proc.time()[3]
 
     V = t(R2) %*% RV
     R3 = RandomOrthonomalMatrix(p2)
     VR = V %*% R3
 
-    writeTime = writeTime - proc.time()[3]
+    write_time = write_time - proc.time()[3]
     toWrite4 = file(file.path(params$dplocalPath, filename4), "wb")
     writeBin(as.vector(R3), con = toWrite4, endian = "little")
     close(toWrite4)
-    writeSize = writeSize + file.size(file.path(params$dplocalPath, filename4))
+    write_size = write_size + file.size(file.path(params$dplocalPath, filename4))
     writeBin(as.vector(VR), con = toWrite3, endian = "little")
-    writeTime = writeTime + proc.time()[3]
+    write_time = write_time + proc.time()[3]
     if ((i + 1) %in% params$container$filebreak.RV || i == numBlocks) {
       close(toRead2)
-      readSize = readSize + file.size(file.path(params$readPath[["B"]], filename2))
+      read_size = read_size + file.size(file.path(params$read_path[["B"]], filename2))
     }
     if ((i + 1) %in% params$container$filebreak.VR || i == numBlocks) {
       close(toWrite3)
-      writeSize = writeSize + file.size(file.path(params$writePath, filename3))
+      write_size = write_size + file.size(file.path(params$write_path, filename3))
     }
 
     pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
-  params <- AddToLog(params, "ProcessVCox.T3", readTime, readSize, writeTime, writeSize)
+  params <- add_to_log(params, "ProcessVCox.T3", read_time, read_size, write_time, write_size)
   return(params)
 }
 
 
 GetXRCox.A3 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "GetXRCox.A3\n\n")
-  writeTime = 0
-  writeSize = 0
-  readTime  = 0
-  readSize  = 0
+  write_time = 0
+  write_size = 0
+  read_time  = 0
+  read_size  = 0
   p2 = params$p2
   containerCt.VR = 0
   containerCt.XR = 0
@@ -982,39 +982,39 @@ GetXRCox.A3 = function(params, data) {
     if (i %in% params$container$filebreak.RV) {
       containerCt.VR = containerCt.VR + 1
       filename1 = paste0("cvr_", containerCt.VR, ".rdata")
-      toRead = file(file.path(params$readPath[["T"]], filename1), "rb")
+      toRead = file(file.path(params$read_path[["T"]], filename1), "rb")
     }
     if (i %in% params$container$filebreak.XR) {
       containerCt.XR = containerCt.XR + 1
       filename2 = paste0("cxr_", containerCt.XR, ".rdata")
-      toWrite = file(file.path(params$writePath, filename2), "wb")
+      toWrite = file(file.path(params$write_path, filename2), "wb")
     }
     strt = params$blocks$starts[i]
     stp = params$blocks$stops[i]
     n = stp - strt + 1
 
-    readTime = readTime - proc.time()[3]
+    read_time = read_time - proc.time()[3]
     VR = matrix(readBin(con = toRead, what = numeric(), n = n * p2,
                         endian = "little"), nrow = n, ncol = p2)
-    readTime = readTime + proc.time()[3]
+    read_time = read_time + proc.time()[3]
     XR = t(data$X[strt:stp, , drop = FALSE]) %*% VR
 
-    writeTime = writeTime - proc.time()[3]
+    write_time = write_time - proc.time()[3]
     writeBin(as.vector(XR), con = toWrite, endian = "little")
-    writeTime = writeTime + proc.time()[3]
+    write_time = write_time + proc.time()[3]
 
     if ((i + 1) %in% params$container$filebreak.VR || i == params$blocks$numBlocks) {
       close(toRead)
-      readSize = readSize + file.size(file.path(params$readPath[["T"]], filename1))
+      read_size = read_size + file.size(file.path(params$read_path[["T"]], filename1))
     }
     if ((i + 1) %in% params$container$filebreak.XR || i == params$blocks$numBlocks) {
       close(toWrite)
-      writeSize = writeSize + file.size(file.path(params$writePath, filename2))
+      write_size = write_size + file.size(file.path(params$write_path, filename2))
     }
     pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
 
-  params <- AddToLog(params, "GetXRCox.A3", readTime, readSize, writeTime, writeSize)
+  params <- add_to_log(params, "GetXRCox.A3", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -1028,12 +1028,12 @@ ProcessXtWXCox.T3 = function(params) {
   tXB.deltal = NULL
   tXA.W.XA   = NULL
   tXB.W.XB   = NULL
-  readTime = proc.time()[3]
-  load(file.path(params$readPath[["A"]], "tXA_W_XA.rdata"))
-  load(file.path(params$readPath[["B"]], "tXB_W_XB.rdata"))
-  readSize = file.size(file.path(params$readPath[["A"]], "tXA_W_XA.rdata")) +
-    file.size(file.path(params$readPath[["B"]], "tXB_W_XB.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3]
+  load(file.path(params$read_path[["A"]], "tXA_W_XA.rdata"))
+  load(file.path(params$read_path[["B"]], "tXB_W_XB.rdata"))
+  read_size = file.size(file.path(params$read_path[["A"]], "tXA_W_XA.rdata")) +
+    file.size(file.path(params$read_path[["B"]], "tXB_W_XB.rdata"))
+  read_time = proc.time()[3] - read_time
 
   pbar = MakeProgressBar1(params$blocks$numBlocks, "X'W*X", params$verbose)
   containerCt.XR = 0
@@ -1043,11 +1043,11 @@ ProcessXtWXCox.T3 = function(params) {
     if (i %in% params$container$filebreak.XR) {
       containerCt.XR = containerCt.XR + 1
       filename1 = paste0("cxr_", containerCt.XR, ".rdata")
-      toRead = file(file.path(params$readPath[["A"]], filename1), "rb")
+      toRead = file(file.path(params$read_path[["A"]], filename1), "rb")
     }
 
     filename2 = paste0("r3_", i, ".rdata")
-    readTime = readTime - proc.time()[3]
+    read_time = read_time - proc.time()[3]
     toRead1 = file(file.path(params$dplocalPath, filename2), "rb")
     R = matrix(readBin(con = toRead1, what = numeric(), n = p2 * p2,
                        endian = "little"), nrow = p2, ncol = p2)
@@ -1055,14 +1055,14 @@ ProcessXtWXCox.T3 = function(params) {
     XR = matrix(readBin(con = toRead, what = numeric(), n = p1 * p2,
                         endian = "little"), nrow = p1, ncol = p2)
 
-    readSize = readSize + file.size(file.path(params$dplocalPath, filename2))
-    readTime = readTime + proc.time()[3]
+    read_size = read_size + file.size(file.path(params$dplocalPath, filename2))
+    read_time = read_time + proc.time()[3]
 
     XATWXB = XATWXB + XR %*% t(R)
 
     if ((i + 1) %in% params$container$filebreak.XR || i == params$blocks$numBlocks) {
       close(toRead)
-      readSize = readSize + file.size(file.path(params$readPath[["A"]], filename1))
+      read_size = read_size + file.size(file.path(params$read_path[["A"]], filename1))
     }
     pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
@@ -1080,7 +1080,7 @@ ProcessXtWXCox.T3 = function(params) {
   if (is.null(II)) {
     params$failed = TRUE
     params$singularMatrix = TRUE
-    params$errorMessage =
+    params$error_message =
       paste0("The matrix t(X)*W*X is not invertible.\n",
              "       This may be due to one of two possible problems.\n",
              "       1. Poor random initialization of the security vector.\n",
@@ -1091,7 +1091,7 @@ ProcessXtWXCox.T3 = function(params) {
              "          duplicates for both parties and / or reduce the\n",
              "          number of variables used. Once this is done,\n",
              "          rerun the data analysis.")
-    params <- AddToLog(params, "ProcessXtWXCox.T3", readTime, readSize, 0, 0)
+    params <- add_to_log(params, "ProcessXtWXCox.T3", read_time, read_size, 0, 0)
     return(params)
   }
 
@@ -1116,17 +1116,17 @@ ProcessXtWXCox.T3 = function(params) {
 
   Abetas = params$betas[1:p1]
   Bbetas = params$betas[(p1 + 1):(p1 + p2)]
-  writeTime = proc.time()[3]
-  save(Abetas, file = file.path(params$writePath, "betasA.rdata"))
-  save(Bbetas, file = file.path(params$writePath, "betasB.rdata"))
+  write_time = proc.time()[3]
+  save(Abetas, file = file.path(params$write_path, "betasA.rdata"))
+  save(Bbetas, file = file.path(params$write_path, "betasB.rdata"))
   save(converged, maxIterExceeded,
-       file = file.path(params$writePath, "converged.rdata"))
-  writeSize = sum(file.size(file.path(params$writePath, c("betasA.rdata",
+       file = file.path(params$write_path, "converged.rdata"))
+  write_size = sum(file.size(file.path(params$write_path, c("betasA.rdata",
                                                           "betasB.rdata",
                                                           "converged.rdata"))))
-  writeTime = proc.time()[3] - writeTime
+  write_time = proc.time()[3] - write_time
 
-  params <- AddToLog(params, "ProcessXtWXCox.T3", readTime, readSize, writeTime, writeSize)
+  params <- add_to_log(params, "ProcessXtWXCox.T3", read_time, read_size, write_time, write_size)
 
   return(params)
 }
@@ -1273,12 +1273,12 @@ ComputeResultsCox.T3 = function(params) {
                                    "concordance", "stderr")
 
   params$stats = stats
-  writeTime = proc.time()[3]
-  save(stats, file = file.path(params$writePath, "stats.rdata"))
-  writeSize = file.size(file.path(params$writePath, "stats.rdata"))
-  writeTime = proc.time()[3] - writeTime
+  write_time = proc.time()[3]
+  save(stats, file = file.path(params$write_path, "stats.rdata"))
+  write_size = file.size(file.path(params$write_path, "stats.rdata"))
+  write_time = proc.time()[3] - write_time
 
-  params <- AddToLog(params, "ComputeResultsCox.T3", 0, 0, writeTime, writeSize)
+  params <- add_to_log(params, "ComputeResultsCox.T3", 0, 0, write_time, write_size)
   return(params)
 }
 
@@ -1286,12 +1286,12 @@ ComputeResultsCox.T3 = function(params) {
 GetResultsCox.A3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetResultsCox.A3\n\n")
   stats = NULL
-  readTime = proc.time()[3]
-  load(file.path(params$readPath[["T"]], "stats.rdata"))
-  readSize = file.size(file.path(params$readPath[["T"]], "stats.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3]
+  load(file.path(params$read_path[["T"]], "stats.rdata"))
+  read_size = file.size(file.path(params$read_path[["T"]], "stats.rdata"))
+  read_time = proc.time()[3] - read_time
   params$stats = stats
-  params <- AddToLog(params, "GetResultsCox.A3", readTime, readSize, 0, 0)
+  params <- add_to_log(params, "GetResultsCox.A3", read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -1299,12 +1299,12 @@ GetResultsCox.A3 = function(params) {
 GetResultsCox.B3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetResultsCox.B3\n\n")
   stats = NULL
-  readTime = proc.time()[3]
-  load(file.path(params$readPath[["T"]], "stats.rdata"))
-  readSize = file.size(file.path(params$readPath[["T"]], "stats.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3]
+  load(file.path(params$read_path[["T"]], "stats.rdata"))
+  read_size = file.size(file.path(params$read_path[["T"]], "stats.rdata"))
+  read_time = proc.time()[3] - read_time
   params$stats = stats
-  params <- AddToLog(params, "GetResultsCox.B3", readTime, readSize, 0, 0)
+  params <- add_to_log(params, "GetResultsCox.B3", read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -1348,9 +1348,9 @@ CheckColinearityCox.B3 = function(params, data) {
 
   if (params$p2 == 0) {
     params$failed = TRUE
-    params$errorMessage = "After removing colinear covariates, Party B has no covariates."
+    params$error_message = "After removing colinear covariates, Party B has no covariates."
   }
-  params <- AddToLog(params, "CheckColinearityCox.B3", 0, 0, 0, 0)
+  params <- add_to_log(params, "CheckColinearityCox.B3", 0, 0, 0, 0)
 
   return(params)
 }
@@ -1361,10 +1361,10 @@ ComputeCoxFromSurvival.B3 = function(params, data) {
   # We have loaded survival previously
 
   maxIterations = 25
-  readTime = proc.time()[3]
-  load(file.path(params$readPath[["T"]], "maxiterations.rdata"))
-  readSize = file.size(file.path(params$readPath[["T"]], "maxiterations.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3]
+  load(file.path(params$read_path[["T"]], "maxiterations.rdata"))
+  read_size = file.size(file.path(params$read_path[["T"]], "maxiterations.rdata"))
+  read_time = proc.time()[3] - read_time
   strata = rep(0, nrow(data$X))
   for (i in 1:length(data$survival$strata)) {
     strata[data$survival$strata[[i]]$start:data$survival$strata[[i]]$end] = i
@@ -1391,7 +1391,7 @@ ComputeCoxFromSurvival.B3 = function(params, data) {
   if (class(error) == "logical" && error) {
     params$converged = FALSE
     params$failed = TRUE
-    params$errorMessage = "Coxph in the survival package failed to converge."
+    params$error_message = "Coxph in the survival package failed to converge."
   } else {
     params$converged = TRUE
     if (class(error) == "logical") {
@@ -1413,7 +1413,7 @@ ComputeCoxFromSurvival.B3 = function(params, data) {
     fit$means = NULL
     params$fit = fit
   }
-  params <- AddToLog(params, "ComputeCoxFromSurvival.B3", readTime, readSize, 0, 0)
+  params <- add_to_log(params, "ComputeCoxFromSurvival.B3", read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -1431,10 +1431,10 @@ ComputeCox.B3 = function(params, data) {
   maxIterations = 25
   cutoff        = 10^-8
 
-  readTime = proc.time()[3]
-  load(file.path(params$readPath[["T"]], "maxiterations.rdata"))
-  readSize = file.size(file.path(params$readPath[["T"]], "maxiterations.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3]
+  load(file.path(params$read_path[["T"]], "maxiterations.rdata"))
+  read_size = file.size(file.path(params$read_path[["T"]], "maxiterations.rdata"))
+  read_time = proc.time()[3] - read_time
 
 
   while (params$algIterationCounter <= maxIterations && !params$converged) {
@@ -1508,7 +1508,7 @@ ComputeCox.B3 = function(params, data) {
     M = inv
     if (is.null(M)) {
       params$failed = TRUE
-      params$errorMessage = "The matrix t(X)WX is singular.  This is probably due to divergence of the coefficients."
+      params$error_message = "The matrix t(X)WX is singular.  This is probably due to divergence of the coefficients."
 
       betas = rep(NA, length(params$Bcolnames.old))
       betas[params$BIndiciesKeep] = betasB
@@ -1517,7 +1517,7 @@ ComputeCox.B3 = function(params, data) {
       # if (params$verbose) cat("Current Parameters:\n")
       # if (params$verbose) print(betas)
       # if (params$verbose) cat("\n")
-      params <- AddToLog(params, "ComputeCox.B3", readTime, readSize, 0, 0)
+      params <- add_to_log(params, "ComputeCox.B3", read_time, read_size, 0, 0)
       return(params)
     }
 
@@ -1542,7 +1542,7 @@ ComputeCox.B3 = function(params, data) {
   params$loglikelihood = loglikelihood
   params$betasB = betasB
   params$X.betas = X.betas
-  params <- AddToLog(params, "ComputeCox.B3", readTime, readSize, 0, 0)
+  params <- add_to_log(params, "ComputeCox.B3", read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -1655,11 +1655,11 @@ ComputeResultsCox.B3 = function(params, data) {
                                    "concordance", "stderr")
 
   params$stats = stats
-  writeTime = proc.time()[3]
-  save(stats, file = file.path(params$writePath, "stats.rdata"))
-  writeSize = file.size(file.path(params$writePath, "stats.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "ComputeResultsCox.B3", 0, 0, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(stats, file = file.path(params$write_path, "stats.rdata"))
+  write_size = file.size(file.path(params$write_path, "stats.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "ComputeResultsCox.B3", 0, 0, write_time, write_size)
   return(params)
 }
 
@@ -1667,17 +1667,17 @@ ComputeResultsCox.B3 = function(params, data) {
 TransferResultsCox.T3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "TransferResultsCox.T3\n\n")
   stats = NULL
-  readTime = proc.time()[3]
-  load(file.path(params$readPath[["B"]], "stats.rdata"))
-  readSize = file.size(file.path(params$readPath[["B"]], "stats.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3]
+  load(file.path(params$read_path[["B"]], "stats.rdata"))
+  read_size = file.size(file.path(params$read_path[["B"]], "stats.rdata"))
+  read_time = proc.time()[3] - read_time
   params$stats = stats
 
-  writeTime = proc.time()[3]
-  save(stats, file = file.path(params$writePath, "stats.rdata"))
-  writeSize = file.size(file.path(params$writePath, "stats.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "TransferResultsCox.T3", readTime, readSize, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(stats, file = file.path(params$write_path, "stats.rdata"))
+  write_size = file.size(file.path(params$write_path, "stats.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "TransferResultsCox.T3", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -1703,30 +1703,30 @@ PartyAProcess3Cox = function(data,
   Header(params)
   params   = PrepareFolderLinear.A3(params, monitor_folder)
   if (params$failed) {
-    warning(params$errorMessage)
+    warning(params$error_message)
     return(invisible(NULL))
   }
-  data = PrepareDataCox.23(params, data, yname, strata, mask)
-  params <- AddToLog(params, "PrepareDataCox.23", 0, 0, 0, 0)
+  data = prepare_data_cox_23(params, data, yname, strata, mask)
+  params <- add_to_log(params, "prepare_data_cox_23", 0, 0, 0, 0)
 
   if (data$failed) {
     message = "Error in processing the data for Party A."
-    MakeErrorMessage(params$writePath, message)
-    files = c("errorMessage.rdata")
+    MakeErrorMessage(params$write_path, message)
+    files = c("error_message.rdata")
     params <- SendPauseQuit.3p(params, filesT = files, sleep_time = sleep_time,
                               job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
-  params <- PrepareParamsCox.A3(params, data)
+  params <- prepare_params_cox_A3(params, data)
   files = "pa.rdata"
   params <- SendPauseContinue.3p(params, filesT = files, from = "T",
                                 sleep_time = sleep_time, maxWaitingTime = maxWaitingTime,
                                 waitForTurn = TRUE)
 
-  if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
+  if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
     params$complete = TRUE
-    warning(ReadErrorMessage(params$readPath[["T"]]))
+    warning(ReadErrorMessage(params$read_path[["T"]]))
     params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE,
                               waitForTurn = TRUE)
     return(params$stats)
@@ -1738,7 +1738,7 @@ PartyAProcess3Cox = function(data,
                                 sleep_time = sleep_time, maxWaitingTime = maxWaitingTime,
                                 waitForTurn = TRUE)
 
-  if (file.exists(file.path(params$readPath[["T"]], "stats.rdata"))) {
+  if (file.exists(file.path(params$read_path[["T"]], "stats.rdata"))) {
     params$algIterationCounter = 1
     params <- GetResultsCox.A3(params)
     params$converged = params$stats$converged
@@ -1746,16 +1746,16 @@ PartyAProcess3Cox = function(data,
     return(params$stats)
   }
 
-  if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
+  if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
     params$complete = TRUE
-    warning(ReadErrorMessage(params$readPath[["T"]]))
+    warning(ReadErrorMessage(params$read_path[["T"]]))
     params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE,
                               waitForTurn = TRUE)
     return(params$stats)
   }
 
   data = SortDataCox.A3(params, data)
-  params <- AddToLog(params, "SortDataCox.A3", data$readTime, data$readSize, 0, 0)
+  params <- add_to_log(params, "SortDataCox.A3", data$read_time, data$read_size, 0, 0)
   params <- PrepareBlocksLinear.A3(params)
   params <- GetZCox.A3(params, data)
   files = SeqZW("cz_", length(params$container$filebreak.Z))
@@ -1768,7 +1768,7 @@ PartyAProcess3Cox = function(data,
   params <- SendPauseContinue.3p(params, filesT = files, from = "T",
                                 sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
 
-  if (file.exists(file.path(params$readPath[["T"]], "stats.rdata"))) {
+  if (file.exists(file.path(params$read_path[["T"]], "stats.rdata"))) {
     params$algIterationCounter = 1
     params <- GetResultsCox.A3(params)
     params$converged = params$stats$converged
@@ -1776,9 +1776,9 @@ PartyAProcess3Cox = function(data,
     return(params$stats)
   }
 
-  if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
+  if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
     params$complete = TRUE
-    warning(ReadErrorMessage(params$readPath[["T"]]))
+    warning(ReadErrorMessage(params$read_path[["T"]]))
     params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE,
                               waitForTurn = TRUE)
     return(params$stats)
@@ -1811,8 +1811,8 @@ PartyAProcess3Cox = function(data,
     params <- SendPauseContinue.3p(params, filesT = files, from = "T",
                                   sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
 
-    if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
-      warning(ReadErrorMessage(params$readPath[["T"]]))
+    if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
+      warning(ReadErrorMessage(params$read_path[["T"]]))
       params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE,
                                 waitForTurn = TRUE)
       return(params$stats)
@@ -1843,30 +1843,30 @@ PartyBProcess3Cox = function(data,
   Header(params)
   params <- PrepareFolderLinear.B3(params, monitor_folder)
   if (params$failed) {
-    warning(params$errorMessage)
+    warning(params$error_message)
     return(invisible(NULL))
   }
-  data = PrepareDataCox.23(params, data, NULL, strata, mask)
-  params <- AddToLog(params, "PrepareDataCox.23", 0, 0, 0, 0)
+  data = prepare_data_cox_23(params, data, NULL, strata, mask)
+  params <- add_to_log(params, "prepare_data_cox_23", 0, 0, 0, 0)
 
   if (data$failed) {
     message = "Error in processing the data for Party B."
-    MakeErrorMessage(params$writePath, message)
-    files = c("errorMessage.rdata")
+    MakeErrorMessage(params$write_path, message)
+    files = c("error_message.rdata")
     params <- SendPauseQuit.3p(params, filesT = files, sleep_time = sleep_time,
                               job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
-  params <- PrepareParamsCox.B3(params, data)
+  params <- prepare_params_cox_B3(params, data)
   files = "pb.rdata"
   params <- SendPauseContinue.3p(params, filesT = files, from = "T",
                                 sleep_time = sleep_time, maxWaitingTime = maxWaitingTime,
                                 waitForTurn = TRUE)
 
-  if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
+  if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
     params$complete = TRUE
-    warning(ReadErrorMessage(params$readPath[["T"]]))
+    warning(ReadErrorMessage(params$read_path[["T"]]))
     params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE,
                               waitForTurn = TRUE)
     return(params$stats)
@@ -1879,23 +1879,23 @@ PartyBProcess3Cox = function(data,
                                 sleep_time = sleep_time, maxWaitingTime = maxWaitingTime,
                                 waitForTurn = TRUE)
 
-  if (file.exists(file.path(params$readPath[["T"]], "transferControl.rdata"))) {
+  if (file.exists(file.path(params$read_path[["T"]], "transferControl.rdata"))) {
     params$algIterationCounter = 1
     data = SortDataCox.B3(params, data)
-    params <- AddToLog(params, "SortDataCox.B3", data$readTime, data$readSize, 0, 0)
+    params <- add_to_log(params, "SortDataCox.B3", data$read_time, data$read_size, 0, 0)
     params <- CheckColinearityCox.B3(params, data)
 
     if (params$failed) {  # Happens if pB.new == 0
       params$complete = TRUE
-      warning(params$errorMessage)
-      MakeErrorMessage(params$writePath, params$errorMessage)
-      files = c("errorMessage.rdata")
+      warning(params$error_message)
+      MakeErrorMessage(params$write_path, params$error_message)
+      files = c("error_message.rdata")
       params <- SendPauseQuit.3p(params, filesT = files, sleep_time = sleep_time,
                                 job_failed = TRUE)
       return(params$stats)
     }
     data = UpdateDataCox.B3(params, data)
-    params <- AddToLog(params, "UpdateDataCox.B3", 0, 0, 0, 0)
+    params <- add_to_log(params, "UpdateDataCox.B3", 0, 0, 0, 0)
     if (params$survivalInstalled) {
       params <- ComputeCoxFromSurvival.B3(params, data)
     } else {
@@ -1904,25 +1904,25 @@ PartyBProcess3Cox = function(data,
 
     if (params$failed) {      # We could get a job_failed here from coefficient explosion
       params$complete = TRUE
-      warning(params$errorMessage)
-      MakeErrorMessage(params$writePath, params$errorMessage)
-      files = c("errorMessage.rdata")
+      warning(params$error_message)
+      MakeErrorMessage(params$write_path, params$error_message)
+      files = c("error_message.rdata")
       params <- SendPauseQuit.3p(params, filesT = files, sleep_time = sleep_time,
                                 job_failed = TRUE)
       return(params$stats)
     }
     params <- ComputeResultsCox.B3(params, data)
     stats = params$stats
-    save(stats, file = file.path(params$writePath, "stats.rdata"))
+    save(stats, file = file.path(params$write_path, "stats.rdata"))
     files = c("stats.rdata")
     params <- SendPauseQuit.3p(params, filesT = files, sleep_time = sleep_time)
     return(params$stats)
   }
 
 
-  if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
+  if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
     params$complete = TRUE
-    warning(ReadErrorMessage(params$readPath[["T"]]))
+    warning(ReadErrorMessage(params$read_path[["T"]]))
     params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE,
                               waitForTurn = TRUE)
     return(params$stats)
@@ -1930,7 +1930,7 @@ PartyBProcess3Cox = function(data,
 
 
   data = SortDataCox.B3(params, data)
-  params <- AddToLog(params, "SortDataCox.B3", data$readTime, data$readSize, 0, 0)
+  params <- add_to_log(params, "SortDataCox.B3", data$read_time, data$read_size, 0, 0)
   params <- PrepareBlocksLinear.B3(params)
   params <- GetRWLinear.B3(params, data)
   params <- GetSXBCox.B3(params, data)
@@ -1938,19 +1938,19 @@ PartyBProcess3Cox = function(data,
   params <- SendPauseContinue.3p(params, filesT = files, from = "T",
                                 sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
 
-  if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
+  if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
     params$complete = TRUE
-    warning(ReadErrorMessage(params$readPath[["T"]]))
+    warning(ReadErrorMessage(params$read_path[["T"]]))
     params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE,
                               waitForTurn = TRUE)
     return(params$stats)
   }
 
-  if (file.exists(file.path(params$readPath[["T"]], "transferControl.rdata"))) {
+  if (file.exists(file.path(params$read_path[["T"]], "transferControl.rdata"))) {
     params$algIterationCounter = 1
     params <- UpdateParamsCox.B3(params)
     data = UpdateDataCox.B3(params, data)
-    params <- AddToLog(params, "UpdateDataCox.B3", 0, 0, 0, 0)
+    params <- add_to_log(params, "UpdateDataCox.B3", 0, 0, 0, 0)
     if (params$survivalInstalled) {
       params <- ComputeCoxFromSurvival.B3(params, data)
     } else {
@@ -1959,16 +1959,16 @@ PartyBProcess3Cox = function(data,
 
     if (params$failed) {      # We could get a job_failed here from coefficient explosion
       params$complete = TRUE
-      warning(params$errorMessage)
-      MakeErrorMessage(params$writePath, params$errorMessage)
-      files = c("errorMessage.rdata")
+      warning(params$error_message)
+      MakeErrorMessage(params$write_path, params$error_message)
+      files = c("error_message.rdata")
       params <- SendPauseQuit.3p(params, filesT = files, sleep_time = sleep_time,
                                 job_failed = TRUE)
       return(params$stats)
     }
     params <- ComputeResultsCox.B3(params, data)
     stats = params$stats
-    save(stats, file = file.path(params$writePath, "stats.rdata"))
+    save(stats, file = file.path(params$write_path, "stats.rdata"))
     files = c("stats.rdata")
     params <- SendPauseQuit.3p(params, filesT = files, sleep_time = sleep_time)
     return(params$stats)
@@ -1994,8 +1994,8 @@ PartyBProcess3Cox = function(data,
                                   sleep_time = sleep_time, maxWaitingTime = maxWaitingTime,
                                   waitForTurn = TRUE)
 
-    if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
-      warning(ReadErrorMessage(params$readPath[["T"]]))
+    if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
+      warning(ReadErrorMessage(params$read_path[["T"]]))
       params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE,
                                 waitForTurn = TRUE)
       return(params$stats)
@@ -2029,36 +2029,36 @@ PartyTProcess3Cox = function(monitor_folder         = NULL,
   Header(Tparams)
   params   = PrepareFolderLinear.T3(Tparams, monitor_folder)
   if (params$failed) {
-    warning(params$errorMessage)
+    warning(params$error_message)
     return(invisible(NULL))
   }
 
   params <- PauseContinue.3p(params, from = c("A", "B"), maxWaitingTime = maxWaitingTime)
 
-  if (file.exists(file.path(params$readPath[["A"]], "errorMessage.rdata")) &&
-      file.exists(file.path(params$readPath[["B"]], "errorMessage.rdata"))) {
-    warning(paste0(ReadErrorMessage(params$readPath[["A"]]), "\n",
-                   ReadErrorMessage(params$readPath[["B"]])))
+  if (file.exists(file.path(params$read_path[["A"]], "error_message.rdata")) &&
+      file.exists(file.path(params$read_path[["B"]], "error_message.rdata"))) {
+    warning(paste0(ReadErrorMessage(params$read_path[["A"]]), "\n",
+                   ReadErrorMessage(params$read_path[["B"]])))
     params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.3p(params)
     return(params$stats)
   }
-  if (file.exists(file.path(params$readPath[["A"]], "errorMessage.rdata"))) {
-    warning(ReadErrorMessage(params$readPath[["A"]]))
-    file.copy(file.path(params$readPath[["A"]], "errorMessage.rdata"),
-              file.path(params$writePath, "errorMessage.rdata"))
-    files = "errorMessage.rdata"
+  if (file.exists(file.path(params$read_path[["A"]], "error_message.rdata"))) {
+    warning(ReadErrorMessage(params$read_path[["A"]]))
+    file.copy(file.path(params$read_path[["A"]], "error_message.rdata"),
+              file.path(params$write_path, "error_message.rdata"))
+    files = "error_message.rdata"
     params <- SendPauseContinue.3p(params, filesB = files, from = "B",
                                   sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
     params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.3p(params)
     return(params$stats)
   }
-  if (file.exists(file.path(params$readPath[["B"]], "errorMessage.rdata"))) {
-    warning(ReadErrorMessage(params$readPath[["B"]]))
-    file.copy(file.path(params$readPath[["B"]], "errorMessage.rdata"),
-              file.path(params$writePath, "errorMessage.rdata"))
-    files = "errorMessage.rdata"
+  if (file.exists(file.path(params$read_path[["B"]], "error_message.rdata"))) {
+    warning(ReadErrorMessage(params$read_path[["B"]]))
+    file.copy(file.path(params$read_path[["B"]], "error_message.rdata"),
+              file.path(params$write_path, "error_message.rdata"))
+    files = "error_message.rdata"
     params <- SendPauseContinue.3p(params, filesA = files, from = "A",
                                   sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
     params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE)
@@ -2066,14 +2066,14 @@ PartyTProcess3Cox = function(monitor_folder         = NULL,
     return(params$stats)
   }
 
-  params   = PrepareParamsCox.T3(params, cutoff, maxIterations)
+  params   = prepare_params_cox_T3(params, cutoff, maxIterations)
 
   if (!params$failed) params <- CheckStrataCox.T3(params)
 
   if (params$failed) {
-    warning(params$errorMessage)
-    MakeErrorMessage(params$writePath, params$errorMessage)
-    files = "errorMessage.rdata"
+    warning(params$error_message)
+    MakeErrorMessage(params$write_path, params$error_message)
+    files = "error_message.rdata"
     params <- SendPauseContinue.3p(params, filesA = files, filesB = files,
                                   from = c("A", "B"),
                                   sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
@@ -2090,15 +2090,15 @@ PartyTProcess3Cox = function(monitor_folder         = NULL,
 
   if (params$p1 == 0) {
     params$algIterationCounter = 1
-    MakeTransferMessage(params$writePath)
+    MakeTransferMessage(params$write_path)
     files = c("transfercontrol.rdata", "maxiterations.rdata", "survival.rdata")
     params <- SendPauseContinue.3p(params, filesB = files, from = "B",
                                   sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-    if (file.exists(file.path(params$readPath[["B"]], "errorMessage.rdata"))) {
-      warning(ReadErrorMessage(params$readPath[["B"]]))
-      file.copy(file.path(params$readPath[["B"]], "errorMessage.rdata"),
-                file.path(params$writePath, "errorMessage.rdata"))
-      files = "errorMessage.rdata"
+    if (file.exists(file.path(params$read_path[["B"]], "error_message.rdata"))) {
+      warning(ReadErrorMessage(params$read_path[["B"]]))
+      file.copy(file.path(params$read_path[["B"]], "error_message.rdata"),
+                file.path(params$write_path, "error_message.rdata"))
+      files = "error_message.rdata"
       params <- SendPauseContinue.3p(params, filesA = files, from = "A",
                                     sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
       params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE)
@@ -2118,9 +2118,9 @@ PartyTProcess3Cox = function(monitor_folder         = NULL,
   params <- PrepareBlocksLinear.T3(params, blocksize)
 
   if (params$failed) {
-    warning(params$errorMessage)
-    MakeErrorMessage(params$writePath, params$errorMessage)
-    files = "errorMessage.rdata"
+    warning(params$error_message)
+    MakeErrorMessage(params$write_path, params$error_message)
+    files = "error_message.rdata"
     params <- SendPauseContinue.3p(params, filesA = files, filesB = files,
                                   from = c("A", "B"),
                                   sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
@@ -2147,9 +2147,9 @@ PartyTProcess3Cox = function(monitor_folder         = NULL,
   params <- CheckColinearityCox.T3(params)
 
   if (params$failed) {
-    warning(params$errorMessage)
-    MakeErrorMessage(params$writePath, params$errorMessage)
-    files = "errorMessage.rdata"
+    warning(params$error_message)
+    MakeErrorMessage(params$write_path, params$error_message)
+    files = "error_message.rdata"
     params <- SendPauseContinue.3p(params, filesA = files, filesB = files,
                                   from = c("A", "B"),
                                   sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
@@ -2160,15 +2160,15 @@ PartyTProcess3Cox = function(monitor_folder         = NULL,
 
   if (params$p1 == 0) {
     params$algIterationCounter = 1
-    MakeTransferMessage(params$writePath)
+    MakeTransferMessage(params$write_path)
     files = c("transfercontrol.rdata", "Bindicies.rdata", "maxiterations.rdata", "survival.rdata")
     params <- SendPauseContinue.3p(params, filesB = files, from = "B",
                                   sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
-    if (file.exists(file.path(params$readPath[["B"]], "errorMessage.rdata"))) {
-      warning(ReadErrorMessage(params$readPath[["B"]]))
-      file.copy(file.path(params$readPath[["B"]], "errorMessage.rdata"),
-                file.path(params$writePath, "errorMessage.rdata"))
-      files = "errorMessage.rdata"
+    if (file.exists(file.path(params$read_path[["B"]], "error_message.rdata"))) {
+      warning(ReadErrorMessage(params$read_path[["B"]]))
+      file.copy(file.path(params$read_path[["B"]], "error_message.rdata"),
+                file.path(params$write_path, "error_message.rdata"))
+      files = "error_message.rdata"
       params <- SendPauseContinue.3p(params, filesA = files, from = "A",
                                     sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
       params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE)
@@ -2217,9 +2217,9 @@ PartyTProcess3Cox = function(monitor_folder         = NULL,
     params <- ProcessXtWXCox.T3(params)
 
     if (params$failed) {
-      warning(params$errorMessage)
-      MakeErrorMessage(params$writePath, params$errorMessage)
-      files = "errorMessage.rdata"
+      warning(params$error_message)
+      MakeErrorMessage(params$write_path, params$error_message)
+      files = "error_message.rdata"
       params <- SendPauseContinue.3p(params, filesA = files, filesB = files,
                                     from = c("A", "B"),
                                     sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)

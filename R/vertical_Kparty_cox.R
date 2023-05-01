@@ -1,8 +1,8 @@
 ################### DISTRIBUTED COX REGRESSION FUNCTIONS ##################
 
 #' @importFrom stats model.matrix
-PrepareDataCox.DP = function(params, data, yname, strata, mask) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareDataCox.23\n\n")
+prepare_data_cox_DP = function(params, data, yname, strata, mask) {
+  if (params$trace) cat(as.character(Sys.time()), "prepare_data_cox_23\n\n")
 
   workdata = list()
   workdata$failed = CheckDataFormat(params, data)
@@ -10,31 +10,31 @@ PrepareDataCox.DP = function(params, data, yname, strata, mask) {
     return(workdata)
   }
   data = data.frame(data) # convert to a clean data.frame
-  workdata$strata = extractStrata(params, data, strata, mask)
+  workdata$strata = extract_strata(params, data, strata, mask)
   if (workdata$strata$failed) {
     workdata$failed = TRUE
     return(workdata)
   }
-  strataIndex = workdata$strata$strataIndex
-  responseIndex = numeric()
+  strata_index = workdata$strata$strata_index
+  response_index = numeric()
   if (params$dataPartnerID == 1) {
-    responseIndex = CheckResponse(params, data, yname)
-    if (is.null(responseIndex)) {
+    response_index = CheckResponse(params, data, yname)
+    if (is.null(response_index)) {
       workdata$failed = TRUE
       return(workdata)
     }
     workdata$survival        = list()
-    workdata$survival$rank   = data[, responseIndex[1]]
-    workdata$survival$status = data[, responseIndex[2]]
-    if (length(intersect(strataIndex, responseIndex)) > 0) {
+    workdata$survival$rank   = data[, response_index[1]]
+    workdata$survival$status = data[, response_index[2]]
+    if (length(intersect(strata_index, response_index)) > 0) {
       warning("Response and strata share a variable.")
       workdata$failed = TRUE
       return(workdata)
     }
   }
-  covariateIndex = setdiff(1:ncol(data), union(strataIndex, responseIndex))
+  covariate_index = setdiff(1:ncol(data), union(strata_index, response_index))
   workdata$n = nrow(data)
-  if (length(covariateIndex) == 0) {
+  if (length(covariate_index) == 0) {
     if (params$dataPartnerID == 1) {
       workdata$X = matrix(0, nrow = nrow(data), ncol = 0)
     } else {
@@ -43,8 +43,8 @@ PrepareDataCox.DP = function(params, data, yname, strata, mask) {
       return(workdata)
     }
   } else {
-    workdata$tags = CreateModelMatrixTags(data[, covariateIndex, drop = FALSE])
-    workdata$X = model.matrix(~ ., data[, covariateIndex, drop = FALSE])
+    workdata$tags = CreateModelMatrixTags(data[, covariate_index, drop = FALSE])
+    workdata$X = model.matrix(~ ., data[, covariate_index, drop = FALSE])
     workdata$X = workdata$X[, -1, drop = FALSE]
     workdata$colmin   = apply(workdata$X, 2, min)
     workdata$colmax   = apply(workdata$X, 2, max)
@@ -68,19 +68,19 @@ SendStrataNamesCox.DP = function(params, data) {
   strataNames = list()
   strataNames$strataFromMe = data$strata$strataFromMe
   strataNames$strataFromOthers = data$strata$strataFromOthers
-  writeTime = proc.time()[3]
-  save(strataNames, file = file.path(params$writePath, "strata_names.rdata"))
-  writeSize = file.size(file.path(params$writePath, "strata_names.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "SendStrataNamesCox.DP", 0, 0, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(strataNames, file = file.path(params$write_path, "strata_names.rdata"))
+  write_size = file.size(file.path(params$write_path, "strata_names.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "SendStrataNamesCox.DP", 0, 0, write_time, write_size)
   return(params)
 }
 
 
 CheckStrataCox.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "CheckStrataCox.DP\n\n")
-  readTime = 0
-  readSize = 0
+  read_time = 0
+  read_size = 0
   strataNames          = NULL
   strataClaimed        = rep(list(list()), params$numDataPartners)
   strataUnclaimed      = rep(list(list()), params$numDataPartners)
@@ -91,10 +91,10 @@ CheckStrataCox.DP = function(params, data) {
     strataUnclaimed[[1]] = data$strata$strataFromOthers
   }
   for (i in 2:params$numDataPartners) {
-    readTime = readTime - proc.time()[3]
+    read_time = read_time - proc.time()[3]
     load(file.path(params$readPathDP[i], "strata_names.rdata"))
-    readSize = readSize + file.size(file.path(params$readPathDP[i], "strata_names.rdata"))
-    readTime = readTime + proc.time()[3]
+    read_size = read_size + file.size(file.path(params$readPathDP[i], "strata_names.rdata"))
+    read_time = read_time + proc.time()[3]
     if (length(strataNames$strataFromMe) > 0) {
       strataClaimed[[i]] = strataNames$strataFromMe
     }
@@ -135,16 +135,16 @@ CheckStrataCox.DP = function(params, data) {
 
   if (!passed) {
     params$failed = TRUE
-    params$errorMessage = "Data partners specified different strata:\n"
+    params$error_message = "Data partners specified different strata:\n"
     for (i in 1:params$numDataPartners) {
       temp = NULL
       if (length(specified[[i]] > 0)) {
         temp = paste0(specified[[i]], collapse = ", ")
       }
-      params$errorMessage = paste0(params$errorMessage,
+      params$error_message = paste0(params$error_message,
                                    paste("Data Partner", i, "specified strata:", temp, "\n"))
     }
-    params <- AddToLog(params, "CheckStrataCox.DP", readTime, readSize, 0, 0)
+    params <- add_to_log(params, "CheckStrataCox.DP", read_time, read_size, 0, 0)
     return(params)
   }
   passed = TRUE
@@ -155,10 +155,10 @@ CheckStrataCox.DP = function(params, data) {
 
   if (!passed) {
     params$failed = TRUE
-    params$errorMessage = "The following strata are claimed by two or more data partners: "
-    params$errorMessage = paste0(params$errorMessage, paste0(names(tab[which(tab > 1)]), collapse = ", "), "\n")
-    params$errorMessage = paste0(params$errorMessage, "Make Sure that strata covariate names are unique to each data partner.")
-    params <- AddToLog(params, "CheckStrataCox.DP", readTime, readSize, 0, 0)
+    params$error_message = "The following strata are claimed by two or more data partners: "
+    params$error_message = paste0(params$error_message, paste0(names(tab[which(tab > 1)]), collapse = ", "), "\n")
+    params$error_message = paste0(params$error_message, "Make Sure that strata covariate names are unique to each data partner.")
+    params <- add_to_log(params, "CheckStrataCox.DP", read_time, read_size, 0, 0)
     return(params)
   }
 
@@ -168,13 +168,13 @@ CheckStrataCox.DP = function(params, data) {
 
   if (!passed) {
     params$failed = TRUE
-    params$errorMessage = "No data partner has the following specified strata: "
-    params$errorMessage = paste0(params$errorMessage, paste0(unclaimed[which(!(unclaimed %in% claimed1))], collapse = ", "), ".")
-    params <- AddToLog(params, "CheckStrataCox.DP", readTime, readSize, 0, 0)
+    params$error_message = "No data partner has the following specified strata: "
+    params$error_message = paste0(params$error_message, paste0(unclaimed[which(!(unclaimed %in% claimed1))], collapse = ", "), ".")
+    params <- add_to_log(params, "CheckStrataCox.DP", read_time, read_size, 0, 0)
     return(params)
   }
 
-  params <- AddToLog(params, "CheckStrataCox.DP", readTime, readSize, 0, 0)
+  params <- add_to_log(params, "CheckStrataCox.DP", read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -184,11 +184,11 @@ SendStrataCox.DP = function(params, data) {
   strata = list()
   strata$X = data$strata$X
   strata$legend = data$strata$legend
-  writeTime = proc.time()[3]
-  save(strata, file = file.path(params$writePath, "strata.rdata"))
-  writeSize = file.size(file.path(params$writePath, "strata.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "SendStrataCox.DP", 0, 0, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(strata, file = file.path(params$write_path, "strata.rdata"))
+  write_size = file.size(file.path(params$write_path, "strata.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "SendStrataCox.DP", 0, 0, write_time, write_size)
   return(params)
 }
 
@@ -199,8 +199,8 @@ PrepareStrataCox.DP = function(params, data) {
   survival = data$survival
   strataTemp   = list()
   totalStrata = 0
-  readSize = 0
-  readTime = 0
+  read_size = 0
+  read_time = 0
   for (id in 1:params$numDataPartners) {
     totalStrata = totalStrata + length(params$strataClaimed[[id]])
   }
@@ -218,10 +218,10 @@ PrepareStrataCox.DP = function(params, data) {
           strataTemp$legend = data$strata$legend
           first = FALSE
         } else {
-          readTime = readTime - proc.time()[3]
+          read_time = read_time - proc.time()[3]
           load(file.path(params$readPathDP[[id]], "strata.rdata"))
-          readSize = readSize + file.size(file.path(params$readPathDP[[id]], "strata.rdata"))
-          readTime = readTime + proc.time()[3]
+          read_size = read_size + file.size(file.path(params$readPathDP[[id]], "strata.rdata"))
+          read_time = read_time + proc.time()[3]
           if (first) {
             strataTemp$X = strata$X
             strataTemp$legend = strata$legend
@@ -327,12 +327,12 @@ PrepareStrataCox.DP = function(params, data) {
   pStrata = ncol(params$strata)
   params$pStrata = pStrata
 
-  writeTime = proc.time()[3]
-  save(pStrata, survival, file = file.path(params$writePath, "survival.rdata"))
-  writeSize = file.size(file.path(params$writePath, "survival.rdata"))
-  writeTime = proc.time()[3] - writeTime
+  write_time = proc.time()[3]
+  save(pStrata, survival, file = file.path(params$write_path, "survival.rdata"))
+  write_size = file.size(file.path(params$write_path, "survival.rdata"))
+  write_time = proc.time()[3] - write_time
 
-  params <- AddToLog(params, "PrepareStrataCox.DP", readTime, readSize, writeTime, writeSize)
+  params <- add_to_log(params, "PrepareStrataCox.DP", read_time, read_size, write_time, write_size)
 
   return(params)
 }
@@ -356,8 +356,8 @@ AddStrataToDataCox.DP = function(params, data) {
 }
 
 #' @importFrom stats runif
-PrepareParamsCox.DP = function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareParamsCox.DP\n\n")
+prepare_params_cox_DP = function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "prepare_params_cox_DP\n\n")
   params$strata     = NULL
   params$n          = nrow(data$X)
   params$p          = ncol(data$X)
@@ -371,20 +371,20 @@ PrepareParamsCox.DP = function(params, data) {
   seed = params$seed
   scaler = params$scaler
 
-  writeTime = proc.time()[3]
-  save(p, scaler, seed, file = file.path(params$writePath, "p_scaler_seed.rdata"))
-  writeSize = file.size(file.path(params$writePath, "p_scaler_seed.rdata"))
-  writeTime = proc.time()[3] - writeTime
+  write_time = proc.time()[3]
+  save(p, scaler, seed, file = file.path(params$write_path, "p_scaler_seed.rdata"))
+  write_size = file.size(file.path(params$write_path, "p_scaler_seed.rdata"))
+  write_time = proc.time()[3] - write_time
 
-  params <- AddToLog(params, "PrepareParamsCox.DP", 0, 0, writeTime, writeSize)
+  params <- add_to_log(params, "prepare_params_cox_DP", 0, 0, write_time, write_size)
   return(params)
 }
 
 #' @importFrom stats rnorm
 PrepareSharesCox.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareSharesCox.DP\n\n")
-  readTime = 0
-  readSize = 0
+  read_time = 0
+  read_size = 0
   n = params$n
   p = params$p
   scaler = NULL
@@ -408,10 +408,10 @@ PrepareSharesCox.DP = function(params, data) {
       params$seeds   = c(params$seeds, params$seed)
       next
     }
-    readTime = readTime - proc.time()[3]
+    read_time = read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "p_scaler_seed.rdata"))
-    readSize = readSize + file.size(file.path(params$readPathDP[id], "p_scaler_seed.rdata"))
-    readTime = readTime + proc.time()[3]
+    read_size = read_size + file.size(file.path(params$readPathDP[id], "p_scaler_seed.rdata"))
+    read_time = read_time + proc.time()[3]
     params$ps      = c(params$ps, p)
     params$scalers = c(params$scalers, scaler)
     params$seeds   = c(params$seeds, seed)
@@ -434,16 +434,16 @@ PrepareSharesCox.DP = function(params, data) {
   colnames  = colnames(data$X)
   tags      = data$tags
 
-  writeTime = proc.time()[3]
-  save(products, file = file.path(params$writePath, "products.rdata"))
-  save(halfshare.R, file = file.path(params$writePath, "halfshare.rdata"))
-  save(colmin, colrange, colsum, colnames, tags, file = file.path(params$writePath, "colstats.rdata"))
-  writeSize = sum(file.size(file.path(params$writePath, c("products.rdata",
+  write_time = proc.time()[3]
+  save(products, file = file.path(params$write_path, "products.rdata"))
+  save(halfshare.R, file = file.path(params$write_path, "halfshare.rdata"))
+  save(colmin, colrange, colsum, colnames, tags, file = file.path(params$write_path, "colstats.rdata"))
+  write_size = sum(file.size(file.path(params$write_path, c("products.rdata",
                                                           "halfshare.rdata",
                                                           "colstats.rdata"))))
-  writeTime = proc.time()[3] - writeTime
+  write_time = proc.time()[3] - write_time
 
-  params <- AddToLog(params, "PrepareSharesCox.DP", readTime, readSize, writeTime, writeSize)
+  params <- add_to_log(params, "PrepareSharesCox.DP", read_time, read_size, write_time, write_size)
 
   return(params)
 }
@@ -453,21 +453,21 @@ GetStrata.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetStrata.AC\n\n")
   survival = NULL
   pStrata  = NULL
-  readTime = proc.time()[3]
+  read_time = proc.time()[3]
   load(file.path(params$readPathDP[1], "survival.rdata"))
-  readSize = file.size(file.path(params$readPathDP[1], "survival.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_size = file.size(file.path(params$readPathDP[1], "survival.rdata"))
+  read_time = proc.time()[3] - read_time
   params$survival = survival
   params$pStrata = pStrata
-  params <- AddToLog(params, "GetStrata.AC", readTime, readSize, 0, 0)
+  params <- add_to_log(params, "GetStrata.AC", read_time, read_size, 0, 0)
   return(params)
 }
 
 
 GetProductsCox.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetProductsCox.AC\n\n")
-  readTime = 0
-  readSize = 0
+  read_time = 0
+  read_size = 0
   p = 0
   n = 0
 
@@ -481,15 +481,15 @@ GetProductsCox.AC = function(params) {
   colmin = colrange = colsum = colnames = NULL
   party = NULL
   for (id in 1:params$numDataPartners) {
-    readTime = readTime - proc.time()[3]
+    read_time = read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "products.rdata"))
     load(file.path(params$readPathDP[id], "halfshare.rdata"))
     load(file.path(params$readPathDP[id], "colstats.rdata"))
-    readSize = readSize + sum(file.size(file.path(params$readPathDP[id],
+    read_size = read_size + sum(file.size(file.path(params$readPathDP[id],
                                                   c("products.rdata",
                                                     "halfshare.rdata",
                                                     "colstats.rdata"))))
-    readTime = readTime + proc.time()[3]
+    read_time = read_time + proc.time()[3]
 
     allproducts[[id]]  = products
     allhalfshare[[id]] = halfshare.R
@@ -539,7 +539,7 @@ GetProductsCox.AC = function(params) {
 
   params$halfshare    = allhalfshare
 
-  params <- AddToLog(params, "GetProductsCox.AC", readTime, readSize, 0, 0)
+  params <- add_to_log(params, "GetProductsCox.AC", read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -602,18 +602,18 @@ CheckColinearityCox.AC = function(params) {
     min = max + 1
   }
 
-  params$errorMessage = ""
+  params$error_message = ""
   numeric_found = FALSE
   for (id in 2:params$numDataPartners) {
     if (length(unique(tags[[id]])) == 0) {
       params$failed = TRUE
-      params$errorMessage = paste0(params$errorMessage,
+      params$error_message = paste0(params$error_message,
                                    paste("After removing colinear covariates, Data Partner", id, "has no covariates."))
     }
   }
 
   if (params$failed) {
-    params <- AddToLog(params, "CheckColinearityLogistic.AC", 0, 0, 0, 0)
+    params <- add_to_log(params, "CheckColinearityLogistic.AC", 0, 0, 0, 0)
   }
   indicies = params$indicies
   idx      = params$idx
@@ -633,38 +633,38 @@ CheckColinearityCox.AC = function(params) {
   cutoff = params$cutoff
   pReduct = params$pReduct
 
-  writeTime = proc.time()[3]
-  save(cutoff, idx, indicies, pReduct, file = file.path(params$writePath, "indicies.rdata"))
-  writeSize = file.size(file.path(params$writePath, "indicies.rdata"))
-  writeTime = proc.time()[3] - writeTime
+  write_time = proc.time()[3]
+  save(cutoff, idx, indicies, pReduct, file = file.path(params$write_path, "indicies.rdata"))
+  write_size = file.size(file.path(params$write_path, "indicies.rdata"))
+  write_time = proc.time()[3] - write_time
 
-  params <- AddToLog(params, "CheckColinearityLogistic.AC", 0, 0, writeTime, writeSize)
+  params <- add_to_log(params, "CheckColinearityLogistic.AC", 0, 0, write_time, write_size)
   return(params)
 }
 
 ComputeUCox.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeUCox.AC\n\n")
-  readTime = 0
-  readSize = 0
+  read_time = 0
+  read_size = 0
   if (params$algIterationCounter == 1) {
     u = 1
   } else {
     uTemp = 0
     for (id in 1:params$numDataPartners) {
-      readTime = readTime - proc.time()[3]
+      read_time = read_time - proc.time()[3]
       load(file.path(params$readPathDP[id], "u.rdata"))
-      readSize = readSize + file.size(file.path(params$readPathDP[id], "u.rdata"))
-      readTime = readTime + proc.time()[3]
+      read_size = read_size + file.size(file.path(params$readPathDP[id], "u.rdata"))
+      read_time = read_time + proc.time()[3]
       uTemp = uTemp + u
     }
     u = uTemp
   }
   params$u = u
-  writeTime = proc.time()[3]
-  save(u, file = file.path(params$writePath, "u.rdata"))
-  writeSize = file.size(file.path(params$writePath, "u.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "ComputeUCox.AC", readTime, readSize, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(u, file = file.path(params$write_path, "u.rdata"))
+  write_size = file.size(file.path(params$write_path, "u.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "ComputeUCox.AC", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -675,12 +675,12 @@ UpdateParamsCox.DP = function(params) {
   u        = NULL
   cutoff   = NULL
   pReduct  = NULL
-  readTime = proc.time()[3]
+  read_time = proc.time()[3]
   load(file.path(params$readPathAC, "indicies.rdata"))
   load(file.path(params$readPathAC, "u.rdata"))
-  readSize = file.size(file.path(params$readPathAC, "indicies.rdata")) +
+  read_size = file.size(file.path(params$readPathAC, "indicies.rdata")) +
     file.size(file.path(params$readPathAC, "u.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3] - read_time
   betas = matrix(0, nrow = length(indicies[[params$dataPartnerID]]), ncol = 1)
   params$u             = u
   params$idx           = idx
@@ -693,7 +693,7 @@ UpdateParamsCox.DP = function(params) {
     params$sBeta.old = rep(0, params$n)
     params$cutoff    = cutoff
   }
-  params <- AddToLog(params, "UpdateParamsCox.DP", readTime, readSize, 0, 0)
+  params <- add_to_log(params, "UpdateParamsCox.DP", read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -725,10 +725,10 @@ ComputeSBetaCox.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeSBetaCox.DP\n\n")
   u = NULL
   n = params$n
-  readTime = proc.time()[3]
+  read_time = proc.time()[3]
   load(file.path(params$readPathAC, "u.rdata"))
-  readSize = file.size(file.path(params$readPathAC, "u.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_size = file.size(file.path(params$readPathAC, "u.rdata"))
+  read_time = proc.time()[3] - read_time
 
   sBetaPart = (data$X %*% params$betas + u) / (2 * u)
   V = 0
@@ -743,11 +743,11 @@ ComputeSBetaCox.DP = function(params, data) {
 
   sBetaPart = sBetaPart - params$scalers[params$dataPartnerID] / sum(params$scalers) * V
 
-  writeTime = proc.time()[3]
-  save(sBetaPart, file = file.path(params$writePath, "sbeta.rdata"))
-  writeSize = file.size(file.path(params$writePath, "sbeta.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "ComputeSBetaCox.DP", readTime, readSize, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(sBetaPart, file = file.path(params$write_path, "sbeta.rdata"))
+  write_size = file.size(file.path(params$write_path, "sbeta.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "ComputeSBetaCox.DP", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -755,22 +755,22 @@ GetSBetaCox.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetSBetaCox.AC\n\n")
   sBeta = 0
   sBetaPart = NULL
-  readTime = 0
-  readSize = 0
+  read_time = 0
+  read_size = 0
   for (id in 1:params$numDataPartners) {
-    readTime = readTime - proc.time()[3]
+    read_time = read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "sbeta.rdata"))
-    readSize = readSize + file.size(file.path(params$readPathDP[id], "sbeta.rdata"))
-    readTime = readTime + proc.time()[3]
+    read_size = read_size + file.size(file.path(params$readPathDP[id], "sbeta.rdata"))
+    read_time = read_time + proc.time()[3]
     sBeta = sBeta + sBetaPart
   }
   sBeta = 2 * params$u * sBeta - params$u * params$numDataPartners
   params$sBeta = sBeta
-  writeTime = proc.time()[3]
-  save(sBeta, file = file.path(params$writePath, "sbeta.rdata"))
-  writeSize = file.size(file.path(params$writePath, "sbeta.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "GetBetaCox.AC", readTime, readSize, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(sBeta, file = file.path(params$write_path, "sbeta.rdata"))
+  write_size = file.size(file.path(params$write_path, "sbeta.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "GetBetaCox.AC", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -778,10 +778,10 @@ ComputeLogLikelihoodCox.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeLogLikelihoodCox.DP\n\n")
 
   sBeta = 0
-  readTime = proc.time()[3]
+  read_time = proc.time()[3]
   load(file.path(params$readPathAC, "sbeta.rdata"))
-  readSize = file.size(file.path(params$readPathAC, "sbeta.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_size = file.size(file.path(params$readPathAC, "sbeta.rdata"))
+  read_time = proc.time()[3] - read_time
   sBeta = sBeta[params$survival$sortedIdx]
   loglikelihood.old = params$loglikelihood
   stephalving = TRUE
@@ -828,14 +828,14 @@ ComputeLogLikelihoodCox.DP = function(params, data) {
   params$sBeta     = sBeta
   params$loglikelihood = loglikelihood
 
-  writeTime = proc.time()[3]
-  save(sBeta, file = file.path(params$writePath, "sbeta.rdata"))
-  save(scale, converged, file = file.path(params$writePath, "converged.rdata"))
-  writeSize = file.size(file.path(params$writePath, "converged.rdata")) +
-    file.size(file.path(params$writePath, "sbeta.rdata"))
-  writeTime = proc.time()[3] - proc.time()[3]
+  write_time = proc.time()[3]
+  save(sBeta, file = file.path(params$write_path, "sbeta.rdata"))
+  save(scale, converged, file = file.path(params$write_path, "converged.rdata"))
+  write_size = file.size(file.path(params$write_path, "converged.rdata")) +
+    file.size(file.path(params$write_path, "sbeta.rdata"))
+  write_time = proc.time()[3] - proc.time()[3]
 
-  params <- AddToLog(params, "ComputeLogLikelihoodCox.DP", readTime, readSize, writeTime, writeSize)
+  params <- add_to_log(params, "ComputeLogLikelihoodCox.DP", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -843,10 +843,10 @@ ComputeLogLikelihoodCox.DP = function(params, data) {
 ComputeSDelLCox.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeSDeltaCox.AC\n\n")
   sBeta = 0
-  readTime = proc.time()[3]
+  read_time = proc.time()[3]
   load(file.path(params$readPathDP[1], "sbeta.rdata"))
-  readSize = file.size(file.path(params$readPathDP[1], "sbeta.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_size = file.size(file.path(params$readPathDP[1], "sbeta.rdata"))
+  read_time = proc.time()[3] - read_time
   halfshare = params$halfshare[params$survival$sortedIdx, , drop = FALSE]
   p = ncol(halfshare)
   n = params$n
@@ -868,11 +868,11 @@ ComputeSDelLCox.AC = function(params) {
   params$W.S.R = W.S.R
   params$tS.deltal.R = tS.deltal.R
 
-  writeTime = proc.time()[3]
-  save(W.S.R.1, file = file.path(params$writePath, "wsr1.rdata"))
-  writeSize = file.size(file.path(params$writePath, "wsr1.rdata"))
-  writeTime = proc.time()[3] - writeTime
-  params <- AddToLog(params, "ComputeSDelLCox.AC", readTime, readSize, writeTime, writeSize)
+  write_time = proc.time()[3]
+  save(W.S.R.1, file = file.path(params$write_path, "wsr1.rdata"))
+  write_size = file.size(file.path(params$write_path, "wsr1.rdata"))
+  write_time = proc.time()[3] - write_time
+  params <- add_to_log(params, "ComputeSDelLCox.AC", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -928,17 +928,17 @@ ComputeSDelLCox.DP = function(params, data) {
   params$colrange.W.S.L = colrange.W.S.L
   params$scaled.W.S.L.L = scaled.W.S.L.L
 
-  writeTime = proc.time()[3]
+  write_time = proc.time()[3]
   save(colmin.W.S.L, colrange.W.S.L, scaled.W.S.L.R,
-       file = file.path(params$writePath, "scaledwslr.rdata"))
-  save(tS.deltal.L, file = file.path(params$writePath, "tsdeltal.rdata"))
-  save(scaled.W.S.L.L, file = file.path(params$writePath, "scaledwsll.rdata"))
-  writeSize = sum(file.size(file.path(params$writePath, "scaledwslr.rdata"),
-                            file.path(params$writePath, "tsdeltal.rdata"),
-                            file.path(params$writePath, "scaledwsll.rdata")))
-  writeTime = proc.time()[3] - writeTime
+       file = file.path(params$write_path, "scaledwslr.rdata"))
+  save(tS.deltal.L, file = file.path(params$write_path, "tsdeltal.rdata"))
+  save(scaled.W.S.L.L, file = file.path(params$write_path, "scaledwsll.rdata"))
+  write_size = sum(file.size(file.path(params$write_path, "scaledwslr.rdata"),
+                            file.path(params$write_path, "tsdeltal.rdata"),
+                            file.path(params$write_path, "scaledwsll.rdata")))
+  write_time = proc.time()[3] - write_time
 
-  params <- AddToLog(params, "ComputeSDelLCox.DP", 0, 0, writeTime, writeSize)
+  params <- add_to_log(params, "ComputeSDelLCox.DP", 0, 0, write_time, write_size)
 
   return(params)
 }
@@ -949,10 +949,10 @@ ComputeProductsCox.DP = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeProductsCox.DP\n\n")
   if (params$dataPartnerID == 1) {
     W.S.R.1 = NULL
-    readTime = proc.time()[3]
+    read_time = proc.time()[3]
     load(file.path(params$readPathAC, "wsr1.rdata"))
-    readSize = file.size(file.path(params$readPathAC, "wsr1.rdata"))
-    readTime = proc.time()[3] - readTime
+    read_size = file.size(file.path(params$readPathAC, "wsr1.rdata"))
+    read_time = proc.time()[3] - read_time
     E = rep(list(list()), params$numDataPartners)
     E1 = rep(list(matrix(0, 0, 0)), params$numDataPartners)
     p = length(params$idx[[1]])
@@ -994,16 +994,16 @@ ComputeProductsCox.DP = function(params, data) {
       }
       E[[id1]] = E1
     }
-    writeTime = proc.time()[3]
-    save(E, file = file.path(params$writePath, "products.rdata"))
-    writeSize = file.size(file.path(params$writePath, "products.rdata"))
-    writeTime = proc.time()[3] - writeTime
+    write_time = proc.time()[3]
+    save(E, file = file.path(params$write_path, "products.rdata"))
+    write_size = file.size(file.path(params$write_path, "products.rdata"))
+    write_time = proc.time()[3] - write_time
   } else {
     scaled.W.S.L.L = NULL
-    readTime = proc.time()[3]
+    read_time = proc.time()[3]
     load(file.path(params$readPathDP[1], "scaledwsll.rdata"))
-    readSize = file.size(file.path(params$readPathDP[1], "scaledwsll.rdata"))
-    readTime = proc.time()[3] - readTime
+    read_size = file.size(file.path(params$readPathDP[1], "scaledwsll.rdata"))
+    read_time = proc.time()[3] - read_time
 
     F1 = rep(list(list()), params$numDataPartners)
     set.seed(params$seed, kind = "Mersenne-Twister")
@@ -1015,12 +1015,12 @@ ComputeProductsCox.DP = function(params, data) {
       F1[[id]] = params$scaler / (params$scalers[1] + params$scaler) * t(scaled.W.S.L.L[, params$idx[[id]], drop = FALSE]) %*% halfshare.R.L +
         t(scaled.W.S.L.L[, params$idx[[id]], drop = FALSE]) %*% halfshare.R.R
     }
-    writeTime = proc.time()[3]
-    save(F1, file = file.path(params$writePath, "products.rdata"))
-    writeSize = file.size(file.path(params$writePath, "products.rdata"))
-    writeTime = proc.time()[3] - writeTime
+    write_time = proc.time()[3]
+    save(F1, file = file.path(params$write_path, "products.rdata"))
+    write_size = file.size(file.path(params$write_path, "products.rdata"))
+    write_time = proc.time()[3] - write_time
   }
-  params <- AddToLog(params, "ComputeProductsCox.DP", readTime, readSize, writeTime, writeSize)
+  params <- add_to_log(params, "ComputeProductsCox.DP", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -1028,12 +1028,12 @@ ComputeProductsCox.DP = function(params, data) {
 UpdateConvergeStatus.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateConvergeStatus.AC\n\n")
   converged = NULL
-  readTime = proc.time()[3]
+  read_time = proc.time()[3]
   load(file.path(params$readPathDP[1], "converged.rdata"))
-  readSize = file.size(file.path(params$readPathDP[1], "converged.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_size = file.size(file.path(params$readPathDP[1], "converged.rdata"))
+  read_time = proc.time()[3] - read_time
   params$converged = converged
-  params <- AddToLog(params, "UpdateConvergeStatus.AC", readTime, readSize, 0, 0)
+  params <- add_to_log(params, "UpdateConvergeStatus.AC", read_time, read_size, 0, 0)
 }
 
 
@@ -1045,17 +1045,17 @@ ComputeStWSCox.AC = function(params) {
   colmin.W.S.L = NULL
   colrange.W.S.L = NULL
   F1 = rep(list(list()), params$numDataPartners)
-  readTime = proc.time()[3]
+  read_time = proc.time()[3]
   load(file.path(params$readPathDP[1], "scaledwslr.rdata"))
   load(file.path(params$readPathDP[1], "products.rdata"))
-  readSize = file.size(file.path(params$readPathDP[1], "scaledwslr.rdata")) +
+  read_size = file.size(file.path(params$readPathDP[1], "scaledwslr.rdata")) +
     file.size(file.path(params$readPathDP[1], "products.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3] - read_time
   for (id in 2:params$numDataPartners) {
-    readTime = readTime - proc.time()[3]
+    read_time = read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "products.rdata"))
-    readSize = readSize + file.size(file.path(params$readPathDP[id], "products.rdata"))
-    readTime = readTime + proc.time()[3]
+    read_size = read_size + file.size(file.path(params$readPathDP[id], "products.rdata"))
+    read_time = read_time + proc.time()[3]
     F1[[id]] = F1
   }
   p = 0
@@ -1123,7 +1123,7 @@ ComputeStWSCox.AC = function(params) {
   if (is.null(I)) {
     params$failed = TRUE
     params$singularMatrix = TRUE
-    params$errorMessage =
+    params$error_message =
       paste0("The matrix t(S)*W*S is not invertible.\n",
              "       This may be due to one of two possible problems.\n",
              "       1. Poor random initialization of the security halfshares.\n",
@@ -1134,7 +1134,7 @@ ComputeStWSCox.AC = function(params) {
              "          duplicates for both parties and / or reduce the\n",
              "          number of variables used. Once this is done,\n",
              "          rerun the data analysis.")
-    params <- AddToLog(params, "computeStWSCox.AC", readTime, readSize, 0, 0)
+    params <- add_to_log(params, "computeStWSCox.AC", read_time, read_size, 0, 0)
     return(params)
   }
 
@@ -1148,44 +1148,44 @@ ComputeStWSCox.AC = function(params) {
   params$maxIterExceeded = params$algIterationCounter > params$maxIterations
   maxIterExceeded = params$maxIterExceeded
 
-  writeTime = 0
-  writeSize = 0
+  write_time = 0
+  write_size = 0
   for (id in 1:params$numDataPartners) {
     I.part = I[params$idx[[id]], , drop = FALSE]
     IDt.part = IDt[params$idx[[id]], , drop = FALSE]
-    writeTime = writeTime - proc.time()[3]
-    save(I.part, IDt.part, file = file.path(params$writePath, paste0("update", id, ".rdata")))
-    save(maxIterExceeded, file = file.path(params$writePath, "maxiterexceeded.rdata"))
-    writeSize = writeSize + file.size(file.path(params$writePath, paste0("update", id, ".rdata"))) +
-      file.size(file.path(params$writePath, "maxiterexceeded.rdata"))
-    writeTime = writeTime + proc.time()[3]
+    write_time = write_time - proc.time()[3]
+    save(I.part, IDt.part, file = file.path(params$write_path, paste0("update", id, ".rdata")))
+    save(maxIterExceeded, file = file.path(params$write_path, "maxiterexceeded.rdata"))
+    write_size = write_size + file.size(file.path(params$write_path, paste0("update", id, ".rdata"))) +
+      file.size(file.path(params$write_path, "maxiterexceeded.rdata"))
+    write_time = write_time + proc.time()[3]
   }
-  params <- AddToLog(params, "ComputeStWSCox.AC", readTime, readSize, writeTime, writeSize)
+  params <- add_to_log(params, "ComputeStWSCox.AC", read_time, read_size, write_time, write_size)
   return(params)
 }
 
 
 UpdateConvergeStatus.DP = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateConvergeStatus.DP\n\n")
-  readTime = 0
-  readSize = 0
+  read_time = 0
+  read_size = 0
   scale    = NULL
   converged = NULL
   maxIterExceeded = NULL
   if (params$dataPartnerID > 1) {
-    readTime = proc.time()[3]
+    read_time = proc.time()[3]
     load(file.path(params$readPathDP[1], "converged.rdata"))
-    readSize = file.size(file.path(params$readPathDP[1], "converged.rdata"))
-    readTime = proc.time()[3] - readTime
+    read_size = file.size(file.path(params$readPathDP[1], "converged.rdata"))
+    read_time = proc.time()[3] - read_time
     params$converged = converged
     params$scale     = scale
   }
-  readTime = readTime - proc.time()[3]
+  read_time = read_time - proc.time()[3]
   load(file.path(params$readPathAC, "maxiterexceeded.rdata"))
-  readSize = readSize + file.size(file.path(params$readPathAC, "maxiterexceeded.rdata"))
-  readTime = readTime + proc.time()[3]
+  read_size = read_size + file.size(file.path(params$readPathAC, "maxiterexceeded.rdata"))
+  read_time = read_time + proc.time()[3]
   params$maxIterExceeded = maxIterExceeded
-  params <- AddToLog(params, "UpdateConvergeStatus.DP", readTime, readSize, 0, 0)
+  params <- add_to_log(params, "UpdateConvergeStatus.DP", read_time, read_size, 0, 0)
 }
 
 
@@ -1195,14 +1195,14 @@ UpdateBetasCox.DP = function(params) {
   I.part = NULL
   IDt.part = NULL
   tS.deltal.L = NULL
-  readTime = proc.time()[3]
+  read_time = proc.time()[3]
   load(file.path(params$readPathAC, paste0("update", params$dataPartnerID, ".rdata")))
-  readSize = file.size(file.path(params$readPathAC, paste0("update", params$dataPartnerID, ".rdata")))
+  read_size = file.size(file.path(params$readPathAC, paste0("update", params$dataPartnerID, ".rdata")))
   if (params$dataPartnerID > 1) {
     load(file.path(params$readPathDP[1], "tsdeltal.rdata"))
-    readSize = readSize + file.size(file.path(params$readPathDP[1], "tsdeltal.rdata"))
+    read_size = read_size + file.size(file.path(params$readPathDP[1], "tsdeltal.rdata"))
   }
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3] - read_time
 
   if (params$dataPartnerID == 1) {
     deltabeta = IDt.part + I.part %*% params$tS.deltal.L
@@ -1239,22 +1239,22 @@ UpdateBetasCox.DP = function(params) {
     loglikelihood = params$loglikelihood
     nullLoglikelihood = params$nullLoglikelihood
   }
-  writeTime = proc.time()[3]
-  save(u, file = file.path(params$writePath, "u.rdata"))
-  writeSize = file.size(file.path(params$writePath, "u.rdata"))
+  write_time = proc.time()[3]
+  save(u, file = file.path(params$write_path, "u.rdata"))
+  write_size = file.size(file.path(params$write_path, "u.rdata"))
   if (params$converged) {
     betasnew  = params$betas
     scorePart = params$score
     if (params$dataPartnerID == 1) {
-      save(scorePart, nullLoglikelihood, loglikelihood, betasnew, file = file.path(params$writePath, "betas.rdata"))
+      save(scorePart, nullLoglikelihood, loglikelihood, betasnew, file = file.path(params$write_path, "betas.rdata"))
     } else {
-      save(scorePart, betasnew, file = file.path(params$writePath, "betas.rdata"))
+      save(scorePart, betasnew, file = file.path(params$write_path, "betas.rdata"))
     }
-    writeSize = writeSize + file.size(file.path(params$writePath, "betas.rdata"))
+    write_size = write_size + file.size(file.path(params$write_path, "betas.rdata"))
   }
-  writeTime = proc.time()[3] - writeTime
+  write_time = proc.time()[3] - write_time
 
-  params <- AddToLog(params, "UpdateBetasCox.DP", readTime, readSize, writeTime, writeSize)
+  params <- add_to_log(params, "UpdateBetasCox.DP", read_time, read_size, write_time, write_size)
 
   return(params)
 }
@@ -1303,21 +1303,21 @@ SurvFitCox.AC = function(params, pred) {
 #' @importFrom  stats pchisq pnorm qnorm
 ComputeResultsCox.AC = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsCox.AC\n\n")
-  readSize          = 0
+  read_size          = 0
   betasnew          = NULL
   scorePart         = NULL
   loglikelihood     = NULL
   nullLoglikelihood = NULL
   score             = params$score
-  readTime = proc.time()[3]
+  read_time = proc.time()[3]
   betas = matrix(0, nrow = 0, ncol = 1)
   for (id in 1:params$numDataPartners) {
     load(file.path(params$readPathDP[id], "betas.rdata"))
     betas = rbind(betas, betasnew)
     score = score + scorePart
-    readSize = readSize + file.size(file.path(params$readPathDP[id], "betas.rdata"))
+    read_size = read_size + file.size(file.path(params$readPathDP[id], "betas.rdata"))
   }
-  readTime = proc.time()[3] - readTime
+  read_time = proc.time()[3] - read_time
 
   stats = params$stats
   stats$failed         = FALSE
@@ -1417,12 +1417,12 @@ ComputeResultsCox.AC = function(params) {
                                    "concordance", "stderr")
 
   params$stats = stats
-  writeTime = proc.time()[3]
-  save(stats, file = file.path(params$writePath, "stats.rdata"))
-  writeSize = file.size(file.path(params$writePath, "stats.rdata"))
-  writeTime = proc.time()[3] - writeTime
+  write_time = proc.time()[3]
+  save(stats, file = file.path(params$write_path, "stats.rdata"))
+  write_size = file.size(file.path(params$write_path, "stats.rdata"))
+  write_time = proc.time()[3] - write_time
 
-  params <- AddToLog(params, "ComputeResultsCox.AC", readTime, readSize, writeTime, writeSize)
+  params <- add_to_log(params, "ComputeResultsCox.AC", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -1430,20 +1430,20 @@ ComputeResultsCox.AC = function(params) {
 GetResultsCox.DP = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "GetResultsCox.DP\n\n")
   stats = NULL
-  readTime = proc.time()[3]
+  read_time = proc.time()[3]
   load(file.path(params$readPathAC, "stats.rdata"))
-  readSize = file.size(file.path(params$readPathAC, "stats.rdata"))
-  readTime = proc.time()[3] - readTime
+  read_size = file.size(file.path(params$readPathAC, "stats.rdata"))
+  read_time = proc.time()[3] - read_time
   params$stats = stats
 
-  params <- AddToLog(params, "GetResultsCox.DP", readTime, readSize, 0, 0)
+  params <- add_to_log(params, "GetResultsCox.DP", read_time, read_size, 0, 0)
   return(params)
 }
 
 
 DoNothing.ACDP = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "DoNothing\n\n")
-  params <- AddToLog(params, "--", 0, 0, 0, 0)
+  params <- add_to_log(params, "--", 0, 0, 0, 0)
   return(params)
 }
 
@@ -1466,7 +1466,7 @@ DataPartnerKCox = function(data,
   params <- PrepareParams.kp("cox", dataPartnerID, numDataPartners, ac = FALSE,
                             popmednet = popmednet, trace = trace, verbose = verbose)
   if (params$failed) {
-    warning(params$errorMessage)
+    warning(params$error_message)
     return(invisible(NULL))
   }
   params <- InitializeLog.kp(params)
@@ -1477,21 +1477,21 @@ DataPartnerKCox = function(data,
   params   = PrepareFolder.ACDP(params, monitor_folder)
 
   if (params$failed) {
-    warning(params$errorMessage)
+    warning(params$error_message)
     return(invisible(NULL))
   }
 
-  data = PrepareDataCox.DP(params, data, yname, strata, mask)
-  params <- AddToLog(params, "PrepareDataCox.DP", 0, 0, 0, 0)
+  data = prepare_data_cox_DP(params, data, yname, strata, mask)
+  params <- add_to_log(params, "prepare_data_cox_DP", 0, 0, 0, 0)
 
   if (data$failed) {
-    params$errorMessage = paste("Error processing data for data partner", params$dataPartnerID)
-    MakeErrorMessage(params$writePath, params$errorMessage)
-    files = "errorMessage.rdata"
+    params$error_message = paste("Error processing data for data partner", params$dataPartnerID)
+    MakeErrorMessage(params$write_path, params$error_message)
+    files = "error_message.rdata"
     params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
                                   sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
-    params$errorMessage = ReadErrorMessage(params$readPathAC)
-    warning(params$errorMessage)
+    params$error_message = ReadErrorMessage(params$readPathAC)
+    warning(params$error_message)
     params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
   }
@@ -1503,7 +1503,7 @@ DataPartnerKCox = function(data,
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
-    params$errorMessage = possibleError$message
+    params$error_message = possibleError$message
     warning(possibleError$message)
     params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
@@ -1517,8 +1517,8 @@ DataPartnerKCox = function(data,
     params <- CheckStrataCox.DP(params, data)
 
     if (params$failed) {
-      MakeErrorMessage(params$writePath, params$errorMessage)
-      files = "errorMessage.rdata"
+      MakeErrorMessage(params$write_path, params$error_message)
+      files = "error_message.rdata"
     } else {
       files = "empty.rdata"
     }
@@ -1528,8 +1528,8 @@ DataPartnerKCox = function(data,
     params <- DoNothing.ACDP(params)
 
     if (params$failed) {
-      warning(params$errorMessage)
-      SendPauseQuit.kp(params, filesAC = "errorMessage.rdata", sleep_time = sleep_time)
+      warning(params$error_message)
+      SendPauseQuit.kp(params, filesAC = "error_message.rdata", sleep_time = sleep_time)
       return(params$stats)
     } else {
       params <- SendPauseContinue.kp(params, filesDP = "empty.rdata", from = "DP",
@@ -1537,7 +1537,7 @@ DataPartnerKCox = function(data,
     }
     params <- PrepareStrataCox.DP(params, data)
     data   = AddStrataToDataCox.DP(params, data)
-    params <- AddToLog(params, "AddStrataToDataCox.DP", 0, 0, 0, 0)
+    params <- add_to_log(params, "AddStrataToDataCox.DP", 0, 0, 0, 0)
   } else {
     params <- SendStrataNamesCox.DP(params, data)
     filesList = rep(list(list()), numDataPartners)
@@ -1548,7 +1548,7 @@ DataPartnerKCox = function(data,
 
     possibleError = ReceivedError.kp(params, from = "DP1")
     if (possibleError$error) {
-      params$errorMessage = possibleError$message
+      params$error_message = possibleError$message
       warning(possibleError$message)
       params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
       return(params$stats)
@@ -1561,7 +1561,7 @@ DataPartnerKCox = function(data,
                                   sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
   }
 
-  params <- PrepareParamsCox.DP(params, data)
+  params <- prepare_params_cox_DP(params, data)
   params <- SendPauseContinue.kp(params, filesDP = "p_scaler_seed.rdata", from = "DP",
                                 sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
 
@@ -1575,7 +1575,7 @@ DataPartnerKCox = function(data,
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
-    params$errorMessage = possibleError$message
+    params$error_message = possibleError$message
     warning(possibleError$message)
     params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
@@ -1583,7 +1583,7 @@ DataPartnerKCox = function(data,
 
   params <- UpdateParamsCox.DP(params)
   data = UpdateDataCox.DP(params, data)
-  params <- AddToLog(params, "UpdateDataCox.DP", 0, 0, 0, 0)
+  params <- add_to_log(params, "UpdateDataCox.DP", 0, 0, 0, 0)
 
   params$algIterationCounter = 1
   while (!params$converged && !params$maxIterExceeded) {
@@ -1634,7 +1634,7 @@ DataPartnerKCox = function(data,
 
     possibleError = ReceivedError.kp(params, from = "AC")
     if (possibleError$error) {
-      params$errorMessage = possibleError$message
+      params$error_message = possibleError$message
       warning(possibleError$message)
       params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
       return(params$stats)
@@ -1678,7 +1678,7 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
   params <- PrepareParams.kp("cox", 0, numDataPartners, msreqid, cutoff, maxIterations, ac = TRUE,
                             popmednet = popmednet, trace = trace, verbose = verbose)
   if (params$failed) {
-    warning(params$errorMessage)
+    warning(params$error_message)
     return(invisible(NULL))
   }
   params <- InitializeLog.kp(params)
@@ -1689,7 +1689,7 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
   params   = PrepareFolder.ACDP(params, monitor_folder)
 
   if (params$failed) {
-    warning(params$errorMessage)
+    warning(params$error_message)
     return(invisible(NULL))
   }
 
@@ -1697,10 +1697,10 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
 
   possibleError = ReceivedError.kp(params, from = "DP")
   if (possibleError$error) {
-    params$errorMessage = possibleError$message
+    params$error_message = possibleError$message
     warning(possibleError$message)
-    MakeErrorMessage(params$writePath, possibleError$message)
-    files = "errorMessage.rdata"
+    MakeErrorMessage(params$write_path, possibleError$message)
+    files = "error_message.rdata"
     params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
                                   sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
     params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
@@ -1711,9 +1711,9 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
   params <- CheckAgreement.AC(params)
 
   if (params$failed) {
-    MakeErrorMessage(params$writePath, params$errorMessage)
-    files = "errorMessage.rdata"
-    warning(params$errorMessage)
+    MakeErrorMessage(params$write_path, params$error_message)
+    files = "error_message.rdata"
+    warning(params$error_message)
     params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
                                   sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
     params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
@@ -1734,7 +1734,7 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
 
   possibleError = ReceivedError.kp(params, from = "DP")
   if (possibleError$error) {
-    params$errorMessage = possibleError$message
+    params$error_message = possibleError$message
     warning(possibleError$message)
     params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.kp(params)
@@ -1746,9 +1746,9 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
   params <- CheckColinearityCox.AC(params)
 
   if (params$failed) {
-    MakeErrorMessage(params$writePath, params$errorMessage)
-    files = "errorMessage.rdata"
-    warning(params$errorMessage)
+    MakeErrorMessage(params$write_path, params$error_message)
+    files = "error_message.rdata"
+    warning(params$error_message)
     params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
                                   sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
     params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
@@ -1786,9 +1786,9 @@ AnalysisCenterKCox = function(numDataPartners = NULL,
     params <- ComputeStWSCox.AC(params)
 
     if (params$failed) {
-      MakeErrorMessage(params$writePath, params$errorMessage)
-      files = "errorMessage.rdata"
-      warning(params$errorMessage)
+      MakeErrorMessage(params$write_path, params$error_message)
+      files = "error_message.rdata"
+      warning(params$error_message)
       params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
                                     sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
       params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)

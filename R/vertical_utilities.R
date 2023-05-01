@@ -809,9 +809,9 @@ CheckDataFormat = function(params, data) {
   if (nrow(idx) > 0) {
     warning(paste0("Some observations contain invalid values: NA, NaN, or Inf. ",
                    "A list of all such observations has been outputted to",
-                   file.path(params$writePath, "invalidEntries.csv"),
+                   file.path(params$write_path, "invalidEntries.csv"),
                    ". Terminating program."))
-    write.csv(idx, file.path(params$writePath, "invalidEntries.csv"))
+    write.csv(idx, file.path(params$write_path, "invalidEntries.csv"))
     return(TRUE)
   }
   if (is.null(colnames(data))) {
@@ -1274,9 +1274,9 @@ RandomOrthonomalMatrix = function(size) {
 #################### SHARED PMN COMMUNICATION FUNCTIONS ###################
 
 #' @importFrom utils write.csv
-MakeCSV = function(file_nm, transfer_to_site_in, dp_cd_list, writePath) {
+MakeCSV = function(file_nm, transfer_to_site_in, dp_cd_list, write_path) {
   dframe = data.frame(file_nm, transfer_to_site_in, dp_cd_list)
-  fp = file.path(writePath, "file_list.csv")
+  fp = file.path(write_path, "file_list.csv")
   write.csv(dframe, fp, row.names = FALSE, quote = FALSE)
 }
 
@@ -1368,19 +1368,19 @@ DeleteTrigger = function(triggerName, triggerPath) {
 }
 
 
-MakeTransferMessage = function(writePath) {
+MakeTransferMessage = function(write_path) {
   message = "A has no covariates."
-  save(message, file = file.path(writePath, "transferControl.rdata"))
+  save(message, file = file.path(write_path, "transferControl.rdata"))
 }
 
 
-MakeErrorMessage = function(writePath, message = "") {
-  save(message, file = file.path(writePath, "errorMessage.rdata"))
+MakeErrorMessage = function(write_path, message = "") {
+  save(message, file = file.path(write_path, "errorMessage.rdata"))
 }
 
 
-ReadErrorMessage = function(readPath) {
-  load(file.path(readPath, "errorMessage.rdata"))
+ReadErrorMessage = function(read_path) {
+  load(file.path(read_path, "errorMessage.rdata"))
   return(message)
 }
 
@@ -1419,18 +1419,18 @@ SendPauseQuit.2p = function(params,
     destination = rep(0, length(files))
     destination[transfer == 10] = 10
   }
-  MakeCSV(files, transfer, destination, params$writePath)
+  MakeCSV(files, transfer, destination, params$write_path)
   params <- StoreStampsEntry(params, "Files done trigger file", "Trigger File Created")
   params <- StoreStampsEntry(params, "R program execution complete, output files written",
                             "Tracking Table")
   WriteStampsCSV(params)
   WriteStampsRaw(params)
   if (job_failed)  {
-    MakeTrigger("job_fail.ok",  params$writePath)
+    MakeTrigger("job_fail.ok",  params$write_path)
   } else {
-    MakeTrigger("job_done.ok",    params$writePath)
+    MakeTrigger("job_done.ok",    params$write_path)
   }
-  MakeTrigger("files_done.ok", params$writePath)
+  MakeTrigger("files_done.ok", params$write_path)
   return(params)
 }
 
@@ -1456,26 +1456,26 @@ SendPauseContinue.2p = function(params,
     destination = rep(0, length(files))
     destination[transfer == 10] = 10
   }
-  MakeCSV(files, transfer, destination, params$writePath)
+  MakeCSV(files, transfer, destination, params$write_path)
   params <- StoreStampsEntry(params, "Files done trigger file", "Trigger File created")
   WriteStampsCSV(params)
   WriteStampsRaw(params)
   params$pmnStepCounter      = params$pmnStepCounter + 2
   if (job_started) {
-    MakeTrigger("job_started.ok", params$writePath)
+    MakeTrigger("job_started.ok", params$write_path)
   } else {
-    MakeTrigger("files_done.ok", params$writePath)
+    MakeTrigger("files_done.ok", params$write_path)
   }
   if (params$party_name == "A") {
     if (params$verbose) cat("Waiting for data partner\n")
   } else {
     if (params$verbose) cat("Waiting for analysis center\n")
   }
-  Standby("files_done.ok", params$readPath,
+  Standby("files_done.ok", params$read_path,
           maxWaitingTime = maxWaitingTime,
           verbose = params$verbose)
   if (params$verbose) cat("Resuming local processing\n\n")
-  DeleteTrigger("files_done.ok", params$readPath)
+  DeleteTrigger("files_done.ok", params$read_path)
   params <- ReadLogRaw.2p(params)
   params <- NewLogEntry.2p(params)
   params <- ReadStampsRaw.2p(params)
@@ -1495,11 +1495,11 @@ PauseContinue.2p = function(params, maxWaitingTime) {
   } else {
     if (params$verbose) cat("Waiting for analysis center\n")
   }
-  Standby("files_done.ok", params$readPath,
+  Standby("files_done.ok", params$read_path,
           maxWaitingTime = maxWaitingTime,
           verbose = params$verbose)
   if (params$verbose) cat("Resuming local processing\n\n")
-  DeleteTrigger("files_done.ok", params$readPath)
+  DeleteTrigger("files_done.ok", params$read_path)
   params <- MergeLogRaw.2p(params)
   params <- NewLogEntry.2p(params)
   params <- MergeStampsRaw.2p(params)
@@ -1587,7 +1587,7 @@ SendPauseQuit.3p = function(params,
     transfer = c(transfer, 1)
     destination = c(destination, 0)
   }
-  MakeCSV(files, transfer, destination, params$writePath)
+  MakeCSV(files, transfer, destination, params$write_path)
   params <- StoreStampsEntry(params, "Files done trigger file", "Trigger File Created")
   params <- StoreStampsEntry(params, "R program execution complete, output files written",
                             "Tracking Table")
@@ -1600,12 +1600,12 @@ SendPauseQuit.3p = function(params,
   WriteStampsRaw(params)
   if (params$party == "T") {
     if (job_failed)  {
-      MakeTrigger("job_fail.ok",  params$writePath)
+      MakeTrigger("job_fail.ok",  params$write_path)
     } else {
-      MakeTrigger("job_done.ok",  params$writePath)
+      MakeTrigger("job_done.ok",  params$write_path)
     }
   }
-  MakeTrigger("files_done.ok", params$writePath)
+  MakeTrigger("files_done.ok", params$write_path)
   return(params)
 }
 
@@ -1652,7 +1652,7 @@ SendPauseContinue.3p = function(params,
     transfer    = c(transfer, 10)
     destination = c(destination, 10)
   }
-  MakeCSV(files, transfer, destination, params$writePath)
+  MakeCSV(files, transfer, destination, params$write_path)
   params <- StoreStampsEntry(params, "Files done trigger file", "Trigger File created")
   if (waitForTurn) {
     params <- StoreStampsEntry(params, "R program execution delayed", "Tracking Table")
@@ -1662,9 +1662,9 @@ SendPauseContinue.3p = function(params,
   WriteStampsCSV(params)
   WriteStampsRaw(params)
   if (job_started) {
-    MakeTrigger("job_started.ok", params$writePath)
+    MakeTrigger("job_started.ok", params$write_path)
   } else {
-    MakeTrigger("files_done.ok", params$writePath)
+    MakeTrigger("files_done.ok", params$write_path)
   }
   if (length(from) == 1) {
     if (from == "T") {
@@ -1677,11 +1677,11 @@ SendPauseContinue.3p = function(params,
   } else if (length(from) == 2) {
     if (params$verbose) cat("Waiting for data partners\n")
   }
-  Standby("files_done.ok", params$readPath[from],
+  Standby("files_done.ok", params$read_path[from],
           maxWaitingTime = maxWaitingTime,
           verbose = params$verbose)
   if (params$verbose) cat("Resuming local processing\n\n")
-  DeleteTrigger("files_done.ok", params$readPath[from])
+  DeleteTrigger("files_done.ok", params$read_path[from])
   params <- MergeLogRaw.3p(params, from)
   params <- UpdateCounters.3p(params)
   params <- NewLogEntry.3p(params)
@@ -1707,11 +1707,11 @@ PauseContinue.3p = function(params, from = NULL, maxWaitingTime = 24 * 60 * 60) 
   } else if (length(from) == 2) {
     if (params$verbose) cat("Waiting for data partners\n")
   }
-  Standby("files_done.ok", params$readPath[from],
+  Standby("files_done.ok", params$read_path[from],
           maxWaitingTime = maxWaitingTime,
           verbose = params$verbose)
   if (params$verbose) cat("Resuming local processing\n\n")
-  DeleteTrigger("files_done.ok", params$readPath[from])
+  DeleteTrigger("files_done.ok", params$read_path[from])
   params <- MergeLogRaw.3p(params, from)
   params <- UpdateCounters.3p(params)
   params <- NewLogEntry.3p(params)
@@ -1805,7 +1805,7 @@ SendPauseQuit.kp = function(params,
     destination = c(10, 10, 10)
   }
 
-  MakeCSV(files, transfer, destination, params$writePath)
+  MakeCSV(files, transfer, destination, params$write_path)
   params <- StoreStampsEntry(params, "Files done trigger file", "Trigger File Created")
   params <- StoreStampsEntry(params, "R program execution complete, output files written",
                             "Tracking Table")
@@ -1818,12 +1818,12 @@ SendPauseQuit.kp = function(params,
   WriteStampsRaw(params)
   if (params$dataPartnerID == 0) {
     if (job_failed)  {
-      MakeTrigger("job_fail.ok",  params$writePath)
+      MakeTrigger("job_fail.ok",  params$write_path)
     } else {
-      MakeTrigger("job_done.ok",  params$writePath)
+      MakeTrigger("job_done.ok",  params$write_path)
     }
   }
-  MakeTrigger("files_done.ok", params$writePath)
+  MakeTrigger("files_done.ok", params$write_path)
   return(params)
 }
 
@@ -1896,7 +1896,7 @@ SendPauseContinue.kp = function(params,
     transfer    = c(transfer, 10)
     destination = c(destination, 10)
   }
-  MakeCSV(files, transfer, destination, params$writePath)
+  MakeCSV(files, transfer, destination, params$write_path)
   params <- StoreStampsEntry(params, "Files done trigger file", "Trigger File created")
   if (waitForTurn) {
     params <- StoreStampsEntry(params, "R program execution delayed", "Tracking Table")
@@ -1906,9 +1906,9 @@ SendPauseContinue.kp = function(params,
   WriteStampsCSV(params)
   WriteStampsRaw(params)
   if (job_started) {
-    MakeTrigger("job_started.ok", params$writePath)
+    MakeTrigger("job_started.ok", params$write_path)
   } else {
-    MakeTrigger("files_done.ok", params$writePath)
+    MakeTrigger("files_done.ok", params$write_path)
   }
   if (from == "AC") {
     if (params$verbose) cat("Waiting for analysis center\n")
@@ -2384,13 +2384,13 @@ StoreStampsEntry = function(params, description = "", type = "") {
 
 WriteStampsRaw = function(params) {
   stamps = params$stamps$history
-  save(stamps, file = file.path(params$writePath, "stamps.rdata"))
+  save(stamps, file = file.path(params$write_path, "stamps.rdata"))
 }
 
 
 #' @importFrom utils write.csv
 WriteStampsCSV = function(params) {
-  write.csv(params$stamps$history, file.path(params$writePath, "stamps.csv"),
+  write.csv(params$stamps$history, file.path(params$write_path, "stamps.csv"),
             row.names = FALSE)
 }
 
@@ -2412,7 +2412,7 @@ InitializeStamps.2p = function(params) {
 
 ReadStampsRaw.2p = function(params) {
   stamps = NULL
-  load(file.path(params$readPath, "stamps.rdata"))
+  load(file.path(params$read_path, "stamps.rdata"))
   params$stamps$history = stamps
   return(params)
 }
@@ -2424,7 +2424,7 @@ MergeStampsRaw.2p = function(params) {
   # even if Party B starts the whole thing.  We append party B's log
   # to the end of Party A's log.
   stamps = NULL
-  load(file.path(params$readPath, "stamps.rdata"))
+  load(file.path(params$read_path, "stamps.rdata"))
   params$stamps$history = rbind(params$stamps$history, stamps)
   return(params)
 }
@@ -2448,7 +2448,7 @@ InitializeStamps.3p = function(params) {
 MergeStampsRaw.3p = function(params, from) {
   stamps = NULL
   for (party in from) {
-    load(file.path(params$readPath[[party]], "stamps.rdata"))
+    load(file.path(params$read_path[[party]], "stamps.rdata"))
     key1 = paste0(params$stamps$history$Step,
                   params$stamps$history$Source,
                   params$stamps$history$Description)
@@ -2558,25 +2558,25 @@ AddToLog = function(params, functionName, readTime, readSize, writeTime, writeSi
 
 WriteLogRaw = function(params) {
   log = params$log$history
-  save(log, file = file.path(params$writePath, "log.rdata"))
+  save(log, file = file.path(params$write_path, "log.rdata"))
 }
 
 
 #' @importFrom utils write.csv
 WriteLogCSV = function(params) {
-  write.csv(params$log$history, file.path(params$writePath, "log.csv"),
+  write.csv(params$log$history, file.path(params$write_path, "log.csv"),
             row.names = FALSE)
 }
 
 
 #' @importFrom utils write.table
 WriteToLogSummary = function(c1 = "", c2 = "", c3 = "",
-                             writePath = NULL, append = TRUE) {
+                             write_path = NULL, append = TRUE) {
   if (is.numeric(c2)) {
     c2 = round(c2, 2)
   }
   write.table(data.frame(c1, c2, c3),
-              file.path(writePath, "log_summary.csv"), sep = ",", col.names = FALSE,
+              file.path(write_path, "log_summary.csv"), sep = ",", col.names = FALSE,
               row.names = FALSE, append = append)
 }
 
@@ -2622,7 +2622,7 @@ StoreLogEntry.2p = function(params, files) {
     params$log$current$End.Time, params$log$current$Start.Time, units = "secs")) -
       params$log$current$Read.Time - params$log$current$Write.Time, 2)
   params$log$current$Files.Sent = paste(files, collapse = ", ")
-  params$log$current$Bytes.Sent = sum(file.size(file.path(params$writePath, files)))
+  params$log$current$Bytes.Sent = sum(file.size(file.path(params$write_path, files)))
   if (is.na(params$log$current$Bytes.Sent)) {
     params$log$current$Bytes.Sent = 0
   }
@@ -2645,7 +2645,7 @@ StoreLogEntry.2p = function(params, files) {
 }
 
 ReadLogRaw.2p = function(params) {
-  load(file.path(params$readPath, "log.rdata"))
+  load(file.path(params$read_path, "log.rdata"))
   params$log$history = log
   return(params)
 }
@@ -2656,14 +2656,14 @@ MergeLogRaw.2p = function(params) {
   # When party A and party B run simultaneously, but Party A can run first
   # even if Party B starts the whole thing.  We append party B's log
   # to the end of Party A's log.
-  load(file.path(params$readPath, "log.rdata"))
+  load(file.path(params$read_path, "log.rdata"))
   params$log$history = rbind(params$log$history, log)
   return(params)
 }
 
 
 SummarizeLog.2p = function(params) {
-  writePath = params$writePath
+  write_path = params$write_path
   log    = params$log$history
   indexA = which(log$Party == "A")
   indexB = which(log$Party == "B")
@@ -2723,63 +2723,63 @@ SummarizeLog.2p = function(params) {
   Total.Transfer.Time.HMS = ConvertSecsToHMS(Total.Transfer.Time, timeOnly = TRUE)
   Total.Bytes.Transferred = sum(log$Bytes.Sent)
   KB.Per.Second = round(Total.Bytes.Transferred / (Total.Transfer.Time * 1024), digits = 2)
-  WriteToLogSummary(c1 = "Analysis", c2 = params$analysis, writePath = writePath, append = FALSE)
+  WriteToLogSummary(c1 = "Analysis", c2 = params$analysis, write_path = write_path, append = FALSE)
   if (!is.null(params$blocks)) {
-    WriteToLogSummary(c1 = "Blocksize", c2 = params$blocks$littleBlocksize, writePath = writePath)
+    WriteToLogSummary(c1 = "Blocksize", c2 = params$blocks$littleBlocksize, write_path = write_path)
     WriteToLogSummary(c1 = "Number of Blocks",
                       c2 = params$blocks$numLittleBlocks + params$blocks$numBigBlocks,
-                      writePath = writePath)
+                      write_path = write_path)
   }
-  if (!is.null(params$n))   WriteToLogSummary(c1 = "N", c2 = params$n, writePath = writePath)
+  if (!is.null(params$n))   WriteToLogSummary(c1 = "N", c2 = params$n, write_path = write_path)
 
   p = max(0, params$p1.old - (params$analysis != "cox"))
-  WriteToLogSummary(c1 = "pA", c2 = p, writePath = writePath)
+  WriteToLogSummary(c1 = "pA", c2 = p, write_path = write_path)
   p = params$p2.old
-  WriteToLogSummary(c1 = "pB", c2 = p, writePath = writePath)
+  WriteToLogSummary(c1 = "pB", c2 = p, write_path = write_path)
 
-  WriteToLogSummary(writePath = writePath)
-  WriteToLogSummary(c1 = "Party A Start Time", c2 = Party.A.Start.Time, writePath = writePath)
-  WriteToLogSummary(c1 = "Party A End Time", c2 = Party.A.End.Time, writePath = writePath)
+  WriteToLogSummary(write_path = write_path)
+  WriteToLogSummary(c1 = "Party A Start Time", c2 = Party.A.Start.Time, write_path = write_path)
+  WriteToLogSummary(c1 = "Party A End Time", c2 = Party.A.End.Time, write_path = write_path)
   WriteToLogSummary(c1 = "Party A Total Run Time", c2 = Party.A.Total.Time,
-                    c3 = Party.A.Total.Time.HMS, writePath = writePath)
+                    c3 = Party.A.Total.Time.HMS, write_path = write_path)
   WriteToLogSummary(c1 = "Party A Total Reading Time", c2 = Party.A.Reading.Time,
-                    c3 = Party.A.Reading.Time.HMS, writePath = writePath)
-  WriteToLogSummary(c1 = "Party A Total Bytes Read", c2 = Party.A.Bytes.Read, writePath = writePath)
+                    c3 = Party.A.Reading.Time.HMS, write_path = write_path)
+  WriteToLogSummary(c1 = "Party A Total Bytes Read", c2 = Party.A.Bytes.Read, write_path = write_path)
   WriteToLogSummary(c1 = "Party A Total Writing Time", c2 = Party.A.Writing.Time,
-                    c3 = Party.A.Writing.Time.HMS, writePath = writePath)
-  WriteToLogSummary(c1 = "Party A Total Bytes Written", c2 = Party.A.Bytes.Written, writePath = writePath)
+                    c3 = Party.A.Writing.Time.HMS, write_path = write_path)
+  WriteToLogSummary(c1 = "Party A Total Bytes Written", c2 = Party.A.Bytes.Written, write_path = write_path)
   WriteToLogSummary(c1 = "Party A Total Computing Time", c2 = Party.A.Computing.Time,
-                    c3 = Party.A.Computing.Time.HMS, writePath = writePath)
+                    c3 = Party.A.Computing.Time.HMS, write_path = write_path)
   WriteToLogSummary(c1 = "Party A Total Waiting Time", c2 = Party.A.Waiting.Time,
-                    c3 = Party.A.Waiting.Time.HMS, writePath = writePath)
-  WriteToLogSummary(writePath = writePath)
-  WriteToLogSummary(c1 = "Party B Start Time", c2 = Party.B.Start.Time, writePath = writePath)
-  WriteToLogSummary(c1 = "Party B End Time", c2 = Party.B.End.Time, writePath = writePath)
+                    c3 = Party.A.Waiting.Time.HMS, write_path = write_path)
+  WriteToLogSummary(write_path = write_path)
+  WriteToLogSummary(c1 = "Party B Start Time", c2 = Party.B.Start.Time, write_path = write_path)
+  WriteToLogSummary(c1 = "Party B End Time", c2 = Party.B.End.Time, write_path = write_path)
   WriteToLogSummary(c1 = "Party B Total Run Time", c2 = Party.B.Total.Time,
-                    c3 = Party.B.Total.Time.HMS, writePath = writePath)
+                    c3 = Party.B.Total.Time.HMS, write_path = write_path)
   WriteToLogSummary(c1 = "Party B Total Reading Time", c2 = Party.B.Reading.Time,
-                    c3 = Party.B.Reading.Time.HMS, writePath = writePath)
-  WriteToLogSummary(c1 = "Party B Total Bytes Read", c2 = Party.B.Bytes.Read, writePath = writePath)
+                    c3 = Party.B.Reading.Time.HMS, write_path = write_path)
+  WriteToLogSummary(c1 = "Party B Total Bytes Read", c2 = Party.B.Bytes.Read, write_path = write_path)
   WriteToLogSummary(c1 = "Party B Total Writing Time", c2 = Party.B.Writing.Time,
-                    c3 = Party.B.Writing.Time.HMS, writePath = writePath)
-  WriteToLogSummary(c1 = "Party B Total Bytes Written", c2 = Party.B.Bytes.Written, writePath = writePath)
+                    c3 = Party.B.Writing.Time.HMS, write_path = write_path)
+  WriteToLogSummary(c1 = "Party B Total Bytes Written", c2 = Party.B.Bytes.Written, write_path = write_path)
   WriteToLogSummary(c1 = "Party B Total Computing Time", c2 = Party.B.Computing.Time,
-                    c3 = Party.B.Computing.Time.HMS, writePath = writePath)
+                    c3 = Party.B.Computing.Time.HMS, write_path = write_path)
   WriteToLogSummary(c1 = "Party B Total Waiting Time", c2 = Party.B.Waiting.Time,
-                    c3 = Party.B.Waiting.Time.HMS, writePath = writePath)
-  WriteToLogSummary(writePath = writePath)
+                    c3 = Party.B.Waiting.Time.HMS, write_path = write_path)
+  WriteToLogSummary(write_path = write_path)
   WriteToLogSummary(c1 = "Total Reading Time", c2 = Total.Reading.Time,
-                    c3 = Total.Reading.Time.HMS, writePath = writePath)
+                    c3 = Total.Reading.Time.HMS, write_path = write_path)
   WriteToLogSummary(c1 = "Total Writing Time", c2 = Total.Writing.Time,
-                    c3 = Total.Writing.Time.HMS, writePath = writePath)
+                    c3 = Total.Writing.Time.HMS, write_path = write_path)
   WriteToLogSummary(c1 = "Total Computing Time", c2 = Total.Computing.Time,
-                    c3 = Total.Computing.Time.HMS,  writePath = writePath)
+                    c3 = Total.Computing.Time.HMS,  write_path = write_path)
   WriteToLogSummary(c1 = "Elapsed Computing Time", c2 = Elapsed.Computing.Time,
-                    c3 = Elapsed.Computing.Time.HMS,  writePath = writePath)
+                    c3 = Elapsed.Computing.Time.HMS,  write_path = write_path)
   WriteToLogSummary(c1 = "Total Transfer Time", c2 = Total.Transfer.Time,
-                    c3 = Total.Transfer.Time.HMS, writePath = writePath)
-  WriteToLogSummary(c1 = "Total Bytes Transferred", c2 = Total.Bytes.Transferred, writePath = writePath)
-  WriteToLogSummary(c1 = "KB / Sec Transfer Rate", c2 = KB.Per.Second, writePath = writePath)
+                    c3 = Total.Transfer.Time.HMS, write_path = write_path)
+  WriteToLogSummary(c1 = "Total Bytes Transferred", c2 = Total.Bytes.Transferred, write_path = write_path)
+  WriteToLogSummary(c1 = "KB / Sec Transfer Rate", c2 = KB.Per.Second, write_path = write_path)
 
 }
 
@@ -2825,7 +2825,7 @@ StoreLogEntry.3p = function(params, files) {
     params$log$current$End.Time, params$log$current$Start.Time, units = "secs")) -
       params$log$current$Read.Time - params$log$current$Write.Time, 2)
   params$log$current$Files.Sent = paste(files, collapse = ", ")
-  params$log$current$Bytes.Sent = sum(file.size(file.path(params$writePath, files)))
+  params$log$current$Bytes.Sent = sum(file.size(file.path(params$write_path, files)))
   if (is.na(params$log$current$Bytes.Sent)) {
     params$log$current$Bytes.Sent = 0
   }
@@ -2853,7 +2853,7 @@ MergeLogRaw.3p = function(params, from) {
   # even if Party B starts the whole thing.  We append party B's log
   # to the end of Party A's log.
   for (party in from) {
-    load(file.path(params$readPath[[party]], "log.rdata"))
+    load(file.path(params$read_path[[party]], "log.rdata"))
     key1 = paste0(params$log$history$Step, params$log$history$Party)
     key2 = paste0(log$Step, log$Party)
     idx = which(key2 %in% key1)
@@ -2871,7 +2871,7 @@ MergeLogRaw.3p = function(params, from) {
 
 
 SummarizeLog.3p = function(params) {
-  writePath = params$writePath
+  write_path = params$write_path
 
   log    = params$log$history
   indexA = which(log$Party == "A")
@@ -2949,78 +2949,78 @@ SummarizeLog.3p = function(params) {
   Total.Bytes.Transferred = sum(log$Bytes.Sent)
   KB.Per.Second = round(Total.Bytes.Transferred / (Total.Transfer.Time * 1024), digits = 2)
 
-  WriteToLogSummary(c1 = "Analysis", c2 = params$analysis, writePath = writePath, append = FALSE)
+  WriteToLogSummary(c1 = "Analysis", c2 = params$analysis, write_path = write_path, append = FALSE)
   if (!is.null(params$blocks)) {
-    WriteToLogSummary(c1 = "Blocksize", c2 = params$blocks$littleBlocksize, writePath = writePath)
+    WriteToLogSummary(c1 = "Blocksize", c2 = params$blocks$littleBlocksize, write_path = write_path)
     WriteToLogSummary(c1 = "Number of Blocks",
                       c2 = params$blocks$numLittleBlocks + params$blocks$numBigBlocks,
-                      writePath = writePath)
+                      write_path = write_path)
   }
-  if (!is.null(params$n))   WriteToLogSummary(c1 = "N", c2 = params$n, writePath = writePath)
+  if (!is.null(params$n))   WriteToLogSummary(c1 = "N", c2 = params$n, write_path = write_path)
 
   p = max(0, params$p1.old - (params$analysis != "cox"))
-  WriteToLogSummary(c1 = "pA", c2 = p, writePath = writePath)
+  WriteToLogSummary(c1 = "pA", c2 = p, write_path = write_path)
   p = params$p2.old
-  WriteToLogSummary(c1 = "pB", c2 = p, writePath = writePath)
+  WriteToLogSummary(c1 = "pB", c2 = p, write_path = write_path)
 
-  WriteToLogSummary(writePath = writePath)
-  WriteToLogSummary(c1 = "Party A Start Time", c2 = Party.A.Start.Time, writePath = writePath)
-  WriteToLogSummary(c1 = "Party A End Time", c2 = Party.A.End.Time, writePath = writePath)
+  WriteToLogSummary(write_path = write_path)
+  WriteToLogSummary(c1 = "Party A Start Time", c2 = Party.A.Start.Time, write_path = write_path)
+  WriteToLogSummary(c1 = "Party A End Time", c2 = Party.A.End.Time, write_path = write_path)
   WriteToLogSummary(c1 = "Party A Total Run Time", c2 = Party.A.Total.Time,
-                    c3 = Party.A.Total.Time.HMS, writePath = writePath)
+                    c3 = Party.A.Total.Time.HMS, write_path = write_path)
   WriteToLogSummary(c1 = "Party A Total Reading Time", c2 = Party.A.Reading.Time,
-                    c3 = Party.A.Reading.Time.HMS, writePath = writePath)
-  WriteToLogSummary(c1 = "Party A Total Bytes Read", c2 = Party.A.Bytes.Read, writePath = writePath)
+                    c3 = Party.A.Reading.Time.HMS, write_path = write_path)
+  WriteToLogSummary(c1 = "Party A Total Bytes Read", c2 = Party.A.Bytes.Read, write_path = write_path)
   WriteToLogSummary(c1 = "Party A Total Writing Time", c2 = Party.A.Writing.Time,
-                    c3 = Party.A.Writing.Time.HMS, writePath = writePath)
-  WriteToLogSummary(c1 = "Party A Total Bytes Written", c2 = Party.A.Bytes.Written, writePath = writePath)
+                    c3 = Party.A.Writing.Time.HMS, write_path = write_path)
+  WriteToLogSummary(c1 = "Party A Total Bytes Written", c2 = Party.A.Bytes.Written, write_path = write_path)
   WriteToLogSummary(c1 = "Party A Total Computing Time", c2 = Party.A.Computing.Time,
-                    c3 = Party.A.Computing.Time.HMS, writePath = writePath)
+                    c3 = Party.A.Computing.Time.HMS, write_path = write_path)
   WriteToLogSummary(c1 = "Party A Total Waiting Time", c2 = Party.A.Waiting.Time,
-                    c3 = Party.A.Waiting.Time.HMS, writePath = writePath)
-  WriteToLogSummary(writePath = writePath)
-  WriteToLogSummary(c1 = "Party B Start Time", c2 = Party.B.Start.Time, writePath = writePath)
-  WriteToLogSummary(c1 = "Party B End Time", c2 = Party.B.End.Time, writePath = writePath)
+                    c3 = Party.A.Waiting.Time.HMS, write_path = write_path)
+  WriteToLogSummary(write_path = write_path)
+  WriteToLogSummary(c1 = "Party B Start Time", c2 = Party.B.Start.Time, write_path = write_path)
+  WriteToLogSummary(c1 = "Party B End Time", c2 = Party.B.End.Time, write_path = write_path)
   WriteToLogSummary(c1 = "Party B Total Run Time", c2 = Party.B.Total.Time,
-                    c3 = Party.B.Total.Time.HMS, writePath = writePath)
+                    c3 = Party.B.Total.Time.HMS, write_path = write_path)
   WriteToLogSummary(c1 = "Party B Total Reading Time", c2 = Party.B.Reading.Time,
-                    c3 = Party.B.Reading.Time.HMS, writePath = writePath)
-  WriteToLogSummary(c1 = "Party B Total Bytes Read", c2 = Party.B.Bytes.Read, writePath = writePath)
+                    c3 = Party.B.Reading.Time.HMS, write_path = write_path)
+  WriteToLogSummary(c1 = "Party B Total Bytes Read", c2 = Party.B.Bytes.Read, write_path = write_path)
   WriteToLogSummary(c1 = "Party B Total Writing Time", c2 = Party.B.Writing.Time,
-                    c3 = Party.B.Writing.Time.HMS, writePath = writePath)
-  WriteToLogSummary(c1 = "Party B Total Bytes Written", c2 = Party.B.Bytes.Written, writePath = writePath)
+                    c3 = Party.B.Writing.Time.HMS, write_path = write_path)
+  WriteToLogSummary(c1 = "Party B Total Bytes Written", c2 = Party.B.Bytes.Written, write_path = write_path)
   WriteToLogSummary(c1 = "Party B Total Computing Time", c2 = Party.B.Computing.Time,
-                    c3 = Party.B.Computing.Time.HMS, writePath = writePath)
+                    c3 = Party.B.Computing.Time.HMS, write_path = write_path)
   WriteToLogSummary(c1 = "Party B Total Waiting Time", c2 = Party.B.Waiting.Time,
-                    c3 = Party.B.Waiting.Time.HMS, writePath = writePath)
-  WriteToLogSummary(writePath = writePath)
-  WriteToLogSummary(c1 = "Party T Start Time", c2 = Party.T.Start.Time, writePath = writePath)
-  WriteToLogSummary(c1 = "Party T End Time", c2 = Party.T.End.Time, writePath = writePath)
+                    c3 = Party.B.Waiting.Time.HMS, write_path = write_path)
+  WriteToLogSummary(write_path = write_path)
+  WriteToLogSummary(c1 = "Party T Start Time", c2 = Party.T.Start.Time, write_path = write_path)
+  WriteToLogSummary(c1 = "Party T End Time", c2 = Party.T.End.Time, write_path = write_path)
   WriteToLogSummary(c1 = "Party T Total Run Time", c2 = Party.T.Total.Time,
-                    c3 = Party.T.Total.Time.HMS, writePath = writePath)
+                    c3 = Party.T.Total.Time.HMS, write_path = write_path)
   WriteToLogSummary(c1 = "Party T Total Reading Time", c2 = Party.T.Reading.Time,
-                    c3 = Party.T.Reading.Time.HMS, writePath = writePath)
-  WriteToLogSummary(c1 = "Party T Total Bytes Read", c2 = Party.T.Bytes.Read, writePath = writePath)
+                    c3 = Party.T.Reading.Time.HMS, write_path = write_path)
+  WriteToLogSummary(c1 = "Party T Total Bytes Read", c2 = Party.T.Bytes.Read, write_path = write_path)
   WriteToLogSummary(c1 = "Party T Total Writing Time", c2 = Party.T.Writing.Time,
-                    c3 = Party.T.Writing.Time.HMS, writePath = writePath)
-  WriteToLogSummary(c1 = "Party T Total Bytes Written", c2 = Party.T.Bytes.Written, writePath = writePath)
+                    c3 = Party.T.Writing.Time.HMS, write_path = write_path)
+  WriteToLogSummary(c1 = "Party T Total Bytes Written", c2 = Party.T.Bytes.Written, write_path = write_path)
   WriteToLogSummary(c1 = "Party T Total Computing Time", c2 = Party.T.Computing.Time,
-                    c3 = Party.T.Computing.Time.HMS, writePath = writePath)
+                    c3 = Party.T.Computing.Time.HMS, write_path = write_path)
   WriteToLogSummary(c1 = "Party T Total Waiting Time", c2 = Party.T.Waiting.Time,
-                    c3 = Party.T.Waiting.Time.HMS, writePath = writePath)
-  WriteToLogSummary(writePath = writePath)
+                    c3 = Party.T.Waiting.Time.HMS, write_path = write_path)
+  WriteToLogSummary(write_path = write_path)
   WriteToLogSummary(c1 = "Total Reading Time", c2 = Total.Reading.Time,
-                    c3 = Total.Reading.Time.HMS, writePath = writePath)
+                    c3 = Total.Reading.Time.HMS, write_path = write_path)
   WriteToLogSummary(c1 = "Total Writing Time", c2 = Total.Writing.Time,
-                    c3 = Total.Writing.Time.HMS, writePath = writePath)
+                    c3 = Total.Writing.Time.HMS, write_path = write_path)
   WriteToLogSummary(c1 = "Total Computing Time", c2 = Total.Computing.Time,
-                    c3 = Total.Computing.Time.HMS,  writePath = writePath)
+                    c3 = Total.Computing.Time.HMS,  write_path = write_path)
   WriteToLogSummary(c1 = "Elapsed Computing Time", c2 = Elapsed.Computing.Time,
-                    c3 = Elapsed.Computing.Time.HMS,  writePath = writePath)
+                    c3 = Elapsed.Computing.Time.HMS,  write_path = write_path)
   WriteToLogSummary(c1 = "Total Transfer Time", c2 = Total.Transfer.Time,
-                    c3 = Total.Transfer.Time.HMS, writePath = writePath)
-  WriteToLogSummary(c1 = "Total Bytes Transferred", c2 = Total.Bytes.Transferred, writePath = writePath)
-  WriteToLogSummary(c1 = "KB / Sec Transfer Rate", c2 = KB.Per.Second, writePath = writePath)
+                    c3 = Total.Transfer.Time.HMS, write_path = write_path)
+  WriteToLogSummary(c1 = "Total Bytes Transferred", c2 = Total.Bytes.Transferred, write_path = write_path)
+  WriteToLogSummary(c1 = "KB / Sec Transfer Rate", c2 = KB.Per.Second, write_path = write_path)
 
 }
 
@@ -3066,7 +3066,7 @@ StoreLogEntry.kp = function(params, files) {
     params$log$current$End.Time, params$log$current$Start.Time, units = "secs")) -
       params$log$current$Read.Time - params$log$current$Write.Time, 2)
   params$log$current$Files.Sent = paste(files, collapse = ", ")
-  params$log$current$Bytes.Sent = sum(file.size(file.path(params$writePath, files)))
+  params$log$current$Bytes.Sent = sum(file.size(file.path(params$write_path, files)))
   if (is.na(params$log$current$Bytes.Sent)) {
     params$log$current$Bytes.Sent = 0
   }
@@ -3134,11 +3134,11 @@ MergeLogRaw.kp = function(params, from) {
 
 
 SummarizeLog.kp = function(params) {
-  writePath = params$writePath
+  write_path = params$write_path
   log       = params$log$history
 
-  WriteToLogSummary(c1 = "Analysis", c2 = params$analysis, writePath = writePath, append = FALSE)
-  if (!is.null(params$n))   WriteToLogSummary(c1 = "N", c2 = params$n, writePath = writePath)
+  WriteToLogSummary(c1 = "Analysis", c2 = params$analysis, write_path = write_path, append = FALSE)
+  if (!is.null(params$n))   WriteToLogSummary(c1 = "N", c2 = params$n, write_path = write_path)
 
   for (i in 1:params$numDataPartners) {
     if (is.null(params$pi))  {
@@ -3146,10 +3146,10 @@ SummarizeLog.kp = function(params) {
     } else {
       p = params$pi[i] - (i == 1) * (2 + (params$analysis == "cox"))
     }
-    WriteToLogSummary(c1 = paste0("p", i), c2 = p, writePath = writePath)
+    WriteToLogSummary(c1 = paste0("p", i), c2 = p, write_path = write_path)
   }
 
-  WriteToLogSummary(writePath = writePath)
+  WriteToLogSummary(write_path = write_path)
 
   total.time.0 = 0
   for (party in 0:params$numDataPartners) {
@@ -3173,21 +3173,21 @@ SummarizeLog.kp = function(params) {
       Waiting.Time.HMS = ConvertSecsToHMS(Waiting.Time, timeOnly = TRUE)
       Bytes.Read = sum(log$Read.Size[index])
       Bytes.Written = sum(log$Write.Size[index])
-      WriteToLogSummary(c1 = paste(party_name, "Start Time"), c2 = Start.Time, writePath = writePath)
-      WriteToLogSummary(c1 = paste(party_name, "End Time"), c2 = End.Time, writePath = writePath)
+      WriteToLogSummary(c1 = paste(party_name, "Start Time"), c2 = Start.Time, write_path = write_path)
+      WriteToLogSummary(c1 = paste(party_name, "End Time"), c2 = End.Time, write_path = write_path)
       WriteToLogSummary(c1 = paste(party_name, "Total Run Time"), c2 = Total.Time,
-                        c3 = Total.Time.HMS, writePath = writePath)
+                        c3 = Total.Time.HMS, write_path = write_path)
       WriteToLogSummary(c1 = paste(party_name, "Total Reading Time"), c2 = Reading.Time,
-                        c3 = Reading.Time.HMS, writePath = writePath)
-      WriteToLogSummary(c1 = paste(party_name, "Total Bytes Read"), c2 = Bytes.Read, writePath = writePath)
+                        c3 = Reading.Time.HMS, write_path = write_path)
+      WriteToLogSummary(c1 = paste(party_name, "Total Bytes Read"), c2 = Bytes.Read, write_path = write_path)
       WriteToLogSummary(c1 = paste(party_name, "Total Writing Time"), c2 = Writing.Time,
-                        c3 = Writing.Time.HMS, writePath = writePath)
-      WriteToLogSummary(c1 = paste(party_name, "Total Bytes Written"), c2 = Bytes.Written, writePath = writePath)
+                        c3 = Writing.Time.HMS, write_path = write_path)
+      WriteToLogSummary(c1 = paste(party_name, "Total Bytes Written"), c2 = Bytes.Written, write_path = write_path)
       WriteToLogSummary(c1 = paste(party_name, "Total Computing Time"), c2 = Computing.Time,
-                        c3 = Computing.Time.HMS, writePath = writePath)
+                        c3 = Computing.Time.HMS, write_path = write_path)
       WriteToLogSummary(c1 = paste(party_name, "Total Waiting Time"), c2 = Waiting.Time,
-                        c3 = Waiting.Time.HMS, writePath = writePath)
-      WriteToLogSummary(writePath = writePath)
+                        c3 = Waiting.Time.HMS, write_path = write_path)
+      WriteToLogSummary(write_path = write_path)
     }
   }
 
@@ -3216,31 +3216,31 @@ SummarizeLog.kp = function(params) {
   KB.Per.Second = round(Total.Bytes.Transferred / (Total.Transfer.Time * 1024), digits = 2)
 
   WriteToLogSummary(c1 = "Total Reading Time", c2 = Total.Reading.Time,
-                    c3 = Total.Reading.Time.HMS, writePath = writePath)
+                    c3 = Total.Reading.Time.HMS, write_path = write_path)
   WriteToLogSummary(c1 = "Total Writing Time", c2 = Total.Writing.Time,
-                    c3 = Total.Writing.Time.HMS, writePath = writePath)
+                    c3 = Total.Writing.Time.HMS, write_path = write_path)
   WriteToLogSummary(c1 = "Total Computing Time", c2 = Total.Computing.Time,
-                    c3 = Total.Computing.Time.HMS,  writePath = writePath)
+                    c3 = Total.Computing.Time.HMS,  write_path = write_path)
   WriteToLogSummary(c1 = "Elapsed Computing Time", c2 = Elapsed.Computing.Time,
-                    c3 = Elapsed.Computing.Time.HMS,  writePath = writePath)
+                    c3 = Elapsed.Computing.Time.HMS,  write_path = write_path)
   WriteToLogSummary(c1 = "Total Transfer Time", c2 = Total.Transfer.Time,
-                    c3 = Total.Transfer.Time.HMS, writePath = writePath)
-  WriteToLogSummary(c1 = "Total Bytes Transferred", c2 = Total.Bytes.Transferred, writePath = writePath)
-  WriteToLogSummary(c1 = "KB / Sec Transfer Rate", c2 = KB.Per.Second, writePath = writePath)
+                    c3 = Total.Transfer.Time.HMS, write_path = write_path)
+  WriteToLogSummary(c1 = "Total Bytes Transferred", c2 = Total.Bytes.Transferred, write_path = write_path)
+  WriteToLogSummary(c1 = "KB / Sec Transfer Rate", c2 = KB.Per.Second, write_path = write_path)
 }
 
 ####################### SHARED TRACKING TABLE FUNCTIONS ########################
 
 WriteTrackingTableRaw = function(params) {
   trackingTable = params$trackingTable$history
-  save(trackingTable, file = file.path(params$writePath, "tr_tb_updt.rdata"))
+  save(trackingTable, file = file.path(params$write_path, "tr_tb_updt.rdata"))
   return(params)
 }
 
 
 #' @importFrom utils write.csv
 WriteTrackingTableCSV = function(params) {
-  write.csv(params$trackingTable$history, file.path(params$writePath, "dl_track_tbl.csv"),
+  write.csv(params$trackingTable$history, file.path(params$write_path, "dl_track_tbl.csv"),
             row.names = FALSE)
   return(params)
 }
@@ -3277,11 +3277,11 @@ StoreTrackingTableEntry.2p = function(params) {
   params$trackingTable$current$ITER_NB = params$pmnStepCounter
   params$trackingTable$current$START_DTM = params$log$current$Start.Time
   params$trackingTable$current$END_DTM = params$log$current$End.Time
-  if (file.exists(file.path(params$readPath, "errorMessage.rdata"))) {
-    load(file.path(params$readPath, "errorMessage.rdata"))
+  if (file.exists(file.path(params$read_path, "errorMessage.rdata"))) {
+    load(file.path(params$read_path, "errorMessage.rdata"))
     params$trackingTable$current$STEP_RETURN_MSG = message
-  } else if (file.exists(file.path(params$writePath, "errorMessage.rdata"))) {
-    load(file.path(params$writePath, "errorMessage.rdata"))
+  } else if (file.exists(file.path(params$write_path, "errorMessage.rdata"))) {
+    load(file.path(params$write_path, "errorMessage.rdata"))
     params$trackingTable$current$STEP_RETURN_MSG = message
   }
   params$trackingTable$current$REG_CONV_IN = ifelse(params$completed, 1, 0)
@@ -3297,18 +3297,18 @@ StoreTrackingTableEntry.2p = function(params) {
     } else {
       params$trackingTable$history = params$trackingTable$current
     }
-    write.csv(params$trackingTable$history, file.path(params$writePath, "dl_track_tbl.csv"),
+    write.csv(params$trackingTable$history, file.path(params$write_path, "dl_track_tbl.csv"),
               row.names = FALSE)
   } else {
     trackingTableEntry = params$trackingTable$current
-    save(trackingTableEntry, file = file.path(params$writePath, "tr_tb_updt.rdata"))
+    save(trackingTableEntry, file = file.path(params$write_path, "tr_tb_updt.rdata"))
   }
   return(params)
 }
 
 ReadTrackingTableUpdate.2p = function(params) {
   trackingTableEntry = NULL
-  load(file.path(params$readPath, "tr_tb_updt.rdata"))
+  load(file.path(params$read_path, "tr_tb_updt.rdata"))
   trackingTableEntry$MSREQID = params$msreqid
   if (class(params$trackingTable$history) == "data.frame") {
     params$trackingTable$history = rbind(params$trackingTable$history,
@@ -3351,15 +3351,15 @@ StoreTrackingTableEntry.3p = function(params) {
   params$trackingTable$current$ITER_NB = params$pmnStepCounter
   params$trackingTable$current$START_DTM = params$log$current$Start.Time
   params$trackingTable$current$END_DTM = params$log$current$End.Time
-  if (file.exists(file.path(params$writePath, "errorMessage.rdata"))) {
-    load(file.path(params$writePath, "errorMessage.rdata"))
+  if (file.exists(file.path(params$write_path, "errorMessage.rdata"))) {
+    load(file.path(params$write_path, "errorMessage.rdata"))
     params$trackingTable$current$STEP_RETURN_MSG = message
   } else {
     msg = ""
     for (party in c("A", "B", "T")) {
-      if (!is.na(params$readPath[[party]]) &&
-          file.exists(file.path(params$readPath[[party]], "errorMessage.rdata"))) {
-        load(file.path(params$readPath[[party]], "errorMessage.rdata"))
+      if (!is.na(params$read_path[[party]]) &&
+          file.exists(file.path(params$read_path[[party]], "errorMessage.rdata"))) {
+        load(file.path(params$read_path[[party]], "errorMessage.rdata"))
         msg = paste0(msg, message)
       }
     }
@@ -3383,7 +3383,7 @@ StoreTrackingTableEntry.3p = function(params) {
 MergeTrackingTableRAW.3p = function(params, from) {
   trackingTable = NULL
   for (party in from) {
-    load(file.path(params$readPath[[party]], "tr_tb_updt.rdata"))
+    load(file.path(params$read_path[[party]], "tr_tb_updt.rdata"))
     key1 = paste0(params$trackingTable$history$ITER_NB,
                   params$trackingTable$history$DP_CD)
     key2 = paste0(trackingTable$ITER_NB,
@@ -3435,8 +3435,8 @@ StoreTrackingTableEntry.kp = function(params) {
   params$trackingTable$current$ITER_NB = params$pmnStepCounter
   params$trackingTable$current$START_DTM = params$log$current$Start.Time
   params$trackingTable$current$END_DTM = params$log$current$End.Time
-  if (file.exists(file.path(params$writePath, "errorMessage.rdata"))) {
-    load(file.path(params$writePath, "errorMessage.rdata"))
+  if (file.exists(file.path(params$write_path, "errorMessage.rdata"))) {
+    load(file.path(params$write_path, "errorMessage.rdata"))
     params$trackingTable$current$STEP_RETURN_MSG = message
   } else {
     msg = ""
@@ -4074,14 +4074,14 @@ differentModel = function(formula = NULL, x = NULL) {
   colnames(xytxy) = all_names
   rownames(xytxy) = all_names
 
-  responseIndex = match(responseName, all_names)
-  covariateIndex = c(1, match(covariateNames, all_names))
+  response_index = match(responseName, all_names)
+  covariate_index = c(1, match(covariateNames, all_names))
 
-  xtx    = xytxy[covariateIndex, covariateIndex]
-  xty    = matrix(xytxy[covariateIndex, responseIndex], ncol = 1)
-  yty    = xytxy[responseIndex, responseIndex]
-  means  = c(x$meansy, x$means)[scramble][covariateIndex]
-  meansy = c(x$meansy, x$means)[scramble][responseIndex]
+  xtx    = xytxy[covariate_index, covariate_index]
+  xty    = matrix(xytxy[covariate_index, response_index], ncol = 1)
+  yty    = xytxy[response_index, response_index]
+  means  = c(x$meansy, x$means)[scramble][covariate_index]
+  meansy = c(x$meansy, x$means)[scramble][response_index]
 
   nrow = nrow(xtx)
   indicies = c(1)
@@ -4145,9 +4145,9 @@ differentModel = function(formula = NULL, x = NULL) {
   y$failed    = x$failed
   y$converged = x$converged
 
-  y$party = c(x$responseParty, x$party)[scramble][covariateIndex]
-  y$responseParty = c(x$responseParty, x$party)[scramble][responseIndex]
-  p1 = length(covariateIndex)
+  y$party = c(x$responseParty, x$party)[scramble][covariate_index]
+  y$responseParty = c(x$responseParty, x$party)[scramble][response_index]
+  p1 = length(covariate_index)
   y$coefficients           = rep(NA, p1)
   y$tvals                  = rep(NA, p1)
   y$secoef                 = rep(NA, p1)
@@ -4172,7 +4172,7 @@ differentModel = function(formula = NULL, x = NULL) {
   y$meansy                 = meansy
   y$means                  = means.old
 
-  names.old                = all_names[covariateIndex]
+  names.old                = all_names[covariate_index]
   names(y$party)           = names.old
   names(y$coefficients)    = names.old
   names(y$secoef)          = names.old
