@@ -52,7 +52,7 @@
 #' @param maxIterations the maximum number of iterations to perform
 #'   \code{"logistic"} or \code{"cox"} regression before non-convergence is
 #'   declared.
-#' @param sleepTime the number of seconds to wait after writing the last file to
+#' @param sleep_time the number of seconds to wait after writing the last file to
 #'   disk before signalling the PMN Datamart Client that files are ready to be
 #'   transferred.
 #' @param maxWaitingTime the number of seconds to wait to receive files before a
@@ -142,7 +142,7 @@ AnalysisCenter.2Party = function(regression            = "linear",
                                  blocksize             = 500,
                                  tol                   = 1e-8,
                                  maxIterations         = 25,
-                                 sleepTime             = 10,
+                                 sleep_time             = 10,
                                  maxWaitingTime        = 86400,
                                  popmednet             = TRUE,
                                  trace                 = FALSE,
@@ -155,15 +155,15 @@ AnalysisCenter.2Party = function(regression            = "linear",
   } else if (regression == "cox") {
     stats = PartyAProcess2Cox(data, response, strata, mask, monitorFolder,
                               msreqid, blocksize, tol, maxIterations,
-                              sleepTime, maxWaitingTime, popmednet, trace,
+                              sleep_time, maxWaitingTime, popmednet, trace,
                               verbose)
   } else if (regression == "linear") {
     stats = PartyAProcess2Linear(data, response, monitorFolder, msreqid,
-                                 blocksize, sleepTime, maxWaitingTime,
+                                 blocksize, sleep_time, maxWaitingTime,
                                  popmednet, trace, verbose)
   } else if (regression == "logistic") {
     stats = PartyAProcess2Logistic(data, response, monitorFolder, msreqid,
-                                   blocksize, tol, maxIterations, sleepTime,
+                                   blocksize, tol, maxIterations, sleep_time,
                                    maxWaitingTime, popmednet, trace, verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
@@ -182,7 +182,7 @@ DataPartner.2Party = function(regression          = "linear",
                               strata              = NULL,
                               mask                = TRUE,
                               monitorFolder       = NULL,
-                              sleepTime           = 10,
+                              sleep_time           = 10,
                               maxWaitingTime      = 86400,
                               popmednet           = TRUE,
                               trace               = FALSE,
@@ -194,13 +194,13 @@ DataPartner.2Party = function(regression          = "linear",
     warning("monitorFolder must be specified.")
   } else if (regression == "cox") {
     stats = PartyBProcess2Cox(data, strata, mask,
-                              monitorFolder, sleepTime, maxWaitingTime,
+                              monitorFolder, sleep_time, maxWaitingTime,
                               popmednet, trace, verbose)
   } else if (regression == "linear") {
-    stats = PartyBProcess2Linear(data, monitorFolder, sleepTime, maxWaitingTime,
+    stats = PartyBProcess2Linear(data, monitorFolder, sleep_time, maxWaitingTime,
                                  popmednet, trace, verbose)
   } else if (regression == "logistic") {
-    stats = PartyBProcess2Logistic(data, monitorFolder, sleepTime, maxWaitingTime,
+    stats = PartyBProcess2Logistic(data, monitorFolder, sleep_time, maxWaitingTime,
                                    popmednet, trace, verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
@@ -222,7 +222,7 @@ DataPartner1.3Party = function(regression            = "linear",
                                strata                = NULL,
                                mask                  = TRUE,
                                monitorFolder         = NULL,
-                               sleepTime             = 10,
+                               sleep_time             = 10,
                                maxWaitingTime        = 86400,
                                popmednet             = TRUE,
                                trace                 = FALSE,
@@ -235,15 +235,15 @@ DataPartner1.3Party = function(regression            = "linear",
     warning("monitorFolder must be specified.")
   } else if (regression == "cox") {
     stats = PartyAProcess3Cox(data, response, strata, mask, monitorFolder,
-                              sleepTime, maxWaitingTime, popmednet, trace,
+                              sleep_time, maxWaitingTime, popmednet, trace,
                               verbose)
   } else if (regression == "linear") {
     stats = PartyAProcess3Linear(data, response, monitorFolder,
-                                 sleepTime, maxWaitingTime, popmednet, trace,
+                                 sleep_time, maxWaitingTime, popmednet, trace,
                                  verbose)
   } else  if (regression == "logistic") {
     stats = PartyAProcess3Logistic(data, response, monitorFolder,
-                                   sleepTime, maxWaitingTime, popmednet, trace,
+                                   sleep_time, maxWaitingTime, popmednet, trace,
                                    verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
@@ -263,7 +263,7 @@ DataPartner2.3Party = function(regression          = "linear",
                                strata              = NULL,
                                mask                = TRUE,
                                monitorFolder       = NULL,
-                               sleepTime           = 10,
+                               sleep_time           = 10,
                                maxWaitingTime      = 86400,
                                popmednet           = TRUE,
                                trace               = FALSE,
@@ -275,15 +275,15 @@ DataPartner2.3Party = function(regression          = "linear",
     warning("monitorFolder must be specified.")
   } else if (regression == "cox") {
     stats = PartyBProcess3Cox(data, strata, mask, monitorFolder,
-                              sleepTime, maxWaitingTime, popmednet, trace,
+                              sleep_time, maxWaitingTime, popmednet, trace,
                               verbose)
   } else if (regression == "linear") {
     stats = PartyBProcess3Linear(data, monitorFolder,
-                                 sleepTime, maxWaitingTime, popmednet, trace,
+                                 sleep_time, maxWaitingTime, popmednet, trace,
                                  verbose)
   } else if (regression == "logistic") {
     stats = PartyBProcess3Logistic(data, monitorFolder,
-                                   sleepTime, maxWaitingTime, popmednet, trace,
+                                   sleep_time, maxWaitingTime, popmednet, trace,
                                    verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
@@ -356,7 +356,7 @@ DataPartner2.3Party = function(regression          = "linear",
 #' @param maxIterations the maximum number of iterations to perform
 #'   \code{"logistic"} or \code{"cox"} regression before non-convergence is
 #'   declared.
-#' @param sleepTime the number of seconds to wait after writing the last file to
+#' @param sleep_time the number of seconds to wait after writing the last file to
 #'   disk before signalling the PMN Datamart Client that files are ready to be
 #'   transferred.
 #' @param maxWaitingTime the number of seconds to wait to receive files before a
@@ -465,7 +465,7 @@ AnalysisCenter.3Party = function(regression            = "linear",
                                  blocksize             = 500,
                                  tol                   = 1e-8,
                                  maxIterations         = 25,
-                                 sleepTime             = 10,
+                                 sleep_time             = 10,
                                  maxWaitingTime        = 86400,
                                  popmednet             = TRUE,
                                  trace                 = FALSE,
@@ -477,15 +477,15 @@ AnalysisCenter.3Party = function(regression            = "linear",
     warning("monitorFolder must be specified.")
   } else if (regression == "cox") {
     stats = PartyTProcess3Cox(monitorFolder, msreqid, blocksize, tol,
-                              maxIterations, sleepTime, maxWaitingTime,
+                              maxIterations, sleep_time, maxWaitingTime,
                               popmednet, trace, verbose)
   } else if (regression == "linear") {
     stats = PartyTProcess3Linear(monitorFolder, msreqid, blocksize,
-                                 sleepTime, maxWaitingTime, popmednet, trace,
+                                 sleep_time, maxWaitingTime, popmednet, trace,
                                  verbose)
   } else if (regression == "logistic") {
     stats = PartyTProcess3Logistic(monitorFolder, msreqid, blocksize, tol,
-                                   maxIterations, sleepTime, maxWaitingTime,
+                                   maxIterations, sleep_time, maxWaitingTime,
                                    popmednet, trace, verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
@@ -509,7 +509,7 @@ DataPartner.KParty = function(regression            = "linear",
                               numDataPartners       = NULL,
                               dataPartnerID         = NULL,
                               monitorFolder         = NULL,
-                              sleepTime             = 10,
+                              sleep_time             = 10,
                               maxWaitingTime        = 86400,
                               popmednet             = TRUE,
                               trace                 = FALSE,
@@ -526,17 +526,17 @@ DataPartner.KParty = function(regression            = "linear",
   } else if (regression == "cox") {
     stats = DataPartnerKCox(data, response, strata, mask, numDataPartners,
                             dataPartnerID, monitorFolder,
-                            sleepTime, maxWaitingTime, popmednet, trace,
+                            sleep_time, maxWaitingTime, popmednet, trace,
                             verbose)
   } else if (regression == "linear") {
     stats = DataPartnerKLinear(data, response, numDataPartners,
                                dataPartnerID, monitorFolder,
-                               sleepTime, maxWaitingTime, popmednet, trace,
+                               sleep_time, maxWaitingTime, popmednet, trace,
                                verbose)
   } else  if (regression == "logistic") {
     stats = DataPartnerKLogistic(data, response, numDataPartners,
                                  dataPartnerID, monitorFolder,
-                                 sleepTime, maxWaitingTime, popmednet, trace,
+                                 sleep_time, maxWaitingTime, popmednet, trace,
                                  verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
@@ -606,7 +606,7 @@ DataPartner.KParty = function(regression            = "linear",
 #' @param maxIterations the maximum number of iterations to perform
 #'   \code{"logistic"} or \code{"cox"} regression before non-convergence is
 #'   declared.
-#' @param sleepTime the number of seconds to wait after writing the last file to
+#' @param sleep_time the number of seconds to wait after writing the last file to
 #'   disk before signalling the PMN Datamart Client that files are ready to be
 #'   transferred.
 #' @param maxWaitingTime the number of seconds to wait to receive files before a
@@ -728,7 +728,7 @@ AnalysisCenter.KParty = function(regression            = "linear",
                                  msreqid               = "v_default_00_000",
                                  tol                   = 1e-8,
                                  maxIterations         = 25,
-                                 sleepTime             = 10,
+                                 sleep_time             = 10,
                                  maxWaitingTime        = 86400,
                                  popmednet             = TRUE,
                                  trace                 = FALSE,
@@ -742,15 +742,15 @@ AnalysisCenter.KParty = function(regression            = "linear",
     warning("numDataPartners must be specified.")
   } else if (regression == "cox") {
     stats = AnalysisCenterKCox(numDataPartners, monitorFolder, msreqid, tol,
-                               maxIterations, sleepTime, maxWaitingTime,
+                               maxIterations, sleep_time, maxWaitingTime,
                                popmednet, trace, verbose)
   } else if (regression == "linear") {
     stats = AnalysisCenterKLinear(numDataPartners, monitorFolder, msreqid,
-                                  sleepTime, maxWaitingTime, popmednet, trace,
+                                  sleep_time, maxWaitingTime, popmednet, trace,
                                   verbose)
   } else if (regression == "logistic") {
     stats = AnalysisCenterKLogistic(numDataPartners, monitorFolder, msreqid, tol,
-                                    maxIterations, sleepTime, maxWaitingTime,
+                                    maxIterations, sleep_time, maxWaitingTime,
                                     popmednet, trace, verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
@@ -1287,7 +1287,7 @@ SeqZW = function(letter = "Z_", nblocks = 1) {
 
 
 Standby = function(triggerName, triggerLocation,
-                   sleepTime = 1, maxWaitingTime = NULL, remove = FALSE,
+                   sleep_time = 1, maxWaitingTime = NULL, remove = FALSE,
                    verbose = TRUE) {
 
   found = FALSE
@@ -1308,7 +1308,7 @@ Standby = function(triggerName, triggerLocation,
     }
 
     if (!found) {
-      Sys.sleep(sleepTime)
+      Sys.sleep(sleep_time)
       elapsedTime = round(proc.time()[3] - startTime, 0)
     }
 
@@ -1319,7 +1319,7 @@ Standby = function(triggerName, triggerLocation,
     stop("Exceeded maximum time waiting for files to be dropped.")
   }
 
-  Sys.sleep(sleepTime)
+  Sys.sleep(sleep_time)
 
   if (remove) DeleteTrigger(triggerName, triggerLocation)
 
@@ -1388,11 +1388,11 @@ ReadErrorMessage = function(readPath) {
 
 SendPauseQuit.2p = function(params,
                             files = c(),
-                            sleepTime = 10,
+                            sleep_time = 10,
                             job_failed = FALSE) {
 
-  params = StoreLogEntry.2p(params, files)
-  params = StoreTrackingTableEntry.2p(params)
+  params <- StoreLogEntry.2p(params, files)
+  params <- StoreTrackingTableEntry.2p(params)
   WriteLogCSV(params)
   WriteLogRaw(params)
   params$lastIteration = TRUE
@@ -1401,10 +1401,10 @@ SendPauseQuit.2p = function(params,
   if (params$partyName == "A") {
     if (job_failed) {
       files = c(files, "job_fail.ok")
-      params = StoreStampsEntry(params, "Job failed trigger file", "Trigger File created")
+      params <- StoreStampsEntry(params, "Job failed trigger file", "Trigger File created")
     } else {
       files = c(files, "job_done.ok")
-      params = StoreStampsEntry(params, "Job done trigger file", "Trigger File created")
+      params <- StoreStampsEntry(params, "Job done trigger file", "Trigger File created")
     }
     transfer = c(transfer, 10)
   }
@@ -1420,8 +1420,8 @@ SendPauseQuit.2p = function(params,
     destination[transfer == 10] = 10
   }
   MakeCSV(files, transfer, destination, params$writePath)
-  params = StoreStampsEntry(params, "Files done trigger file", "Trigger File Created")
-  params = StoreStampsEntry(params, "R program execution complete, output files written",
+  params <- StoreStampsEntry(params, "Files done trigger file", "Trigger File Created")
+  params <- StoreStampsEntry(params, "R program execution complete, output files written",
                             "Tracking Table")
   WriteStampsCSV(params)
   WriteStampsRaw(params)
@@ -1436,11 +1436,11 @@ SendPauseQuit.2p = function(params,
 
 SendPauseContinue.2p = function(params,
                                 files = c(),
-                                sleepTime = 10,
+                                sleep_time = 10,
                                 maxWaitingTime = NULL,
                                 job_started = FALSE) {
-  params = StoreLogEntry.2p(params, files)
-  params = StoreTrackingTableEntry.2p(params)
+  params <- StoreLogEntry.2p(params, files)
+  params <- StoreTrackingTableEntry.2p(params)
   WriteLogCSV(params)
   WriteLogRaw(params)
   files = c(files, "stamps.rdata", "log.rdata", "file_list.csv")
@@ -1457,7 +1457,7 @@ SendPauseContinue.2p = function(params,
     destination[transfer == 10] = 10
   }
   MakeCSV(files, transfer, destination, params$writePath)
-  params = StoreStampsEntry(params, "Files done trigger file", "Trigger File created")
+  params <- StoreStampsEntry(params, "Files done trigger file", "Trigger File created")
   WriteStampsCSV(params)
   WriteStampsRaw(params)
   params$pmnStepCounter      = params$pmnStepCounter + 2
@@ -1476,19 +1476,19 @@ SendPauseContinue.2p = function(params,
           verbose = params$verbose)
   if (params$verbose) cat("Resuming local processing\n\n")
   DeleteTrigger("files_done.ok", params$readPath)
-  params = ReadLogRaw.2p(params)
-  params = NewLogEntry.2p(params)
-  params = ReadStampsRaw.2p(params)
-  params = StoreStampsEntry(params, "R program execution begins", "Tracking Table")
+  params <- ReadLogRaw.2p(params)
+  params <- NewLogEntry.2p(params)
+  params <- ReadStampsRaw.2p(params)
+  params <- StoreStampsEntry(params, "R program execution begins", "Tracking Table")
   if (params$partyName == "A") {
-    params = ReadTrackingTableUpdate.2p(params)
+    params <- ReadTrackingTableUpdate.2p(params)
   }
   return(params)
 }
 
 
 PauseContinue.2p = function(params, maxWaitingTime) {
-  params = StoreLogEntry.2p(params, "")
+  params <- StoreLogEntry.2p(params, "")
   WriteLogCSV(params)
   if (params$partyName == "A") {
     if (params$verbose) cat("Waiting for data partner\n")
@@ -1500,18 +1500,18 @@ PauseContinue.2p = function(params, maxWaitingTime) {
           verbose = params$verbose)
   if (params$verbose) cat("Resuming local processing\n\n")
   DeleteTrigger("files_done.ok", params$readPath)
-  params = MergeLogRaw.2p(params)
-  params = NewLogEntry.2p(params)
-  params = MergeStampsRaw.2p(params)
-  params = ReadTrackingTableUpdate.2p(params)
+  params <- MergeLogRaw.2p(params)
+  params <- NewLogEntry.2p(params)
+  params <- MergeStampsRaw.2p(params)
+  params <- ReadTrackingTableUpdate.2p(params)
   WriteLogCSV(params)
   return(params)
 }
 
 ###################### 3 PARTY PMN COMMUNICATION FUNCTIONS ######################
 
-WaitForTurn.3p = function(params, sleepTime) {
-  Sys.sleep(sleepTime)
+WaitForTurn.3p = function(params, sleep_time) {
+  Sys.sleep(sleep_time)
   if ((params$partyName == "T") || (!params$popmednet)) return(NULL)
 
   if (params$verbose) cat("Waiting For Turn\n")
@@ -1543,7 +1543,7 @@ SendPauseQuit.3p = function(params,
                             filesA = NULL,
                             filesB = NULL,
                             filesT = NULL,
-                            sleepTime = 10,
+                            sleep_time = 10,
                             job_failed = FALSE,
                             waitForTurn = FALSE) {
 
@@ -1563,16 +1563,16 @@ SendPauseQuit.3p = function(params,
   if (params$party == "T") {
     if (job_failed) {
       files = c(files, "job_fail.ok")
-      params = StoreStampsEntry(params, "Job failed trigger file", "Trigger File created")
+      params <- StoreStampsEntry(params, "Job failed trigger file", "Trigger File created")
     } else {
       files = c(files, "job_done.ok")
-      params = StoreStampsEntry(params, "Job done trigger file", "Trigger File created")
+      params <- StoreStampsEntry(params, "Job done trigger file", "Trigger File created")
     }
     transfer = c(transfer, 10)
     destination = c(destination, 10)
   }
-  params = StoreLogEntry.3p(params, c(filesA, filesB, filesT))
-  params = StoreTrackingTableEntry.3p(params)
+  params <- StoreLogEntry.3p(params, c(filesA, filesB, filesT))
+  params <- StoreTrackingTableEntry.3p(params)
   WriteLogCSV(params)
   WriteLogRaw(params)
 
@@ -1588,13 +1588,13 @@ SendPauseQuit.3p = function(params,
     destination = c(destination, 0)
   }
   MakeCSV(files, transfer, destination, params$writePath)
-  params = StoreStampsEntry(params, "Files done trigger file", "Trigger File Created")
-  params = StoreStampsEntry(params, "R program execution complete, output files written",
+  params <- StoreStampsEntry(params, "Files done trigger file", "Trigger File Created")
+  params <- StoreStampsEntry(params, "R program execution complete, output files written",
                             "Tracking Table")
   if (waitForTurn) {
-    params = StoreStampsEntry(params, "R program execution delayed", "Tracking Table")
-    WaitForTurn.3p(params, sleepTime)
-    params = StoreStampsEntry(params, "R program execution restarted", "Tracking Table")
+    params <- StoreStampsEntry(params, "R program execution delayed", "Tracking Table")
+    WaitForTurn.3p(params, sleep_time)
+    params <- StoreStampsEntry(params, "R program execution restarted", "Tracking Table")
   }
   WriteStampsCSV(params)
   WriteStampsRaw(params)
@@ -1614,12 +1614,12 @@ SendPauseContinue.3p = function(params,
                                 filesB = NULL,
                                 filesT = NULL,
                                 from   = NULL,
-                                sleepTime = 10,
+                                sleep_time = 10,
                                 maxWaitingTime = 24 * 60 * 60,
                                 job_started = FALSE,
                                 waitForTurn = FALSE) {
-  params = StoreLogEntry.3p(params, c(filesA, filesB, filesT))
-  params = StoreTrackingTableEntry.3p(params)
+  params <- StoreLogEntry.3p(params, c(filesA, filesB, filesT))
+  params <- StoreTrackingTableEntry.3p(params)
   WriteLogCSV(params)
   WriteLogRaw(params)
 
@@ -1653,11 +1653,11 @@ SendPauseContinue.3p = function(params,
     destination = c(destination, 10)
   }
   MakeCSV(files, transfer, destination, params$writePath)
-  params = StoreStampsEntry(params, "Files done trigger file", "Trigger File created")
+  params <- StoreStampsEntry(params, "Files done trigger file", "Trigger File created")
   if (waitForTurn) {
-    params = StoreStampsEntry(params, "R program execution delayed", "Tracking Table")
-    WaitForTurn.3p(params, sleepTime)
-    params = StoreStampsEntry(params, "R program execution restarted", "Tracking Table")
+    params <- StoreStampsEntry(params, "R program execution delayed", "Tracking Table")
+    WaitForTurn.3p(params, sleep_time)
+    params <- StoreStampsEntry(params, "R program execution restarted", "Tracking Table")
   }
   WriteStampsCSV(params)
   WriteStampsRaw(params)
@@ -1682,19 +1682,19 @@ SendPauseContinue.3p = function(params,
           verbose = params$verbose)
   if (params$verbose) cat("Resuming local processing\n\n")
   DeleteTrigger("files_done.ok", params$readPath[from])
-  params = MergeLogRaw.3p(params, from)
-  params = UpdateCounters.3p(params)
-  params = NewLogEntry.3p(params)
-  params = MergeStampsRaw.3p(params, from)
-  params = StoreStampsEntry(params, "R program execution begins", "Tracking Table")
-  params = MergeTrackingTableRAW.3p(params, from)
+  params <- MergeLogRaw.3p(params, from)
+  params <- UpdateCounters.3p(params)
+  params <- NewLogEntry.3p(params)
+  params <- MergeStampsRaw.3p(params, from)
+  params <- StoreStampsEntry(params, "R program execution begins", "Tracking Table")
+  params <- MergeTrackingTableRAW.3p(params, from)
   return(params)
 }
 
 
 PauseContinue.3p = function(params, from = NULL, maxWaitingTime = 24 * 60 * 60) {
-  params = StoreLogEntry.3p(params, "")
-  params = StoreTrackingTableEntry.3p(params)
+  params <- StoreLogEntry.3p(params, "")
+  params <- StoreTrackingTableEntry.3p(params)
   WriteLogCSV(params)
   if (length(from) == 1) {
     if (from == "T") {
@@ -1712,11 +1712,11 @@ PauseContinue.3p = function(params, from = NULL, maxWaitingTime = 24 * 60 * 60) 
           verbose = params$verbose)
   if (params$verbose) cat("Resuming local processing\n\n")
   DeleteTrigger("files_done.ok", params$readPath[from])
-  params = MergeLogRaw.3p(params, from)
-  params = UpdateCounters.3p(params)
-  params = NewLogEntry.3p(params)
-  params = MergeStampsRaw.3p(params, from)
-  params = MergeTrackingTableRAW.3p(params, from)
+  params <- MergeLogRaw.3p(params, from)
+  params <- UpdateCounters.3p(params)
+  params <- NewLogEntry.3p(params)
+  params <- MergeStampsRaw.3p(params, from)
+  params <- MergeTrackingTableRAW.3p(params, from)
   WriteLogCSV(params)
   return(params)
 }
@@ -1729,8 +1729,8 @@ UpdateCounters.3p = function(params) {
 
 ###################### K PARTY PMN COMMUNICATION FUNCTIONS ######################
 
-WaitForTurn.kp = function(params, sleepTime) {
-  Sys.sleep(sleepTime)
+WaitForTurn.kp = function(params, sleep_time) {
+  Sys.sleep(sleep_time)
 
   if (!params$popmednet) return(NULL)
 
@@ -1761,7 +1761,7 @@ WaitForTurn.kp = function(params, sleepTime) {
 SendPauseQuit.kp = function(params,
                             filesAC = NULL,
                             filesDP = NULL,
-                            sleepTime = 10,
+                            sleep_time = 10,
                             job_failed = FALSE,
                             waitForTurn = FALSE) {
 
@@ -1769,8 +1769,8 @@ SendPauseQuit.kp = function(params,
 
   params$lastIteration = TRUE
   params$completed     = TRUE
-  params = StoreLogEntry.kp(params, c(filesAC, filesDP))
-  params = StoreTrackingTableEntry.kp(params)
+  params <- StoreLogEntry.kp(params, c(filesAC, filesDP))
+  params <- StoreTrackingTableEntry.kp(params)
   WriteLogCSV(params)
   WriteLogRaw(params)
 
@@ -1796,23 +1796,23 @@ SendPauseQuit.kp = function(params,
     files       = c("dl_track_tbl.csv", "file_list.csv")
     if (job_failed) {
       files = c(files, "job_fail.ok")
-      params = StoreStampsEntry(params, "Job failed trigger file", "Trigger File created")
+      params <- StoreStampsEntry(params, "Job failed trigger file", "Trigger File created")
     } else {
       files = c(files, "job_done.ok")
-      params = StoreStampsEntry(params, "Job done trigger file", "Trigger File created")
+      params <- StoreStampsEntry(params, "Job done trigger file", "Trigger File created")
     }
     transfer = c(10, 10, 10)
     destination = c(10, 10, 10)
   }
 
   MakeCSV(files, transfer, destination, params$writePath)
-  params = StoreStampsEntry(params, "Files done trigger file", "Trigger File Created")
-  params = StoreStampsEntry(params, "R program execution complete, output files written",
+  params <- StoreStampsEntry(params, "Files done trigger file", "Trigger File Created")
+  params <- StoreStampsEntry(params, "R program execution complete, output files written",
                             "Tracking Table")
   if (waitForTurn) {
-    params = StoreStampsEntry(params, "R program execution delayed", "Tracking Table")
-    WaitForTurn.kp(params, sleepTime)
-    params = StoreStampsEntry(params, "R program execution restarted", "Tracking Table")
+    params <- StoreStampsEntry(params, "R program execution delayed", "Tracking Table")
+    WaitForTurn.kp(params, sleep_time)
+    params <- StoreStampsEntry(params, "R program execution restarted", "Tracking Table")
   }
   WriteStampsCSV(params)
   WriteStampsRaw(params)
@@ -1832,13 +1832,13 @@ SendPauseContinue.kp = function(params,
                                 filesAC = NULL,
                                 filesDP = NULL,
                                 from   = NULL,
-                                sleepTime = 10,
+                                sleep_time = 10,
                                 maxWaitingTime = 24 * 60 * 60,
                                 job_started = FALSE,
                                 waitForTurn = FALSE) {
   if (class(filesDP) != "list") {
-    params = StoreLogEntry.kp(params, c(filesAC, filesDP))
-    params = StoreTrackingTableEntry.kp(params)
+    params <- StoreLogEntry.kp(params, c(filesAC, filesDP))
+    params <- StoreTrackingTableEntry.kp(params)
     WriteLogCSV(params)
     WriteLogRaw(params)
     if (length(filesAC) + length(filesDP) > 0) {
@@ -1866,8 +1866,8 @@ SendPauseContinue.kp = function(params,
     for (dp in 1:params$numDataPartners) {
       files = c(files, filesDP[[dp]])
     }
-    params = StoreLogEntry.kp(params, files)
-    params = StoreTrackingTableEntry.kp(params)
+    params <- StoreLogEntry.kp(params, files)
+    params <- StoreTrackingTableEntry.kp(params)
     WriteLogCSV(params)
     WriteLogRaw(params)
     if (length(files) > 0) {
@@ -1897,11 +1897,11 @@ SendPauseContinue.kp = function(params,
     destination = c(destination, 10)
   }
   MakeCSV(files, transfer, destination, params$writePath)
-  params = StoreStampsEntry(params, "Files done trigger file", "Trigger File created")
+  params <- StoreStampsEntry(params, "Files done trigger file", "Trigger File created")
   if (waitForTurn) {
-    params = StoreStampsEntry(params, "R program execution delayed", "Tracking Table")
-    WaitForTurn.kp(params, sleepTime)
-    params = StoreStampsEntry(params, "R program execution restarted", "Tracking Table")
+    params <- StoreStampsEntry(params, "R program execution delayed", "Tracking Table")
+    WaitForTurn.kp(params, sleep_time)
+    params <- StoreStampsEntry(params, "R program execution restarted", "Tracking Table")
   }
   WriteStampsCSV(params)
   WriteStampsRaw(params)
@@ -1946,21 +1946,21 @@ SendPauseContinue.kp = function(params,
     DeleteTrigger("files_done.ok", params$readPathDP[2])
   }
   if (params$verbose) cat("Resuming local processing\n\n")
-  params = MergeLogRaw.kp(params, from)
-  params = UpdateCounters.kp(params)
-  params = NewLogEntry.kp(params)
-  params = MergeStampsRaw.kp(params, from)
-  params = StoreStampsEntry(params, "R program execution begins", "Tracking Table")
-  params = MergeTrackingTableRAW.kp(params, from)
+  params <- MergeLogRaw.kp(params, from)
+  params <- UpdateCounters.kp(params)
+  params <- NewLogEntry.kp(params)
+  params <- MergeStampsRaw.kp(params, from)
+  params <- StoreStampsEntry(params, "R program execution begins", "Tracking Table")
+  params <- MergeTrackingTableRAW.kp(params, from)
   return(params)
 }
 
 
 PauseContinue.kp = function(params, from = NULL, maxWaitingTime = 24 * 60 * 60) {
-  params = StoreLogEntry.kp(params, "")
-  params = StoreTrackingTableEntry.kp(params)
+  params <- StoreLogEntry.kp(params, "")
+  params <- StoreTrackingTableEntry.kp(params)
   WriteLogCSV(params)
-  params = StoreStampsEntry(params, "R program execution paused", "Tracking Table")
+  params <- StoreStampsEntry(params, "R program execution paused", "Tracking Table")
   if (from == "AC") {
     if (params$verbose) cat("Waiting for analysis center\n")
     Standby("files_done.ok",
@@ -1985,12 +1985,12 @@ PauseContinue.kp = function(params, from = NULL, maxWaitingTime = 24 * 60 * 60) 
     }
   }
   if (params$verbose) cat("Resuming local processing\n\n")
-  params = MergeLogRaw.kp(params, from)
-  params = UpdateCounters.kp(params)
-  params = NewLogEntry.kp(params)
-  params = MergeStampsRaw.kp(params, from)
-  params = StoreStampsEntry(params, "R program execution begins", "Tracking Table")
-  params = MergeTrackingTableRAW.kp(params, from)
+  params <- MergeLogRaw.kp(params, from)
+  params <- UpdateCounters.kp(params)
+  params <- NewLogEntry.kp(params)
+  params <- MergeStampsRaw.kp(params, from)
+  params <- StoreStampsEntry(params, "R program execution begins", "Tracking Table")
+  params <- MergeTrackingTableRAW.kp(params, from)
   WriteLogCSV(params)
   return(params)
 }

@@ -10,7 +10,7 @@
 #'   that the data partner using dp1 is also the data partner which holds the
 #'   response.  In the case of 2-party regression, the analysis center holds the
 #'   response.
-#' @param numParty The number of parties (analysis center + data partners)
+#' @param num_party The number of parties (analysis center + data partners)
 #'   involved in the multiple regression.  If a data partner is also acting as
 #'   the analysis center, then that data partner is only counted once.
 #' @param directory The directory where the directories dp0, dp1, ... are
@@ -23,8 +23,8 @@
 #'   \code{\link{AnalysisCenter.3Party}} \code{\link{AnalysisCenter.KParty}}
 #' @importFrom utils read.csv
 #' @export
-pmn = function(numParty, directory = NULL, verbose = TRUE) {
-  sleepTime = 0.5
+pmn = function(num_party, directory = NULL, verbose = TRUE) {
+  sleep_time = 0.5
 
   hms = function(time) {
     time = round(time, 1)
@@ -39,26 +39,26 @@ pmn = function(numParty, directory = NULL, verbose = TRUE) {
   startTime = proc.time()[3]
 
 
-  if (missing(numParty) ||
-      !is.numeric(numParty) ||
-      (round(numParty, 0) != numParty) ||
-      (numParty <= 1)) {
+  if (missing(num_party) ||
+      !is.numeric(num_party) ||
+      (round(num_party, 0) != num_party) ||
+      (num_party <= 1)) {
     warning(
-      paste0("Parameter numParty not specified or not valid.\n",
-             "Usage: pmn(numParty, directory)\n",
-             "  numParty: number of parties being simulated, at least 2\n",
+      paste0("Parameter num_party not specified or not valid.\n",
+             "Usage: pmn(num_party, directory)\n",
+             "  num_party: number of parties being simulated, at least 2\n",
              "  directory: the directory where the data partner directories will be located\n")
     )
     return(invisible(NULL))
   }
-  partyName = paste0("dp", 0:(numParty - 1))
+  partyName = paste0("dp", 0:(num_party - 1))
   paths = file.path(directory, partyName)
 
   if (is.null(directory) || !dir.exists(directory)) {
     warning(
       paste0("Directory ", directory, " not specified or does not exist.\n",
-             "Usage: pmn(numParty, directory)\n",
-             "  numParty: number of parties being simulated, at least 2\n",
+             "Usage: pmn(num_party, directory)\n",
+             "  num_party: number of parties being simulated, at least 2\n",
              "  directory: the directory where the data partner directories will be located\n")
     )
     return(invisible(NULL))
@@ -71,22 +71,22 @@ pmn = function(numParty, directory = NULL, verbose = TRUE) {
     }
   }
 
-  writeDirectory = rep("", numParty)
-  readDirectory  = matrix("", numParty, numParty)
+  writeDirectory = rep("", num_party)
+  readDirectory  = matrix("", num_party, num_party)
   names(writeDirectory) = partyName
   colnames(readDirectory) = partyName
   rownames(readDirectory) = partyName
-  for (i in 1:numParty) {
+  for (i in 1:num_party) {
     writeDirectory[i] = file.path(paths[i], ifelse(i == 1, "inputfiles", "msoc"))
     if (!dir.exists(writeDirectory[i])) dir.create(writeDirectory[i])
-    for (j in 1:numParty) {
+    for (j in 1:num_party) {
       readDirectory[i, j] = file.path(paths[j], ifelse(i == 1, "inputfiles", paste0("msoc", i - 1)))
       if (!dir.exists(readDirectory[i, j])) dir.create(readDirectory[i, j])
     }
     readDirectory[i, i] = NA
   }
 
-  source = c(FALSE, rep(TRUE, numParty - 1))
+  source = c(FALSE, rep(TRUE, num_party - 1))
   quit = FALSE
   copyit = 1
   repeat {
@@ -98,10 +98,10 @@ pmn = function(numParty, directory = NULL, verbose = TRUE) {
     filesToSend = NULL
     if (verbose) cat("\nWaiting for", partyName[source], "-", hms(proc.time()[3] - startTime), "\n")
     while (sum(source) > 0) {  # We are waiting parties to write
-      for (i in 1:numParty) {
+      for (i in 1:num_party) {
         if (source[i]) {
           if (file.exists(file.path(writeDirectory[i], "files_done.ok"))) {
-            Sys.sleep(sleepTime)
+            Sys.sleep(sleep_time)
             files = read.csv(file.path(writeDirectory[i], "file_list.csv"))
             if (verbose) cat("\n")
             if (verbose) print(files)
@@ -136,12 +136,12 @@ pmn = function(numParty, directory = NULL, verbose = TRUE) {
           }
         }
       }
-      Sys.sleep(sleepTime)
+      Sys.sleep(sleep_time)
     }
 
     if (quit) break
 
-    sink   = rep(FALSE, numParty)
+    sink   = rep(FALSE, num_party)
 
     if (is.null(filesToSend) || nrow(filesToSend) == 0) {
       warning("No files to transfer and job_done.ok not specified.")
@@ -149,7 +149,7 @@ pmn = function(numParty, directory = NULL, verbose = TRUE) {
     } else {
       if (verbose) cat("\nCOPYING", paste0("(", copyit, ") -"),  hms(proc.time()[3] - startTime), "\n")
       copyit = copyit + 1
-      mark = matrix(FALSE, numParty, numParty)
+      mark = matrix(FALSE, num_party, num_party)
       for (i in 1:nrow(filesToSend)) {
         origin      = filesToSend$source[i]
         destination = filesToSend$dp_cd_list[i]
@@ -170,8 +170,8 @@ pmn = function(numParty, directory = NULL, verbose = TRUE) {
         mark[origin, destination] = TRUE
         sink[destination] = TRUE
       }
-      for (origin in 1:numParty) {
-        for (destination in 1:numParty) {
+      for (origin in 1:num_party) {
+        for (destination in 1:num_party) {
           if (mark[origin, destination]) {
             save(sink, file = file.path(readDirectory[origin, destination], "files_done.ok"))
           }

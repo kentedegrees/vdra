@@ -66,7 +66,7 @@ CheckColinearityLogistic.T3 = function(params) {
     params$errorMessage = "After removing colinear covariates, Party B has no continuous covariates."
   }
 
-  params = AddToLog(params, "CheckColinearityLogistic.T3", 0, 0, writeTime, writeSize)
+  params <- AddToLog(params, "CheckColinearityLogistic.T3", 0, 0, writeTime, writeSize)
   return(params)
 }
 
@@ -113,7 +113,7 @@ ComputeInitialBetasLogistic.T3 = function(params) {
                                                           "converged.rdata"))))
   writeTime = proc.time()[3] - writeTime
 
-  params = AddToLog(params, "ComputeInitialBetasLogistic.T3", 0, 0, writeTime, writeSize)
+  params <- AddToLog(params, "ComputeInitialBetasLogistic.T3", 0, 0, writeTime, writeSize)
 
   return(params)
 }
@@ -140,7 +140,7 @@ UpdateParamsLogistic.A3 = function(params) {
   params$means         = params$means[Aindicies]
   params$sd            = params$sd[Aindicies]
   params$Axty          = Axty
-  params = AddToLog(params, "UpdateParamsLogistic.A3, UpdateDataLogistic.A3", readTime, readSize, 0, 0)
+  params <- AddToLog(params, "UpdateParamsLogistic.A3, UpdateDataLogistic.A3", readTime, readSize, 0, 0)
   return(params)
 }
 
@@ -164,7 +164,7 @@ UpdateParamsLogistic.B3 = function(params) {
   params$means         = params$means[Bindicies]
   params$sd            = params$sd[Bindicies]
   params$Bxty          = Bxty
-  params = AddToLog(params, "UpdateParamsLogistic.B3, UpdateDataLogistic.B3", readTime, readSize, 0, 0)
+  params <- AddToLog(params, "UpdateParamsLogistic.B3, UpdateDataLogistic.B3", readTime, readSize, 0, 0)
   return(params)
 }
 
@@ -197,7 +197,7 @@ GetBetaALogistic.A3 = function(params) {
   params$converged = converged
   params$maxIterExceeded = maxIterExceeded
   params$betas = Abetas
-  params = AddToLog(params, "GetBetaALogistic.A3", readTime, readSize, 0, 0)
+  params <- AddToLog(params, "GetBetaALogistic.A3", readTime, readSize, 0, 0)
   return(params)
 }
 
@@ -216,7 +216,7 @@ GetBetaBLogistic.B3 = function(params) {
   params$converged = converged
   params$maxIterExceeded = maxIterExceeded
   params$betas = Bbetas
-  params = AddToLog(params, "GetBetaBLogistic.B3", readTime, readSize, 0, 0)
+  params <- AddToLog(params, "GetBetaBLogistic.B3", readTime, readSize, 0, 0)
   return(params)
 }
 
@@ -230,7 +230,7 @@ GetXAbetaALogistic.A3 = function(params, data) {
   writeSize = file.size(file.path(params$writePath, "xabeta.rdata"))
   writeTime = proc.time()[3] - writeTime
 
-  params = AddToLog(params, "GetXAbetaALogistic.A3", 0, 0, writeTime, writeSize)
+  params <- AddToLog(params, "GetXAbetaALogistic.A3", 0, 0, writeTime, writeSize)
   return(params)
 }
 
@@ -244,7 +244,7 @@ GetXBbetaBLogistic.B3 = function(params, data) {
   writeSize = file.size(file.path(params$writePath, "xbbeta.rdata"))
   writeTime = proc.time()[3] - writeTime
 
-  params = AddToLog(params, "GetXBbetaBLogistic.B3", 0, 0, writeTime, writeSize)
+  params <- AddToLog(params, "GetXBbetaBLogistic.B3", 0, 0, writeTime, writeSize)
   return(params)
 }
 
@@ -268,7 +268,7 @@ GetWeightsLogistic.T3 = function(params) {
   save(pi_, file = file.path(params$writePath, "pi.rdata"))
   writeSize = file.size(file.path(params$writePath, "pi.rdata"))
   writeTime = proc.time()[3] - writeTime
-  params = AddToLog(params, "GetWeightsLogistic.T3", readTime, readSize, writeTime, writeSize)
+  params <- AddToLog(params, "GetWeightsLogistic.T3", readTime, readSize, writeTime, writeSize)
   return(params)
 }
 
@@ -337,7 +337,7 @@ GetRVLogistic.B3 = function(params, data) {
   writeSize = writeSize + sum(file.size(c(file.path(params$writePath, "xbtwxb.rdata"))))
   writeTime = writeTime + proc.time()[3]
 
-  params = AddToLog(params, "GetRVLogistic.B3", readTime, readSize, writeTime, writeSize)
+  params <- AddToLog(params, "GetRVLogistic.B3", readTime, readSize, writeTime, writeSize)
   return(params)
 }
 
@@ -411,7 +411,7 @@ ProcessVLogistic.T3 = function(params) {
 
     pbar = MakeProgressBar2(i, pbar, params$verbose)
   }
-  params = AddToLog(params, "ProcessVLogistic.T3", readTime, readSize, writeTime, writeSize)
+  params <- AddToLog(params, "ProcessVLogistic.T3", readTime, readSize, writeTime, writeSize)
   return(params)
 }
 
@@ -483,7 +483,7 @@ GetXRLogistic.A3 = function(params, data) {
   writeSize = writeSize + sum(file.size(c(file.path(params$writePath, "xatwxa.rdata"))))
   writeTime = writeTime + proc.time()[3]
 
-  params = AddToLog(params, "GetXRLogistic.A3", readTime, readSize, writeTime, writeSize)
+  params <- AddToLog(params, "GetXRLogistic.A3", readTime, readSize, writeTime, writeSize)
   return(params)
 }
 
@@ -568,7 +568,7 @@ ProcessXtWXLogistic.T3 = function(params) {
   writeSize = sum(file.size(file.path(params$writePath, c("IIA.rdata", "IIB.rdata"))))
   writeTime = proc.time()[3] - writeTime
 
-  params = AddToLog(params, "ProcessXtWXLogistic.T3", readTime, readSize, writeTime, writeSize)
+  params <- AddToLog(params, "ProcessXtWXLogistic.T3", readTime, readSize, writeTime, writeSize)
   return(params)
 }
 
@@ -589,7 +589,7 @@ UpdateBetaLogistic.A3 = function(params, data) {
   save(AI, file = file.path(params$writePath, "AI.rdata"))
   writeSize = file.size(file.path(params$writePath, "AI.rdata"))
   writeTime = proc.time()[3] - writeTime
-  params = AddToLog(params, "UpdateBetaLogistic.A3", readTime, readSize, writeTime, writeSize)
+  params <- AddToLog(params, "UpdateBetaLogistic.A3", readTime, readSize, writeTime, writeSize)
   return(params)
 }
 
@@ -609,7 +609,7 @@ UpdateBetaLogistic.B3 = function(params, data) {
   save(BI, file = file.path(params$writePath, "BI.rdata"))
   writeSize = file.size(file.path(params$writePath, "BI.rdata"))
   writeTime = proc.time()[3] - writeTime
-  params = AddToLog(params, "UpdateBetaLogistic.B3", readTime, readSize, writeTime, writeSize)
+  params <- AddToLog(params, "UpdateBetaLogistic.B3", readTime, readSize, writeTime, writeSize)
   return(params)
 }
 
@@ -645,7 +645,7 @@ UpdateBetaLogistic.T3 = function(params) {
                                                           "betasB.rdata",
                                                           "converged.rdata"))))
   writeTime = proc.time()[3] - writeTime
-  params = AddToLog(params, "UpdateBetaLogistic.T3", readTime, readSize, writeTime, writeSize)
+  params <- AddToLog(params, "UpdateBetaLogistic.T3", readTime, readSize, writeTime, writeSize)
   return(params)
 }
 
@@ -660,7 +660,7 @@ GetFinalBetaLogistic.A3 = function(params, data) {
   save(offsetA, AFinalFitted, file = file.path(params$writePath, "Afinalfitted.rdata"))
   writeSize = file.size(file.path(params$writePath, "Afinalfitted.rdata"))
   writeTime = proc.time()[3] - writeTime
-  params = AddToLog(params, "GetFinalBetaLogistic.A3", 0, 0, writeTime, writeSize)
+  params <- AddToLog(params, "GetFinalBetaLogistic.A3", 0, 0, writeTime, writeSize)
   return(params)
 }
 
@@ -675,7 +675,7 @@ GetFinalBetaLogistic.B3 = function(params, data) {
   save(offsetB, BFinalFitted, file = file.path(params$writePath, "Bfinalfitted.rdata"))
   writeSize = file.size(file.path(params$writePath, "Bfinalfitted.rdata"))
   writeTime = proc.time()[3] - writeTime
-  params = AddToLog(params, "GetFinalBetaLogistic.B3", 0, 0, writeTime, writeSize)
+  params <- AddToLog(params, "GetFinalBetaLogistic.B3", 0, 0, writeTime, writeSize)
   return(params)
 }
 
@@ -706,7 +706,7 @@ GetFinalFittedLogistic.T3 = function(params) {
   writeSize = file.size(file.path(params$writePath, "finalFitted.rdata"))
   writeTime = proc.time()[3] - writeTime
 
-  params = AddToLog(params, "GetFinalBetaLogistic.T3", readTime, readSize, writeTime, writeSize)
+  params <- AddToLog(params, "GetFinalBetaLogistic.T3", readTime, readSize, writeTime, writeSize)
   return(params)
 }
 
@@ -732,7 +732,7 @@ ComputeResultsLogistic.A3 = function(params, data) {
   writeSize = file.size(file.path(params$writePath, "logisticstats.rdata"))
   writeTime = proc.time()[3] - writeTime
 
-  params = AddToLog(params, "ComputeResultsLogistic.A3", readTime, readSize, writeTime, writeSize)
+  params <- AddToLog(params, "ComputeResultsLogistic.A3", readTime, readSize, writeTime, writeSize)
   return(params)
 }
 
@@ -808,7 +808,7 @@ ComputeResultsLogistic.T3 = function(params) {
 
   params$stats      = stats
 
-  params = AddToLog(params, "ComputeResultsLogistic.T3", readTime, readSize, writeTime, writeSize)
+  params <- AddToLog(params, "ComputeResultsLogistic.T3", readTime, readSize, writeTime, writeSize)
   return(params)
 }
 
@@ -823,7 +823,7 @@ GetResultsLogistic.A3 = function(params, data) {
   stats$Y           = data$Y # For Hoslem and ROC
   stats$FinalFitted = params$FinalFitted
   params$stats      = stats
-  params = AddToLog(params, "GetResultsLogistic.A3", readTime, readSize, 0, 0)
+  params <- AddToLog(params, "GetResultsLogistic.A3", readTime, readSize, 0, 0)
   return(params)
 }
 
@@ -836,7 +836,7 @@ GetResultsLogistic.B3 = function(params) {
   readSize = file.size(file.path(params$readPath[["T"]], "stats.rdata"))
   readTime = proc.time()[3] - readTime
   params$stats = stats
-  params = AddToLog(params, "GetResultsLogistic.B3", readTime, readSize, 0, 0)
+  params <- AddToLog(params, "GetResultsLogistic.B3", readTime, readSize, 0, 0)
   return(params)
 }
 
@@ -847,17 +847,17 @@ GetResultsLogistic.B3 = function(params) {
 PartyAProcess3Logistic = function(data,
                                   yname          = NULL,
                                   monitorFolder  = NULL,
-                                  sleepTime      = 10,
+                                  sleep_time      = 10,
                                   maxWaitingTime = 24 * 60 * 60,
                                   popmednet      = TRUE,
                                   trace          = FALSE,
                                   verbose        = TRUE) {
 
-  params = PrepareParams.3p("logistic", "A",
+  params <- PrepareParams.3p("logistic", "A",
                             popmednet = popmednet, trace = trace, verbose = verbose)
-  params = InitializeLog.3p(params)
-  params = InitializeStamps.3p(params)
-  params = InitializeTrackingTable.3p(params)
+  params <- InitializeLog.3p(params)
+  params <- InitializeStamps.3p(params)
+  params <- InitializeTrackingTable.3p(params)
   Header(params)
 
   params   = PrepareFolderLinear.A3(params, monitorFolder)
@@ -866,108 +866,108 @@ PartyAProcess3Logistic = function(data,
     return(invisible(NULL))
   }
   data = PrepareDataLogistic.A23(params, data, yname)
-  params = AddToLog(params, "PrepareDataLogistic.A23", 0, 0, 0, 0)
+  params <- AddToLog(params, "PrepareDataLogistic.A23", 0, 0, 0, 0)
 
   if (data$failed) {
     message = "Error in processing the data for Party A."
     MakeErrorMessage(params$writePath, message)
     files = c("errorMessage.rdata")
-    params = SendPauseQuit.3p(params, filesT = files, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
+    params <- SendPauseQuit.3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
-  params = PrepareParamsLinear.A3(params, data)
+  params <- PrepareParamsLinear.A3(params, data)
   files = "pa.rdata"
-  params = SendPauseContinue.3p(params, filesT = files, from = "T",
-                                sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- SendPauseContinue.3p(params, filesT = files, from = "T",
+                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
 
   if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
     warning(ReadErrorMessage(params$readPath[["T"]]))
-    params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
+    params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
   params$algIterationCounter = 1
-  params = PrepareBlocksLinear.A3(params)
+  params <- PrepareBlocksLinear.A3(params)
 
-  params = GetZLinear.A3(params, data)
+  params <- GetZLinear.A3(params, data)
   files = SeqZW("cz_", length(params$container$filebreak.Z))
-  params = SendPauseContinue.3p(params, filesT = files, from = "T",
-                                sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
+  params <- SendPauseContinue.3p(params, filesT = files, from = "T",
+                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
 
-  params = GetWRLinear.A3(params, data)
+  params <- GetWRLinear.A3(params, data)
   files = c("xatxa.rdata", SeqZW("cpr_", length(params$container$filebreak.PR)))
-  params = SendPauseContinue.3p(params, filesT = files, from = "T",
-                                sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
+  params <- SendPauseContinue.3p(params, filesT = files, from = "T",
+                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
 
   if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
     warning(ReadErrorMessage(params$readPath[["T"]]))
-    params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
+    params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
-  params = UpdateParamsLogistic.A3(params)
+  params <- UpdateParamsLogistic.A3(params)
   data = UpdateDataLogistic.A3(params, data)
-  params = GetBetaALogistic.A3(params)
+  params <- GetBetaALogistic.A3(params)
 
   params$algIterationCounter = 1
   while (!params$converged && !params$maxIterExceeded) {
     BeginningIteration(params)
-    params = GetXAbetaALogistic.A3(params, data)
+    params <- GetXAbetaALogistic.A3(params, data)
     files = c("xabeta.rdata")
-    params = SendPauseContinue.3p(params, filesT = files, from = "T",
-                                  sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+    params <- SendPauseContinue.3p(params, filesT = files, from = "T",
+                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
 
-    params = GetXRLogistic.A3(params, data)
+    params <- GetXRLogistic.A3(params, data)
     files = c("xatwxa.rdata", SeqZW("cxr_", length(params$container$filebreak.XR)))
-    params = SendPauseContinue.3p(params, filesT = files, from = "T",
-                                  sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
+    params <- SendPauseContinue.3p(params, filesT = files, from = "T",
+                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
 
     if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
       warning(ReadErrorMessage(params$readPath[["T"]]))
-      params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
+      params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
       return(params$stats)
     }
 
-    params = UpdateBetaLogistic.A3(params, data)
+    params <- UpdateBetaLogistic.A3(params, data)
     files = c("ai.rdata")
-    params = SendPauseContinue.3p(params, filesT = files, from = "T",
-                                  sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+    params <- SendPauseContinue.3p(params, filesT = files, from = "T",
+                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
 
-    params = GetBetaALogistic.A3(params)
+    params <- GetBetaALogistic.A3(params)
     EndingIteration(params)
     params$algIterationCounter = params$algIterationCounter + 1
   }
 
-  params = GetFinalBetaLogistic.A3(params, data)
+  params <- GetFinalBetaLogistic.A3(params, data)
   files = "Afinalfitted.rdata"
-  params = SendPauseContinue.3p(params, filesT = files, from = "T",
-                                sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- SendPauseContinue.3p(params, filesT = files, from = "T",
+                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
 
-  params = ComputeResultsLogistic.A3(params, data)
+  params <- ComputeResultsLogistic.A3(params, data)
   files = c("logisticstats.rdata")
-  params = SendPauseContinue.3p(params, filesT = files, from = "T",
-                                sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
+  params <- SendPauseContinue.3p(params, filesT = files, from = "T",
+                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
 
-  params = GetResultsLogistic.A3(params, data)
+  params <- GetResultsLogistic.A3(params, data)
 
-  params = SendPauseQuit.3p(params, sleepTime = sleepTime, waitForTurn = TRUE)
+  params <- SendPauseQuit.3p(params, sleep_time = sleep_time, waitForTurn = TRUE)
   return(params$stats)
 }
 
 
 PartyBProcess3Logistic = function(data,
                                   monitorFolder  = NULL,
-                                  sleepTime      = 10,
+                                  sleep_time      = 10,
                                   maxWaitingTime = 24 * 60 * 60,
                                   popmednet      = TRUE,
                                   trace          = FALSE,
                                   verbose        = TRUE) {
-  params = PrepareParams.3p("logistic", "B",
+  params <- PrepareParams.3p("logistic", "B",
                             popmednet = popmednet, trace = trace, verbose = verbose)
-  params = InitializeLog.3p(params)
-  params = InitializeStamps.3p(params)
-  params = InitializeTrackingTable.3p(params)
+  params <- InitializeLog.3p(params)
+  params <- InitializeStamps.3p(params)
+  params <- InitializeTrackingTable.3p(params)
 
   Header(params)
   params   = PrepareFolderLinear.B3(params, monitorFolder)
@@ -977,82 +977,82 @@ PartyBProcess3Logistic = function(data,
   }
 
   data = PrepareDataLogistic.B23(params, data)
-  params = AddToLog(params, "PrepareDataLogistic.B23", 0, 0, 0, 0)
+  params <- AddToLog(params, "PrepareDataLogistic.B23", 0, 0, 0, 0)
 
   if (data$failed) {
     message = "Error in processing the data for Party B."
     MakeErrorMessage(params$writePath, message)
     files = c("errorMessage.rdata")
-    params = SendPauseQuit.3p(params, filesT = files, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
+    params <- SendPauseQuit.3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
-  params = PrepareParamsLinear.B3(params, data)
+  params <- PrepareParamsLinear.B3(params, data)
   files = "pb.rdata"
-  params = SendPauseContinue.3p(params, filesT = files, from = "T",
-                                sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- SendPauseContinue.3p(params, filesT = files, from = "T",
+                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
 
   if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
     warning(ReadErrorMessage(params$readPath[["T"]]))
-    params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
+    params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
   params$algIterationCounter = 1
-  params = PrepareBlocksLinear.B3(params)
+  params <- PrepareBlocksLinear.B3(params)
 
-  params = GetRWLinear.B3(params, data)
+  params <- GetRWLinear.B3(params, data)
   files = c("xbtxb.rdata", SeqZW("crw_", length(params$container$filebreak.RW)))
-  params = SendPauseContinue.3p(params, filesT = files, from = "T",
-                                sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
+  params <- SendPauseContinue.3p(params, filesT = files, from = "T",
+                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
 
   if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
     warning(ReadErrorMessage(params$readPath[["T"]]))
-    params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
+    params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
     return(params$stats)
   }
 
-  params = UpdateParamsLogistic.B3(params)
+  params <- UpdateParamsLogistic.B3(params)
   data = UpdateDataLogistic.B3(params, data)
-  params = GetBetaBLogistic.B3(params)
+  params <- GetBetaBLogistic.B3(params)
 
   params$algIterationCounter = 1
   while (!params$converged && !params$maxIterExceeded) {
     BeginningIteration(params)
-    params = GetXBbetaBLogistic.B3(params, data)
+    params <- GetXBbetaBLogistic.B3(params, data)
     files = c("xbbeta.rdata")
-    params = SendPauseContinue.3p(params, filesT = files, from = "T",
-                                  sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+    params <- SendPauseContinue.3p(params, filesT = files, from = "T",
+                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
 
-    params = GetRVLogistic.B3(params, data)
+    params <- GetRVLogistic.B3(params, data)
     files = c("xbtwxb.rdata", SeqZW("crv_", length(params$container$filebreak.RV)))
-    params = SendPauseContinue.3p(params, filesT = files, from = "T",
-                                  sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
+    params <- SendPauseContinue.3p(params, filesT = files, from = "T",
+                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
 
     if (file.exists(file.path(params$readPath[["T"]], "errorMessage.rdata"))) {
       warning(ReadErrorMessage(params$readPath[["T"]]))
-      params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE, waitForTurn = TRUE)
+      params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
       return(params$stats)
     }
 
-    params = UpdateBetaLogistic.B3(params, data)
+    params <- UpdateBetaLogistic.B3(params, data)
     files = c("bi.rdata")
-    params = SendPauseContinue.3p(params, filesT = files, from = "T",
-                                  sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+    params <- SendPauseContinue.3p(params, filesT = files, from = "T",
+                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
 
-    params = GetBetaBLogistic.B3(params)
+    params <- GetBetaBLogistic.B3(params)
     EndingIteration(params)
     params$algIterationCounter = params$algIterationCounter + 1
   }
 
-  params = GetFinalBetaLogistic.B3(params, data)
+  params <- GetFinalBetaLogistic.B3(params, data)
   files = "Bfinalfitted.rdata"
-  params = SendPauseContinue.3p(params, filesT = files, from = "T",
-                                sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- SendPauseContinue.3p(params, filesT = files, from = "T",
+                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
 
-  params = GetResultsLogistic.B3(params)
+  params <- GetResultsLogistic.B3(params)
 
-  params = SendPauseQuit.3p(params, sleepTime = sleepTime, waitForTurn = TRUE)
+  params <- SendPauseQuit.3p(params, sleep_time = sleep_time, waitForTurn = TRUE)
   return(params$stats)
 }
 
@@ -1062,16 +1062,16 @@ PartyTProcess3Logistic = function(monitorFolder         = NULL,
                                   blocksize             = 500,
                                   cutoff                = 1e-8,
                                   maxIterations         = 25,
-                                  sleepTime             = 10,
+                                  sleep_time             = 10,
                                   maxWaitingTime        = 24 * 60 * 60,
                                   popmednet             = TRUE,
                                   trace                 = FALSE,
                                   verbose               = TRUE) {
-  params = PrepareParams.3p("logistic", "T", msreqid = msreqid,
+  params <- PrepareParams.3p("logistic", "T", msreqid = msreqid,
                             popmednet = popmednet, trace = trace, verbose = verbose)
-  params = InitializeLog.3p(params)
-  params = InitializeStamps.3p(params)
-  params = InitializeTrackingTable.3p(params)
+  params <- InitializeLog.3p(params)
+  params <- InitializeStamps.3p(params)
+  params <- InitializeTrackingTable.3p(params)
 
   Header(params)
   params   = PrepareFolderLinear.T3(params, monitorFolder)
@@ -1080,13 +1080,13 @@ PartyTProcess3Logistic = function(monitorFolder         = NULL,
     return(invisible(NULL))
   }
 
-  params = PauseContinue.3p(params, from = c("A", "B"), maxWaitingTime = maxWaitingTime)
+  params <- PauseContinue.3p(params, from = c("A", "B"), maxWaitingTime = maxWaitingTime)
 
   if (file.exists(file.path(params$readPath[["A"]], "errorMessage.rdata")) &&
       file.exists(file.path(params$readPath[["B"]], "errorMessage.rdata"))) {
     warning(ReadErrorMessage(params$readPath[["A"]]))
     warning(ReadErrorMessage(params$readPath[["B"]]))
-    params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE)
+    params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.3p(params)
     return(params$stats)
   }
@@ -1095,9 +1095,9 @@ PartyTProcess3Logistic = function(monitorFolder         = NULL,
     file.copy(file.path(params$readPath[["A"]], "errorMessage.rdata"),
               file.path(params$writePath, "errorMessage.rdata"))
     files = "errorMessage.rdata"
-    params = SendPauseContinue.3p(params, filesB = files, from = "B",
-                                  sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
-    params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE)
+    params <- SendPauseContinue.3p(params, filesB = files, from = "B",
+                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+    params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.3p(params)
     return(params$stats)
   }
@@ -1106,117 +1106,117 @@ PartyTProcess3Logistic = function(monitorFolder         = NULL,
     file.copy(file.path(params$readPath[["B"]], "errorMessage.rdata"),
               file.path(params$writePath, "errorMessage.rdata"))
     files = "errorMessage.rdata"
-    params = SendPauseContinue.3p(params, filesA = files, from = "A",
-                                  sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
-    params = SendPauseQuit.3p(params, sleepTime = sleepTime, job_failed = TRUE)
+    params <- SendPauseContinue.3p(params, filesA = files, from = "A",
+                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+    params <- SendPauseQuit.3p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.3p(params)
     return(params$stats)
   }
 
   params   = PrepareParamsLinear.T3(params, cutoff, maxIterations)
 
-  if (!params$failed) params = PrepareBlocksLinear.T3(params, blocksize)
+  if (!params$failed) params <- PrepareBlocksLinear.T3(params, blocksize)
 
   if (params$failed) {
     warning(params$errorMessage)
     MakeErrorMessage(params$writePath, params$errorMessage)
     files = "errorMessage.rdata"
-    params = SendPauseContinue.3p(params, filesA = files, filesB = files,
+    params <- SendPauseContinue.3p(params, filesA = files, filesB = files,
                                   from = c("A", "B"),
-                                  sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
-    params = SendPauseQuit.3p(params, sleepTime = sleepTime)
+                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+    params <- SendPauseQuit.3p(params, sleep_time = sleep_time)
     SummarizeLog.3p(params)
     return(params$stats)
   }
 
   files = "blocks.rdata"
-  params = SendPauseContinue.3p(params, filesA = files, from = "A",
-                                sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
+  params <- SendPauseContinue.3p(params, filesA = files, from = "A",
+                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
 
   params$algIterationCounter = 1
-  params = ProcessZLinear.T3(params)
+  params <- ProcessZLinear.T3(params)
   files = c("blocks.rdata", SeqZW("crz_", length(params$container$filebreak.RZ)))
-  params = SendPauseContinue.3p(params, filesB = files, from  = "B",
-                                sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
+  params <- SendPauseContinue.3p(params, filesB = files, from  = "B",
+                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
 
-  params = ProcessWLinear.T3(params)
+  params <- ProcessWLinear.T3(params)
   files = c("p2.rdata", SeqZW("cwr_", length(params$container$filebreak.WR)))
-  params = SendPauseContinue.3p(params, filesA = files, from  = "A",
-                                sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
+  params <- SendPauseContinue.3p(params, filesA = files, from  = "A",
+                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
 
-  params = GetProductsLinear.T3(params)
+  params <- GetProductsLinear.T3(params)
 
-  params = CheckColinearityLogistic.T3(params)
+  params <- CheckColinearityLogistic.T3(params)
 
   if (params$failed) {
     warning(params$errorMessage)
     MakeErrorMessage(params$writePath, params$errorMessage)
     files = "errorMessage.rdata"
-    params = SendPauseContinue.3p(params, filesA = files, filesB = files,
+    params <- SendPauseContinue.3p(params, filesA = files, filesB = files,
                                   from = c("A", "B"),
-                                  sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
-    params = SendPauseQuit.3p(params, sleepTime = sleepTime)
+                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+    params <- SendPauseQuit.3p(params, sleep_time = sleep_time)
     SummarizeLog.3p(params)
     return(params$stats)
   }
 
-  params = ComputeInitialBetasLogistic.T3(params)
+  params <- ComputeInitialBetasLogistic.T3(params)
   filesA = c("Aindicies.rdata", "betasA.rdata", "Axty.rdata", "converged.rdata")
   filesB = c("Bindicies.rdata", "betasB.rdata", "Bxty.rdata", "converged.rdata")
-  params = SendPauseContinue.3p(params, filesA = filesA, filesB = filesB, from  = c("A", "B"),
-                                sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
+  params <- SendPauseContinue.3p(params, filesA = filesA, filesB = filesB, from  = c("A", "B"),
+                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
 
   params$algIterationCounter = 1
   while (!params$converged && !params$maxIterExceeded) {
     BeginningIteration(params)
-    params = GetWeightsLogistic.T3(params)
+    params <- GetWeightsLogistic.T3(params)
     files = "pi.rdata"
-    params = SendPauseContinue.3p(params, filesB = files, from  = "B",
-                                  sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
+    params <- SendPauseContinue.3p(params, filesB = files, from  = "B",
+                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
 
-    params = ProcessVLogistic.T3(params)
+    params <- ProcessVLogistic.T3(params)
     files = c("pi.rdata", SeqZW("cvr_", length(params$container$filebreak.RV)))
-    params = SendPauseContinue.3p(params, filesA = files, from  = "A",
-                                  sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
+    params <- SendPauseContinue.3p(params, filesA = files, from  = "A",
+                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
 
-    params = ProcessXtWXLogistic.T3(params)
+    params <- ProcessXtWXLogistic.T3(params)
 
     if (params$failed) {
       warning(params$errorMessage)
       MakeErrorMessage(params$writePath, params$errorMessage)
       files = "errorMessage.rdata"
-      params = SendPauseContinue.3p(params, filesA = files, filesB = files,
+      params <- SendPauseContinue.3p(params, filesA = files, filesB = files,
                                     from = c("A", "B"),
-                                    sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
-      params = SendPauseQuit.3p(params, sleepTime = sleepTime)
+                                    sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+      params <- SendPauseQuit.3p(params, sleep_time = sleep_time)
       SummarizeLog.3p(params)
       return(params$stats)
     }
     filesA = c("IIA.rdata")
     filesB = c("IIB.rdata")
-    params = SendPauseContinue.3p(params, filesA = filesA, filesB = filesB, from  = c("A", "B"),
-                                  sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
+    params <- SendPauseContinue.3p(params, filesA = filesA, filesB = filesB, from  = c("A", "B"),
+                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
 
-    params = UpdateBetaLogistic.T3(params)
+    params <- UpdateBetaLogistic.T3(params)
     filesA = c("betasA.rdata", "converged.rdata")
     filesB = c("betasB.rdata", "converged.rdata")
-    params = SendPauseContinue.3p(params, filesA = filesA, filesB = filesB, from  = c("A", "B"),
-                                  sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
+    params <- SendPauseContinue.3p(params, filesA = filesA, filesB = filesB, from  = c("A", "B"),
+                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
     EndingIteration(params)
     params$algIterationCounter = params$algIterationCounter + 1
   }
 
-  params = GetFinalFittedLogistic.T3(params)
+  params <- GetFinalFittedLogistic.T3(params)
   filesA = "finalfitted.rdata"
-  params = SendPauseContinue.3p(params, filesA = filesA, from  = "A",
-                                sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
+  params <- SendPauseContinue.3p(params, filesA = filesA, from  = "A",
+                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
 
-  params = ComputeResultsLogistic.T3(params)
+  params <- ComputeResultsLogistic.T3(params)
   files = "stats.rdata"
-  params = SendPauseContinue.3p(params, filesA = files, filesB = files, from  = c("A", "B"),
-                                sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
+  params <- SendPauseContinue.3p(params, filesA = files, filesB = files, from  = c("A", "B"),
+                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
 
-  params = SendPauseQuit.3p(params, sleepTime = sleepTime)
+  params <- SendPauseQuit.3p(params, sleep_time = sleep_time)
   SummarizeLog.3p(params)
   return(params$stats)
 }

@@ -86,7 +86,7 @@ PrepareFolder.ACDP = function(params, monitorFolder) {
   writeSize = file.size(file.path(params$writePath, "empty.rdata"))
   writeTime = proc.time()[3] - writeTime
 
-  params = AddToLog(params, "PrepareFolder.ACDP", 0, 0, writeTime, writeSize)
+  params <- AddToLog(params, "PrepareFolder.ACDP", 0, 0, writeTime, writeSize)
   return(params)
 }
 
@@ -183,7 +183,7 @@ SendBasicInfo.DP = function(params, data) {
   save(analysis, n, dataPartnerID, file = file.path(params$writePath, "n_analysis.rdata"))
   writeSize = file.size(file.path(params$writePath, "n_analysis.rdata"))
   writeTime = proc.time()[3] - writeTime
-  params = AddToLog(params, "SendBasicInfo.DP", 0, 0, writeTime, writeSize)
+  params <- AddToLog(params, "SendBasicInfo.DP", 0, 0, writeTime, writeSize)
   return(params)
 }
 
@@ -243,7 +243,7 @@ CheckAgreement.AC = function(params) {
     params$errorMessage = paste0(message1, message2, message3)
   }
 
-  params = AddToLog(params, "CheckAgreement.AC", readTime, readSize, 0, 0)
+  params <- AddToLog(params, "CheckAgreement.AC", readTime, readSize, 0, 0)
   return(params)
 }
 
@@ -267,7 +267,7 @@ PrepareParamsLinear.DP = function(params, data) {
   writeSize = file.size(file.path(params$writePath, "p_scaler_seed.rdata"))
   writeTime = proc.time()[3] - writeTime
 
-  params = AddToLog(params, "PrepareParamsLinear.DP", 0, 0, writeTime, writeSize)
+  params <- AddToLog(params, "PrepareParamsLinear.DP", 0, 0, writeTime, writeSize)
   return(params)
 }
 
@@ -332,7 +332,7 @@ PrepareSharesLinear.DP = function(params, data) {
                                                           "colstats.rdata"))))
   writeTime = proc.time()[3] - writeTime
 
-  params = AddToLog(params, "PrepareSharesLinear.DP", readTime, readSize, writeTime, writeSize)
+  params <- AddToLog(params, "PrepareSharesLinear.DP", readTime, readSize, writeTime, writeSize)
   return(params)
 }
 
@@ -416,7 +416,7 @@ GetProductsLinear.AC = function(params) {
   params$converged    = TRUE
   params$tags         = alltags
 
-  params = AddToLog(params, "GetProductsLinear.AC", readTime, readSize, 0, 0)
+  params <- AddToLog(params, "GetProductsLinear.AC", readTime, readSize, 0, 0)
   return(params)
 }
 
@@ -560,7 +560,7 @@ ComputeResultsLinear.AC = function(params) {
   save(stats, file = file.path(params$writePath, "stats.rdata"))
   writeSize = file.size(file.path(params$writePath, "stats.rdata"))
   writeTime = proc.time()[3] - writeTime
-  params = AddToLog(params, "ComputeResultsLinear.AC", 0, 0, writeTime, writeSize)
+  params <- AddToLog(params, "ComputeResultsLinear.AC", 0, 0, writeTime, writeSize)
   return(params)
 }
 
@@ -575,7 +575,7 @@ GetResultsLinear.DP = function(params) {
   readTime = proc.time()[3] - readTime
   params$stats = stats
 
-  params = AddToLog(params, "GetResultsLinear.DP", readTime, readSize, 0, 0)
+  params <- AddToLog(params, "GetResultsLinear.DP", readTime, readSize, 0, 0)
   return(params)
 }
 
@@ -588,21 +588,21 @@ DataPartnerKLinear = function(data,
                               numDataPartners = NULL,
                               dataPartnerID   = NULL,
                               monitorFolder   = NULL,
-                              sleepTime       = 10,
+                              sleep_time       = 10,
                               maxWaitingTime  = 24 * 60 * 60,
                               popmednet      = TRUE,
                               trace          = FALSE,
                               verbose        = TRUE) {
 
-  params = PrepareParams.kp("linear", dataPartnerID, numDataPartners, ac = FALSE,
+  params <- PrepareParams.kp("linear", dataPartnerID, numDataPartners, ac = FALSE,
                             popmednet = popmednet, trace = trace, verbose = verbose)
   if (params$failed) {
     warning(params$errorMessage)
     return(invisible(NULL))
   }
-  params = InitializeLog.kp(params)
-  params = InitializeStamps.kp(params)
-  params = InitializeTrackingTable.kp(params)
+  params <- InitializeLog.kp(params)
+  params <- InitializeStamps.kp(params)
+  params <- InitializeTrackingTable.kp(params)
   Header(params)
 
   params   = PrepareFolder.ACDP(params, monitorFolder)
@@ -614,10 +614,10 @@ DataPartnerKLinear = function(data,
 
   if (dataPartnerID == 1) {
     data = PrepareDataLinLog.DP1(params, data, yname)
-    params = AddToLog(params, "PrepareDataLinLog.DP1", 0, 0, 0, 0)
+    params <- AddToLog(params, "PrepareDataLinLog.DP1", 0, 0, 0, 0)
   } else {
     data = PrepareDataLinLog.DPk(params, data)
-    params = AddToLog(params, "PrepareDataLinLog.DP2", 0, 0, 0, 0)
+    params <- AddToLog(params, "PrepareDataLinLog.DP2", 0, 0, 0, 0)
   }
 
 
@@ -625,46 +625,46 @@ DataPartnerKLinear = function(data,
     params$errorMessage = paste("Error processing data for data partner", params$dataPartnerID, "\n")
     MakeErrorMessage(params$writePath, params$errorMessage)
     files = "errorMessage.rdata"
-    params = SendPauseContinue.kp(params, filesAC = files, from = "AC",
-                                  sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+    params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
+                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
     params$errorMessage = ReadErrorMessage(params$readPathAC)
     warning(params$errorMessage)
-    params = SendPauseQuit.kp(params, sleepTime = sleepTime, waitForTurn = TRUE)
+    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
   }
 
-  params = SendBasicInfo.DP(params, data)
+  params <- SendBasicInfo.DP(params, data)
   files = "n_analysis.rdata"
-  params = SendPauseContinue.kp(params, filesAC = files, from = "AC",
-                                sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
+                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
     params$errorMessage = possibleError$message
     warning(possibleError$message)
-    params = SendPauseQuit.kp(params, sleepTime = sleepTime, waitForTurn = TRUE)
+    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
   }
 
-  params = PrepareParamsLinear.DP(params, data)
+  params <- PrepareParamsLinear.DP(params, data)
   files = "p_scaler_seed.rdata"
-  params = SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
+                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
 
-  params = PrepareSharesLinear.DP(params, data)
+  params <- PrepareSharesLinear.DP(params, data)
   files = c("products.rdata", "halfshare.rdata", "colstats.rdata")
-  params = SendPauseContinue.kp(params, filesAC = files, from = "AC",
-                                sleepTime = sleepTime, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
+  params <- SendPauseContinue.kp(params, filesAC = files, from = "AC",
+                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime, waitForTurn = TRUE)
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
     params$errorMessage = possibleError$message
     warning(possibleError$message)
-    params = SendPauseQuit.kp(params, sleepTime = sleepTime, waitForTurn = TRUE)
+    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
   } else {
-    params = GetResultsLinear.DP(params)
-    params = SendPauseQuit.kp(params, sleepTime = sleepTime, waitForTurn = TRUE)
+    params <- GetResultsLinear.DP(params)
+    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
   }
 }
@@ -673,20 +673,20 @@ DataPartnerKLinear = function(data,
 AnalysisCenterKLinear = function(numDataPartners = NULL,
                                  monitorFolder   = NULL,
                                  msreqid         = "v_default_0_000",
-                                 sleepTime       = 10,
+                                 sleep_time       = 10,
                                  maxWaitingTime  = 24 * 60 * 60,
                                  popmednet       = TRUE,
                                  trace           = FALSE,
                                  verbose         = TRUE) {
-  params = PrepareParams.kp("linear", 0, numDataPartners, msreqid, ac = TRUE,
+  params <- PrepareParams.kp("linear", 0, numDataPartners, msreqid, ac = TRUE,
                             popmednet = popmednet, trace = trace, verbose = verbose)
   if (params$failed) {
     warning(params$errorMessage)
     return(invisible(NULL))
   }
-  params = InitializeLog.kp(params)
-  params = InitializeStamps.kp(params)
-  params = InitializeTrackingTable.kp(params)
+  params <- InitializeLog.kp(params)
+  params <- InitializeStamps.kp(params)
+  params <- InitializeTrackingTable.kp(params)
   Header(params)
 
   params   = PrepareFolder.ACDP(params, monitorFolder)
@@ -696,7 +696,7 @@ AnalysisCenterKLinear = function(numDataPartners = NULL,
     return(invisible(NULL))
   }
 
-  params = PauseContinue.kp(params, from = "DP", maxWaitingTime = maxWaitingTime)
+  params <- PauseContinue.kp(params, from = "DP", maxWaitingTime = maxWaitingTime)
 
   possibleError = ReceivedError.kp(params, from = "DP")
   if (possibleError$error) {
@@ -704,47 +704,47 @@ AnalysisCenterKLinear = function(numDataPartners = NULL,
     warning(possibleError$message)
     MakeErrorMessage(params$writePath, possibleError$message)
     files = "errorMessage.rdata"
-    params = SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                  sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
-    params = SendPauseQuit.kp(params, sleepTime = sleepTime, job_failed = TRUE)
+    params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
+                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.kp(params)
     return(params$stats)
   }
 
-  params = CheckAgreement.AC(params)
+  params <- CheckAgreement.AC(params)
 
   if (params$failed) {
     MakeErrorMessage(params$writePath, params$errorMessage)
     files = "errorMessage.rdata"
     warning(params$errorMessage)
-    params = SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                  sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
-    params = SendPauseQuit.kp(params, sleepTime = sleepTime, job_failed = TRUE)
+    params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
+                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.kp(params)
     return(params$stats)
   }
 
   files = "empty.rdata"
-  params = SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
+  params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
+                                sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
 
-  params = GetProductsLinear.AC(params)
-  params = ComputeResultsLinear.AC(params)
+  params <- GetProductsLinear.AC(params)
+  params <- ComputeResultsLinear.AC(params)
 
   if (params$failed) {
     MakeErrorMessage(params$writePath, params$errorMessage)
     files = "errorMessage.rdata"
     warning(params$errorMessage)
-    params = SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                  sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
-    params = SendPauseQuit.kp(params, sleepTime = sleepTime, job_failed = TRUE)
+    params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
+                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+    params <- SendPauseQuit.kp(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.kp(params)
     return(params$stats)
   } else {
     files = "stats.rdata"
-    params = SendPauseContinue.kp(params, filesDP = files, from = "DP",
-                                  sleepTime = sleepTime, maxWaitingTime = maxWaitingTime)
-    params = SendPauseQuit.kp(params, sleepTime = sleepTime)
+    params <- SendPauseContinue.kp(params, filesDP = files, from = "DP",
+                                  sleep_time = sleep_time, maxWaitingTime = maxWaitingTime)
+    params <- SendPauseQuit.kp(params, sleep_time = sleep_time)
     SummarizeLog.kp(params)
     return(params$stats)
   }
