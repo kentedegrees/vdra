@@ -1275,9 +1275,9 @@ SurvFitCox.A2 = function(params, survival, pred) {
       n       = length(nevent)
       sum1 = double(n)   # a vector of 0's, length number of unique event times
       for (i in 1:n) {
-        d = ndeath[i];
+        d = ndeath[i]
         if (d == 1) {
-          sum1[i] = 1 / nrisk[i];
+          sum1[i] = 1 / nrisk[i]
         } else if (d > 1) {
           for (j in 0:(d - 1)) {
             sum1[i] = sum1[i] + 1 / (d * nrisk[i] - erisk[i] * j)
@@ -1335,12 +1335,12 @@ ComputeResultsCox.A2 = function(params, data) {
   stats$zvals        = stats$coefficients / stats$secoef  # z values
   stats$pvals        = 2 * pnorm(abs(stats$zvals), lower.tail = FALSE )   # pvals
   stats$stars        = matrix(sapply(stats$pvals, function(x) {
-    if (is.na(x)) ''
-    else if (x < 0.001) '***'
-    else if (x < 0.01) '**'
-    else if (x < 0.05) '*'
-    else if (x < 0.1) '.'
-    else ' '
+    if (is.na(x)) ""
+    else if (x < 0.001) "***"
+    else if (x < 0.01)  "**"
+    else if (x < 0.05)  "*"
+    else if (x < 0.1)   "."
+    else " "
   }))
   stats$lower95      = exp(stats$coefficients - qnorm(0.975) * stats$secoef)
   stats$upper95      = exp(stats$coefficients + qnorm(0.975) * stats$secoef)
@@ -1352,9 +1352,9 @@ ComputeResultsCox.A2 = function(params, data) {
   stats$score        = t(params$nullScore) %*% solve(params$nullHessian) %*% params$nullScore
   stats$score        = c(stats$score, 1 - pchisq(stats$score, stats$df))
   stats$method       = "efron"
-  stats$lrt          = 2*(stats$loglik[2] - stats$loglik[1])
+  stats$lrt          = 2 * (stats$loglik[2] - stats$loglik[1])
   stats$lrt          = c(stats$lrt, 1 - pchisq(stats$lrt, stats$df))
-  stats$rsquare      = c(1 - exp(-stats$lrt[1]/stats$n),
+  stats$rsquare      = c(1 - exp(-stats$lrt[1] / stats$n),
                          1 - exp(2 * stats$loglik[1] / stats$n))
   stats$wald.test    = t(tempcoefs) %*% params$XtWX %*% tempcoefs
   stats$wald.test    = c(stats$wald.test,
@@ -1366,7 +1366,7 @@ ComputeResultsCox.A2 = function(params, data) {
     for (i in 1:length(data$survival$strata)) {
       strat[data$survival$strata[[i]]$start:data$survival$strata[[i]]$end] = i
     }
-    results = survival::concordance(surv~pred + strata(strat))
+    results = survival::concordance(surv ~ pred + strata(strat))
     if (class(results$stats) == "matrix") {  # more than one strata
       stats$concordance = c(apply(results$count, 2, sum)[1:4], results$concordance, sqrt(results$var))
     } else {                                 # only one strata, so a numeric vector
@@ -1719,12 +1719,12 @@ ComputeResultsCox.B2 = function(params, data) {
   stats$zvals        = stats$coefficients / stats$secoef  # z values
   stats$pvals        = 2 * pnorm(abs(stats$zvals), lower.tail = FALSE )   # pvals
   stats$stars        = matrix(sapply(stats$pvals, function(x) {
-    if (is.na(x)) ''
-    else if (x < 0.001) '***'
-    else if (x < 0.01) '**'
-    else if (x < 0.05) '*'
-    else if (x < 0.1) '.'
-    else ' '
+    if (is.na(x)) ""
+    else if (x < 0.001) "***"
+    else if (x < 0.01)  "**"
+    else if (x < 0.05)  "*"
+    else if (x < 0.1)   "."
+    else " "
   }))
   stats$lower95      = exp(stats$coefficients - qnorm(0.975) * stats$secoef)
   stats$upper95      = exp(stats$coefficients + qnorm(0.975) * stats$secoef)
@@ -1749,9 +1749,9 @@ ComputeResultsCox.B2 = function(params, data) {
   stats$df           = params$p
   stats$score        = c(stats$score, 1 - pchisq(stats$score, stats$df))
   stats$method       = "efron"
-  stats$lrt          = 2*(stats$loglik[2] - stats$loglik[1])
+  stats$lrt          = 2 * (stats$loglik[2] - stats$loglik[1])
   stats$lrt          = c(stats$lrt, 1 - pchisq(stats$lrt, stats$df))
-  stats$rsquare      = c(1 - exp(-stats$lrt[1]/stats$n),
+  stats$rsquare      = c(1 - exp(-stats$lrt[1] / stats$n),
                          1 - exp(2 * stats$loglik[1] / stats$n))
   stats$wald.test    = c(stats$wald.test,
                          1 - pchisq(stats$wald.test, stats$df))

@@ -77,19 +77,19 @@ Directory Structure
 ```
 
 ```{r, echo = FALSE}
-kable(data.frame(`Write Directory` = c("inputfiles", 
+kable(data.frame(`Write Directory` = c("inputfiles",
                                        "msoc"),
-                `Client Writing files` = c("dp0", 
+                `Client Writing files` = c("dp0",
                                            "dp1, dp2, dp3")),
       caption = "Where each client write files.")
 
-kable(data.frame(`Read Directory` = c("inputfiles", 
-                                      "msoc1", 
-                                      "msoc2", 
+kable(data.frame(`Read Directory` = c("inputfiles",
+                                      "msoc1",
+                                      "msoc2",
                                       "msoc3"),
-                `Client which sent the files` = c("dp0", 
-                                                  "dp1", 
-                                                  "dp2", 
+                `Client which sent the files` = c("dp0",
+                                                  "dp1",
+                                                  "dp2",
                                                   "dp3")),
       caption = "Where files from each client are read.")
 ```
@@ -140,7 +140,7 @@ kable(data.frame(`file_nm` = c("stats.rdata",
                                   "2",
                                   "2",
                                   "10",
-                                  "10")), 
+                                  "10")),
       caption = "file_list.csv for sending files from dp0 to both dp1 and dp2.")
 ```
 
@@ -149,7 +149,7 @@ kable(data.frame(`file_nm` = c("dl_track_tbl.csv",
                                "file_list.csv",
                                "job_done.ok"),
                  `transfer_to_site` = c("10", "10", "10"),
-                 `dp_cd_list` = c("10", "10", "10")), 
+                 `dp_cd_list` = c("10", "10", "10")),
       caption = "file_list.csv for dp0 ending the PopMedNet request.")
 ```
 

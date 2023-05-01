@@ -76,10 +76,10 @@ The `VDRA` package comes with a data set `vdra_data` which contains simulated da
 The four response variables are:
 
 ```{r, echo = FALSE}
-kable(data.frame(`Variable(s)` = c("Change_BMI", 
-                                   "WtLost", 
+kable(data.frame(`Variable(s)` = c("Change_BMI",
+                                   "WtLost",
                                    "Time, Status"),
-                 `Intended Use` = c("Linear Regression", 
+                 `Intended Use` = c("Linear Regression",
                                     "Logistic Regression",
                                     "Cox Regression")))
 ```
@@ -247,7 +247,7 @@ The output is similar if we had used `coxph()` in the `survival` package:
 ```{r}
 library(survival)
 fit = coxph(Surv(Time, Status) ~ ., data = vdra_data[, 3:11])
-summary(fit)            
+summary(fit)
 ```
 
 # $2^T$-party Vertically Distributed Regression {#twoTparty}
@@ -598,8 +598,8 @@ sf = survfitDistributed(vdra_fit_cox_A, ~ Exposure, data = vdra_data[c(3:4, 5:7)
 print(sf)
 
 # plot both curves in the same plot
-plot(sf, xlim = c(0, 400), ylim = c(0, 1), 
-         xlab = "Time to Event", ylab = "Survival Percentage", 
+plot(sf, xlim = c(0, 400), ylim = c(0, 1),
+         xlab = "Time to Event", ylab = "Survival Percentage",
          main = "BMI Study")
 
 # plot curves in two different plots.

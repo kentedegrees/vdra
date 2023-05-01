@@ -1070,9 +1070,9 @@ ComputeResultsLogistic.A2 = function(params, data) {
   indicies = params$IndiciesKeep
 
 
-  betasB = NULL;
-  offsetB = NULL;
-  BFinalFitted = NULL;
+  betasB = NULL
+  offsetB = NULL
+  BFinalFitted = NULL
   readTime = proc.time()[3]
   load(file.path(params$readPath, "b_final.rdata"))  # betasB, offsetB, BFinalFitted
   readSize = sum(file.size(file.path(params$readPath, "b_final.rdata")))

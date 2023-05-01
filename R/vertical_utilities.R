@@ -2103,7 +2103,7 @@ ConvertSecsToHMS = function(secs, final = FALSE, timeOnly = FALSE) {
 }
 
 HMS = function(t) {
-  paste(paste(formatC(t %/% (60*60), width = 2, format = "d", flag = "0"),
+  paste(paste(formatC(t %/% (60 * 60), width = 2, format = "d", flag = "0"),
               formatC(t %/% 60 %% 60, width = 2, format = "d", flag = "0"),
               formatC(t %% 60, width = 2, format = "d", flag = "0"),
               sep = ":"))
@@ -3537,7 +3537,8 @@ validFormula = function(expression) {
 
   # Check to make sure this is a valid expression
   if (tryCatch({
-    is.expression(expression); FALSE
+    is.expression(expression)
+    FALSE
   },
   error = function(err) {
     TRUE
@@ -3563,7 +3564,8 @@ validFormula2 = function(expression) {
   # This function takes and expression and checks that it is of the form ~ var1 + var2 + ... + varN
   # Duplicate variables are ignored.  That is, ~ var1 + var1 is equivalent to ~ var1
   if (tryCatch({
-    is.expression(expression); FALSE
+    is.expression(expression)
+    FALSE
   },
   error = function(err) {
     TRUE
@@ -3671,12 +3673,12 @@ print.summary.vdralinear = function(x, lion = FALSE, ...) {
   }
 
   x$stars          = sapply(x$pvals, function(x) {
-    if (is.na(x)) ''
-    else if (x < 0.001) '***'
-    else if (x < 0.01) '**'
-    else if (x < 0.05) '*'
-    else if (x < 0.1) '.'
-    else ' '
+    if (is.na(x))       ""
+    else if (x < 0.001) "***"
+    else if (x < 0.01)  "**"
+    else if (x < 0.05)  "*"
+    else if (x < 0.1)   "."
+    else                " "
   })
 
   temp = data.frame(formatStrings(names(x$party)),
@@ -3807,12 +3809,12 @@ print.summary.vdralogistic = function(x, lion = FALSE, ...) {
                   x$iter, "iterations. Reported statistics are approximate."))
   }
   x$stars = sapply(x$pvals, function(x) {
-    if (is.na(x)) ''
-    else if (x < 0.001) '***'
-    else if (x < 0.01) '**'
-    else if (x < 0.05) '*'
-    else if (x < 0.1) '.'
-    else ' '
+    if (is.na(x)) ""
+    else if (x < 0.001) "***"
+    else if (x < 0.01)  "**"
+    else if (x < 0.05)  "*"
+    else if (x < 0.1)   "."
+    else " "
   })
 
   temp = data.frame(formatStrings(names(x$party)),
@@ -3852,7 +3854,7 @@ print.vdracox = function(x, ...) {
 
   coeftab = data.frame(x$coefficients, x$expcoef, x$secoef, x$zvals, x$pvals)
   colnames(coeftab) = c("coef", "exp(coef)", "se(coef)", "z", "p")
-  printCoefmat(coeftab, P.values = TRUE, has.Pvalue=TRUE, signif.stars = FALSE)
+  printCoefmat(coeftab, P.values = TRUE, has.Pvalue = TRUE, signif.stars = FALSE)
   cat("\n")
   cat(paste0("Likelihood ratio test=", formatStat(x$lrt[1])), "on",
       x$df, paste0("df, p=", format.pval(x$lrt[2])), "\n")
@@ -3954,12 +3956,12 @@ print.summary.vdracox = function(x, lion = FALSE, ...) {
   }
 
   x$stars = sapply(x$pvals, function(x) {
-    if (is.na(x)) ''
-    else if (x < 0.001) '***'
-    else if (x < 0.01) '**'
-    else if (x < 0.05) '*'
-    else if (x < 0.1) '.'
-    else ' '
+    if (is.na(x)) ""
+    else if (x < 0.001) "***"
+    else if (x < 0.01)  "**"
+    else if (x < 0.05)  "*"
+    else if (x < 0.1)   "."
+    else " "
   })
 
   temp1 = data.frame(formatStrings(names(x$party)),
@@ -3985,7 +3987,8 @@ print.summary.vdracox = function(x, lion = FALSE, ...) {
   print(temp2, row.names = FALSE, right = TRUE)
   cat("\n")
   if (!is.na(x$concordance[5])) {
-    cat("Concordance=", formatStat(x$concordance[5]), "(se =",formatStat(x$concordance[6]), ")\n")
+    cat("Concordance=", formatStat(x$concordance[5]),
+        "(se =", formatStat(x$concordance[6]), ")\n")
   }
   cat("Likelihood ratio test=", formatStat(x$lrt[1]),
       "on",                     x$df,
@@ -4129,12 +4132,12 @@ differentModel = function(formula = NULL, x = NULL) {
   secoef  = tvals^-1 * betas
   pvals   = 2 * pt(abs(tvals), n - numCovariates - 1, lower.tail = FALSE)
   stars   = matrix(sapply(pvals, function(x) {
-    if (is.na(x)) ''
-    else if (x < 0.001) '***'
-    else if (x < 0.01) '**'
-    else if (x < 0.05) '*'
-    else if (x < 0.1) '.'
-    else ' '
+    if (is.na(x)) ""
+    else if (x < 0.001) "***"
+    else if (x < 0.01)  "**"
+    else if (x < 0.05)  "*"
+    else if (x < 0.1)   "."
+    else " "
   }))
 
   y = list()
@@ -4249,7 +4252,7 @@ HoslemInternal = function(x, data = NULL, nGroups = 10) {
 print.hoslemdistributed = function(x, ...) {
   cat("Hosmer and Lemeshow goodness of fit (GOF) test\n",
       "       Chi-squared:", x$hoslem[1], "with DF",
-      paste0(x$hoslem[2],","), " p-value:", x$hoslem[3], "\n")
+      paste0(x$hoslem[2], ","), " p-value:", x$hoslem[3], "\n")
 }
 
 
@@ -4343,11 +4346,11 @@ RocInternal = function(x, data = NULL, bins = 500) {
 print.rocdistributed = function(x, ...) {
   rtrn = x$roc
   plot(rtrn[, 1], rtrn[, 2], xaxt = "n", yaxt = "n",
-       xlim = c(-0.2, 1.2), ylim = c(0,1 ),
+       xlim = c(-0.2, 1.2), ylim = c(0, 1),
        type = "s", ylab = "Sensitivity", xlab = "1 - Specificity", col = "blue",
        main = "ROC Curve")
-  axis(side = 1, at = seq(0,1, 0.2))
-  axis(side = 2, at = seq(0,1, 0.2))
+  axis(side = 1, at = seq(0, 1, 0.2))
+  axis(side = 2, at = seq(0, 1, 0.2))
   lines(x = c(0, 1), y = c(0, 1), col = "limegreen")
   text(0.8, 0.05, paste("Area under the curve:",
                         format(x$auc, digits = 4)))
