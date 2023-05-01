@@ -122,9 +122,9 @@ PrepareDataLinLog.DP1 <- function(params, data, y_name = NULL) {
   workdata$x <- x[, c(2, covariate_index), drop = FALSE]
 
   workdata$n        = nrow(workdata$x)
-  workdata$colmin   = apply(workdata$x, 2, min)
-  workdata$colmax   = apply(workdata$x, 2, max)
-  workdata$colsum   = apply(workdata$x, 2, sum)
+  workdata$colmin   <- apply(workdata$x, 2, min)
+  workdata$colmax   <- apply(workdata$x, 2, max)
+  workdata$colsum   <- apply(workdata$x, 2, sum)
   workdata$colrange <- workdata$colmax - workdata$colmin
   for (i in 1:ncol(workdata$x)) {
     if (workdata$colmin[i] == workdata$colmax[i]) {
@@ -158,9 +158,9 @@ PrepareDataLinLog.DPk <- function(params, data) {
   workdata$x <- workdata$x[, -1, drop = FALSE]
 
   workdata$n        = nrow(workdata$x)
-  workdata$colmin   = apply(workdata$x, 2, min)
-  workdata$colmax   = apply(workdata$x, 2, max)
-  workdata$colsum   = apply(workdata$x, 2, sum)
+  workdata$colmin   <- apply(workdata$x, 2, min)
+  workdata$colmax   <- apply(workdata$x, 2, max)
+  workdata$colsum   <- apply(workdata$x, 2, sum)
   workdata$colrange <- workdata$colmax - workdata$colmin
   for (i in 1:ncol(workdata$x)) {
     if (workdata$colmin[i] == workdata$colmax[i]) {

@@ -46,9 +46,9 @@ prepare_data_cox_DP <- function(params, data, y_name, strata, mask) {
     workdata$tags <- create_model_matrix_tags(data[, covariate_index, drop = FALSE])
     workdata$x <- model.matrix(~ ., data[, covariate_index, drop = FALSE])
     workdata$x <- workdata$x[, -1, drop = FALSE]
-    workdata$colmin   = apply(workdata$x, 2, min)
-    workdata$colmax   = apply(workdata$x, 2, max)
-    workdata$colsum   = apply(workdata$x, 2, sum)
+    workdata$colmin   <- apply(workdata$x, 2, min)
+    workdata$colmax   <- apply(workdata$x, 2, max)
+    workdata$colsum   <- apply(workdata$x, 2, sum)
     workdata$colrange <- workdata$colmax - workdata$colmin
     for (i in 1:ncol(workdata$x)) {
       if (workdata$colmin[i] == workdata$colmax[i]) {
@@ -342,10 +342,10 @@ AddStrataToDataCox.DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "AddStrataToDataCox.DP\n\n")
   data$x <- cbind(params$strata, data$x)
 
-  colmin1 = apply(params$strata, 2, min)
-  colmax1 = apply(params$strata, 2, max)
+  colmin1 <- apply(params$strata, 2, min)
+  colmax1 <- apply(params$strata, 2, max)
   colrange1 = colmax1 - colmin1
-  colsum1   = apply(params$strata, 2, sum)
+  colsum1   <- apply(params$strata, 2, sum)
   data$colmax = c(colmax1, data$colmax)
   data$colmin = c(colmin1, data$colmin)
   data$colmin[1] = 0
@@ -628,7 +628,7 @@ check_colinearity_cox_AC <- function(params) {
   }
   params$halfshare <- do.call(cbind, params$halfshare)
 
-  params$halfsharecolsum = apply(params$halfshare, 2, sum)
+  params$halfsharecolsum <- apply(params$halfshare, 2, sum)
 
   cutoff = params$cutoff
   pReduct = params$pReduct
@@ -900,8 +900,8 @@ ComputeSDelLCox.DP <- function(params, data) {
   params$w_s_l = w_s_l
   params$tS.deltal.L = tS.deltal.L
 
-  colmin.w_s_l   = apply(w_s_l, 2, min)
-  colmax.w_s_l   = apply(w_s_l, 2, max)
+  colmin.w_s_l   <- apply(w_s_l, 2, min)
+  colmax.w_s_l   <- apply(w_s_l, 2, max)
   colrange.w_s_l = colmax.w_s_l - colmin.w_s_l
 
   for (i in 1:ncol(w_s_l)) {

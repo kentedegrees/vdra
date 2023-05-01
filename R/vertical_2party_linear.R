@@ -155,28 +155,27 @@ prepare_data_linear_a23 <- function(params, data, y_name = NULL) {
   covariate_index <- setdiff(1:ncol(data), response_index)
   workdata$tags <- create_model_matrix_tags(data[, covariate_index, drop = FALSE])
   workdata$tags <- c("(Intercept)", workdata$tags)
-  names(workdata$tags)[1] = "numeric"
-  x = model.matrix(~ ., data[, c(response_index, covariate_index), drop = FALSE])
-  rownames(x) = NULL
+  names(workdata$tags)[1] <- "numeric"
+  x <- model.matrix(~ ., data[, c(response_index, covariate_index), drop = FALSE])
+  rownames(x) <- NULL
   covariate_index <- setdiff(1:ncol(x), 2)
-  means = apply(x, 2, mean)
-  sd    = apply(x, 2, sd)
+  means <- apply(x, 2, mean)
+  sd    <- apply(x, 2, sd)
   sd    <- sapply(sd, function(x) {
     ifelse(x > 0, x, 1)
   })
-  workdata$Y      = x[, 2, drop = FALSE]
-  workdata$x      = x[, covariate_index, drop = FALSE]
-  workdata$means_y = means[2]
-  workdata$sdy    = sd[2]
-  workdata$means  = means[covariate_index]
-  workdata$sd     = sd[covariate_index]
-  workdata$yty    = t(workdata$Y) %*% workdata$Y
-
-  workdata$Y      = (workdata$Y - workdata$means_y) / workdata$sdy
+  workdata$Y      <- x[, 2, drop = FALSE]
+  workdata$x      <- x[, covariate_index, drop = FALSE]
+  workdata$means_y <- means[2]
+  workdata$sdy    <- sd[2]
+  workdata$means  <- means[covariate_index]
+  workdata$sd     <- sd[covariate_index]
+  workdata$yty    <- t(workdata$Y) %*% workdata$Y
+  workdata$Y      <- (workdata$Y - workdata$means_y) / workdata$sdy
 
   if (ncol(workdata$x) >= 2) {
     for (i in 2:ncol(workdata$x)) {
-      workdata$x[, i] = (workdata$x[, i] - workdata$means[i]) / workdata$sd[i]
+      workdata$x[, i] <- (workdata$x[, i] - workdata$means[i]) / workdata$sd[i]
     }
   }
 
@@ -208,16 +207,16 @@ prepare_data_linear_b23 <- function(params, data) {
   }
 
   workdata$x <- model.matrix(~ ., data)
-  rownames(workdata$x) = NULL
+  rownames(workdata$x) <- NULL
   workdata$x <- workdata$x[, -1, drop = FALSE]
-  workdata$means = apply(workdata$x, 2, mean)
-  workdata$sd    = apply(workdata$x, 2, sd)
+  workdata$means <- apply(workdata$x, 2, mean)
+  workdata$sd    <- apply(workdata$x, 2, sd)
   workdata$sd    <- sapply(workdata$sd, function(x) {
     ifelse(x > 0, x, 1)
   })
 
   for (i in 1:ncol(workdata$x)) {
-    workdata$x[, i] = (workdata$x[, i] - workdata$means[i]) / workdata$sd[i]
+    workdata$x[, i] <- (workdata$x[, i] - workdata$means[i]) / workdata$sd[i]
   }
 
   return(workdata)
@@ -225,40 +224,40 @@ prepare_data_linear_b23 <- function(params, data) {
 
 prepare_params_linear_b2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_b2\n\n")
-  params$failed         = FALSE
-  params$halted         = FALSE
-  params$singular_matrix = FALSE
+  params$failed          <- FALSE
+  params$halted          <- FALSE
+  params$singular_matrix <- FALSE
 
-  params$n             = nrow(data$x)
-  params$num_events     = 0
-  params$p1            = 0
-  params$p2            = ncol(data$x)
-  params$p             = params$p1 + params$p2
-  params$p1_old        = 0
-  params$p2_old        = params$p2
-  params$a_col_names     = c("")
-  params$b_col_names     = colnames(data$x)
-  params$y_name         = ""
-  params$a_col_names_old = c("")
-  params$b_col_names_old = c("")
+  params$n             <- nrow(data$x)
+  params$num_events    <- 0
+  params$p1            <- 0
+  params$p2            <- ncol(data$x)
+  params$p             <- params$p1 + params$p2
+  params$p1_old        <- 0
+  params$p2_old        <- params$p2
+  params$a_col_names   <- c("")
+  params$b_col_names   <- colnames(data$x)
+  params$y_name         <- ""
+  params$a_col_names_old <- c("")
+  params$b_col_names_old <- c("")
 
-  params$means_a        = 0
-  params$sda           = 0
-  params$means_b        = data$means
-  params$sdb           = data$sd
-  params$yty           = 0
+  params$means_a        <- 0
+  params$sda           <- 0
+  params$means_b        <- data$means
+  params$sdb           <- data$sd
+  params$yty           <- 0
 
   pb          <- list()
-  pb$p2       = params$p2
-  pb$n        = params$n
-  pb$means    = data$means
-  pb$sd       = data$sd
-  pb$analysis = params$analysis
-  pb$b_col_names   = params$b_col_names
-  pb$tags        = data$tags
+  pb$p2       <- params$p2
+  pb$n        <- params$n
+  pb$means    <- data$means
+  pb$sd       <- data$sd
+  pb$analysis <- params$analysis
+  pb$b_col_names   <- params$b_col_names
+  pb$tags        <- data$tags
 
   write_time <- proc.time()[3]
-  save(pb, file = file.path(params$write_path, "pb.rdata"))
+  save(pb, file <- file.path(params$write_path, "pb.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, "pb.rdata")))
   write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "prepare_params_linear_b2", 0, 0, write_time, write_size)
@@ -269,10 +268,10 @@ prepare_params_linear_b2 <- function(params, data) {
 prepare_params_linear_a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_a2\n\n")
 
-  params$halted          = FALSE
-  params$singular_matrix  = FALSE
-  params$pmn_step_counter  = 1
-  pb                     = NULL
+  params$halted          <- FALSE
+  params$singular_matrix  <- FALSE
+  params$pmn_step_counter  <- 1
+  pb                     <- NULL
 
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "pb.rdata")) # load pb
@@ -295,37 +294,37 @@ prepare_params_linear_a2 <- function(params, data) {
     params$failed <- TRUE
   }
 
-  params$p1 = ncol(data$x)
-  params$p2 = pb$p2
-  params$p  = params$p1 + params$p2
-  params$p1_old = params$p1
-  params$p2_old = params$p2
+  params$p1 <- ncol(data$x)
+  params$p2 <- pb$p2
+  params$p  <- params$p1 + params$p2
+  params$p1_old <- params$p1
+  params$p2_old <- params$p2
 
-  params$a_col_names = colnames(data$x)
-  params$b_col_names = pb$b_col_names
-  params$y_name     = colnames(data$Y)
-  params$a_col_names_old = c("")
-  params$b_col_names_old = c("")
-  params$a_tags     = data$tags
-  params$b_tags     = pb$tags
+  params$a_col_names <- colnames(data$x)
+  params$b_col_names <- pb$b_col_names
+  params$y_name     <- colnames(data$Y)
+  params$a_col_names_old <- c("")
+  params$b_col_names_old <- c("")
+  params$a_tags     <- data$tags
+  params$b_tags     <- pb$tags
 
-  params$means_a = data$means
-  params$sda    = data$sd
-  params$means_b = pb$means
-  params$sdb    = pb$sd
-  params$yty    = data$yty
-  params$means_y = data$means_y
-  params$sdy    = data$sdy
+  params$means_a <- data$means
+  params$sda    <- data$sd
+  params$means_b <- pb$means
+  params$sdb    <- pb$sd
+  params$yty    <- data$yty
+  params$means_y <- data$means_y
+  params$sdy    <- data$sdy
 
   pa        <- list()
-  pa$p1     = params$p1
-  pa$means  = data$means
-  pa$sd     = data$sd
-  pa$yty    = data$yty
-  pa$y_name  = data$y_name
-  pa$a_col_names = params$a_col_names
+  pa$p1     <- params$p1
+  pa$means  <- data$means
+  pa$sd     <- data$sd
+  pa$yty    <- data$yty
+  pa$y_name  <- data$y_name
+  pa$a_col_names <- params$a_col_names
   write_time <- proc.time()[3]
-  save(pa, file = file.path(params$write_path, "pa.rdata"))
+  save(pa, file <- file.path(params$write_path, "pa.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, "pa.rdata")))
   write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "prepare_params_linear_a2", read_time, read_size,
@@ -411,8 +410,8 @@ get_z_linear_a2 <- function(params, data) {
     }
     strt <- params$blocks$starts[i]
     stp <- params$blocks$stops[i]
-    n = stp - strt + 1
-    g = params$blocks$g[i]
+    n <- stp - strt + 1
+    g <- params$blocks$g[i]
     z <- FindOrthogonalVectors(cbind(data$Y[strt:stp, ], data$x[strt:stp, ]), g)
 
     write_time <- write_time - proc.time()[3]
@@ -437,14 +436,14 @@ finalize_params_linear_b2 <- function(params, data) {
   read_size <- sum(file.size(file.path(params$read_path, "pa.rdata")))
   read_time <- proc.time()[3] - read_time
   params$p1     <- pa$p1
-  params$p1_old = params$p1
-  params$p      = params$p1 + params$p2
-  params$means_a = pa$means
-  params$sda    = pa$sd
-  params$yty    = pa$yty
-  params$y_name  = pa$y_name
+  params$p1_old <- params$p1
+  params$p      <- params$p1 + params$p2
+  params$means_a <- pa$means
+  params$sda    <- pa$sd
+  params$yty    <- pa$yty
+  params$y_name  <- pa$y_name
 
-  params$a_col_names = pa$a_col_names
+  params$a_col_names <- pa$a_col_names
   params <- add_to_log(params, "finalize_params_linear_b2", read_time, read_size, 0, 0)
   return(params)
 }
@@ -543,8 +542,8 @@ get_products_linear_a2 <- function(params, data) {
 
   xa_t_xa <- t(data$x) %*% data$x
   xa_t_y  <- t(data$x) %*% data$Y
-  y_t_xb  = 0
-  xa_t_xb = 0
+  y_t_xb  <- 0
+  xa_t_xb <- 0
 
   pbar <- make_progress_bar_1(params$blocks$num_blocks, "X'X", params$verbose)
 
@@ -575,17 +574,17 @@ get_products_linear_a2 <- function(params, data) {
   }
 
   xtx <- rbind(cbind(xa_t_xa, xa_t_xb), cbind(t(xa_t_xb), xb_t_xb))
-  x_t_y = rbind(xa_t_y, t(y_t_xb))
+  x_t_y <- rbind(xa_t_y, t(y_t_xb))
 
   # lasso: x is standardized but needs to be divided by sqrt(n - 1),
   # y is standardized
-  x_t_x_lasso = xtx / (n - 1)
-  x_t_y_lasso = params$sdy * x_t_y / sqrt(n - 1)
+  x_t_x_lasso <- xtx / (n - 1)
+  x_t_y_lasso <- params$sdy * x_t_y / sqrt(n - 1)
 
   params$xtx <- xtx
-  params$xty = x_t_y
-  params$xtxLasso = x_t_x_lasso
-  params$xtyLasso = x_t_y_lasso
+  params$xty <- x_t_y
+  params$xtxLasso <- x_t_x_lasso
+  params$xtyLasso <- x_t_y_lasso
 
   params$converged = TRUE
 
@@ -616,15 +615,15 @@ compute_results_linear_a2 <- function(params, data) {
   xtx <- diag(c(sda, sdb)) %*% xtx %*% diag(c(sda, sdb))
   offset  <- matrix(c(means_a, means_b), ncol = 1) %*%
     matrix(c(means_a, means_b), nrow = 1) * n
-  offset[1, 1] = 0
+  offset[1, 1] <- 0
   xtx <- xtx + offset
 
-  xty = diag(c(sda, sdb)) %*% xty * sdy
-  offset = n * means_y * matrix(c(means_a, means_b), ncol = 1)
-  xty = xty + offset
+  xty <- diag(c(sda, sdb)) %*% xty * sdy
+  offset <- n * means_y * matrix(c(means_a, means_b), ncol = 1)
+  xty <- xty + offset
 
   # Now, we check for colinearity
-  nrow = nrow(xtx)
+  nrow <- nrow(xtx)
   indicies <- c(1)
   for (i in 2:nrow) {
     temp_indicies <- c(indicies, i)
@@ -634,30 +633,30 @@ compute_results_linear_a2 <- function(params, data) {
   }
 
   a_index        <- which(indicies <= length(a_names))
-  a_indicies_keep = indicies[a_index]
-  b_indicies_keep = indicies[-a_index] - length(a_names)
+  a_indicies_keep <- indicies[a_index]
+  b_indicies_keep <- indicies[-a_index] - length(a_names)
 
-  names_old     = c(a_names, b_names)
-  p             = length(indicies)
-  xtx_old       = xtx
-  xty_old       = xty
-  xtx           = xtx[indicies, indicies, drop = FALSE]
+  names_old     <- c(a_names, b_names)
+  p             <- length(indicies)
+  xtx_old       <- xtx
+  xty_old       <- xty
+  xtx           <- xtx[indicies, indicies, drop = FALSE]
   xty            <- matrix(xty[indicies, ], ncol = 1)
 
   invxtx <- solve(xtx)
-  betas  = drop(invxtx %*% xty)
+  betas  <- drop(invxtx %*% xty)
 
   num_covariates <- p - 1
 
   #   # If true sse is approximately 0, random variations could cause this
   #   # calculation to be less than 0
   #   # If calculated sse is less than 0, we set it equal to 0.
-  sse     = max(drop(yty - 2 * t(xty) %*% betas + (t(betas) %*% xtx) %*% betas), 0)
-  rstderr = drop(sqrt(sse / (n - num_covariates - 1)))
-  sst     = drop(yty - means_y^2 * n)
-  ssr     = sst - sse
-  df1     = num_covariates
-  df2     = n - num_covariates - 1
+  sse     <- max(drop(yty - 2 * t(xty) %*% betas + (t(betas) %*% xtx) %*% betas), 0)
+  rstderr <- drop(sqrt(sse / (n - num_covariates - 1)))
+  sst     <- drop(yty - means_y^2 * n)
+  ssr     <- sst - sse
+  df1     <- num_covariates
+  df2     <- n - num_covariates - 1
   if (sse == 0) {
     f_stat <- Inf
   } else {
@@ -671,9 +670,9 @@ compute_results_linear_a2 <- function(params, data) {
   }
   adj_r_sq <- drop(1 - (n - 1) / (n - num_covariates - 1) * (1 - r_sq))
   if (rstderr == 0) {
-    tvals = rep(Inf, num_covariates + 1)
+    tvals <- rep(Inf, num_covariates + 1)
   } else {
-    tvals   = betas / (rstderr * sqrt(diag(invxtx)))
+    tvals   <- betas / (rstderr * sqrt(diag(invxtx)))
   }
   secoef  <- tvals^-1 * betas
   pvals   <- 2 * pt(abs(tvals), n - num_covariates - 1, lower.tail = FALSE)
@@ -728,7 +727,7 @@ compute_results_linear_a2 <- function(params, data) {
 
 get_results_linear_b2 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "get_results_linear_b2\n\n")
-  params$converged = TRUE
+  params$converged <- TRUE
   stats <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "stats.rdata"))
@@ -763,7 +762,7 @@ party_a_process_2_linear <- function(data,
   params <- initialize_tracking_table_2p(params)
   header(params)
 
-  params   = prepare_folder_linear_a2(params, monitor_folder)
+  params   <- prepare_folder_linear_a2(params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
@@ -772,7 +771,7 @@ party_a_process_2_linear <- function(data,
 
   params <- PauseContinue.2p(params,  max_waiting_time)
   if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
-    params$completed = TRUE
+    params$completed <- TRUE
     warning(read_error_message(params$read_path))
     params$pmn_step_counter <- 1
     params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
@@ -781,7 +780,7 @@ party_a_process_2_linear <- function(data,
   }
 
   if (data$failed) {
-    params$completed = TRUE
+    params$completed <- TRUE
     message <- "Error in processing the data for Party A."
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
@@ -795,7 +794,7 @@ party_a_process_2_linear <- function(data,
   params <- prepare_params_linear_a2(params, data)
 
   if (params$failed) {   # Check for failed from prepare_params_linear_a2()
-    params$completed = TRUE
+    params$completed <- TRUE
     make_error_message(params$write_path, params$error_message)
     files <- c("error_message.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
@@ -807,7 +806,7 @@ party_a_process_2_linear <- function(data,
   params <- prepare_blocks_linear_a2(params, blocksize)
 
   if (params$failed) { # Check for failed from prepare_blocks_cox_a2()
-    params$completed = TRUE
+    params$completed <- TRUE
     make_error_message(params$write_path, params$error_message)
     files <- c("error_message.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
@@ -822,7 +821,7 @@ party_a_process_2_linear <- function(data,
             seq_zw("cz_", length(params$container$file_break_z)))
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
-  params$completed = TRUE
+  params$completed <- TRUE
   params <- get_products_linear_a2(params, data)
   params <- compute_results_linear_a2(params, data)
   files <- c("stats.rdata")
@@ -847,7 +846,7 @@ party_b_process_2_linear <- function(data,
   params <- initialize_tracking_table_2p(params)
 
   header(params)
-  params   = prepare_folder_linear_b2(params, monitor_folder)
+  params   <- prepare_folder_linear_b2(params, monitor_folder)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
@@ -855,7 +854,7 @@ party_b_process_2_linear <- function(data,
   data <- prepare_data_linear_b23(params, data)
 
   if (data$failed) { # Check for Error from prepare_data_cox_b2()
-    params$completed = TRUE
+    params$completed <- TRUE
     message <- "Error in processing the data for Party B."
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
@@ -863,13 +862,13 @@ party_b_process_2_linear <- function(data,
     return(params$stats)
   }
 
-  params   = prepare_params_linear_b2(params, data)
+  params   <- prepare_params_linear_b2(params, data)
 
   files <- c("pb.rdata")
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
-    params$completed = TRUE
+    params$completed <- TRUE
     warning(read_error_message(params$read_path))
     params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
     return(params$stats)
@@ -883,7 +882,7 @@ party_b_process_2_linear <- function(data,
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   params <- get_results_linear_b2(params)
-  params$completed = TRUE
+  params$completed <- TRUE
 
   params <- send_pause_quit_2p(params, sleep_time = sleep_time)
   return(params$stats)

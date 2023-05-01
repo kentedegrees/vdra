@@ -161,8 +161,8 @@ prepare_data_logistic_a23 <- function(params, data, y_name = NULL) {
   rownames(x) = NULL
   covariate_index <- setdiff(1:ncol(x), 2)
 
-  means = apply(x, 2, mean)
-  sd    = apply(x, 2, sd)
+  means <- apply(x, 2, mean)
+  sd    <- apply(x, 2, sd)
   sd    <- sapply(sd, function(x) {
     ifelse(x > 0, x, 1)
   })
@@ -205,8 +205,8 @@ prepare_data_logistic_b23 <- function(params, data) {
   workdata$x <- model.matrix(~ ., data)
   rownames(workdata$x) = NULL
   workdata$x <- workdata$x[, -1, drop = FALSE]
-  workdata$means = apply(workdata$x, 2, mean)
-  workdata$sd    = apply(workdata$x, 2, sd)
+  workdata$means <- apply(workdata$x, 2, mean)
+  workdata$sd    <- apply(workdata$x, 2, sd)
   workdata$sd    <- sapply(workdata$sd, function(x) {
     ifelse(x > 0, x, 1)
   })
@@ -834,7 +834,7 @@ get_v_logistic_b2 <- function(params, data) {
     pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
   # sums of each column in WX_B
-  sums_w_x_b = apply(MultiplyDiagonalWTimesX(w, data$x), 2, sum)
+  sums_w_x_b <- apply(MultiplyDiagonalWTimesX(w, data$x), 2, sum)
   # This information needs to be shared in order to get the intercept term
 
   write_time <- write_time - proc.time()[3]
@@ -865,7 +865,7 @@ get_ii_logistic_a2 <- function(params, data) {
 
   i_a = params$a_xty - t(data$x) %*% params$pi_
   w = params$pi_ * (1 - params$pi_)
-  sums_w_xa = apply(MultiplyDiagonalWTimesX(w, data$x), 2, sum)[-1]
+  sums_w_xa <- apply(MultiplyDiagonalWTimesX(w, data$x), 2, sum)[-1]
   params$sums_w_xa = sums_w_xa
 
   xa_t_w_xa <- t(data$x) %*% MultiplyDiagonalWTimesX(w, data$x)
