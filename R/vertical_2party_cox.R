@@ -157,18 +157,18 @@ extract_strata <- function(params, data, stratas, mask) {
         strata$strataFromMe     <- stratas[idx]
         strata$strataFromOthers <- stratas[!idx]
       }
-      strata$strata_index = which(colnames(data) %in% stratas)
+      strata$strata_index <- which(colnames(data) %in% stratas)
       if (length(strata$strata_index) > 0) {
-        strata$x = data[, strata$strata_index, drop = FALSE]
-        strata$legend = list()
+        strata$x <- data[, strata$strata_index, drop = FALSE]
+        strata$legend <- list()
         for (i in 1:ncol(strata$x)) {
-          levels = unique(strata$x[, i])
-          strata$legend[[colnames(strata$x)[i]]] = levels
+          levels <- unique(strata$x[, i])
+          strata$legend[[colnames(strata$x)[i]]] <- levels
           if (mask) {
-            levels = sample(levels)
-            strata$legend[[colnames(strata$x)[i]]] = rep("NA", length(levels))
+            levels <- sample(levels)
+            strata$legend[[colnames(strata$x)[i]]] <- rep("NA", length(levels))
           }
-          strata$x[, i] = sapply(strata$x[, i],
+          strata$x[, i] <- sapply(strata$x[, i],
                                  function(x) {
                                    which(levels %in% x)
                                  })
@@ -184,22 +184,22 @@ extract_strata <- function(params, data, stratas, mask) {
 prepare_data_cox_23 <- function(params, data, y_name, strata, mask) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_data_cox_23\n\n")
 
-  workdata = list()
-  workdata$failed = CheckDataFormat(params, data)
+  workdata <- list()
+  workdata$failed <- check_data_format(params, data)
 
   if (workdata$failed) {
     return(workdata)
   }
 
-  data = data.frame(data) # convert to a clean data.frame
+  data <- data.frame(data) # convert to a clean data.frame
 
   workdata$strata <- extract_strata(params, data, strata, mask)
   if (workdata$strata$failed) {
-    workdata$failed = TRUE
+    workdata$failed <- TRUE
     return(workdata)
   }
-  strata_index = workdata$strata$strata_index
-  response_index = numeric()
+  strata_index <- workdata$strata$strata_index
+  response_index <- numeric()
 
   if (params$party_name == "A") {
     response_index = CheckResponse(params, data, y_name)
@@ -223,7 +223,7 @@ prepare_data_cox_23 <- function(params, data, y_name, strata, mask) {
 
   if (length(covariate_index) == 0) {
     if (params$party_name == "A") {
-      workdata$x = matrix(0, nrow = nrow(data), ncol = 0)
+      workdata$x  <- matrix(0, nrow = nrow(data), ncol = 0)
     } else {
       warning("After removing strata, data is empty.  Party B must supply at least one non-strata covariate.")
       workdata$failed = TRUE
@@ -238,7 +238,7 @@ prepare_data_cox_23 <- function(params, data, y_name, strata, mask) {
     }
     workdata$x = scale(model.matrix(~ ., data[, covariate_index, drop = FALSE]),
                        center = TRUE, scale = FALSE)
-    workdata$x = workdata$x[, -1, drop = FALSE]
+    workdata$x <- workdata$x[, -1, drop = FALSE]
   }
 
   return(workdata)
@@ -359,7 +359,7 @@ prepare_strata_cox_a2 <- function(params, data) {
     read_time <- proc.time()[3] - read_time
   }
   if (length(data$strata$strata_from_a) == 0 && length(data$strata$strata_from_b) == 0) {
-    strata_temp$x = data.frame(const__ = rep(1, params$n))
+    strata_temp$x <- data.frame(const__ = rep(1, params$n))
     strata_temp$legend = FALSE
   } else if (length(data$strata$strata_from_a) > 0 && length(data$strata$strata_from_b) == 0) {
     strata_temp$x = data$strata$x
@@ -375,7 +375,7 @@ prepare_strata_cox_a2 <- function(params, data) {
   data$survival$status = data$survival$status[sorted]
   data$x = data$x[sorted, , drop = FALSE]
   data$survival$sorted = sorted
-  ranks = which(apply(abs(apply(strata_temp$x, 2, diff)), 1, sum) > 0)
+  ranks <- which(apply(abs(apply(strata_temp$x, 2, diff)), 1, sum) > 0)
   ranks = c(ranks, nrow(strata_temp$x))
   names(ranks) = NULL
   strata = rep(list(list()), length(ranks))
@@ -762,7 +762,7 @@ check_colinearity_cox_a2 <- function(params, data) {
     n2 <- stp - strt + 1
 
     read_time <- read_time - proc.time()[3]
-    w = matrix(readBin(con = to_read, what = numeric(), n = n2 * p2,
+    w  <- matrix(readBin(con = to_read, what = numeric(), n = n2 * p2,
                        endian = "little"), nrow = n2, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
@@ -836,8 +836,8 @@ update_data_cox_a2 <- function(params, data) {
 
 prepare_loop_cox_a2 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_loop_cox_a2\n\n")
-  params$betas_a    = matrix(0, params$p1, 1)
-  params$betas_a_old = matrix(0, params$p1, 1)
+  params$betas_a     <- matrix(0, params$p1, 1)
+  params$betas_a_old  <- matrix(0, params$p1, 1)
   params$alg_iteration_counter      = 1
   params$delta_beta = Inf
   params <- add_to_log(params, "prepare_loop_cox_a2", 0, 0, 0, 0)
@@ -854,8 +854,8 @@ compute_log_likelihood_cox_a2 <- function(params, data) {
   xb_betas_b = NULL
 
   if (params$alg_iteration_counter == 1) {
-    params$x_betas_old = matrix(0, n, 1)
-    x_betas = matrix(0, n, 1)
+    params$x_betas_old  <- matrix(0, n, 1)
+    x_betas  <- matrix(0, n, 1)
     params$loglikelihood_old = -Inf
   } else {
     read_time <- -proc.time()[3]
@@ -915,7 +915,7 @@ compute_log_likelihood_cox_a2 <- function(params, data) {
   deltal = as.numeric(data$survival$status)
   deltal[1] = deltal[1]  # This is to force R to make a copy since we are exploiting
   # a pass by reference with the C call.
-  w_xa = matrix(0, n, p1)
+  w_xa  <- matrix(0, n, p1)
   step_counter = 0
 
   .Call("ComputeCox", data$survival$strata, data$x, w, deltal, w_xa,
@@ -965,8 +965,8 @@ update_params_cox_b2 <- function(params) {
   params$p      = params$p1 + params$p2
   params$b_indicies_keep = b_indicies
   params$a_indicies_keep = a_indicies
-  params$betas_b    = matrix(0, params$p2, 1)
-  params$betas_b_old = matrix(0, params$p2, 1)
+  params$betas_b     <- matrix(0, params$p2, 1)
+  params$betas_b_old  <- matrix(0, params$p2, 1)
   params <- add_to_log(params, "update_params_cox_b2", read_time, read_size, 0, 0)
   return(params)
 }
@@ -1002,7 +1002,7 @@ compute_log_likelihood_cox_b2 <- function(params, data) {
   deltal[1] = deltal[1]  # This is to force R to make a copy since we are exploiting
   # a pass by reference with the C call.
   num_events = sum(data$survival$status)
-  w_xb = matrix(0, n, p2)
+  w_xb  <- matrix(0, n, p2)
 
   .Call("ComputeCox", data$survival$strata, data$x, w, deltal, w_xb,
         as.integer(n), as.integer(p2), as.integer(num_events),
@@ -1096,7 +1096,7 @@ compute_inverse_cox_a2 <- function(params, data) {
     n2 <- stp - strt + 1
 
     read_time <- read_time - proc.time()[3]
-    iz_tz_w_xb = matrix(readBin(con = to_read, what = numeric(), n = n2 * p2,
+    iz_tz_w_xb  <- matrix(readBin(con = to_read, what = numeric(), n = n2 * p2,
                                 endian = "little"), nrow = n2, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
@@ -1131,7 +1131,7 @@ compute_inverse_cox_a2 <- function(params, data) {
 
     betas = rep(NA, length(params$a_col_names_old))
     betas[params$a_indicies_keep] = params$betas_a
-    betas = data.frame(betas)
+    betas <- data.frame(betas)
     rownames(betas) = params$a_col_names_old
     params <- add_to_log(params, "compute_inverse_cox_a2", read_time, read_size, write_time, write_size)
     return(params)
@@ -1520,7 +1520,7 @@ compute_cox_from_survival_b2 <- function(params, data) {
   error = tryCatch(
     {
       fit = survival::coxph(as.formula(f),
-                            data = data.frame(rank = data$survival$rank,
+                            data <- data.frame(rank = data$survival$rank,
                                               status = data$survival$status,
                                               strata = strata,
                                               data$x),
@@ -1543,7 +1543,7 @@ compute_cox_from_survival_b2 <- function(params, data) {
     params$converged = TRUE
     if (class(error) == "logical") {
       fit = suppressWarnings(survival::coxph(as.formula(f),
-                                             data = data.frame(rank = data$survival$rank,
+                                             data <- data.frame(rank = data$survival$rank,
                                                                status = data$survival$status,
                                                                strata = strata,
                                                                data$x),
@@ -1570,9 +1570,9 @@ compute_cox_b2 <- function(params, data) {
   n           = params$n
   p2          = params$p2
   params$alg_iteration_counter = 1
-  x_betas_old = matrix(0, n, 1)
-  x_betas     = matrix(0, n, 1)
-  betas_b      = matrix(0, p2, 1)
+  x_betas_old  <- matrix(0, n, 1)
+  x_betas      <- matrix(0, n, 1)
+  betas_b       <- matrix(0, p2, 1)
   betas_b_old   = betas_b
   loglikelihood_old = -Inf
 
@@ -1625,7 +1625,7 @@ compute_cox_b2 <- function(params, data) {
     deltal = as.numeric(data$survival$status)
     deltal[1] = deltal[1]  # This is to force R to make a copy since we are exploiting
     # a pass by reference with the C call.
-    w_xb = matrix(0, n, p2)
+    w_xb  <- matrix(0, n, p2)
 
     .Call("ComputeCox", data$survival$strata, data$x, w, deltal, w_xb,
           as.integer(n), as.integer(p2), as.integer(num_events),
@@ -1653,7 +1653,7 @@ compute_cox_b2 <- function(params, data) {
 
       betas = rep(NA, length(params$b_col_names_old))
       betas[params$b_indicies_keep] = betas_b
-      betas = data.frame(betas)
+      betas <- data.frame(betas)
       rownames(betas) = params$b_col_names_old
       params <- add_to_log(params, "compute_cox_b2", 0, 0, 0, 0)
       return(params)
@@ -1759,7 +1759,7 @@ compute_results_cox_b2 <- function(params, data) {
                          1 - pchisq(stats$wald.test, stats$df))
 
   pred <- data$x %*% stats$coefficients[idx]
-  stats$survival = data.frame(
+  stats$survival <- data.frame(
     rank   = data$survival$rank,
     status = data$survival$status,
     sorted = data$survival$sorted,

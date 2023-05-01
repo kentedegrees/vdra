@@ -4,28 +4,28 @@
 prepare_data_cox_DP <- function(params, data, y_name, strata, mask) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_data_cox_23\n\n")
 
-  workdata = list()
-  workdata$failed = CheckDataFormat(params, data)
+  workdata <- list()
+  workdata$failed <- check_data_format(params, data)
   if (workdata$failed) {
     return(workdata)
   }
-  data = data.frame(data) # convert to a clean data.frame
+  data <- data.frame(data) # convert to a clean data.frame
   workdata$strata <- extract_strata(params, data, strata, mask)
   if (workdata$strata$failed) {
     workdata$failed = TRUE
     return(workdata)
   }
-  strata_index = workdata$strata$strata_index
-  response_index = numeric()
+  strata_index <- workdata$strata$strata_index
+  response_index <- numeric()
   if (params$data_partner_id == 1) {
     response_index = CheckResponse(params, data, y_name)
     if (is.null(response_index)) {
       workdata$failed = TRUE
       return(workdata)
     }
-    workdata$survival        = list()
-    workdata$survival$rank   = data[, response_index[1]]
-    workdata$survival$status = data[, response_index[2]]
+    workdata$survival        <- list()
+    workdata$survival$rank   <- data[, response_index[1]]
+    workdata$survival$status <- data[, response_index[2]]
     if (length(intersect(strata_index, response_index)) > 0) {
       warning("Response and strata share a variable.")
       workdata$failed = TRUE
@@ -36,7 +36,7 @@ prepare_data_cox_DP <- function(params, data, y_name, strata, mask) {
   workdata$n = nrow(data)
   if (length(covariate_index) == 0) {
     if (params$data_partner_id == 1) {
-      workdata$x = matrix(0, nrow = nrow(data), ncol = 0)
+      workdata$x  <- matrix(0, nrow = nrow(data), ncol = 0)
     } else {
       warning("After removing strata, data is empty.  Party B must supply at least one non-strata covariate.")
       workdata$failed = TRUE
@@ -45,11 +45,11 @@ prepare_data_cox_DP <- function(params, data, y_name, strata, mask) {
   } else {
     workdata$tags = CreateModelMatrixTags(data[, covariate_index, drop = FALSE])
     workdata$x = model.matrix(~ ., data[, covariate_index, drop = FALSE])
-    workdata$x = workdata$x[, -1, drop = FALSE]
+    workdata$x <- workdata$x[, -1, drop = FALSE]
     workdata$colmin   = apply(workdata$x, 2, min)
     workdata$colmax   = apply(workdata$x, 2, max)
     workdata$colsum   = apply(workdata$x, 2, sum)
-    workdata$colrange = workdata$colmax - workdata$colmin
+    workdata$colrange <- workdata$colmax - workdata$colmin
     for (i in 1:ncol(workdata$x)) {
       if (workdata$colmin[i] == workdata$colmax[i]) {
         workdata$colmin[i] = 0
@@ -65,7 +65,7 @@ prepare_data_cox_DP <- function(params, data, y_name, strata, mask) {
 
 SendStrataNamesCox.DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "SendStrataNamesCox.DP\n\n")
-  strataNames = list()
+  strataNames <- list()
   strataNames$strataFromMe = data$strata$strataFromMe
   strataNames$strataFromOthers = data$strata$strataFromOthers
   write_time <- proc.time()[3]
@@ -181,7 +181,7 @@ check_strata_cox_DP <- function(params, data) {
 
 send_strata_cox_DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "send_strata_cox_DP\n\n")
-  strata = list()
+  strata <- list()
   strata$x = data$strata$x
   strata$legend = data$strata$legend
   write_time <- proc.time()[3]
@@ -197,7 +197,7 @@ prepare_strata_cox_DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_strata_cox_DP\n\n")
   strata = NULL
   survival = data$survival
-  strataTemp   = list()
+  strataTemp   <- list()
   totalStrata = 0
   read_size <- 0
   read_time <- 0
@@ -206,11 +206,11 @@ prepare_strata_cox_DP <- function(params, data) {
   }
 
   if (totalStrata == 0) {
-    strataTemp$x = data.frame(const__ = rep(1, params$n))
+    strataTemp$x <- data.frame(const__ = rep(1, params$n))
     strataTemp$legend = FALSE
   } else {
     first = TRUE
-    strataTemp$legend = list()
+    strataTemp$legend <- list()
     for (id in 1:params$numDataPartners) {
       if (length(params$strataClaimed[[id]]) > 0) {
         if (id == 1) {
@@ -242,7 +242,7 @@ prepare_strata_cox_DP <- function(params, data) {
   survival$status = survival$status[sorted]
   survival$sortedIdx = sorted
   survival$unsortIdx = unsort
-  ranks = which(apply(abs(apply(strataTemp$x, 2, diff)), 1, sum) > 0)
+  ranks <- which(apply(abs(apply(strataTemp$x, 2, diff)), 1, sum) > 0)
   ranks = c(ranks, nrow(strataTemp$x))
   names(ranks) = NULL
   strata = rep(list(list()), length(ranks))
@@ -308,7 +308,7 @@ prepare_strata_cox_DP <- function(params, data) {
     for (i in 1:ncol(strataTemp$x)) {
       ptemp = ptemp + max(strataTemp$x[, i] - min(strataTemp$x[, i]))
     }
-    params$strata = matrix(0, nrow = params$n, ncol = ptemp)
+    params$strata  <- matrix(0, nrow = params$n, ncol = ptemp)
     colnames(params$strata) = paste0("strata:", 1:ptemp)
     params$strata[, 1] = 1
     idx <- 2
@@ -390,7 +390,7 @@ PrepareSharesCox.DP <- function(params, data) {
   scaler = NULL
   seed   = NULL
   set.seed(params$seed, kind = "Mersenne-Twister")
-  halfshare.L  = matrix(rnorm(n * p, sd = 20), nrow = n, ncol = p)
+  halfshare.L   <- matrix(rnorm(n * p, sd = 20), nrow = n, ncol = p)
 
   halfshare.R  = data$x - halfshare.L
 
@@ -417,7 +417,7 @@ PrepareSharesCox.DP <- function(params, data) {
     params$seeds   = c(params$seeds, seed)
 
     set.seed(seed, kind = "Mersenne-Twister")
-    halfShare2 = matrix(rnorm(params$n * p, sd = 20), nrow = params$n, ncol = p)
+    halfShare2  <- matrix(rnorm(params$n * p, sd = 20), nrow = params$n, ncol = p)
 
     if (id < params$data_partner_id) {
       products[[id]] = t(halfShare2) %*% (data$x - scaler / (scaler + params$scaler) * halfshare.L)
@@ -503,7 +503,7 @@ get_products_cox_AC <- function(params) {
     if (id == 1) n = nrow(halfshare.R)
   }
 
-  m = matrix(0, p, p)
+  m  <- matrix(0, p, p)
   colnames(m) = allcolnames
   rownames(m) = allcolnames
   offset1 = 1
@@ -681,7 +681,7 @@ update_params_cox_DP <- function(params) {
   read_size <- file.size(file.path(params$readPathAC, "indicies.rdata")) +
     file.size(file.path(params$readPathAC, "u.rdata"))
   read_time <- proc.time()[3] - read_time
-  betas = matrix(0, nrow = length(indicies[[params$data_partner_id]]), ncol = 1)
+  betas  <- matrix(0, nrow = length(indicies[[params$data_partner_id]]), ncol = 1)
   params$u             = u
   params$idx           = idx
   params$betas         = betas
@@ -712,7 +712,7 @@ update_data_cox_DP <- function(params, data) {
     halfshare = rep(list(list()), params$numDataPartners)
     for (id in 1:params$numDataPartners) {
       set.seed(params$seeds[id], kind = "Mersenne-Twister")
-      halfshare[[id]] = matrix(rnorm(params$n * params$ps[id], sd = 20), nrow = params$n, ncol = params$ps[id])
+      halfshare[[id]]  <- matrix(rnorm(params$n * params$ps[id], sd = 20), nrow = params$n, ncol = params$ps[id])
       halfshare[[id]] = halfshare[[id]][, params$indicies[[id]], drop = FALSE]
     }
     data$halfshare = do.call(cbind, halfshare)
@@ -855,7 +855,7 @@ ComputeSDelLCox.AC <- function(params) {
   deltal = as.numeric(params$survival$status)
   deltal[1] = deltal[1]  # This is to force R to make a copy since we are exploiting
   # a pass by reference with the C call.
-  w_s_r = matrix(0, n, p)
+  w_s_r  <- matrix(0, n, p)
   num_events = params$survival$num_events
 
   .Call("ComputeCox", params$survival$strata, halfshare, w, deltal, w_s_r,
@@ -888,7 +888,7 @@ ComputeSDelLCox.DP <- function(params, data) {
   deltal = as.numeric(params$survival$status)
   deltal[1] = deltal[1]  # This is to force R to make a copy since we are exploiting
   # a pass by reference with the C call.
-  w_s_l = matrix(0, n, p)
+  w_s_l  <- matrix(0, n, p)
   num_events = params$survival$num_events
 
   .Call("ComputeCox", params$survival$strata, halfshare, w, deltal, w_s_l,
@@ -921,7 +921,7 @@ ComputeSDelLCox.DP <- function(params, data) {
 
   temp = as.numeric(Sys.time())
   set.seed((temp - trunc(temp)) * .Machine$integer.max)
-  scaled.w_s_l.L = matrix(rnorm(n * p, sd = 20), nrow = n, ncol = p)
+  scaled.w_s_l.L  <- matrix(rnorm(n * p, sd = 20), nrow = n, ncol = p)
   scaled.w_s_l.R = scaled.w_s_l - scaled.w_s_l.L
 
   params$colmin.w_s_l = colmin.w_s_l
@@ -958,16 +958,16 @@ ComputeProductsCox.DP <- function(params, data) {
     p = length(params$idx[[1]])
     if (p == 0) {
       for (id2 in 1:params$numDataPartners) {
-        E1[[id2]] = matrix(0, nrow = 0, ncol = length(params$idx[[id2]]))
+        E1[[id2]]  <- matrix(0, nrow = 0, ncol = length(params$idx[[id2]]))
       }
     } else {
       E1[[1]] = t(data$x) %*% (params$w_s_l[, params$idx[[1]], drop = FALSE] + w_s_r_1)
       D = diag(params$colrange.w_s_l[params$idx[[1]]], ncol = p, nrow = p)
       for (id2 in 2:params$numDataPartners) {
         set.seed(params$seeds[id2], kind = "Mersenne-Twister")
-        halfshare.RL = matrix(rnorm(params$n * params$ps[id2], sd = 20),
+        halfshare.RL  <- matrix(rnorm(params$n * params$ps[id2], sd = 20),
                               nrow = params$n, ncol = params$ps[id2])  # needed to get randomization to right spot
-        halfshare.RL = matrix(rnorm(params$n * params$ps[id2], sd = 20),
+        halfshare.RL  <- matrix(rnorm(params$n * params$ps[id2], sd = 20),
                               nrow = params$n, ncol = params$ps[id2])[, params$indicies[[id2]], drop = FALSE]
         E1[[id2]] = solve(D) %*% t(data$x) %*% params$w_s_l[, params$idx[[id2]], drop = FALSE] +
           params$scaler / (params$scaler + params$scalers[id2]) *
@@ -980,13 +980,13 @@ ComputeProductsCox.DP <- function(params, data) {
       p = length(params$idx[[id1]])
       D = diag(params$colrange.w_s_l[params$idx[[id1]]], ncol = p, nrow = p)
       set.seed(params$seeds[id1], kind = "Mersenne-Twister")
-      halfshare.L = matrix(rnorm(params$n * params$ps[id1], sd = 20),
+      halfshare.L  <- matrix(rnorm(params$n * params$ps[id1], sd = 20),
                            nrow = params$n, ncol = params$ps[id1])[, params$indicies[[id1]], drop = FALSE]
       for (id2 in 2:params$numDataPartners) {
         set.seed(params$seeds[id2], kind = "Mersenne-Twister")
-        halfshare.RL = matrix(rnorm(params$n * params$ps[id2], sd = 20),
+        halfshare.RL  <- matrix(rnorm(params$n * params$ps[id2], sd = 20),
                               nrow = params$n, ncol = params$ps[id2])
-        halfshare.RL = matrix(rnorm(params$n * params$ps[id2], sd = 20),
+        halfshare.RL  <- matrix(rnorm(params$n * params$ps[id2], sd = 20),
                               nrow = params$n, ncol = params$ps[id2])[, params$indicies[[id2]], drop = FALSE]
         E1[[id2]] = 0.5 * solve(D) %*% t(halfshare.L) %*% params$w_s_l[, params$idx[[id2]], drop = FALSE] +
           params$scaler / (params$scaler + params$scalers[id2]) *
@@ -1007,9 +1007,9 @@ ComputeProductsCox.DP <- function(params, data) {
 
     F1 = rep(list(list()), params$numDataPartners)
     set.seed(params$seed, kind = "Mersenne-Twister")
-    halfshare.L = matrix(rnorm(params$n * params$p, sd = 20), nrow = params$n, ncol = params$p)[, params$indicies[[params$data_partner_id]], drop = FALSE]
+    halfshare.L  <- matrix(rnorm(params$n * params$p, sd = 20), nrow = params$n, ncol = params$p)[, params$indicies[[params$data_partner_id]], drop = FALSE]
     halfshare.R = data$x - halfshare.L
-    halfshare.R.L = matrix(rnorm(params$n * params$p, sd = 20), nrow = params$n, ncol = params$p)[, params$indicies[[params$data_partner_id]], drop = FALSE]
+    halfshare.R.L  <- matrix(rnorm(params$n * params$p, sd = 20), nrow = params$n, ncol = params$p)[, params$indicies[[params$data_partner_id]], drop = FALSE]
     halfshare.R.R = halfshare.R - halfshare.R.L  # This is halfshare.R.L and halfshare.R.R
     for (id in 1:params$numDataPartners) {
       F1[[id]] = params$scaler / (params$scalers[1] + params$scaler) * t(scaled.w_s_l.L[, params$idx[[id]], drop = FALSE]) %*% halfshare.R.L +
@@ -1062,7 +1062,7 @@ ComputeStWSCox.AC <- function(params) {
   for (id in 1:params$numDataPartners) {
     p = p + length(params$idx[[id]])
   }
-  m = matrix(0, p, p)
+  m  <- matrix(0, p, p)
   startrow = 1
   for (id1 in 1:params$numDataPartners) {
     p1 = length(params$idx[[id1]])
@@ -1310,7 +1310,7 @@ compute_results_cox_AC <- function(params) {
   nullLoglikelihood = NULL
   score             = params$score
   read_time <- proc.time()[3]
-  betas = matrix(0, nrow = 0, ncol = 1)
+  betas  <- matrix(0, nrow = 0, ncol = 1)
   for (id in 1:params$numDataPartners) {
     load(file.path(params$readPathDP[id], "betas.rdata"))
     betas = rbind(betas, betasnew)
@@ -1329,14 +1329,14 @@ compute_results_cox_AC <- function(params) {
   stats$coefficients[idx] = betas / params$colrange
   stats$expcoef      = exp(stats$coefficients)  # exp(coef) = hazard ratios
   stats$expncoef     = exp(-stats$coefficients)
-  stats$var          = matrix(0, length(names_old), length(names_old))
+  stats$var           <- matrix(0, length(names_old), length(names_old))
   stats$var[idx, idx] = params$I
   stats$secoef       = rep(NA, length(names_old))
   stats$secoef[idx]  = sqrt(diag(params$I)) / params$colrange  # se(coef)
 
   stats$zvals        = stats$coefficients / stats$secoef  # z values
   stats$pvals        = 2 * pnorm(abs(stats$zvals), lower.tail = FALSE)   # pvals
-  stats$stars        = matrix(sapply(stats$pvals, function(x) {
+  stats$stars         <- matrix(sapply(stats$pvals, function(x) {
     if (is.na(x)) ""
     else if (x < 0.001) "***"
     else if (x < 0.01) "**"
@@ -1380,7 +1380,7 @@ compute_results_cox_AC <- function(params) {
     stats$concordance = c(NA, NA, NA, NA, NA, NA)
   }
 
-  stats$survival = data.frame(
+  stats$survival <- data.frame(
     rank   = params$survival$rank,
     status = params$survival$status,
     sorted = params$survival$sortedIdx,

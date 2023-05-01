@@ -135,16 +135,16 @@ prepare_folder_linear_b2 <- function(params, monitor_folder) {
 prepare_data_linear_a23 <- function(params, data, y_name = NULL) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_data_linear_a23\n\n")
 
-  workdata = list()
+  workdata <- list()
   workdata$failed = FALSE
 
-  workdata$failed = CheckDataFormat(params, data)
+  workdata$failed <- check_data_format(params, data)
 
   if (workdata$failed) {
     return(workdata)
   }
 
-  data = data.frame(data) # convert to a clean data.frame
+  data <- data.frame(data) # convert to a clean data.frame
 
   response_index = CheckResponse(params, data, y_name)
 
@@ -161,7 +161,7 @@ prepare_data_linear_a23 <- function(params, data, y_name = NULL) {
   covariate_index = setdiff(1:ncol(x), 2)
   means = apply(x, 2, mean)
   sd    = apply(x, 2, sd)
-  sd    = sapply(sd, function(x) {
+  sd    <- sapply(sd, function(x) {
     ifelse(x > 0, x, 1)
   })
   workdata$Y      = x[, 2, drop = FALSE]
@@ -187,17 +187,17 @@ prepare_data_linear_a23 <- function(params, data, y_name = NULL) {
 prepare_data_linear_b23 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_data_linear_b23\n\n")
 
-  workdata = list()
+  workdata <- list()
   workdata$failed = FALSE
 
-  workdata$failed = CheckDataFormat(params, data)
+  workdata$failed <- check_data_format(params, data)
 
   if (workdata$failed) {
     return(workdata)
   }
 
 
-  data = data.frame(data) # convert to a clean data.frame
+  data <- data.frame(data) # convert to a clean data.frame
 
   workdata$tags = CreateModelMatrixTags(data)
 
@@ -209,10 +209,10 @@ prepare_data_linear_b23 <- function(params, data) {
 
   workdata$x = model.matrix(~ ., data)
   rownames(workdata$x) = NULL
-  workdata$x = workdata$x[, -1, drop = FALSE]
+  workdata$x <- workdata$x[, -1, drop = FALSE]
   workdata$means = apply(workdata$x, 2, mean)
   workdata$sd    = apply(workdata$x, 2, sd)
-  workdata$sd    = sapply(workdata$sd, function(x) {
+  workdata$sd    <- sapply(workdata$sd, function(x) {
     ifelse(x > 0, x, 1)
   })
 
@@ -248,7 +248,7 @@ prepare_params_linear_b2 <- function(params, data) {
   params$sdb           = data$sd
   params$yty           = 0
 
-  pb          = list()
+  pb          <- list()
   pb$p2       = params$p2
   pb$n        = params$n
   pb$means    = data$means
@@ -317,7 +317,7 @@ prepare_params_linear_a2 <- function(params, data) {
   params$means_y = data$means_y
   params$sdy    = data$sdy
 
-  pa        = list()
+  pa        <- list()
   pa$p1     = params$p1
   pa$means  = data$means
   pa$sd     = data$sd
@@ -560,7 +560,7 @@ get_products_linear_a2 <- function(params, data) {
     n2 <- stp - strt + 1
 
     read_time <- read_time - proc.time()[3]
-    w = matrix(readBin(con = to_read, what = numeric(), n = n2 * p2,
+    w  <- matrix(readBin(con = to_read, what = numeric(), n = n2 * p2,
                        endian = "little"), nrow = n2, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
@@ -614,7 +614,7 @@ compute_results_linear_a2 <- function(params, data) {
 
   # First we de-standardize.
   xtx = diag(c(sda, sdb)) %*% xtx %*% diag(c(sda, sdb))
-  offset = matrix(c(means_a, means_b), ncol = 1) %*%
+  offset  <- matrix(c(means_a, means_b), ncol = 1) %*%
     matrix(c(means_a, means_b), nrow = 1) * n
   offset[1, 1] = 0
   xtx = xtx + offset
@@ -633,7 +633,7 @@ compute_results_linear_a2 <- function(params, data) {
     }
   }
 
-  a_index        = which(indicies <= length(a_names))
+  a_index        <- which(indicies <= length(a_names))
   a_indicies_keep = indicies[a_index]
   b_indicies_keep = indicies[-a_index] - length(a_names)
 
@@ -642,7 +642,7 @@ compute_results_linear_a2 <- function(params, data) {
   xtx_old       = xtx
   xty_old       = xty
   xtx           = xtx[indicies, indicies, drop = FALSE]
-  xty           = matrix(xty[indicies, ], ncol = 1)
+  xty            <- matrix(xty[indicies, ], ncol = 1)
 
   invxtx = solve(xtx)
   betas  = drop(invxtx %*% xty)

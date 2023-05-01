@@ -135,16 +135,16 @@ prepare_folder_logistic_b2 <- function(params, monitor_folder) {
 prepare_data_logistic_a23 <- function(params, data, y_name = NULL) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_data_logistic_a23\n\n")
 
-  workdata = list()
+  workdata <- list()
   workdata$failed = FALSE
 
-  workdata$failed = CheckDataFormat(params, data)
+  workdata$failed <- check_data_format(params, data)
 
   if (workdata$failed) {
     return(workdata)
   }
 
-  data = data.frame(data) # convert to a clean data.frame
+  data <- data.frame(data) # convert to a clean data.frame
 
   response_index = CheckResponse(params, data, y_name)
 
@@ -163,7 +163,7 @@ prepare_data_logistic_a23 <- function(params, data, y_name = NULL) {
 
   means = apply(x, 2, mean)
   sd    = apply(x, 2, sd)
-  sd    = sapply(sd, function(x) {
+  sd    <- sapply(sd, function(x) {
     ifelse(x > 0, x, 1)
   })
   workdata$Y      = x[, 2, drop = FALSE]
@@ -185,16 +185,16 @@ prepare_data_logistic_a23 <- function(params, data, y_name = NULL) {
 prepare_data_logistic_b23 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_data_logistic_b23\n\n")
 
-  workdata = list()
+  workdata <- list()
   workdata$failed = FALSE
 
-  workdata$failed = CheckDataFormat(params, data)
+  workdata$failed <- check_data_format(params, data)
 
   if (workdata$failed) {
     return(workdata)
   }
 
-  data = data.frame(data) # convert to a clean data.frame
+  data <- data.frame(data) # convert to a clean data.frame
 
   workdata$tags = CreateModelMatrixTags(data)
   if (ncol(data) < 2 | !("numeric" %in% names(workdata$tags))) {
@@ -204,10 +204,10 @@ prepare_data_logistic_b23 <- function(params, data) {
   }
   workdata$x = model.matrix(~ ., data)
   rownames(workdata$x) = NULL
-  workdata$x = workdata$x[, -1, drop = FALSE]
+  workdata$x <- workdata$x[, -1, drop = FALSE]
   workdata$means = apply(workdata$x, 2, mean)
   workdata$sd    = apply(workdata$x, 2, sd)
-  workdata$sd    = sapply(workdata$sd, function(x) {
+  workdata$sd    <- sapply(workdata$sd, function(x) {
     ifelse(x > 0, x, 1)
   })
 
@@ -246,7 +246,7 @@ prepare_params_logistic_b2 <- function(params, data) {
   params$sdb           = data$sd
   params$yty           = 0
 
-  pb          = list()
+  pb          <- list()
   pb$p2       = params$p2
   pb$n        = params$n
   pb$means    = data$means
@@ -320,7 +320,7 @@ prepare_params_logistic_a2 <- function(params, data, cutoff = 0.01, max_iteratio
   params$sdb    = pb$sd
   params$yty    = data$yty
 
-  pa               = list()
+  pa               <- list()
   pa$p1            = params$p1
   pa$means         = data$means
   pa$sd            = data$sd
@@ -571,7 +571,7 @@ check_colinearity_logistic_a2 <- function(params, data) {
     n2 <- stp - strt + 1
 
     read_time <- read_time - proc.time()[3]
-    w = matrix(readBin(con = to_read, what = numeric(), n = n2 * p2,
+    w  <- matrix(readBin(con = to_read, what = numeric(), n = n2 * p2,
                        endian = "little"), nrow = n2, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
@@ -598,11 +598,11 @@ check_colinearity_logistic_a2 <- function(params, data) {
   }
 
   xtx = xtx[indicies, indicies]
-  x_t_y = matrix(x_t_y[indicies], ncol = 1)
+  x_t_y  <- matrix(x_t_y[indicies], ncol = 1)
 
   a_names   = params$a_col_names
   b_names   = params$b_col_names
-  a_index   = which(indicies <= length(a_names))
+  a_index   <- which(indicies <= length(a_names))
   params$IndiciesKeep  = indicies
   params$a_indicies_keep = indicies[a_index]
   params$b_indicies_keep = indicies[-a_index] - length(a_names)
@@ -675,7 +675,7 @@ compute_initial_betas_logistic_a2 <- function(params, data) {
   params$b_xty      = b_xty
   params$betas     = betas
   params$betas_a    = a_betas
-  params$betas_a_old = matrix(0, p1, 1)
+  params$betas_a_old  <- matrix(0, p1, 1)
   params$betas_b    = b_betas
 
   params$alg_iteration_counter      = 1
@@ -717,7 +717,7 @@ update_params_logistic_b2 <- function(params) {
   params$b_indicies_keep = b_indicies
   params$a_indicies_keep = a_indicies
   params$betas_b    = b_betas
-  params$betas_b_old = matrix(0, params$p2, 1)
+  params$betas_b_old  <- matrix(0, params$p2, 1)
   params$means_b = params$means_b[b_indicies]
   params$sdb    = params$sdb[b_indicies]
   params$b_xty   = b_xty
@@ -886,7 +886,7 @@ get_ii_logistic_a2 <- function(params, data) {
     n = stp - strt + 1
 
     read_time <- read_time - proc.time()[3]
-    v = matrix(readBin(con = to_read, what = numeric(),
+    v  <- matrix(readBin(con = to_read, what = numeric(),
                        n = n * p2, endian = "little"), n, p2)
     read_time <- read_time + proc.time()[3]
     xa_t_w_xb = xa_t_w_xb + t(data$x[strt:stp, ]) %*% v

@@ -242,7 +242,7 @@ DataPartner1.3Party <- function(regression            = "linear",
                                      sleep_time, max_waiting_time, popmednet, trace,
                                      verbose)
   } else  if (regression == "logistic") {
-    stats <- PartyAProcess3Logistic(data, response, monitor_folder,
+    stats <- party_a_process_3_logistic(data, response, monitor_folder,
                                    sleep_time, max_waiting_time, popmednet, trace,
                                    verbose)
   } else {
@@ -282,7 +282,7 @@ DataPartner2.3Party <- function(regression          = "linear",
                                  sleep_time, max_waiting_time, popmednet, trace,
                                  verbose)
   } else if (regression == "logistic") {
-    stats <- PartyBProcess3Logistic(data, monitor_folder,
+    stats <- party_b_process_3_logistic(data, monitor_folder,
                                    sleep_time, max_waiting_time, popmednet, trace,
                                    verbose)
   } else {
@@ -484,7 +484,7 @@ AnalysisCenter.3Party <- function(regression            = "linear",
                                  sleep_time, max_waiting_time, popmednet, trace,
                                  verbose)
   } else if (regression == "logistic") {
-    stats <- PartyTProcess3Logistic(monitor_folder, msreqid, blocksize, tol,
+    stats <- party_t_process_3_logistic(monitor_folder, msreqid, blocksize, tol,
                                    max_iterations, sleep_time, max_waiting_time,
                                    popmednet, trace, verbose)
   } else {
@@ -782,9 +782,9 @@ create_io_location <- function(monitor_folder, folder) {
 
 
 #' @importFrom utils write.csv
-CheckDataFormat <- function(params, data) {
+check_data_format <- function(params, data) {
   if ("data.frame" %in% class(data)) {
-    data = data.frame(data)
+    data <- data.frame(data)
   } else if ("matrix" %in% class(data)) {
     data = matrix(data)
   } else {
@@ -830,13 +830,13 @@ CheckResponse <- function(params, data, y_name) {
     warning("response label is not a character string.")
     return(NULL)
   }
-  y_name = unique(y_name)
+  y_name <- unique(y_name)
   if (params$analysis == "linear" || params$analysis == "logistic") {
     if (length(y_name) != 1) {
       warning(paste("Specify only one reponse for", params$analysis, "regression."))
       return(NULL)
     }
-    responseColIndex = which(colnames(data) %in% y_name)
+    responseColIndex <- which(colnames(data) %in% y_name)
     if (length(responseColIndex) == 0) {
       warning("Response variable not found.")
       return(NULL)
@@ -917,7 +917,7 @@ CreateModelMatrixTags <- function(data) {
 
 prepare_params_2p <- function(analysis, party, msreqid = "v_default_00_000",
                               popmednet = TRUE, trace = FALSE, verbose = TRUE) {
-  params                     = list()
+  params                     <- list()
   params$party_name           = party
   params$analysis            = analysis
   params$msreqid             = msreqid
@@ -936,7 +936,7 @@ prepare_params_2p <- function(analysis, party, msreqid = "v_default_00_000",
   params$p2                  = 0
   params$p1_old              = 0
   params$p2_old              = 0
-  params$stats               = list()
+  params$stats               <- list()
   class(params$stats)        = paste0("vdra", analysis)
   params$stats$failed        = TRUE
   params$stats$converged     = FALSE
@@ -947,7 +947,7 @@ prepare_params_2p <- function(analysis, party, msreqid = "v_default_00_000",
 
 prepare_params_3p <- function(analysis, party, msreqid = "v_default_00_000",
                               popmednet = TRUE, trace = FALSE, verbose = TRUE) {
-  params                     = list()
+  params                     <- list()
   params$party_name           = party
   params$analysis            = analysis
   params$msreqid             = msreqid
@@ -966,7 +966,7 @@ prepare_params_3p <- function(analysis, party, msreqid = "v_default_00_000",
   params$p2                  = 0
   params$p1_old              = 0
   params$p2_old              = 0
-  params$stats               = list()
+  params$stats               <- list()
   class(params$stats)        = paste0("vdra", analysis)
   params$stats$failed        = TRUE
   params$stats$converged     = FALSE
@@ -979,7 +979,7 @@ prepare_params_kp <- function(analysis, data_partner_id, numDataPartners,
                               msreqid = "v_default_00_000", cutoff = NULL,
                               max_iterations = NULL, ac = FALSE, popmednet = TRUE,
                               trace = FALSE, verbose = TRUE) {
-  params                     = list()
+  params                     <- list()
   params$data_partner_id       = data_partner_id
   params$numDataPartners     = numDataPartners
   params$analysis            = analysis
@@ -997,7 +997,7 @@ prepare_params_kp <- function(analysis, data_partner_id, numDataPartners,
   params$maxIterExceeded     = FALSE
   params$lastIteration       = FALSE
   params$cutoff              = cutoff
-  params$stats               = list()
+  params$stats               <- list()
   class(params$stats)        = paste0("vdra", analysis)
   params$stats$failed        = TRUE
   params$stats$converged     = FALSE
@@ -1185,7 +1185,7 @@ GetLion <- function(p) {
 
 #' @importFrom stats flush.console
 MakeProgressBar1 <- function(steps, message, verbose) {
-  pb = list()
+  pb <- list()
   messageLength    = 18
   pb$numSteps      = steps
   pb$numBlanks     = 20
@@ -2002,7 +2002,7 @@ UpdateCounters.kp <- function(params) {
 }
 
 ReceivedError.kp <- function(params, from) {
-  result = list()
+  result <- list()
   message = ""
   if (from == "AC") {
     messageExists = file.exists(file.path(params$readPathAC, "errorMessage.rdata"))
@@ -2127,7 +2127,7 @@ CreateBlocks <- function(pA, pB, n, blocksize) {
   # Divides the matrix with ncol(n) into submatrices of approximately
   # equal size. minimum size is blocksize.
 
-  blocks = list()
+  blocks <- list()
 
   num_blocks       = max(trunc(n / blocksize), 1)
   newBlocksize    = trunc(n / num_blocks)
@@ -2167,7 +2167,7 @@ CreateBlocks <- function(pA, pB, n, blocksize) {
 
 
 CreateContainers <- function(pA, pB, blocks) {
-  containers = list()
+  containers <- list()
 
   maximumFilesize = 25 * 1024^2
 
@@ -2317,8 +2317,8 @@ formatStat <- function(x) {
 formatStatList <- function(vals) {
   # Assumes that x is non-empty set of numeric or NA and there are no NaN's
   # width = 10, justify = right => standard output, so no worries about justify nor width
-  notNA = which(!is.na(vals))
-  notZero = which(vals != 0)
+  notNA <- which(!is.na(vals))
+  notZero <- which(vals != 0)
   keep = intersect(notNA, notZero)
   if (length(keep) == 0) {
     f = c()
@@ -2397,8 +2397,8 @@ WriteStampsCSV <- function(params) {
 ########################### 2 PARTY STAMPS FUNCTIONS ###########################
 
 initialize_time_stamps_2p <- function(params) {
-  stamps = list()
-  stamps$blank = data.frame(#Iteration   = params$pmnIterationCounter,
+  stamps <- list()
+  stamps$blank <- data.frame(#Iteration   = params$pmnIterationCounter,
     Step        = params$pmnStepCounter,
     Source      = paste("Org", params$party_name, "Dist Reg"),
     Description = "R program execution begins",
@@ -2432,8 +2432,8 @@ MergeStampsRaw.2p <- function(params) {
 ########################### 3 PARTY STAMPS FUNCTIONS ###########################
 
 initialize_time_stamps_3p <- function(params) {
-  stamps = list()
-  stamps$blank = data.frame(#Iteration   = params$pmnIterationCounter,
+  stamps <- list()
+  stamps$blank <- data.frame(#Iteration   = params$pmnIterationCounter,
     Step        = params$pmnStepCounter,
     Source      = paste("Org", params$party_name, "Dist Reg"),
     Description = "R program execution begins",
@@ -2470,8 +2470,8 @@ MergeStampsRaw.3p <- function(params, from) {
 ########################### K PARTY STAMPS FUNCTIONS ###########################
 
 initialize_time_stamps_kp <- function(params) {
-  stamps = list()
-  stamps$blank = data.frame(Step        = params$pmnStepCounter,
+  stamps <- list()
+  stamps$blank <- data.frame(Step        = params$pmnStepCounter,
                             Source      = paste0("Org dp", params$data_partner_id, " Dist Reg"),
                             Description = "R program execution begins",
                             Time        = GetRoundTripTime(),
@@ -2583,8 +2583,8 @@ WriteToLogSummary <- function(c1 = "", c2 = "", c3 = "",
 ############################# 2 PARTY LOG FUNCTIONS ############################
 
 initialize_log_2p <- function(params) {
-  log = list()
-  log$blank = data.frame(Step             = 0,
+  log <- list()
+  log$blank <- data.frame(Step             = 0,
                          Iteration.alg    = 0,
                          Party            = "",
                          Functions        = "",
@@ -2665,8 +2665,8 @@ MergeLogRaw.2p <- function(params) {
 SummarizeLog.2p <- function(params) {
   write_path = params$write_path
   log    = params$log$history
-  indexA = which(log$Party == "A")
-  indexB = which(log$Party == "B")
+  indexA <- which(log$Party == "A")
+  indexB <- which(log$Party == "B")
   Party.A.Start.Time = log$Start.Time[indexA[1]]
   Party.A.End.Time   = log$End.Time[indexA[length(indexA)]]
   Party.A.Total.Time = round(as.numeric(difftime(
@@ -2703,8 +2703,8 @@ SummarizeLog.2p <- function(params) {
   Total.Transfer.Time = 0
   if (max(log$Step) > 1) {
     for (i in 2:max(log$Step)) {
-      idx1 = which(log$Step == i - 1)
-      idx2 = which(log$Step == i)
+      idx1 <- which(log$Step == i - 1)
+      idx2 <- which(log$Step == i)
       Total.Transfer.Time = Total.Transfer.Time +
         as.numeric(difftime(min(log$Start.Time[idx2]),
                             max(log$End.Time[idx1]), units = "secs"))
@@ -2786,8 +2786,8 @@ SummarizeLog.2p <- function(params) {
 ############################# 3 PARTY LOG FUNCTIONS ############################
 
 initialize_log_3p <- function(params) {
-  log = list()
-  log$blank = data.frame(Step             = 0,
+  log <- list()
+  log$blank <- data.frame(Step             = 0,
                          Iteration.alg    = 0,
                          Party            = "",
                          Functions        = "",
@@ -2874,9 +2874,9 @@ SummarizeLog.3p <- function(params) {
   write_path = params$write_path
 
   log    = params$log$history
-  indexA = which(log$Party == "A")
-  indexB = which(log$Party == "B")
-  indexT = which(log$Party == "T")
+  indexA <- which(log$Party == "A")
+  indexB <- which(log$Party == "B")
+  indexT <- which(log$Party == "T")
   Party.A.Start.Time = log$Start.Time[indexA[1]]
   Party.A.End.Time   = log$End.Time[indexA[length(indexA)]]
   Party.A.Total.Time = round(as.numeric(difftime(
@@ -2928,8 +2928,8 @@ SummarizeLog.3p <- function(params) {
   Total.Transfer.Time = 0
   if (max(log$Step) > 1) {
     for (i in 2:max(log$Step)) {
-      idx1 = which(log$Step == i - 1)
-      idx2 = which(log$Step == i)
+      idx1 <- which(log$Step == i - 1)
+      idx2 <- which(log$Step == i)
       Total.Transfer.Time = Total.Transfer.Time +
         as.numeric(difftime(min(log$Start.Time[idx2]),
                             max(log$End.Time[idx1]), units = "secs"))
@@ -3027,8 +3027,8 @@ SummarizeLog.3p <- function(params) {
 ############################# K PARTY LOG FUNCTIONS ############################
 
 initialize_log_kp <- function(params) {
-  log = list()
-  log$blank = data.frame(Step             = 0,
+  log <- list()
+  log$blank <- data.frame(Step             = 0,
                          Iteration.alg    = 0,
                          Party            = "",
                          Functions        = "",
@@ -3194,8 +3194,8 @@ SummarizeLog.kp <- function(params) {
   Total.Transfer.Time = 0
   if (max(log$Step) > 1) {
     for (i in 2:max(log$Step)) {
-      idx1 = which(log$Step == i - 1)
-      idx2 = which(log$Step == i)
+      idx1 <- which(log$Step == i - 1)
+      idx2 <- which(log$Step == i)
       Total.Transfer.Time = Total.Transfer.Time +
         as.numeric(difftime(min(log$Start.Time[idx2]),
                             max(log$End.Time[idx1]), units = "secs"))
@@ -3248,8 +3248,8 @@ WriteTrackingTableCSV <- function(params) {
 ####################### 2 PARTY TRACKING TABLE FUNCTIONS #######################
 
 initialize_tracking_table_2p <- function(params) {
-  trackingTable = list()
-  trackingTable$current = data.frame(DP_CD              = ifelse(params$party_name == "A", 0, 1),
+  trackingTable <- list()
+  trackingTable$current <- data.frame(DP_CD              = ifelse(params$party_name == "A", 0, 1),
                                      MSREQID            = params$msreqid,
                                      RUNID              = "dl",
                                      ITER_NB            = 0,  # params$pmnIterationCounter
@@ -3322,8 +3322,8 @@ read_tracking_table_update_2p <- function(params) {
 ####################### 3 PARTY TRACKING TABLE FUNCTIONS #######################
 
 initialize_tracking_table_3p <- function(params) {
-  trackingTable = list()
-  trackingTable$current = data.frame(DP_CD              = ifelse(params$party_name == "T", 0,
+  trackingTable <- list()
+  trackingTable$current <- data.frame(DP_CD              = ifelse(params$party_name == "T", 0,
                                                                  ifelse(params$party_name == "A", 1, 2)),
                                      MSREQID            = params$msreqid,
                                      RUNID              = "dl",
@@ -3407,8 +3407,8 @@ MergeTrackingTableRAW.3p <- function(params, from) {
 ####################### K PARTY TRACKING TABLE FUNCTIONS #######################
 
 initialize_tracking_table_kp <- function(params) {
-  trackingTable = list()
-  trackingTable$current = data.frame(DP_CD              = params$data_partner_id,
+  trackingTable <- list()
+  trackingTable$current <- data.frame(DP_CD              = params$data_partner_id,
                                      MSREQID            = params$msreqid,
                                      RUNID              = "dl",
                                      ITER_NB            = 0,  # params$pmnIterationCounter
@@ -3642,7 +3642,7 @@ print.vdralinear <- function(x, ...) {
 #' summary(vdra_fit_linear_A)
 #' @export
 summary.vdralinear <- function(object, ...) {
-  temp = list()
+  temp <- list()
   class(temp)         = "summary.vdralinear"
   temp$failed         = object$failed
   if (object$failed) {
@@ -3672,7 +3672,7 @@ print.summary.vdralinear <- function(x, lion = FALSE, ...) {
     return(invisible(NULL))
   }
 
-  x$stars          = sapply(x$pvals, function(x) {
+  x$stars          <- sapply(x$pvals, function(x) {
     if (is.na(x))       ""
     else if (x < 0.001) "***"
     else if (x < 0.01)  "**"
@@ -3681,7 +3681,7 @@ print.summary.vdralinear <- function(x, lion = FALSE, ...) {
     else                " "
   })
 
-  temp = data.frame(formatStrings(names(x$party)),
+  temp <- data.frame(formatStrings(names(x$party)),
                     formatStrings(x$party, minWidth = 5, justify = "centre"),
                     formatStatList(x$coefficients),
                     formatStatList(x$secoef),
@@ -3772,7 +3772,7 @@ print.vdralogistic <- function(x, ...) {
 #' @export
 
 summary.vdralogistic <- function(object, ...) {
-  temp = list()
+  temp <- list()
   class(temp)         = "summary.vdralogistic"
   temp$failed         = object$failed
   temp$converged      = object$converged
@@ -3808,7 +3808,7 @@ print.summary.vdralogistic <- function(x, lion = FALSE, ...) {
     warning(paste("Warning: Distributed logistic regression did not converge in",
                   x$iter, "iterations. Reported statistics are approximate."))
   }
-  x$stars = sapply(x$pvals, function(x) {
+  x$stars <- sapply(x$pvals, function(x) {
     if (is.na(x)) ""
     else if (x < 0.001) "***"
     else if (x < 0.01)  "**"
@@ -3817,7 +3817,7 @@ print.summary.vdralogistic <- function(x, lion = FALSE, ...) {
     else " "
   })
 
-  temp = data.frame(formatStrings(names(x$party)),
+  temp <- data.frame(formatStrings(names(x$party)),
                     formatStrings(x$party, minWidth = 5, justify = "centre"),
                     formatStatList(x$coefficients),
                     formatStatList(x$secoef),
@@ -3852,7 +3852,7 @@ print.vdracox <- function(x, ...) {
                   x$iter, "iterations. Reported statistics are approximate."))
   }
 
-  coeftab = data.frame(x$coefficients, x$expcoef, x$secoef, x$zvals, x$pvals)
+  coeftab <- data.frame(x$coefficients, x$expcoef, x$secoef, x$zvals, x$pvals)
   colnames(coeftab) = c("coef", "exp(coef)", "se(coef)", "z", "p")
   printCoefmat(coeftab, P.values = TRUE, has.Pvalue = TRUE, signif.stars = FALSE)
   cat("\n")
@@ -3912,7 +3912,7 @@ print.vdracox <- function(x, ...) {
 #' summary(vdra_fit_cox_A)
 #' @export
 summary.vdracox <- function(object, ...) {
-  temp = list()
+  temp <- list()
   class(temp)         = "summary.vdracox"
   temp$failed         = object$failed
   temp$converged      = object$converged
@@ -3955,7 +3955,7 @@ print.summary.vdracox <- function(x, lion = FALSE, ...) {
                   x$iter, "iterations. Reported statistics are approximate."))
   }
 
-  x$stars = sapply(x$pvals, function(x) {
+  x$stars <- sapply(x$pvals, function(x) {
     if (is.na(x)) ""
     else if (x < 0.001) "***"
     else if (x < 0.01)  "**"
@@ -3964,7 +3964,7 @@ print.summary.vdracox <- function(x, lion = FALSE, ...) {
     else " "
   })
 
-  temp1 = data.frame(formatStrings(names(x$party)),
+  temp1 <- data.frame(formatStrings(names(x$party)),
                      formatStrings(x$party, minWidth = 5, justify = "centre"),
                      formatStatList(x$coefficients),
                      formatStatList(x$expcoef),
@@ -3973,7 +3973,7 @@ print.summary.vdracox <- function(x, lion = FALSE, ...) {
                      format.pval(x$pvals),
                      formatStrings(x$stars))
   colnames(temp1) = c("", "party", "   coef", "exp(coef)", "se(coef)", "   z", "Pr(>|z|)", "")
-  temp2 = data.frame(formatStrings(names(x$party)),
+  temp2 <- data.frame(formatStrings(names(x$party)),
                      formatStrings(x$party, minWidth = 5, justify = "centre"),
                      formatStatList(x$expcoef),
                      formatStatList(x$expncoef),
@@ -4140,7 +4140,7 @@ differentModel <- function(formula = NULL, x = NULL) {
     else " "
   }))
 
-  y = list()
+  y <- list()
   class(y) = "vdralinear"
   y$failed    = x$failed
   y$converged = x$converged
@@ -4215,9 +4215,9 @@ HoslemInternal <- function(x, data = NULL, nGroups = 10) {
     Y = data$Y
   }
   pi_ = exp(x$final_fitted) / (1 + exp(x$final_fitted))
-  uq = unique(quantile(pi_, probs = seq(0, 1, 1 / nGroups)))
+  uq <- unique(quantile(pi_, probs = seq(0, 1, 1 / nGroups)))
   group_ = cut(pi_, breaks = uq, include.lowest = TRUE)
-  dd = data.frame(y = Y[order(pi_)], pi_ = sort(pi_),
+  dd <- data.frame(y = Y[order(pi_)], pi_ = sort(pi_),
                   group = group_[order(pi_)])
 
   e1 = by(dd, dd$group, function(x) sum(x$pi_))
@@ -4292,7 +4292,7 @@ HoslemTest <- function(x = NULL, nGroups = 10) {
     warning("HoslemTest can only be invoked by the party which holds the response.")
     return(invisible(NULL))
   } else if (is.numeric(nGroups)) {
-    temp = list()
+    temp <- list()
     class(temp) = "hoslemdistributed"
     temp$hoslem = HoslemInternal(x, nGroups = nGroups)
     return(temp)
@@ -4336,7 +4336,7 @@ RocInternal <- function(x, data = NULL, bins = 500) {
     oldY = newY
   }
 
-  temp = list()
+  temp <- list()
   temp$roc = rtrn
   temp$auc = AUC
   return(temp)
@@ -4390,7 +4390,7 @@ RocTest <- function(x = NULL, bins = 10) {
     warning("RocTest can only be invoked by the party which holds the response.")
     return(invisible(NULL))
   } else if (is.numeric(bins)) {
-    temp = list()
+    temp <- list()
     temp = RocInternal(x, bins = bins)
     class(temp) = "rocdistributed"
     return(temp)
@@ -4507,7 +4507,7 @@ print.survfitDistributed <- function(x, ...) {
     events[i] = sum(x$n.event[start:end])
     start = end + 1
   }
-  df = data.frame(n = x$n, events = events)
+  df <- data.frame(n = x$n, events = events)
   row.names(df) = names(x$strata)
   print(df)
 }
@@ -4516,12 +4516,12 @@ print.survfitDistributed <- function(x, ...) {
 #' @rdname survfitDistributed
 #' @export
 survfitDistributed.stats <- function(x) {
-  surv          = list()
+  surv          <- list()
   surv$n        = x$strata$end - x$strata$start + 1
   for (i in 1:nrow(x$strata)) {
     start = x$strata$start[i]
     end   = x$strata$end[i]
-    idx   = which(c(1, diff(x$survival$rank[start:end])) != 0)
+    idx   <- which(c(1, diff(x$survival$rank[start:end])) != 0)
     temp0 = table(x$survival$rank[start:end], x$survival$status[start:end])
     if (ncol(temp0) == 1) {
       if (which(c(0, 1) %in% colnames(temp0)) == 1) {
@@ -4552,7 +4552,7 @@ survfitDistributed.stats <- function(x) {
 #' @rdname survfitDistributed
 #' @export
 survfitDistributed.formula <- function(x, formula, data) {
-  surv = list()
+  surv <- list()
   vars = all.vars(formula)
   if ("." %in% vars) {
     warning("This function does not allow the . symbol in formulas.")
@@ -4563,26 +4563,26 @@ survfitDistributed.formula <- function(x, formula, data) {
     return(invisible(NULL))
   }
   if (length(vars) == 0) {
-    data = data.frame(const__ = rep(1, length(x$survival$rank)))
+    data <- data.frame(const__ = rep(1, length(x$survival$rank)))
   } else {
-    idx    = which(colnames(data) %in% vars)
-    data   = data[x$survival$sorted, idx, drop = FALSE]
+    idx    <- which(colnames(data) %in% vars)
+    data   <- data[x$survival$sorted, idx, drop = FALSE]
   }
   sorted = do.call("order", as.data.frame(cbind(data, x$survival$rank, x$survival$status)))
-  data   = data[sorted, , drop = FALSE]
+  data   <- data[sorted, , drop = FALSE]
   rank   = x$survival$rank[sorted]
   status = x$survival$status[sorted]
   data2  = matrix(0, nrow = nrow(data), ncol = ncol(data))
-  legend = list()
+  legend <- list()
   colnames(data2) = colnames(data)
   for (i in 1:ncol(data)) {
     levels = levels(as.factor(data[, i]))
-    legend[[colnames(data)[i]]] = levels
-    data2[, i] = sapply(data[, i], function(x) {
+    legend[[colnames(data)[i]]] <- levels
+    data2[, i] <- sapply(data[, i], function(x) {
       which(levels %in% x)
     })
   }
-  ranks = which(apply(abs(apply(data2, 2, diff)), 1, sum) > 0)
+  ranks <- which(apply(abs(apply(data2, 2, diff)), 1, sum) > 0)
   ranks = c(ranks, nrow(data2))
   start = 1
   for (i in 1:length(ranks)) {

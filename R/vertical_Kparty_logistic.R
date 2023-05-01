@@ -429,8 +429,8 @@ ComputeStWSLogistic.AC <- function(params) {
 
 
 #' @importFrom stats rnorm runif
-UpdateBetaLogistic.DP <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "UpdateBetaLogistic.DP\n\n")
+update_beta_logistic_DP <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "update_beta_logistic_DP\n\n")
   I = IDt = NULL
   read_time <- proc.time()[3]
   load(file.path(params$readPathAC, paste0("ID", params$data_partner_id, ".rdata")))
@@ -461,7 +461,7 @@ UpdateBetaLogistic.DP <- function(params) {
   write_size <- file.size(file.path(params$write_path, "u_converge.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "UpdateBetaLogistic.DP", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "update_beta_logistic_DP", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -776,7 +776,7 @@ DataPartnerKLogistic <- function(data,
       return(params$stats)
     }
 
-    params <- UpdateBetaLogistic.DP(params)
+    params <- update_beta_logistic_DP(params)
     files <- "u_converge.rdata"
     params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)

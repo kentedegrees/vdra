@@ -95,16 +95,16 @@ PrepareFolder.ACDP <- function(params, monitor_folder) {
 PrepareDataLinLog.DP1 <- function(params, data, y_name = NULL) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareDataLinLog.DP1\n\n")
 
-  workdata = list()
+  workdata <- list()
   workdata$failed = FALSE
 
-  workdata$failed = CheckDataFormat(params, data)
+  workdata$failed <- check_data_format(params, data)
 
   if (workdata$failed) {
     return(workdata)
   }
 
-  data = data.frame(data) # convert to a clean data.frame
+  data <- data.frame(data) # convert to a clean data.frame
 
   response_index = CheckResponse(params, data, y_name)
 
@@ -125,7 +125,7 @@ PrepareDataLinLog.DP1 <- function(params, data, y_name = NULL) {
   workdata$colmin   = apply(workdata$x, 2, min)
   workdata$colmax   = apply(workdata$x, 2, max)
   workdata$colsum   = apply(workdata$x, 2, sum)
-  workdata$colrange = workdata$colmax - workdata$colmin
+  workdata$colrange <- workdata$colmax - workdata$colmin
   for (i in 1:ncol(workdata$x)) {
     if (workdata$colmin[i] == workdata$colmax[i]) {
       workdata$colmin[i] = 0
@@ -141,27 +141,27 @@ PrepareDataLinLog.DP1 <- function(params, data, y_name = NULL) {
 PrepareDataLinLog.DPk <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareDataLinLog.DPk\n\n")
 
-  workdata = list()
+  workdata <- list()
   workdata$failed = FALSE
 
-  workdata$failed = CheckDataFormat(params, data)
+  workdata$failed <- check_data_format(params, data)
 
   if (workdata$failed) {
     return(workdata)
   }
 
-  data = data.frame(data) # convert to a clean data.frame
+  data <- data.frame(data) # convert to a clean data.frame
 
   workdata$tags = CreateModelMatrixTags(data)
   workdata$x = model.matrix(~ ., data)
   rownames(workdata$x) = NULL
-  workdata$x = workdata$x[, -1, drop = FALSE]
+  workdata$x <- workdata$x[, -1, drop = FALSE]
 
   workdata$n        = nrow(workdata$x)
   workdata$colmin   = apply(workdata$x, 2, min)
   workdata$colmax   = apply(workdata$x, 2, max)
   workdata$colsum   = apply(workdata$x, 2, sum)
-  workdata$colrange = workdata$colmax - workdata$colmin
+  workdata$colrange <- workdata$colmax - workdata$colmin
   for (i in 1:ncol(workdata$x)) {
     if (workdata$colmin[i] == workdata$colmax[i]) {
       workdata$colmin[i] = 0

@@ -243,7 +243,7 @@ prepare_params_linear_a3 <- function(params, data) {
   params$means = data$means
   params$sd    = data$sd
 
-  pa          = list()
+  pa          <- list()
   pa$analysis = params$analysis
   pa$n        = params$n
   pa$p        = params$p
@@ -272,7 +272,7 @@ prepare_params_linear_b3 <- function(params, data) {
   params$means = data$means
   params$sd    = data$sd
 
-  pb           = list()
+  pb           <- list()
   pb$analysis  = params$analysis
   pb$n         = params$n
   pb$p         = params$p
@@ -630,11 +630,11 @@ process_w_linear_t3 <- function(params) {
 
     read_time <- read_time - proc.time()[3]
     to_read_1 = file(file.path(params$dp_local_path, filename1), "rb")
-    r1 = matrix(readBin(con = to_read_1, what = numeric(), n = n * n,
+    r1  <- matrix(readBin(con = to_read_1, what = numeric(), n = n * n,
                         endian = "little"), nrow = n, ncol = n)
     read_size <- read_size + file.size(file.path(params$dp_local_path, filename1))
     close(to_read_1)
-    rw = matrix(readBin(con = to_read_2, what = numeric(), n = n * p2,
+    rw  <- matrix(readBin(con = to_read_2, what = numeric(), n = n * p2,
                         endian = "little"), nrow = n, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
@@ -703,7 +703,7 @@ get_wr_linear_a3 <- function(params, data) {
     n = stp - strt + 1
 
     read_time <- read_time - proc.time()[3]
-    wr = matrix(readBin(con = to_read, what = numeric(), n = n * p2,
+    wr  <- matrix(readBin(con = to_read, what = numeric(), n = n * p2,
                         endian = "little"), nrow = n, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
@@ -762,11 +762,11 @@ get_products_linear_t3 <- function(params) {
 
     read_time <- read_time - proc.time()[3]
     to_read_1 = file(file.path(params$dp_local_path, filename1), "rb")
-    r2 = matrix(readBin(con = to_read_1, what = numeric(), n = p2 * p2,
+    r2  <- matrix(readBin(con = to_read_1, what = numeric(), n = p2 * p2,
                         endian = "little"), p2, p2)
     read_size <- read_size + file.size(file.path(params$dp_local_path, filename1))
     close(to_read_1)
-    pr = matrix(readBin(con = to_read, what = numeric(), n = (p1 + 1) * p2,
+    pr  <- matrix(readBin(con = to_read, what = numeric(), n = (p1 + 1) * p2,
                         endian = "little"), p1 + 1, p2)
     read_time <- read_time + proc.time()[3]
 
@@ -820,7 +820,7 @@ compute_results_linear_t3 <- function(params) {
 
   # First we de-standardize.
   xtx = diag(c(sda, sdb)) %*% xtx %*% diag(c(sda, sdb))
-  offset = matrix(c(means_a, means_b), ncol = 1) %*%
+  offset  <- matrix(c(means_a, means_b), ncol = 1) %*%
     matrix(c(means_a, means_b), nrow = 1) * n
   offset[1, 1] = 0
   xtx = xtx + offset
@@ -840,7 +840,7 @@ compute_results_linear_t3 <- function(params) {
   }
 
 
-  a_index        = which(indicies <= length(a_names))
+  a_index        <- which(indicies <= length(a_names))
   a_indicies_keep = indicies[a_index]
   b_indicies_keep = indicies[-a_index] - length(a_names)
   names_old     = c(a_names, b_names)
@@ -848,7 +848,7 @@ compute_results_linear_t3 <- function(params) {
   xtx_old       = xtx
   xty_old       = xty
   xtx           = xtx[indicies, indicies, drop = FALSE]
-  xty           = matrix(xty[indicies, ], ncol = 1)
+  xty            <- matrix(xty[indicies, ], ncol = 1)
 
   invxtx = solve(xtx)
   betas  = drop(invxtx %*% xty)

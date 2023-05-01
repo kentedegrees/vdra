@@ -12,7 +12,7 @@ prepare_params_cox_a3 <- function(params, data) {
     attachNamespace("survival")
   }
 
-  pa           = list()
+  pa           <- list()
   pa$p1        = params$p1
   pa$n         = params$n
   pa$analysis  = params$analysis
@@ -42,7 +42,7 @@ prepare_params_cox_b3 <- function(params, data) {
     attachNamespace("survival")
   }
 
-  pb           = list()
+  pb           <- list()
   pb$p2        = params$p2
   pb$n         = params$n
   pb$analysis  = params$analysis
@@ -188,7 +188,7 @@ prepare_strata_cox_t3 <- function(params) {
   a_strata  = NULL
   b_strata  = NULL
   survival = NULL
-  strata_temp   = list()
+  strata_temp   <- list()
 
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["A"]], "Astrata.rdata"))
@@ -199,7 +199,7 @@ prepare_strata_cox_t3 <- function(params) {
 
 
   if (length(params$strata_from_a) == 0 && length(params$strata_from_b) == 0) {
-    strata_temp$x = data.frame(const__ = rep(1, params$n))
+    strata_temp$x <- data.frame(const__ = rep(1, params$n))
     strata_temp$legend = FALSE
   } else if (length(params$strata_from_a) == 0) {
     strata_temp$x = b_strata$x
@@ -217,7 +217,7 @@ prepare_strata_cox_t3 <- function(params) {
   survival$rank   = survival$rank[sorted]
   survival$status = survival$status[sorted]
   survival$sorted = sorted
-  ranks = which(apply(abs(apply(strata_temp$x, 2, diff)), 1, sum) > 0)
+  ranks <- which(apply(abs(apply(strata_temp$x, 2, diff)), 1, sum) > 0)
   ranks = c(ranks, nrow(strata_temp$x))
   names(ranks) = NULL
   strata = rep(list(list()), length(ranks))
@@ -352,7 +352,7 @@ sort_data_cox_b3 <- function(params, data) {
 
 get_s_xb_cox_b3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "get_s_xb_cox_b3\n\n")
-  s = matrix(0, nrow = params$n, ncol = length(data$survival$strata))
+  s  <- matrix(0, nrow = params$n, ncol = length(data$survival$strata))
   for (i in 1:length(data$survival$strata)) {
     s[data$survival$strata[[i]]$start:data$survival$strata[[i]]$end, i] = 1
   }
@@ -403,7 +403,7 @@ get_wr_cox_a3 <- function(params, data) {
     n = stp - strt + 1
 
     read_time <- read_time - proc.time()[3]
-    wr = matrix(readBin(con = to_read, what = numeric(), n = n * p2,
+    wr  <- matrix(readBin(con = to_read, what = numeric(), n = n * p2,
                         endian = "little"), nrow = n, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
@@ -430,7 +430,7 @@ get_wr_cox_a3 <- function(params, data) {
 
 get_s_xa_cox_a3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "get_s_xa_cox_a3\n\n")
-  s = matrix(0, nrow = params$n, ncol = length(data$survival$strata))
+  s  <- matrix(0, nrow = params$n, ncol = length(data$survival$strata))
   for (i in 1:length(data$survival$strata)) {
     s[data$survival$strata[[i]]$start:data$survival$strata[[i]]$end, i] = 1
   }
@@ -480,11 +480,11 @@ get_products_cox_t3 <- function(params) {
     filename1 <- paste0("r2_", i, ".rdata")
     read_time <- read_time - proc.time()[3]
     to_read_1 = file(file.path(params$dp_local_path, filename1), "rb")
-    r2 = matrix(readBin(con = to_read_1, what = numeric(), n = p2 * p2,
+    r2  <- matrix(readBin(con = to_read_1, what = numeric(), n = p2 * p2,
                         endian = "little"), p2, p2)
     read_size <- read_size + file.size(file.path(params$dp_local_path, filename1))
     close(to_read_1)
-    pr = matrix(readBin(con = to_read, what = numeric(), n = p1 * p2,
+    pr  <- matrix(readBin(con = to_read, what = numeric(), n = p1 * p2,
                         endian = "little"), p1, p2)
     read_time <- read_time + proc.time()[3]
     xa_t_xb = xa_t_xb + pr %*% t(r2)
@@ -495,7 +495,7 @@ get_products_cox_t3 <- function(params) {
   }
 
   num = length(params$survival$strata)
-  sts = matrix(0, nrow = num, ncol = num)
+  sts  <- matrix(0, nrow = num, ncol = num)
   for (i in 1:num) {
     sts[i, i] = params$survival$strata[[i]]$end - params$survival$strata[[i]]$start + 1
   }
@@ -527,8 +527,8 @@ check_colinearity_cox_t3 <- function(params) {
   a_names = params$colnamesA
   b_names = params$colnamesB
   indicies = indicies[-(1:num_strata)] - num_strata# Get rid of the strata indicators
-  a_index = which(indicies <= length(a_names))
-  b_index = which(indicies > length(a_names))
+  a_index <- which(indicies <= length(a_names))
+  b_index <- which(indicies > length(a_names))
   params$indicies      = indicies
   params$a_indicies_keep = indicies[a_index]
   params$b_indicies_keep = indicies[b_index] - length(a_names)
@@ -801,7 +801,7 @@ compute_xb_delta_l_cox_b3 <- function(params, data) {
   deltal = as.numeric(data$survival$status)
   deltal[1] = deltal[1]  # This is to force R to make a copy since we are exploiting
   # a pass by reference with the C call.
-  w_xb = matrix(0, n, p2)
+  w_xb  <- matrix(0, n, p2)
 
   .Call("ComputeCox", data$survival$strata, data$x, w, deltal, w_xb,
         as.integer(n), as.integer(p2), as.integer(num_events),
@@ -881,7 +881,7 @@ compute_xa_delta_l_cox_a3 <- function(params, data) {
   deltal = as.numeric(data$survival$status)
   deltal[1] = deltal[1]  # This is to force R to make a copy since we are exploiting
   # a pass by reference with the C call.
-  w_xa = matrix(0, n, p1)
+  w_xa  <- matrix(0, n, p1)
 
   .Call("ComputeCox", data$survival$strata, data$x, w, deltal, w_xa,
         as.integer(n), as.integer(p1), as.integer(num_events),
@@ -933,11 +933,11 @@ process_v_cox_t3 <- function(params) {
 
     read_time <- read_time - proc.time()[3]
     to_read_1 = file(file.path(params$dp_local_path, filename1), "rb")
-    r2 = matrix(readBin(con = to_read_1, what = numeric(), n = n * n,
+    r2  <- matrix(readBin(con = to_read_1, what = numeric(), n = n * n,
                         endian = "little"), nrow = n, ncol = n)
     read_size <- read_size + file.size(file.path(params$dp_local_path, filename1))
     close(to_read_1)
-    rv = matrix(readBin(con = to_read_2, what = numeric(), n = n * p2,
+    rv  <- matrix(readBin(con = to_read_2, what = numeric(), n = n * p2,
                         endian = "little"), nrow = n, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
@@ -994,7 +994,7 @@ get_xr_cox_a3 <- function(params, data) {
     n = stp - strt + 1
 
     read_time <- read_time - proc.time()[3]
-    vr = matrix(readBin(con = to_read, what = numeric(), n = n * p2,
+    vr  <- matrix(readBin(con = to_read, what = numeric(), n = n * p2,
                         endian = "little"), nrow = n, ncol = p2)
     read_time <- read_time + proc.time()[3]
     xr = t(data$x[strt:stp, , drop = FALSE]) %*% vr
@@ -1049,10 +1049,10 @@ process_x_t_w_x_cox_t3 <- function(params) {
     filename2 <- paste0("r3_", i, ".rdata")
     read_time <- read_time - proc.time()[3]
     to_read_1 = file(file.path(params$dp_local_path, filename2), "rb")
-    r = matrix(readBin(con = to_read_1, what = numeric(), n = p2 * p2,
+    r  <- matrix(readBin(con = to_read_1, what = numeric(), n = p2 * p2,
                        endian = "little"), nrow = p2, ncol = p2)
     close(to_read_1)
-    xr = matrix(readBin(con = to_read, what = numeric(), n = p1 * p2,
+    xr  <- matrix(readBin(con = to_read, what = numeric(), n = p1 * p2,
                         endian = "little"), nrow = p1, ncol = p2)
 
     read_size <- read_size + file.size(file.path(params$dp_local_path, filename2))
@@ -1236,7 +1236,7 @@ compute_results_cox_t3 <- function(params) {
     stats$concordance <- c(NA, NA, NA, NA, NA, NA)
   }
 
-  stats$survival = data.frame(
+  stats$survival <- data.frame(
     rank   = params$survival$rank,
     status = params$survival$status,
     sorted = params$survival$sorted,
@@ -1375,7 +1375,7 @@ compute_cox_from_survival_b3 <- function(params, data) {
 
   error = tryCatch(
     {fit = survival::coxph(as.formula(f),
-                           data = data.frame(rank = data$survival$rank,
+                           data <- data.frame(rank = data$survival$rank,
                                              status = data$survival$status,
                                              strata = strata,
                                              data$x),
@@ -1396,7 +1396,7 @@ compute_cox_from_survival_b3 <- function(params, data) {
     params$converged = TRUE
     if (class(error) == "logical") {
       fit = suppressWarnings(survival::coxph(as.formula(f),
-                                             data = data.frame(rank = data$survival$rank,
+                                             data <- data.frame(rank = data$survival$rank,
                                                                status = data$survival$status,
                                                                strata = strata,
                                                                data$x),
@@ -1423,9 +1423,9 @@ compute_cox_b3 <- function(params, data) {
   n           = params$n
   p2          = params$p
   params$alg_iteration_counter = 1
-  x_betas_old = matrix(0, n, 1)
-  x_betas     = matrix(0, n, 1)
-  betas_b      = matrix(0, p2, 1)
+  x_betas_old  <- matrix(0, n, 1)
+  x_betas      <- matrix(0, n, 1)
+  betas_b       <- matrix(0, p2, 1)
   betas_b_old   = betas_b
   loglikelihood_old = -Inf
   max_iterations = 25
@@ -1485,7 +1485,7 @@ compute_cox_b3 <- function(params, data) {
     deltal = as.numeric(data$survival$status)
     deltal[1] = deltal[1]  # This is to force R to make a copy since we are exploiting
     # a pass by reference with the C call.
-    w_xb = matrix(0, n, p2)
+    w_xb  <- matrix(0, n, p2)
 
     .Call("ComputeCox", data$survival$strata, data$x, w, deltal, w_xb,
           as.integer(n), as.integer(p2), as.integer(num_events),
@@ -1512,7 +1512,7 @@ compute_cox_b3 <- function(params, data) {
 
       betas = rep(NA, length(params$Bcolnames_old))
       betas[params$b_indicies_keep] = betas_b
-      betas = data.frame(betas)
+      betas <- data.frame(betas)
       rownames(betas) = params$Bcolnames_old
       # if (params$verbose) cat("Current Parameters:\n")
       # if (params$verbose) print(betas)
@@ -1572,13 +1572,13 @@ compute_results_cox_b3 <- function(params, data) {
   }
   stats$expcoef      = exp(stats$coefficients)  # exp(coef) = hazard ratios
   stats$expncoef     = exp(-stats$coefficients)
-  stats$var          = matrix(0, length(names_old), length(names_old))
+  stats$var           <- matrix(0, length(names_old), length(names_old))
   stats$var[idx, idx] = tempvar
   stats$secoef       = rep(NA, length(names_old))
   stats$secoef[idx]  = sqrt(diag(tempvar))  # se(coef)
   stats$zvals        = stats$coefficients / stats$secoef  # z values
   stats$pvals        = 2 * pnorm(abs(stats$zvals), lower.tail = FALSE)   # pvals
-  stats$stars        = matrix(sapply(stats$pvals, function(x) {
+  stats$stars         <- matrix(sapply(stats$pvals, function(x) {
     if (is.na(x))       ""
     else if (x < 0.001) "***"
     else if (x < 0.01)  "**"
@@ -1618,7 +1618,7 @@ compute_results_cox_b3 <- function(params, data) {
 
   params$survival = data$survival
   pred = data$x %*% stats$coefficients[idx]
-  stats$survival = data.frame(
+  stats$survival <- data.frame(
     rank   = data$survival$rank,
     status = data$survival$status,
     sorted = data$survival$sorted,
