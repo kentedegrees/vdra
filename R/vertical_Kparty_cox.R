@@ -1654,7 +1654,7 @@ DataPartnerKCox <- function(data,
     params$alg_iteration_counter <- params$alg_iteration_counter + 1
   }
   params$lastIteration = TRUE
-  params$completed = TRUE
+  params$completed <- TRUE
 
   params <- get_results_cox_DP(params)
   send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
@@ -1806,7 +1806,7 @@ AnalysisCenterKCox <- function(numDataPartners = NULL,
     params$alg_iteration_counter <- params$alg_iteration_counter + 1
   }
   params$lastIteration = TRUE
-  params$completed = TRUE
+  params$completed <- TRUE
 
   params <- compute_results_cox_AC(params)
   files <- "stats.rdata"

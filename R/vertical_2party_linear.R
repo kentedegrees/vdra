@@ -353,7 +353,7 @@ prepare_blocks_linear_a2 <- function(params, blocksize) {
             paste0(minimum_block_size, ".\n"),
             "Decrease the number of A covariates to", max_a_covariates, "or less.")
 
-    b = n - 2 * p1 - 2
+    b <- n - 2 * p1 - 2
     discrim <- b^2 - 4 * (p1 + 1)^2
     if (discrim >= 0) {
       min_b_covariates <- trunc(1 + (b - sqrt(discrim)) / 2)
@@ -563,8 +563,8 @@ get_products_linear_a2 <- function(params, data) {
                        endian = "little"), nrow = n2, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
-    xa_t_xb = xa_t_xb + t(data$x[strt:stp, ]) %*% w
-    y_t_xb  = y_t_xb  + t(data$Y[strt:stp, ]) %*% w
+    xa_t_xb <- xa_t_xb + t(data$x[strt:stp, ]) %*% w
+    y_t_xb  <- y_t_xb  + t(data$Y[strt:stp, ]) %*% w
 
     if ((i + 1) %in% params$container$filebreak.w || i == params$blocks$num_blocks) {
       close(to_read)
@@ -586,7 +586,7 @@ get_products_linear_a2 <- function(params, data) {
   params$xtxLasso <- x_t_x_lasso
   params$xtyLasso <- x_t_y_lasso
 
-  params$converged = TRUE
+  params$converged <- TRUE
 
   params <- add_to_log(params, "get_products_linear_a2", read_time, read_size, 0, 0)
   return(params)
