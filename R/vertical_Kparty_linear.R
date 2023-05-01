@@ -424,7 +424,7 @@ get_products_linear_AC <- function(params) {
 #' @importFrom  stats pf pt
 compute_results_linear_AC <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "compute_results_linear_AC\n\n")
-  stats           = params$stats
+  stats           <- params$stats
   stats$converged <- params$converged
   n        = params$n
   yty      = params$yty
@@ -555,7 +555,7 @@ compute_results_linear_AC <- function(params) {
 
   class(stats) = "vdralinear"
 
-  params$stats = stats
+  params$stats <- stats
   write_time <- proc.time()[3]
   save(stats, file = file.path(params$write_path, "stats.rdata"))
   write_size = file.size(file.path(params$write_path, "stats.rdata"))
@@ -568,12 +568,12 @@ compute_results_linear_AC <- function(params) {
 get_results_linear_DP <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "get_results_linear_DP\n\n")
   params$converged = TRUE
-  stats = NULL
+  stats <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$readPathAC, "stats.rdata"))
   read_size = file.size(file.path(params$readPathAC, "stats.rdata"))
   read_time <- proc.time()[3] - read_time
-  params$stats = stats
+  params$stats <- stats
 
   params <- add_to_log(params, "get_results_linear_DP", read_time, read_size, 0, 0)
   return(params)

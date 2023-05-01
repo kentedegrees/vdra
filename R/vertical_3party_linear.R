@@ -292,7 +292,7 @@ prepare_params_linear_b3 <- function(params, data) {
 
 prepare_params_linear_t3 <- function(params, cutoff = 1e-8, max_iterations = 25) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_t3\n\n")
-  pa = NULL
+  pa <- NULL
   pb <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["A"]], "pa.rdata"))
@@ -802,7 +802,7 @@ get_products_linear_t3 <- function(params) {
 #' @importFrom  stats pf pt
 compute_results_linear_t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "compute_results_linear_t3\n\n")
-  stats    = params$stats
+  stats    <- params$stats
   stats$converged <- params$converged
   stats$failed    = FALSE
   a_names   = params$colnamesA
@@ -922,7 +922,7 @@ compute_results_linear_t3 <- function(params) {
   colnames(stats$xty)          = colnames(params$xty)
   rownames(stats$xty)          = names_old
 
-  params$stats = stats
+  params$stats <- stats
 
   tags <- params$b_tags[b_indicies_keep]
 
@@ -949,12 +949,12 @@ compute_results_linear_t3 <- function(params) {
 get_results_linear_a3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "get_results_linear_a3\n\n")
   params$converged = TRUE
-  stats = NULL
+  stats <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "stats.rdata"))
   read_size <- file.size(file.path(params$read_path[["T"]], "stats.rdata"))
   read_time <- proc.time()[3] - read_time
-  params$stats = stats
+  params$stats <- stats
 
   params <- add_to_log(params, "get_results_linear_a3", read_time, read_size, 0, 0)
   return(params)
@@ -964,12 +964,12 @@ get_results_linear_a3 <- function(params) {
 get_results_linear_b3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "get_results_linear_b3\n\n")
   params$converged = TRUE
-  stats = NULL
+  stats <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "stats.rdata"))
   read_size <- file.size(file.path(params$read_path[["T"]], "stats.rdata"))
   read_time <- proc.time()[3] - read_time
-  params$stats = stats
+  params$stats <- stats
 
   params <- add_to_log(params, "get_results_linear_b3", read_time, read_size, 0, 0)
   return(params)
@@ -1004,7 +1004,7 @@ party_a_process_3_linear <- function(data,
   params <- add_to_log(params, "prepare_data_linear_a23", 0, 0, 0, 0)
 
   if (data$failed) {
-    message = "Error in processing the data for Party A."
+    message <- "Error in processing the data for Party A."
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
     params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
@@ -1069,7 +1069,7 @@ party_b_process_3_linear <- function(data,
   params <- add_to_log(params, "prepare_data_linear_B23", 0, 0, 0, 0)
 
   if (data$failed) {
-    message = "Error in processing the data for Party B."
+    message <- "Error in processing the data for Party B."
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
     params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)

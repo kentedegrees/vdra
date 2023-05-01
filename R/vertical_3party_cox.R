@@ -62,7 +62,7 @@ prepare_params_cox_b3 <- function(params, data) {
 
 prepare_params_cox_t3 <- function(params, cutoff, max_iterations) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_cox_t3\n\n")
-  pa = NULL
+  pa <- NULL
   pb <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["A"]], "pa.rdata"))
@@ -239,7 +239,7 @@ prepare_strata_cox_t3 <- function(params) {
         }
       }
       strata[[i]]$label <- label
-      start = as.numeric(ranks[i]) + 1
+      start <- as.numeric(ranks[i]) + 1
     }
   }
   for (i in 1:length(strata)) {
@@ -260,16 +260,16 @@ prepare_strata_cox_t3 <- function(params) {
     }
     strata[[i]]$J = as.integer(sum(temp0[, 2] > 0))         # number of distinct failure times
     # The number of failures at each rank which has a failure
-    strata[[i]]$nfails = as.numeric(temp0[which(temp0[, 2] > 0), 2])
+    strata[[i]]$nfails <- as.numeric(temp0[which(temp0[, 2] > 0), 2])
     # The first index of the ranks for which the number of failures is > 0.
     strata[[i]]$start0 = c(1, (cumsum(temp)[1:(m - 1)] + 1))[which(temp0[, 2] > 0)]
     # The first index of a failure for each rank which has a failure
     strata[[i]]$start1 = strata[[i]]$start0 + temp0[which(temp0[, 2] > 0), 1]
     # The last index of a failure for each rank which has a failure
-    strata[[i]]$stop1  = as.numeric(strata[[i]]$start1 + strata[[i]]$nfails  - 1)
-    strata[[i]]$start0 = as.numeric(strata[[i]]$start0 + strata[[i]]$start - 1)
-    strata[[i]]$start1 = as.numeric(strata[[i]]$start1 + strata[[i]]$start - 1)
-    strata[[i]]$stop1  = as.numeric(strata[[i]]$stop1  + strata[[i]]$start - 1)
+    strata[[i]]$stop1  <- as.numeric(strata[[i]]$start1 + strata[[i]]$nfails  - 1)
+    strata[[i]]$start0 <- as.numeric(strata[[i]]$start0 + strata[[i]]$start - 1)
+    strata[[i]]$start1 <- as.numeric(strata[[i]]$start1 + strata[[i]]$start - 1)
+    strata[[i]]$stop1  <- as.numeric(strata[[i]]$stop1  + strata[[i]]$start - 1)
   }
 
   survival$strata = strata
@@ -578,7 +578,7 @@ compute_initial_betas_cox_t3 <- function(params) {
   params$betas           = betas
   params$betasold        = betas
   params$x_beta           = rep(0, params$n)
-  params$alg_iteration_counter = 1
+  params$alg_iteration_counter <- 1
   params$delta_beta       <- Inf
   params$loglikelihood   <- -Inf
   params$converged       = FALSE
@@ -798,7 +798,7 @@ compute_xb_delta_l_cox_b3 <- function(params, data) {
   num_events <- sum(data$survival$status)
 
   w = exp(x_beta)
-  deltal = as.numeric(data$survival$status)
+  deltal <- as.numeric(data$survival$status)
   deltal[1] <- deltal[1]  # This is to force R to make a copy since we are exploiting
   # a pass by reference with the C call.
   w_xb  <- matrix(0, n, p2)
@@ -878,7 +878,7 @@ compute_xa_delta_l_cox_a3 <- function(params, data) {
   num_events <- sum(data$survival$status)
 
   w = exp(x_beta)
-  deltal = as.numeric(data$survival$status)
+  deltal <- as.numeric(data$survival$status)
   deltal[1] <- deltal[1]  # This is to force R to make a copy since we are exploiting
   # a pass by reference with the C call.
   w_xa  <- matrix(0, n, p1)
@@ -1175,7 +1175,7 @@ survfit_cox_bt3 <- function(params, pred) {
 #' @importFrom  stats pchisq pnorm qnorm
 compute_results_cox_t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComptueResultsCvox.t3\n\n")
-  stats = params$stats
+  stats <- params$stats
   stats$failed         <- FALSE
   stats$converged      <- params$converged
   names_new          <- c(params$colnamesA, params$colnamesB)
@@ -1242,7 +1242,7 @@ compute_results_cox_t3 <- function(params) {
     sorted = params$survival$sorted,
     surv   = survfit_cox_bt3(params, pred)
   )
-  stats$strata = as.data.frame(matrix(0, length(params$survival$strata), 3))
+  stats$strata <- as.data.frame(matrix(0, length(params$survival$strata), 3))
   stats$strata$label <- ""
   colnames(stats$strata) = c("start", "end", "events", "label")
   for (i in 1:length(params$survival$strata)) {
@@ -1272,7 +1272,7 @@ compute_results_cox_t3 <- function(params) {
   names(stats$concordance)     = c("concordant", "discordant", "tied.risk", "tied.time",
                                    "concordance", "stderr")
 
-  params$stats = stats
+  params$stats <- stats
   write_time <- proc.time()[3]
   save(stats, file = file.path(params$write_path, "stats.rdata"))
   write_size <- file.size(file.path(params$write_path, "stats.rdata"))
@@ -1285,12 +1285,12 @@ compute_results_cox_t3 <- function(params) {
 
 get_results_cox_a3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "get_results_cox_a3\n\n")
-  stats = NULL
+  stats <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "stats.rdata"))
   read_size <- file.size(file.path(params$read_path[["T"]], "stats.rdata"))
   read_time <- proc.time()[3] - read_time
-  params$stats = stats
+  params$stats <- stats
   params <- add_to_log(params, "get_results_cox_a3", read_time, read_size, 0, 0)
   return(params)
 }
@@ -1298,12 +1298,12 @@ get_results_cox_a3 <- function(params) {
 
 get_results_cox_b3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "get_results_cox_b3\n\n")
-  stats = NULL
+  stats <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "stats.rdata"))
   read_size <- file.size(file.path(params$read_path[["T"]], "stats.rdata"))
   read_time <- proc.time()[3] - read_time
-  params$stats = stats
+  params$stats <- stats
   params <- add_to_log(params, "get_results_cox_b3", read_time, read_size, 0, 0)
   return(params)
 }
@@ -1373,7 +1373,7 @@ compute_cox_from_survival_b3 <- function(params, data) {
   colnames(data$x) = paste0("V", 1:ncol(data$x))
   f = paste(c("Surv(rank, status) ~ strata(strata)", paste0("V", 1:ncol(data$x))), collapse = " + ")
 
-  error = tryCatch(
+  error <- tryCatch(
     {fit = survival::coxph(as.formula(f),
                            data <- data.frame(rank = data$survival$rank,
                                              status = data$survival$status,
@@ -1422,7 +1422,7 @@ compute_cox_b3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "compute_cox_b3\n\n")
   n           = params$n
   p2          = params$p
-  params$alg_iteration_counter = 1
+  params$alg_iteration_counter <- 1
   x_betas_old  <- matrix(0, n, 1)
   x_betas      <- matrix(0, n, 1)
   betas_b       <- matrix(0, p2, 1)
@@ -1482,7 +1482,7 @@ compute_cox_b3 <- function(params, data) {
       }
     }
     num_events <- sum(data$survival$status)
-    deltal = as.numeric(data$survival$status)
+    deltal <- as.numeric(data$survival$status)
     deltal[1] <- deltal[1]  # This is to force R to make a copy since we are exploiting
     # a pass by reference with the C call.
     w_xb  <- matrix(0, n, p2)
@@ -1535,9 +1535,9 @@ compute_cox_b3 <- function(params, data) {
       params$null_score         <- t(data$x) %*% deltal
       params$nullloglikelihood <- loglikelihood
     }
-    loglikelihood_old = loglikelihood
+    loglikelihood_old <- loglikelihood
     EndingIteration(params)
-    params$alg_iteration_counter = params$alg_iteration_counter + 1
+    params$alg_iteration_counter <- params$alg_iteration_counter + 1
   }
   params$loglikelihood <- loglikelihood
   params$betas_b = betas_b
@@ -1550,7 +1550,7 @@ compute_cox_b3 <- function(params, data) {
 #' @importFrom  stats pchisq pnorm qnorm
 compute_results_cox_b3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "compute_results_cox_b3\n\n")
-  stats = params$stats
+  stats <- params$stats
   stats$converged <- params$converged
   stats$party_name <- params$party_name
   stats$failed    = FALSE
@@ -1576,7 +1576,7 @@ compute_results_cox_b3 <- function(params, data) {
   stats$var[idx, idx] = tempvar
   stats$secoef       = rep(NA, length(names_old))
   stats$secoef[idx]  = sqrt(diag(tempvar))  # se(coef)
-  stats$zvals        = stats$coefficients / stats$secoef  # z values
+  stats$zvals        <- stats$coefficients / stats$secoef  # z values
   stats$pvals        = 2 * pnorm(abs(stats$zvals), lower.tail = FALSE)   # pvals
   stats$stars         <- matrix(sapply(stats$pvals, function(x) {
     if (is.na(x))       ""
@@ -1624,7 +1624,7 @@ compute_results_cox_b3 <- function(params, data) {
     sorted = data$survival$sorted,
     surv   = survfit_cox_bt3(params, pred)
   )
-  stats$strata = as.data.frame(matrix(0, length(data$survival$strata), 3))
+  stats$strata <- as.data.frame(matrix(0, length(data$survival$strata), 3))
   stats$strata$label <- ""
   colnames(stats$strata) = c("start", "end", "events", "label")
   for (i in 1:length(data$survival$strata)) {
@@ -1654,7 +1654,7 @@ compute_results_cox_b3 <- function(params, data) {
   names(stats$concordance)     = c("concordant", "discordant", "tied.risk", "tied.time",
                                    "concordance", "stderr")
 
-  params$stats = stats
+  params$stats <- stats
   write_time <- proc.time()[3]
   save(stats, file = file.path(params$write_path, "stats.rdata"))
   write_size <- file.size(file.path(params$write_path, "stats.rdata"))
@@ -1666,12 +1666,12 @@ compute_results_cox_b3 <- function(params, data) {
 
 transfer_results_cox_t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "transfer_results_cox_t3\n\n")
-  stats = NULL
+  stats <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["B"]], "stats.rdata"))
   read_size <- file.size(file.path(params$read_path[["B"]], "stats.rdata"))
   read_time <- proc.time()[3] - read_time
-  params$stats = stats
+  params$stats <- stats
 
   write_time <- proc.time()[3]
   save(stats, file = file.path(params$write_path, "stats.rdata"))
@@ -1710,7 +1710,7 @@ party_a_process_3_cox <- function(data,
   params <- add_to_log(params, "prepare_data_cox_23", 0, 0, 0, 0)
 
   if (data$failed) {
-    message = "Error in processing the data for Party A."
+    message <- "Error in processing the data for Party A."
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
     params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time,
@@ -1725,7 +1725,7 @@ party_a_process_3_cox <- function(data,
                                 waitForTurn = TRUE)
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
-    params$complete = TRUE
+    params$complete <- TRUE
     warning(read_error_message(params$read_path[["T"]]))
     params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE,
                               waitForTurn = TRUE)
@@ -1739,15 +1739,15 @@ party_a_process_3_cox <- function(data,
                                 waitForTurn = TRUE)
 
   if (file.exists(file.path(params$read_path[["T"]], "stats.rdata"))) {
-    params$alg_iteration_counter = 1
+    params$alg_iteration_counter <- 1
     params <- get_results_cox_a3(params)
-    params$converged = params$stats$converged
+    params$converged <- params$stats$converged
     params <- send_pause_quit_3p(params, sleep_time = sleep_time)
     return(params$stats)
   }
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
-    params$complete = TRUE
+    params$complete <- TRUE
     warning(read_error_message(params$read_path[["T"]]))
     params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE,
                               waitForTurn = TRUE)
@@ -1769,15 +1769,15 @@ party_a_process_3_cox <- function(data,
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   if (file.exists(file.path(params$read_path[["T"]], "stats.rdata"))) {
-    params$alg_iteration_counter = 1
+    params$alg_iteration_counter <- 1
     params <- get_results_cox_a3(params)
-    params$converged = params$stats$converged
+    params$converged <- params$stats$converged
     params <- send_pause_quit_3p(params, sleep_time = sleep_time)
     return(params$stats)
   }
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
-    params$complete = TRUE
+    params$complete <- TRUE
     warning(read_error_message(params$read_path[["T"]]))
     params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE,
                               waitForTurn = TRUE)
@@ -1788,7 +1788,7 @@ party_a_process_3_cox <- function(data,
   params <- update_params_cox_a3(params)
   data = update_data_cox_a3(params, data)
 
-  params$alg_iteration_counter = 1
+  params$alg_iteration_counter <- 1
   repeat {
     params <- get_beta_a_cox_a3(params)
     if (params$converged || params$max_iter_exceeded) break
@@ -1818,7 +1818,7 @@ party_a_process_3_cox <- function(data,
       return(params$stats)
     }
     EndingIteration(params)
-    params$alg_iteration_counter = params$alg_iteration_counter + 1
+    params$alg_iteration_counter <- params$alg_iteration_counter + 1
   }
 
   params <- get_results_cox_a3(params)
@@ -1850,7 +1850,7 @@ party_b_process_3_cox <- function(data,
   params <- add_to_log(params, "prepare_data_cox_23", 0, 0, 0, 0)
 
   if (data$failed) {
-    message = "Error in processing the data for Party B."
+    message <- "Error in processing the data for Party B."
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
     params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time,
@@ -1865,7 +1865,7 @@ party_b_process_3_cox <- function(data,
                                 waitForTurn = TRUE)
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
-    params$complete = TRUE
+    params$complete <- TRUE
     warning(read_error_message(params$read_path[["T"]]))
     params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE,
                               waitForTurn = TRUE)
@@ -1880,13 +1880,13 @@ party_b_process_3_cox <- function(data,
                                 waitForTurn = TRUE)
 
   if (file.exists(file.path(params$read_path[["T"]], "transferControl.rdata"))) {
-    params$alg_iteration_counter = 1
+    params$alg_iteration_counter <- 1
     data = sort_data_cox_b3(params, data)
     params <- add_to_log(params, "sort_data_cox_b3", data$read_time, data$read_size, 0, 0)
     params <- check_colinearity_cox_b3(params, data)
 
     if (params$failed) {  # Happens if pb_new == 0
-      params$complete = TRUE
+      params$complete <- TRUE
       warning(params$error_message)
       make_error_message(params$write_path, params$error_message)
       files <- c("error_message.rdata")
@@ -1903,7 +1903,7 @@ party_b_process_3_cox <- function(data,
     }
 
     if (params$failed) {      # We could get a job_failed here from coefficient explosion
-      params$complete = TRUE
+      params$complete <- TRUE
       warning(params$error_message)
       make_error_message(params$write_path, params$error_message)
       files <- c("error_message.rdata")
@@ -1912,7 +1912,7 @@ party_b_process_3_cox <- function(data,
       return(params$stats)
     }
     params <- compute_results_cox_b3(params, data)
-    stats = params$stats
+    stats <- params$stats
     save(stats, file = file.path(params$write_path, "stats.rdata"))
     files <- c("stats.rdata")
     params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time)
@@ -1921,7 +1921,7 @@ party_b_process_3_cox <- function(data,
 
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
-    params$complete = TRUE
+    params$complete <- TRUE
     warning(read_error_message(params$read_path[["T"]]))
     params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE,
                               waitForTurn = TRUE)
@@ -1939,7 +1939,7 @@ party_b_process_3_cox <- function(data,
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
-    params$complete = TRUE
+    params$complete <- TRUE
     warning(read_error_message(params$read_path[["T"]]))
     params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE,
                               waitForTurn = TRUE)
@@ -1947,7 +1947,7 @@ party_b_process_3_cox <- function(data,
   }
 
   if (file.exists(file.path(params$read_path[["T"]], "transferControl.rdata"))) {
-    params$alg_iteration_counter = 1
+    params$alg_iteration_counter <- 1
     params <- update_params_cox_b3(params)
     data = update_data_cox_b3(params, data)
     params <- add_to_log(params, "update_data_cox_b3", 0, 0, 0, 0)
@@ -1958,7 +1958,7 @@ party_b_process_3_cox <- function(data,
     }
 
     if (params$failed) {      # We could get a job_failed here from coefficient explosion
-      params$complete = TRUE
+      params$complete <- TRUE
       warning(params$error_message)
       make_error_message(params$write_path, params$error_message)
       files <- c("error_message.rdata")
@@ -1967,7 +1967,7 @@ party_b_process_3_cox <- function(data,
       return(params$stats)
     }
     params <- compute_results_cox_b3(params, data)
-    stats = params$stats
+    stats <- params$stats
     save(stats, file = file.path(params$write_path, "stats.rdata"))
     files <- c("stats.rdata")
     params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time)
@@ -1976,7 +1976,7 @@ party_b_process_3_cox <- function(data,
 
   params <- update_params_cox_b3(params)
   data = update_data_cox_b3(params, data)
-  params$alg_iteration_counter = 1
+  params$alg_iteration_counter <- 1
   repeat {
     params <- get_beta_b_cox_b3(params)
     if (params$converged || params$max_iter_exceeded) break
@@ -2001,7 +2001,7 @@ party_b_process_3_cox <- function(data,
       return(params$stats)
     }
     EndingIteration(params)
-    params$alg_iteration_counter = params$alg_iteration_counter + 1
+    params$alg_iteration_counter <- params$alg_iteration_counter + 1
   }
 
   params <- get_results_cox_b3(params)
@@ -2089,7 +2089,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
   params <- prepare_strata_cox_t3(params)
 
   if (params$p1 == 0) {
-    params$alg_iteration_counter = 1
+    params$alg_iteration_counter <- 1
     MakeTransferMessage(params$write_path)
     files <- c("transfercontrol.rdata", "max_iterations.rdata", "survival.rdata")
     params <- send_pause_continue_3p(params, files_b = files, from = "B",
@@ -2106,7 +2106,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
       return(params$stats)
     }
     params <- transfer_results_cox_t3(params)
-    params$converged = params$stats$converged
+    params$converged <- params$stats$converged
     files <- "stats.rdata"
     params <- send_pause_continue_3p(params, files_a = files, from = "A",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
@@ -2159,7 +2159,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
   }
 
   if (params$p1 == 0) {
-    params$alg_iteration_counter = 1
+    params$alg_iteration_counter <- 1
     MakeTransferMessage(params$write_path)
     files <- c("transfercontrol.rdata", "Bindicies.rdata", "max_iterations.rdata", "survival.rdata")
     params <- send_pause_continue_3p(params, files_b = files, from = "B",
@@ -2176,7 +2176,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
       return(params$stats)
     }
     params <- transfer_results_cox_t3(params)
-    params$converged = params$stats$converged
+    params$converged <- params$stats$converged
     files <- "stats.rdata"
     params <- send_pause_continue_3p(params, files_a = files, from = "A",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
@@ -2228,7 +2228,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
       return(params$stats)
     }
     EndingIteration(params)
-    params$alg_iteration_counter = params$alg_iteration_counter + 1
+    params$alg_iteration_counter <- params$alg_iteration_counter + 1
   }
 
   params <- compute_results_cox_t3(params)

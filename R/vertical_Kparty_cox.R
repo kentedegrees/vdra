@@ -264,7 +264,7 @@ prepare_strata_cox_DP <- function(params, data) {
         }
       }
       strata[[i]]$label <- label
-      start = as.numeric(ranks[i]) + 1
+      start <- as.numeric(ranks[i]) + 1
     }
   }
   for (i in 1:length(strata)) {
@@ -285,16 +285,16 @@ prepare_strata_cox_DP <- function(params, data) {
     }
     strata[[i]]$J = as.integer(sum(temp0[, 2] > 0))    # number of distinct failure times
     # The number of failures at each rank which has a failure
-    strata[[i]]$nfails = as.numeric(temp0[which(temp0[, 2] > 0), 2])
+    strata[[i]]$nfails <- as.numeric(temp0[which(temp0[, 2] > 0), 2])
     # The first index of the ranks for which the number of failures is > 0.
     strata[[i]]$start0 = c(1, (cumsum(temp)[1:(m - 1)] + 1))[which(temp0[, 2] > 0)]
     # The first index of a failure for each rank which has a failure
     strata[[i]]$start1 = strata[[i]]$start0 + temp0[which(temp0[, 2] > 0), 1]
     # The last index of a failure for each rank which has a failure
-    strata[[i]]$stop1  = as.numeric(strata[[i]]$start1 + strata[[i]]$nfails  - 1)
-    strata[[i]]$start0 = as.numeric(strata[[i]]$start0 + strata[[i]]$start - 1)
-    strata[[i]]$start1 = as.numeric(strata[[i]]$start1 + strata[[i]]$start - 1)
-    strata[[i]]$stop1  = as.numeric(strata[[i]]$stop1  + strata[[i]]$start - 1)
+    strata[[i]]$stop1  <- as.numeric(strata[[i]]$start1 + strata[[i]]$nfails  - 1)
+    strata[[i]]$start0 <- as.numeric(strata[[i]]$start0 + strata[[i]]$start - 1)
+    strata[[i]]$start1 <- as.numeric(strata[[i]]$start1 + strata[[i]]$start - 1)
+    strata[[i]]$stop1  <- as.numeric(strata[[i]]$stop1  + strata[[i]]$start - 1)
   }
 
   survival$strata = strata
@@ -852,7 +852,7 @@ ComputeSDelLCox.AC <- function(params) {
   n <- params$n
   w = exp(sBeta)
 
-  deltal = as.numeric(params$survival$status)
+  deltal <- as.numeric(params$survival$status)
   deltal[1] <- deltal[1]  # This is to force R to make a copy since we are exploiting
   # a pass by reference with the C call.
   w_s_r  <- matrix(0, n, p)
@@ -885,7 +885,7 @@ ComputeSDelLCox.DP <- function(params, data) {
   n <- params$n
   w = exp(params$sBeta)
 
-  deltal = as.numeric(params$survival$status)
+  deltal <- as.numeric(params$survival$status)
   deltal[1] <- deltal[1]  # This is to force R to make a copy since we are exploiting
   # a pass by reference with the C call.
   w_s_l  <- matrix(0, n, p)
@@ -1319,7 +1319,7 @@ compute_results_cox_AC <- function(params) {
   }
   read_time <- proc.time()[3] - read_time
 
-  stats = params$stats
+  stats <- params$stats
   stats$failed         = FALSE
   stats$converged      = params$converged
   names_old            = params$colnames[-(1:params$pStrata)]
@@ -1334,7 +1334,7 @@ compute_results_cox_AC <- function(params) {
   stats$secoef       = rep(NA, length(names_old))
   stats$secoef[idx]  = sqrt(diag(params$I)) / params$colrange  # se(coef)
 
-  stats$zvals        = stats$coefficients / stats$secoef  # z values
+  stats$zvals        <- stats$coefficients / stats$secoef  # z values
   stats$pvals        = 2 * pnorm(abs(stats$zvals), lower.tail = FALSE)   # pvals
   stats$stars         <- matrix(sapply(stats$pvals, function(x) {
     if (is.na(x)) ""
@@ -1386,7 +1386,7 @@ compute_results_cox_AC <- function(params) {
     sorted = params$survival$sortedIdx,
     surv   = survfit_cox_AC(params, pred)
   )
-  stats$strata = as.data.frame(matrix(0, length(params$survival$strata), 3))
+  stats$strata <- as.data.frame(matrix(0, length(params$survival$strata), 3))
   stats$strata$label <- ""
   colnames(stats$strata) = c("start", "end", "events", "label")
   for (i in 1:length(params$survival$strata)) {
@@ -1416,7 +1416,7 @@ compute_results_cox_AC <- function(params) {
   names(stats$concordance)     = c("concordant", "discordant", "tied.risk", "tied.time",
                                    "concordance", "stderr")
 
-  params$stats = stats
+  params$stats <- stats
   write_time <- proc.time()[3]
   save(stats, file = file.path(params$write_path, "stats.rdata"))
   write_size <- file.size(file.path(params$write_path, "stats.rdata"))
@@ -1429,12 +1429,12 @@ compute_results_cox_AC <- function(params) {
 
 get_results_cox_DP <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "get_results_cox_DP\n\n")
-  stats = NULL
+  stats <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$readPathAC, "stats.rdata"))
   read_size <- file.size(file.path(params$readPathAC, "stats.rdata"))
   read_time <- proc.time()[3] - read_time
-  params$stats = stats
+  params$stats <- stats
 
   params <- add_to_log(params, "get_results_cox_DP", read_time, read_size, 0, 0)
   return(params)
@@ -1585,7 +1585,7 @@ DataPartnerKCox <- function(data,
   data = update_data_cox_DP(params, data)
   params <- add_to_log(params, "update_data_cox_DP", 0, 0, 0, 0)
 
-  params$alg_iteration_counter = 1
+  params$alg_iteration_counter <- 1
   while (!params$converged && !params$max_iter_exceeded) {
     BeginningIteration(params)
     params <- ComputeSBetaCox.DP(params, data)
@@ -1651,7 +1651,7 @@ DataPartnerKCox <- function(data,
     params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
     EndingIteration(params)
-    params$alg_iteration_counter = params$alg_iteration_counter + 1
+    params$alg_iteration_counter <- params$alg_iteration_counter + 1
   }
   params$lastIteration = TRUE
   params$completed = TRUE
@@ -1756,7 +1756,7 @@ AnalysisCenterKCox <- function(numDataPartners = NULL,
     return(params$stats)
   }
 
-  params$alg_iteration_counter = 1
+  params$alg_iteration_counter <- 1
   while (!params$converged && !params$max_iter_exceeded) {
     BeginningIteration(params)
     params <- ComputeUCox.AC(params)
@@ -1803,7 +1803,7 @@ AnalysisCenterKCox <- function(numDataPartners = NULL,
     params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     EndingIteration(params)
-    params$alg_iteration_counter = params$alg_iteration_counter + 1
+    params$alg_iteration_counter <- params$alg_iteration_counter + 1
   }
   params$lastIteration = TRUE
   params$completed = TRUE

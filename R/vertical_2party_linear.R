@@ -271,7 +271,7 @@ prepare_params_linear_a2 <- function(params, data) {
 
   params$halted          = FALSE
   params$singular_matrix  = FALSE
-  params$pmnStepCounter  = 1
+  params$pmn_step_counter  = 1
   pb                     = NULL
 
   read_time <- proc.time()[3]
@@ -431,12 +431,12 @@ get_z_linear_a2 <- function(params, data) {
 
 finalize_params_linear_b2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "finalize_params_linear_b2\n\n")
-  pa = NULL
+  pa <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "pa.rdata")) # read pa
   read_size <- sum(file.size(file.path(params$read_path, "pa.rdata")))
   read_time <- proc.time()[3] - read_time
-  params$p1     = pa$p1
+  params$p1     <- pa$p1
   params$p1_old = params$p1
   params$p      = params$p1 + params$p2
   params$means_a = pa$means
@@ -729,7 +729,7 @@ compute_results_linear_a2 <- function(params, data) {
 get_results_linear_b2 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "get_results_linear_b2\n\n")
   params$converged = TRUE
-  stats = NULL
+  stats <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "stats.rdata"))
   read_size <- file.size(file.path(params$read_path, "stats.rdata"))
@@ -774,7 +774,7 @@ party_a_process_2_linear <- function(data,
   if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
     params$completed = TRUE
     warning(read_error_message(params$read_path))
-    params$pmnStepCounter = 1
+    params$pmn_step_counter <- 1
     params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.2p(params)
     return(params$stats)
@@ -782,10 +782,10 @@ party_a_process_2_linear <- function(data,
 
   if (data$failed) {
     params$completed = TRUE
-    message = "Error in processing the data for Party A."
+    message <- "Error in processing the data for Party A."
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
-    params$pmnStepCounter = 1
+    params$pmn_step_counter <- 1
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
     params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.2p(params)
@@ -856,7 +856,7 @@ party_b_process_2_linear <- function(data,
 
   if (data$failed) { # Check for Error from prepare_data_cox_b2()
     params$completed = TRUE
-    message = "Error in processing the data for Party B."
+    message <- "Error in processing the data for Party B."
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
     params <- send_pause_quit_2p(params, files, sleep_time = sleep_time, job_failed = TRUE)

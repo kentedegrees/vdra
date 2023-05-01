@@ -748,7 +748,7 @@ compute_results_logistic_t3 <- function(params) {
   read_size <- file.size(file.path(params$read_path[["A"]], "logisticstats.rdata"))
   read_time <- proc.time()[3] - read_time
 
-  stats = params$stats
+  stats <- params$stats
   stats$failed         = FALSE
   stats$converged      = params$converged
 
@@ -806,7 +806,7 @@ compute_results_logistic_t3 <- function(params) {
   write_size <- file.size(file.path(params$write_path, "stats.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params$stats      = stats
+  params$stats      <- stats
 
   params <- add_to_log(params, "compute_results_logistic_t3", read_time, read_size, write_time, write_size)
   return(params)
@@ -815,14 +815,14 @@ compute_results_logistic_t3 <- function(params) {
 
 get_results_logistic_a3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "get_results_logistic_a3\n\n")
-  stats = NULL
+  stats <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "stats.rdata"))
   read_size <- file.size(file.path(params$read_path[["T"]], "stats.rdata"))
   read_time <- proc.time()[3] - read_time
   stats$Y           = data$Y # For Hoslem and ROC
   stats$final_fitted = params$final_fitted
-  params$stats      = stats
+  params$stats      <- stats
   params <- add_to_log(params, "get_results_logistic_a3", read_time, read_size, 0, 0)
   return(params)
 }
@@ -830,12 +830,12 @@ get_results_logistic_a3 <- function(params, data) {
 
 get_results_logistic_b3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "get_results_logistic_b3\n\n")
-  stats = NULL
+  stats <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "stats.rdata"))
   read_size <- file.size(file.path(params$read_path[["T"]], "stats.rdata"))
   read_time <- proc.time()[3] - read_time
-  params$stats = stats
+  params$stats <- stats
   params <- add_to_log(params, "get_results_logistic_b3", read_time, read_size, 0, 0)
   return(params)
 }
@@ -869,7 +869,7 @@ party_a_process_3_logistic <- function(data,
   params <- add_to_log(params, "prepare_data_logistic_a23", 0, 0, 0, 0)
 
   if (data$failed) {
-    message = "Error in processing the data for Party A."
+    message <- "Error in processing the data for Party A."
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
     params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
@@ -887,7 +887,7 @@ party_a_process_3_logistic <- function(data,
     return(params$stats)
   }
 
-  params$alg_iteration_counter = 1
+  params$alg_iteration_counter <- 1
   params <- prepare_blocks_linear_a3(params)
 
   params <- get_z_linear_a3(params, data)
@@ -910,7 +910,7 @@ party_a_process_3_logistic <- function(data,
   data = update_data_logistic_a3(params, data)
   params <- get_beta_a_logistic_a3(params)
 
-  params$alg_iteration_counter = 1
+  params$alg_iteration_counter <- 1
   while (!params$converged && !params$max_iter_exceeded) {
     BeginningIteration(params)
     params <- get_xa_beta_a_logistic_a3(params, data)
@@ -936,7 +936,7 @@ party_a_process_3_logistic <- function(data,
 
     params <- get_beta_a_logistic_a3(params)
     EndingIteration(params)
-    params$alg_iteration_counter = params$alg_iteration_counter + 1
+    params$alg_iteration_counter <- params$alg_iteration_counter + 1
   }
 
   params <- get_final_beta_logistic_a3(params, data)
@@ -980,7 +980,7 @@ party_b_process_3_logistic <- function(data,
   params <- add_to_log(params, "prepare_data_logistic_B23", 0, 0, 0, 0)
 
   if (data$failed) {
-    message = "Error in processing the data for Party B."
+    message <- "Error in processing the data for Party B."
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
     params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, waitForTurn = TRUE)
@@ -998,7 +998,7 @@ party_b_process_3_logistic <- function(data,
     return(params$stats)
   }
 
-  params$alg_iteration_counter = 1
+  params$alg_iteration_counter <- 1
   params <- prepare_blocks_linear_b3(params)
 
   params <- get_rw_linear_b3(params, data)
@@ -1016,7 +1016,7 @@ party_b_process_3_logistic <- function(data,
   data = update_data_logistic_b3(params, data)
   params <- get_beta_b_logistic_b3(params)
 
-  params$alg_iteration_counter = 1
+  params$alg_iteration_counter <- 1
   while (!params$converged && !params$max_iter_exceeded) {
     BeginningIteration(params)
     params <- get_xb_beta_b_logistic_b3(params, data)
@@ -1042,7 +1042,7 @@ party_b_process_3_logistic <- function(data,
 
     params <- get_beta_b_logistic_b3(params)
     EndingIteration(params)
-    params$alg_iteration_counter = params$alg_iteration_counter + 1
+    params$alg_iteration_counter <- params$alg_iteration_counter + 1
   }
 
   params <- get_final_beta_logistic_b3(params, data)
@@ -1133,7 +1133,7 @@ party_t_process_3_logistic <- function(monitor_folder         = NULL,
   params <- send_pause_continue_3p(params, files_a = files, from = "A",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
-  params$alg_iteration_counter = 1
+  params$alg_iteration_counter <- 1
   params <- process_z_linear_t3(params)
   files <- c("blocks.rdata", seq_zw("crz_", length(params$container$filebreak_rz)))
   params <- send_pause_continue_3p(params, files_b = files, from  = "B",
@@ -1166,7 +1166,7 @@ party_t_process_3_logistic <- function(monitor_folder         = NULL,
   params <- send_pause_continue_3p(params, files_a = files_a, files_b = files_b, from  = c("A", "B"),
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
-  params$alg_iteration_counter = 1
+  params$alg_iteration_counter <- 1
   while (!params$converged && !params$max_iter_exceeded) {
     BeginningIteration(params)
     params <- get_weights_logistic_t3(params)
@@ -1203,7 +1203,7 @@ party_t_process_3_logistic <- function(monitor_folder         = NULL,
     params <- send_pause_continue_3p(params, files_a = files_a, files_b = files_b, from  = c("A", "B"),
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
     EndingIteration(params)
-    params$alg_iteration_counter = params$alg_iteration_counter + 1
+    params$alg_iteration_counter <- params$alg_iteration_counter + 1
   }
 
   params <- get_final_fitted_logistic_t3(params)

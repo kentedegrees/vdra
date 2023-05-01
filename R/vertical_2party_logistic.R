@@ -269,7 +269,7 @@ prepare_params_logistic_a2 <- function(params, data, cutoff = 0.01, max_iteratio
 
   params$converged       = FALSE
   params$halted          = FALSE
-  params$pmnStepCounter  = 1
+  params$pmn_step_counter  = 1
   pb                     = NULL
 
   read_time <- proc.time()[3]
@@ -438,19 +438,19 @@ get_z_logistic_a2 <- function(params, data) {
 
 finalize_params_logistic_b2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "finalize_params_logistic_b2\n\n")
-  pa = NULL
+  pa <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "pa.rdata")) # Load pa, a_col_names
   read_size <- sum(file.size(file.path(params$read_path, "pa.rdata")))
   read_time <- proc.time()[3] - read_time
-  params$p1            = pa$p1
+  params$p1            <- pa$p1
   params$p             = params$p1 + params$p2
   params$means_a        = pa$means
   params$sda           = pa$sd
   params$yty           = pa$yty
   params$y_name         = pa$y_name
-  params$cutoff        = pa$cutoff
-  params$max_iterations = pa$max_iterations
+  params$cutoff        <- pa$cutoff
+  params$max_iterations <- pa$max_iterations
   params$a_col_names     = pa$a_col_names
   params$a_tags         = pa$tags
   params$b_tags         = data$tags
@@ -706,7 +706,7 @@ update_params_logistic_b2 <- function(params) {
   read_time <- proc.time()[3] - read_time
   params$a_col_names_old = params$a_col_names
   params$b_col_names_old = params$b_col_names
-  params$a_col_names     = params$a_col_names_old[a_indicies]
+  params$a_col_names     <- params$a_col_names_old[a_indicies]
   params$b_col_names     = params$b_col_names_old[b_indicies]
   params$p1_old = params$p1
   params$p2_old = params$p2
@@ -990,8 +990,8 @@ get_coef_logistic_a2 <- function(params, data) {
   read_size <- sum(file.size(file.path(params$read_path, "a12_deltabetaB.rdata")))
   read_time <- proc.time()[3] - read_time
 
-  params$betas_a_old = params$betas_a
-  params$betas_a = params$betas_a + params$a11i1 + a12i2
+  params$betas_a_old <- params$beta_a
+  params$betas_a <- params$beta_a + params$a11i1 + a12i2
 
   deltabeta = max(abs(params$betas_a - params$betas_a_old) / (abs(params$betas_a) + 0.1), delta_beta_b)
 
@@ -1148,12 +1148,12 @@ compute_results_logistic_a2 <- function(params, data) {
 
 get_results_logistic_b2 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "get_results_logistic_b2\n\n")
-  stats = NULL
+  stats <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "stats.rdata"))
   read_size <- file.size(file.path(params$read_path, "stats.rdata"))
   read_time <- proc.time()[3] - read_time
-  params$stats = stats
+  params$stats <- stats
   params <- add_to_log(params, "get_results_logistic_b2", read_time, read_size, 0, 0)
   return(params)
 }
@@ -1192,7 +1192,7 @@ party_a_process_2_logistic <- function(data,
   if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
     params$completed = TRUE
     warning(read_error_message(params$read_path))
-    params$pmnStepCounter = 1
+    params$pmn_step_counter <- 1
     params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.2p(params)
     return(params$stats)
@@ -1200,10 +1200,10 @@ party_a_process_2_logistic <- function(data,
 
   if (data$failed) {
     params$completed = TRUE
-    message = "Error in processing the data for Party A."
+    message <- "Error in processing the data for Party A."
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
-    params$pmnStepCounter = 1
+    params$pmn_step_counter <- 1
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
     params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
     SummarizeLog.2p(params)
@@ -1283,7 +1283,7 @@ party_a_process_2_logistic <- function(data,
     params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
     EndingIteration(params)
-    params$alg_iteration_counter = params$alg_iteration_counter + 1
+    params$alg_iteration_counter <- params$alg_iteration_counter + 1
   }
   params$completed = TRUE
 
@@ -1318,7 +1318,7 @@ party_b_process_2_logistic <- function(data,
 
   if (data$failed) { # Check for Error from prepare_data_logistic_b2()
     params$completed = TRUE
-    message = "Error in processing the data for Party B."
+    message <- "Error in processing the data for Party B."
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
     params <- send_pause_quit_2p(params, files, sleep_time = sleep_time, job_failed = TRUE)
@@ -1355,7 +1355,7 @@ party_b_process_2_logistic <- function(data,
   data = update_data_logistic_b2(params, data)
   params <- add_to_log(params, "update_data_logistic_b2", 0, 0, 0, 0)
 
-  params$alg_iteration_counter = 1
+  params$alg_iteration_counter <- 1
   while (!params$converged && !params$max_iter_exceeded) {
     BeginningIteration(params)
     params <- get_x_beta_logistic_b2(params, data)
@@ -1382,7 +1382,7 @@ party_b_process_2_logistic <- function(data,
     params <- get_converged_status_logistic_b2(params)
 
     EndingIteration(params)
-    params$alg_iteration_counter = params$alg_iteration_counter + 1
+    params$alg_iteration_counter <- params$alg_iteration_counter + 1
   }
   params$completed = TRUE
 

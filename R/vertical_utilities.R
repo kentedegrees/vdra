@@ -926,7 +926,7 @@ prepare_params_2p <- function(analysis, party, msreqid = "v_default_00_000",
   params$verbose             = verbose
   params$failed              = FALSE
   params$errorMessage        = ""
-  params$pmnStepCounter      = 0
+  params$pmn_step_counter      = 0
   params$algIterationCounter = 0
   params$completed           = FALSE
   params$converged           = FALSE
@@ -956,7 +956,7 @@ prepare_params_3p <- function(analysis, party, msreqid = "v_default_00_000",
   params$verbose             = verbose
   params$failed              = FALSE
   params$errorMessage        = ""
-  params$pmnStepCounter      = 0
+  params$pmn_step_counter      = 0
   params$algIterationCounter = 0
   params$completed           = FALSE
   params$converged           = FALSE
@@ -989,7 +989,7 @@ prepare_params_kp <- function(analysis, data_partner_id, numDataPartners,
   params$verbose             = verbose
   params$failed              = FALSE
   params$errorMessage        = ""
-  params$pmnStepCounter      = 0
+  params$pmn_step_counter      = 0
   params$algIterationCounter = 0
   params$max_iterations       = max_iterations
   params$completed           = FALSE
@@ -1007,18 +1007,18 @@ prepare_params_kp <- function(analysis, data_partner_id, numDataPartners,
        is.infinite(numDataPartners) ||
        round(numDataPartners) != numDataPartners)) {
     params$failed <- TRUE
-    params$errorMessage = "numDataPartners must be a positive integer, and must equal the number of data partners providing data."
+    params$errormessage <- "numDataPartners must be a positive integer, and must equal the number of data partners providing data."
   }
   if (!params$failed) {
     if (ac) {
       if (data_partner_id != 0) {
         params$failed <- TRUE
-        params$errorMessage = "data_partner_id for Analysis Center must be 0.\n\n"
+        params$errormessage <- "data_partner_id for Analysis Center must be 0.\n\n"
       }
     } else {
       if (data_partner_id <= 0 || data_partner_id > numDataPartners) {
         params$failed <- TRUE
-        params$errorMessage = paste0("data_partner_id must be between 1 and ", numDataPartners, " inclusive.\n\n")
+        params$errormessage <- paste0("data_partner_id must be between 1 and ", numDataPartners, " inclusive.\n\n")
       }
     }
   }
@@ -1195,8 +1195,8 @@ MakeProgressBar1 <- function(steps, message, verbose) {
   pb$percent       = 0
   pb$percentstr    = "  0%"
   pb$prints = 0
-  message = substr(message, 1, messageLength)
-  message = paste0(message,
+  message <- substr(message, 1, messageLength)
+  message <- paste0(message,
                    paste(rep(" ", messageLength - nchar(message)),
                          collapse = ""))
   pb$header = paste0("Processing ", message, ": ")
@@ -1338,7 +1338,7 @@ CopyFile <- function(read_directory, write_directory, filename) {
 }
 
 
-MakeTrigger <- function(triggerName, triggerPath, message = "Trigger File") {
+MakeTrigger <- function(triggerName, triggerPath, message <- "Trigger File") {
 
   fn <- file.path(triggerPath, triggerName)
   if (file.exists(fn)) {
@@ -1369,12 +1369,12 @@ delete_trigger <- function(triggerName, triggerPath) {
 
 
 MakeTransferMessage <- function(write_path) {
-  message = "A has no covariates."
+  message <- "A has no covariates."
   save(message, file = file.path(write_path, "transferControl.rdata"))
 }
 
 
-make_error_message <- function(write_path, message = "") {
+make_error_message <- function(write_path, message <- "") {
   save(message, file = file.path(write_path, "errorMessage.rdata"))
 }
 
@@ -1460,7 +1460,7 @@ send_pause_continue_2p <- function(params,
   params <- store_stamp_entry(params, "Files done trigger file", "Trigger File created")
   WriteStampsCSV(params)
   WriteStampsRaw(params)
-  params$pmnStepCounter      = params$pmnStepCounter + 2
+  params$pmn_step_counter      = params$pmn_step_counter + 2
   if (job_started) {
     MakeTrigger("job_started.ok", params$write_path)
   } else {
@@ -1723,7 +1723,7 @@ PauseContinue.3p <- function(params, from = NULL, max_waiting_time = 24 * 60 * 6
 
 
 UpdateCounters.3p <- function(params) {
-  params$pmnStepCounter = max(params$log$history$Step) + 1
+  params$pmn_step_counter = max(params$log$history$Step) + 1
   return(params)
 }
 
@@ -1997,28 +1997,28 @@ PauseContinue.kp <- function(params, from = NULL, max_waiting_time = 24 * 60 * 6
 
 
 UpdateCounters.kp <- function(params) {
-  params$pmnStepCounter = max(params$log$history$Step) + 1
+  params$pmn_step_counter = max(params$log$history$Step) + 1
   return(params)
 }
 
 ReceivedError.kp <- function(params, from) {
   result <- list()
-  message = ""
+  message <- ""
   if (from == "AC") {
     messageExists = file.exists(file.path(params$readPathAC, "errorMessage.rdata"))
     if (messageExists) {
-      message = read_error_message(params$readPathAC)
+      message <- read_error_message(params$readPathAC)
     }
   } else {
     messageExists = file.exists(file.path(params$readPathDP, "errorMessage.rdata"))
     for (id in 1:params$numDataPartners) {
       if (messageExists[id]) {
-        message = paste0(message, read_error_message(params$readPathDP[id]), " ")
+        message <- paste0(message, read_error_message(params$readPathDP[id]), " ")
       }
     }
   }
   result$error = any(messageExists)
-  result$message = message
+  result$message <- message
   return(result)
 }
 
@@ -2040,8 +2040,8 @@ GetUTCOffset <- function() {
 GetUTCOffsetSeconds <- function() {
   t = Sys.time()
   offset = format(t, "%z")
-  hour = as.numeric(substr(offset, 2, 3))
-  min = as.numeric(substr(offset, 4, 5))
+  hour <- as.numeric(substr(offset, 2, 3))
+  min <- as.numeric(substr(offset, 4, 5))
   pm  = ifelse(substr(offset, 1, 1) == "-", -1, 1)
   return(pm * (hour * 3600 + min * 60))
 }
@@ -2373,7 +2373,7 @@ formatStatList <- function(vals) {
 
 store_stamp_entry <- function(params, description = "", type = "") {
   newEntry             = params$stamps$blank
-  newEntry$Step        = params$pmnStepCounter
+  newEntry$Step        = params$pmn_step_counter
   newEntry$Description = description
   newEntry$Time        = GetRoundTripTime()
   newEntry$Type        = type
@@ -2399,7 +2399,7 @@ WriteStampsCSV <- function(params) {
 initialize_time_stamps_2p <- function(params) {
   stamps <- list()
   stamps$blank <- data.frame(#Iteration   = params$pmnIterationCounter,
-    Step        = params$pmnStepCounter,
+    Step        = params$pmn_step_counter,
     Source      = paste("Org", params$party_name, "Dist Reg"),
     Description = "R program execution begins",
     Time        = GetRoundTripTime(),
@@ -2434,7 +2434,7 @@ MergeStampsRaw.2p <- function(params) {
 initialize_time_stamps_3p <- function(params) {
   stamps <- list()
   stamps$blank <- data.frame(#Iteration   = params$pmnIterationCounter,
-    Step        = params$pmnStepCounter,
+    Step        = params$pmn_step_counter,
     Source      = paste("Org", params$party_name, "Dist Reg"),
     Description = "R program execution begins",
     Time        = GetRoundTripTime(),
@@ -2471,7 +2471,7 @@ MergeStampsRaw.3p <- function(params, from) {
 
 initialize_time_stamps_kp <- function(params) {
   stamps <- list()
-  stamps$blank <- data.frame(Step        = params$pmnStepCounter,
+  stamps$blank <- data.frame(Step        = params$pmn_step_counter,
                             Source      = paste0("Org dp", params$data_partner_id, " Dist Reg"),
                             Description = "R program execution begins",
                             Time        = GetRoundTripTime(),
@@ -2614,7 +2614,7 @@ new_log_entry_2p <- function(params) {
 
 
 StoreLogEntry.2p <- function(params, files) {
-  params$log$current$Step          = params$pmnStepCounter
+  params$log$current$Step          = params$pmn_step_counter
   params$log$current$Iteration.alg = params$algIterationCounter
   params$log$current$Party = params$party_name
   params$log$current$End.Time = GetUTCTime()
@@ -2817,7 +2817,7 @@ new_log_entry_3p <- function(params) {
 
 
 StoreLogEntry.3p <- function(params, files) {
-  params$log$current$Step          = params$pmnStepCounter
+  params$log$current$Step          = params$pmn_step_counter
   params$log$current$Iteration.alg = params$algIterationCounter
   params$log$current$Party = params$party_name
   params$log$current$End.Time = GetUTCTime()
@@ -3058,7 +3058,7 @@ new_log_entry_kp <- function(params) {
 
 
 StoreLogEntry.kp <- function(params, files) {
-  params$log$current$Step          = params$pmnStepCounter
+  params$log$current$Step          = params$pmn_step_counter
   params$log$current$Iteration.alg = params$algIterationCounter
   params$log$current$Party = paste0("dp", params$data_partner_id)
   params$log$current$End.Time = GetUTCTime()
@@ -3274,7 +3274,7 @@ initialize_tracking_table_2p <- function(params) {
 
 #' @importFrom utils write.csv
 StoreTrackingTableEntry.2p <- function(params) {
-  params$trackingTable$current$ITER_NB = params$pmnStepCounter
+  params$trackingTable$current$ITER_NB = params$pmn_step_counter
   params$trackingTable$current$START_DTM = params$log$current$Start.Time
   params$trackingTable$current$END_DTM = params$log$current$End.Time
   if (file.exists(file.path(params$read_path, "errorMessage.rdata"))) {
@@ -3348,7 +3348,7 @@ initialize_tracking_table_3p <- function(params) {
 }
 
 StoreTrackingTableEntry.3p <- function(params) {
-  params$trackingTable$current$ITER_NB = params$pmnStepCounter
+  params$trackingTable$current$ITER_NB = params$pmn_step_counter
   params$trackingTable$current$START_DTM = params$log$current$Start.Time
   params$trackingTable$current$END_DTM = params$log$current$End.Time
   if (file.exists(file.path(params$write_path, "errorMessage.rdata"))) {
@@ -3370,7 +3370,7 @@ StoreTrackingTableEntry.3p <- function(params) {
     params$trackingTable$current$REG_CONV_MSG = ifelse(params$converged, "Success", "Failed")
   }
   params$trackingTable$current$LAST_ITER_IN = ifelse(params$lastIteration, 1, 0)
-  if (params$pmnStepCounter == 0) {
+  if (params$pmn_step_counter == 0) {
     params$trackingTable$history = params$trackingTable$current
   } else {
     params$trackingTable$history = rbind(params$trackingTable$history,
@@ -3432,7 +3432,7 @@ initialize_tracking_table_kp <- function(params) {
 }
 
 StoreTrackingTableEntry.kp <- function(params) {
-  params$trackingTable$current$ITER_NB = params$pmnStepCounter
+  params$trackingTable$current$ITER_NB = params$pmn_step_counter
   params$trackingTable$current$START_DTM = params$log$current$Start.Time
   params$trackingTable$current$END_DTM = params$log$current$End.Time
   if (file.exists(file.path(params$write_path, "errorMessage.rdata"))) {
@@ -3459,7 +3459,7 @@ StoreTrackingTableEntry.kp <- function(params) {
     params$trackingTable$current$REG_CONV_MSG = ifelse(params$converged, "Success", "Failed")
   }
   params$trackingTable$current$LAST_ITER_IN = ifelse(params$lastIteration, 1, 0)
-  if (params$pmnStepCounter == 0) {
+  if (params$pmn_step_counter == 0) {
     params$trackingTable$history = params$trackingTable$current
   } else {
     params$trackingTable$history = rbind(params$trackingTable$history,

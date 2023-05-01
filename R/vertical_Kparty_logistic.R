@@ -135,19 +135,19 @@ check_colinearity_logistic_AC <- function(params) {
     min = max + 1
   }
 
-  params$error_message = ""
+  params$error_message <- ""
   if ((length(unique(tags[[1]])) == 1) | (length(unique(tags[[1]])) >= 2 & !("numeric" %in% names(tags[[1]])))) {
     params$failed <- TRUE
-    params$error_message = "Data Partner 1 must have no covariates or at least 2 covariates at least one of which is continuous.\n"
+    params$error_message <- "Data Partner 1 must have no covariates or at least 2 covariates at least one of which is continuous.\n"
   }
   for (id in 2:params$numDataPartners) {
     if (length(unique(tags[[id]])) < 2) {
       params$failed <- TRUE
-      params$error_message = paste0(params$error_message,
+      params$error_message <- paste0(params$error_message,
                                    paste("After removing colinear covariates, Data Partner", id, "has 1 or fewer covariates.\n"))
     } else if (!("numeric" %in% names(tags[[id]]))) {
       params$failed <- TRUE
-      params$error_message = paste0(params$error_message,
+      params$error_message <- paste0(params$error_message,
                                    paste("After removing colinear covariates, Data Partner", id, "has no continuous covariates.\n"))
     }
   }
@@ -385,7 +385,7 @@ ComputeStWSLogistic.AC <- function(params) {
   if (is.null(I)) {
     params$failed <- TRUE
     params$singular_matrix = TRUE
-    params$error_message =
+    params$error_message <-
       paste0("The matrix t(x)*w*x is not invertible.\n",
              "       This may be due to one of two possible problems.\n",
              "       1. Poor random initialization of the security matrices.\n",
@@ -603,7 +603,7 @@ compute_results_logistic_AC <- function(params) {
   temp <- d1 %*% params$I %*% d1
   serror[1] = sqrt(temp[1, 1] - 2 * sum(temp[1, 2:p]) + sum(temp[2:p, 2:p]))
 
-  stats = params$stats
+  stats <- params$stats
   stats$failed         = FALSE
   stats$converged      = params$converged
 
@@ -642,7 +642,7 @@ compute_results_logistic_AC <- function(params) {
   write_size <- file.size(file.path(params$write_path, "stats.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params$stats      = stats
+  params$stats      <- stats
 
   params <- add_to_log(params, "compute_results_logistic_AC", read_time, read_size, write_time, write_size)
   return(params)
@@ -651,7 +651,7 @@ compute_results_logistic_AC <- function(params) {
 
 get_results_logistic_DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "get_results_logistic_DP\n\n")
-  stats = NULL
+  stats <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$readPathAC, "stats.rdata"))
   read_size <- file.size(file.path(params$readPathAC, "stats.rdata"))
@@ -660,7 +660,7 @@ get_results_logistic_DP <- function(params, data) {
     stats$Y           = data$Y # For Hoslem and ROC
     stats$final_fitted = params$final_fitted
   }
-  params$stats      = stats
+  params$stats      <- stats
   params <- add_to_log(params, "get_results_logistic_DP", read_time, read_size, 0, 0)
   return(params)
 }
@@ -707,12 +707,12 @@ DataPartnerKLogistic <- function(data,
   params <- add_to_log(params, "prepare_params_linear_DP", 0, 0, 0, 0)
 
   if (data$failed) {
-    params$error_message = paste("Error processing data for data partner", params$data_partner_id, "\n")
+    params$error_message <- paste("Error processing data for data partner", params$data_partner_id, "\n")
     make_error_message(params$write_path, params$error_message)
     files <- "error_message.rdata"
     params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time, waitForTurn = TRUE)
-    params$error_message = read_error_message(params$readPathAC)
+    params$error_message <- read_error_message(params$readPathAC)
     warning(params$error_message)
     params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
@@ -725,7 +725,7 @@ DataPartnerKLogistic <- function(data,
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
-    params$error_message = possibleError$message
+    params$error_message <- possibleError$message
     warning(possibleError$message)
     params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
@@ -743,7 +743,7 @@ DataPartnerKLogistic <- function(data,
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
-    params$error_message = possibleError$message
+    params$error_message <- possibleError$message
     warning(possibleError$message)
     params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
     return(params$stats)
@@ -770,7 +770,7 @@ DataPartnerKLogistic <- function(data,
 
     possibleError = ReceivedError.kp(params, from = "AC")
     if (possibleError$error) {
-      params$error_message = possibleError$message
+      params$error_message <- possibleError$message
       warning(possibleError$message)
       params <- send_pause_quit_kp(params, sleep_time = sleep_time, waitForTurn = TRUE)
       return(params$stats)
@@ -844,7 +844,7 @@ AnalysisCenterKLogistic <- function(numDataPartners = NULL,
 
   possibleError = ReceivedError.kp(params, from = "DP")
   if (possibleError$error) {
-    params$error_message = possibleError$message
+    params$error_message <- possibleError$message
     warning(possibleError$message)
     make_error_message(params$write_path, possibleError$message)
     files <- "error_message.rdata"
