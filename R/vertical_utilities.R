@@ -2734,7 +2734,7 @@ SummarizeLog.2p <- function(params) {
 
   p = max(0, params$p1_old - (params$analysis != "cox"))
   WriteToLogSummary(c1 = "pA", c2 = p, write_path = write_path)
-  p = params$p2_old
+  p <- params$p2_old
   WriteToLogSummary(c1 = "pB", c2 = p, write_path = write_path)
 
   WriteToLogSummary(write_path = write_path)
@@ -2960,7 +2960,7 @@ SummarizeLog.3p <- function(params) {
 
   p = max(0, params$p1_old - (params$analysis != "cox"))
   WriteToLogSummary(c1 = "pA", c2 = p, write_path = write_path)
-  p = params$p2_old
+  p <- params$p2_old
   WriteToLogSummary(c1 = "pB", c2 = p, write_path = write_path)
 
   WriteToLogSummary(write_path = write_path)
@@ -3144,7 +3144,7 @@ SummarizeLog.kp <- function(params) {
     if (is.null(params$pi))  {
       p = 0
     } else {
-      p = params$pi[i] - (i == 1) * (2 + (params$analysis == "cox"))
+      p <- params$pi[i] - (i == 1) * (2 + (params$analysis == "cox"))
     }
     WriteToLogSummary(c1 = paste0("p", i), c2 = p, write_path = write_path)
   }

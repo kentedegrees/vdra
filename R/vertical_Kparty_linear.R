@@ -258,7 +258,7 @@ prepare_params_linear_DP <- function(params, data) {
   params$seed       = floor(runif(1) * .Machine$integer.max)
   params$scaler     = 1 + runif(1)
 
-  p = params$p
+  p <- params$p
   seed = params$seed
   scaler = params$scaler
 
@@ -305,14 +305,14 @@ PrepareSharesLinear.DP <- function(params, data) {
     params$seeds   = c(params$seeds, seed)
 
     set.seed(seed, kind = "Mersenne-Twister")
-    halfShare2 = matrix(rnorm(params$n * p, sd = 20), nrow = params$n, ncol = p)
+    halfshare_2 = matrix(rnorm(params$n * p, sd = 20), nrow = params$n, ncol = p)
 
     if (id < params$data_partner_id) {
-      products[[id]] <- t(halfShare2) %*% (data$x - scaler / (scaler + params$scaler) * halfshare)
+      products[[id]] <- t(halfshare_2) %*% (data$x - scaler / (scaler + params$scaler) * halfshare)
     }
 
     if (id > params$data_partner_id) {
-      products[[id]] <- t(data$x - scaler / (scaler + params$scaler) * halfshare) %*% halfShare2
+      products[[id]] <- t(data$x - scaler / (scaler + params$scaler) * halfshare) %*% halfshare_2
     }
   }
 

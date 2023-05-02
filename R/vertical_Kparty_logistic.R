@@ -154,9 +154,9 @@ check_colinearity_logistic_AC <- function(params) {
 
   indicies = params$indicies
 
-  params$pReduct = c()
+  params$p_reduct = c()
   for (id in 1:params$num_data_partners) {
-    params$pReduct = c(params$pReduct, length(indicies[[id]]))
+    params$p_reduct = c(params$p_reduct, length(indicies[[id]]))
   }
 
   for (id in 1:params$num_data_partners) {
@@ -338,19 +338,19 @@ ComputeStWSLogistic.AC <- function(params) {
   read_size <- 0
   C        = NULL
   w = params$pi_ * (1 - params$pi_)
-  StWS = matrix(0, sum(params$pReduct), sum(params$pReduct))
+  StWS = matrix(0, sum(params$p_reduct), sum(params$p_reduct))
 
   for (id1 in 1:params$num_data_partners) {
-    end = sum(params$pReduct[1:id1])
-    start = end - params$pReduct[id1] + 1
+    end = sum(params$p_reduct[1:id1])
+    start = end - params$p_reduct[id1] + 1
     idx1 = start:end
     read_time <- read_time - proc.time()[3]
     load(file.path(params$readPathDP[id1], "stwsshare.rdata"))
     read_size <- read_size + file.size(file.path(params$readPathDP[id1], "stwsshare.rdata"))
     read_time <- read_time + proc.time()[3]
     for (id2 in 1:params$num_data_partners) {
-      end = sum(params$pReduct[1:id2])
-      start = end - params$pReduct[id2] + 1
+      end = sum(params$p_reduct[1:id2])
+      start = end - params$p_reduct[id2] + 1
       idx2 = start:end
       if (id1 < id2) {
         StWS[idx1, idx2] = StWS[idx1, idx2] + C[[id2]]
@@ -364,8 +364,8 @@ ComputeStWSLogistic.AC <- function(params) {
     }
     if (id1 < params$num_data_partners) {
       for (id2 in (id1 + 1):params$num_data_partners) {
-        end = sum(params$pReduct[1:id2])
-        start = end - params$pReduct[id2] + 1
+        end = sum(params$p_reduct[1:id2])
+        start = end - params$p_reduct[id2] + 1
         idx2 = start:end
         temp <- t(params$halfshare[[id1]]) %*% MultiplyDiagonalWTimesX(w, params$halfshare[[id2]])
         StWS[idx1, idx2] = StWS[idx1, idx2] + temp
@@ -411,7 +411,7 @@ ComputeStWSLogistic.AC <- function(params) {
   write_time <- 0
   write_size <- 0
   start = 1
-  stop  = params$pReduct[1]
+  stop  = params$p_reduct[1]
   for (id in 1:params$num_data_partners) {
     I = Itemp[start:stop, , drop = FALSE]
     IDt = IDttemp[start:stop, , drop = FALSE]
@@ -420,7 +420,7 @@ ComputeStWSLogistic.AC <- function(params) {
     write_size <- write_size + file.size(file.path(params$write_path, paste0("ID", id, ".rdata")))
     write_time <- write_time + proc.time()[3]
     start = stop + 1
-    stop = stop + params$pReduct[id + 1]
+    stop = stop + params$p_reduct[id + 1]
   }
 
   params <- add_to_log(params, "ComputeStWSLogistic.AC", read_time, read_size, write_time, write_size)
@@ -618,10 +618,10 @@ compute_results_logistic_AC <- function(params) {
   stats$n <- params$n
   stats$nulldev = nulldev
   stats$resdev = resdev
-  stats$aic = resdev + 2 * sum(params$pReduct)
-  stats$bic = resdev + sum(params$pReduct) * log(params$n)
+  stats$aic = resdev + 2 * sum(params$p_reduct)
+  stats$bic = resdev + sum(params$p_reduct) * log(params$n)
   stats$nulldev_df = params$n - 1
-  stats$resdev_df = params$n - sum(params$pReduct)
+  stats$resdev_df = params$n - sum(params$p_reduct)
   stats$coefficients[params$fullindicies] = coefficients
   stats$secoef[params$fullindicies] = serror
   tvals = coefficients / serror
