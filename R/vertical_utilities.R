@@ -783,9 +783,9 @@ create_io_location <- function(monitor_folder, folder) {
 
 #' @importFrom utils write.csv
 check_data_format <- function(params, data) {
-  if ("data.frame" %in% class(data)) {
+  if (is.data.frame(data)) {
     data <- data.frame(data)
-  } else if ("matrix" %in% class(data)) {
+  } else if (is.matrix(data)) {
     data <- matrix(data)
   } else {
     warning("Data is not a matrix or a data frame.")
@@ -3299,7 +3299,7 @@ StoreTrackingTableEntry.2p <- function(params) {
   params$trackingTable$current$LAST_ITER_IN = ifelse(params$lastIteration, 1, 0)
 
   if (params$party_name == "A") {
-    if (class(params$trackingTable$history) == "data.frame") {
+    if (is.data.frame(params$trackingTable$history)) {
       params$trackingTable$history = rbind(params$trackingTable$history,
                                            params$trackingTable$current)
     } else {
@@ -3318,7 +3318,7 @@ read_tracking_table_update_2p <- function(params) {
   trackingTableEntry = NULL
   load(file.path(params$read_path, "tr_tb_updt.rdata"))
   trackingTableEntry$MSREQID = params$msreqid
-  if (class(params$trackingTable$history) == "data.frame") {
+  if (is.data.frame(params$trackingTable$history)) {
     params$trackingTable$history = rbind(params$trackingTable$history,
                                          trackingTableEntry)
   } else {
@@ -4716,7 +4716,7 @@ survfitDistributed <- function(x = NULL, formula = NULL, data = NULL) {
   if (is.null(data) && is.null(formula)) {
     return(survfitDistributed.stats(x))
   }
-  if (!("matrix" %in% class(data)) && !("data.frame" %in% class(data))) {
+  if (!is.matrix(data) && !is.data.frame(data)) {
     warning(paste("the data must either be a matrix or a data.frame.",
                   "Please use the same data that you used for the distributed regression."))
     return(invisible(NULL))

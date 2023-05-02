@@ -1457,7 +1457,7 @@ compute_results_cox_a2 <- function(params, data) {
       strat[data$survival$strata[[i]]$start:data$survival$strata[[i]]$end] <- i
     }
     results <- survival::concordance(surv ~ pred + strata(strat))
-    if (class(results$stats) == "matrix") {
+    if (is.matrix(results$stats)) {
       # more than one strata
       stats$concordance <- c(apply(results$count, 2, sum)[1:4], results$concordance, sqrt(results$var))
     } else {

@@ -1371,7 +1371,7 @@ compute_results_cox_AC <- function(params) {
       strat[params$survival$strata[[i]]$start:params$survival$strata[[i]]$end] = i
     }
     results = survival::concordance(surv ~ pred + strata(strat))
-    if (class(results$stats) == "matrix") {  # more than one strata
+    if (is.matrix(results$stats)) {  # more than one strata
       stats$concordance = c(apply(results$count, 2, sum)[1:4], results$concordance, sqrt(results$var))
     } else {                                 # only one strata, so a numeric vector
       stats$concordance = c(results$count[1:4], results$concordance, sqrt(results$var))
