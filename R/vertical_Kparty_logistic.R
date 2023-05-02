@@ -736,7 +736,7 @@ DataPartnerKLogistic <- function(data,
   params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
-  params <- PrepareSharesLinear.DP(params, data)
+  params <- prepare_shares_linear_dp(params, data)
   files <- c("products.rdata", "halfshare.rdata", "colstats.rdata")
   params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)

@@ -984,7 +984,7 @@ compute_log_likelihood_cox_a2 <- function(params, data) {
   w_xa  <- matrix(0, n, p1)
   step_counter <- 0
 
-  .Call("ComputeCox", data$survival$strata, data$x, w, deltal, w_xa,
+  .Call("compute_cox", data$survival$strata, data$x, w, deltal, w_xa,
         as.integer(n), as.integer(p1), as.integer(num_events),
         as.integer(params$verbose))
 
@@ -1078,7 +1078,7 @@ compute_log_likelihood_cox_b2 <- function(params, data) {
   num_events <- sum(data$survival$status)
   w_xb  <- matrix(0, n, p2)
 
-  .Call("ComputeCox", data$survival$strata, data$x, w, deltal, w_xb,
+  .Call("compute_cox", data$survival$strata, data$x, w, deltal, w_xb,
         as.integer(n), as.integer(p2), as.integer(num_events),
         as.integer(params$verbose))
 
@@ -1732,7 +1732,7 @@ compute_cox_b2 <- function(params, data) {
     deltal[1] <- deltal[1]
     w_xb  <- matrix(0, n, p2)
 
-    .Call("ComputeCox", data$survival$strata, data$x, w, deltal, w_xb,
+    .Call("compute_cox", data$survival$strata, data$x, w, deltal, w_xb,
           as.integer(n), as.integer(p2), as.integer(num_events),
           as.integer(params$verbose))
 

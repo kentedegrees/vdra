@@ -858,7 +858,7 @@ compute_s_del_l_cox_ac <- function(params) {
   w_s_r  <- matrix(0, n, p)
   num_events <- params$survival$num_events
 
-  .Call("ComputeCox", params$survival$strata, halfshare, w, deltal, w_s_r,
+  .Call("compute_cox", params$survival$strata, halfshare, w, deltal, w_s_r,
         as.integer(n), as.integer(p), as.integer(num_events),
         as.integer(params$verbose))
 
@@ -891,7 +891,7 @@ compute_s_del_l_cox_dp <- function(params, data) {
   w_s_l  <- matrix(0, n, p)
   num_events <- params$survival$num_events
 
-  .Call("ComputeCox", params$survival$strata, halfshare, w, deltal, w_s_l,
+  .Call("compute_cox", params$survival$strata, halfshare, w, deltal, w_s_l,
         as.integer(n), as.integer(p), as.integer(num_events),
         as.integer(params$verbose))
 
@@ -1190,11 +1190,11 @@ UpdateConvergeStatus.DP <- function(params) {
 
 
 #' @importFrom stats runif
-UpdateBetasCox.DP <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "UpdateBetasCox.DP\n\n")
-  I.part = NULL
-  IDt.part = NULL
-  ts_delta_l_l = NULL
+update_betas_cox_dp <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "update_betas_cox_dp\n\n")
+  I.part <- NULL
+  IDt.part <- NULL
+  ts_delta_l_l <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$readPathAC, paste0("update", params$data_partner_id, ".rdata")))
   read_size <- file.size(file.path(params$readPathAC, paste0("update", params$data_partner_id, ".rdata")))
@@ -1205,34 +1205,34 @@ UpdateBetasCox.DP <- function(params) {
   read_time <- proc.time()[3] - read_time
 
   if (params$data_partner_id == 1) {
-    deltabeta = IDt.part + I.part %*% params$ts_delta_l_l
+    deltabeta <- IDt.part + I.part %*% params$ts_delta_l_l
     if (params$alg_iteration_counter == 1) {
       if (params$p_reduct[1] == 0) {
-        params$score = 0
+        params$score <- 0
       } else {
         idx <- 1:params$p_reduct[1]
-        params$score = 2 * t(IDt.part) %*% params$ts_delta_l_l[idx, 1, drop = FALSE] +
+        params$score <- 2 * t(IDt.part) %*% params$ts_delta_l_l[idx, 1, drop = FALSE] +
           t(I.part %*% params$ts_delta_l_l) %*% params$ts_delta_l_l[idx, 1, drop = FALSE]
       }
     }
   } else {
-    deltabeta = IDt.part + I.part %*% ts_delta_l_l
+    deltabeta <- IDt.part + I.part %*% ts_delta_l_l
     if (params$alg_iteration_counter == 1) {
       temp <- sum(params$p_reduct[1:(params$data_partner_id - 1)])
       idx <- (temp + 1):(temp + params$p_reduct[params$data_partner_id])
-      params$score = 2 * t(IDt.part) %*% ts_delta_l_l[idx, 1, drop = FALSE] +
+      params$score <- 2 * t(IDt.part) %*% ts_delta_l_l[idx, 1, drop = FALSE] +
         t(I.part %*% ts_delta_l_l) %*% ts_delta_l_l[idx, 1, drop = FALSE]
     }
   }
 
   params$betas <- params$betas + deltabeta - (1 - params$scale) * params$delta_beta_old
-  params$delta_beta_old = deltabeta
+  params$delta_beta_old <- deltabeta
 
-  p = length(params$indicies[[params$data_partner_id]])
+  p <- length(params$indicies[[params$data_partner_id]])
   if (p == 0) {
-    u = 1
+    u <- 1
   } else {
-    u = sum(runif(n = p, min = 1, max = 2) * abs(params$betas))
+    u <- sum(runif(n = p, min = 1, max = 2) * abs(params$betas))
   }
 
   if (params$data_partner_id == 1) {
@@ -1243,8 +1243,8 @@ UpdateBetasCox.DP <- function(params) {
   save(u, file = file.path(params$write_path, "u.rdata"))
   write_size <- file.size(file.path(params$write_path, "u.rdata"))
   if (params$converged) {
-    betasnew  = params$betas
-    scorePart = params$score
+    betasnew  <- params$betas
+    scorePart <- params$score
     if (params$data_partner_id == 1) {
       save(scorePart, nullLoglikelihood, loglikelihood, betasnew, file = file.path(params$write_path, "betas.rdata"))
     } else {
@@ -1254,7 +1254,7 @@ UpdateBetasCox.DP <- function(params) {
   }
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "UpdateBetasCox.DP", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "update_betas_cox_dp", read_time, read_size, write_time, write_size)
 
   return(params)
 }
@@ -1641,7 +1641,7 @@ DataPartnerKCox <- function(data,
     }
 
     params <- UpdateConvergeStatus.DP(params)
-    params <- UpdateBetasCox.DP(params)
+    params <- update_betas_cox_dp(params)
 
     if (params$converged || params$max_iter_exceeded) {
       files <- "betas.rdata"

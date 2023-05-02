@@ -803,7 +803,7 @@ compute_xb_delta_l_cox_b3 <- function(params, data) {
   # a pass by reference with the C call.
   w_xb  <- matrix(0, n, p2)
 
-  .Call("ComputeCox", data$survival$strata, data$x, w, deltal, w_xb,
+  .Call("compute_cox", data$survival$strata, data$x, w, deltal, w_xb,
         as.integer(n), as.integer(p2), as.integer(num_events),
         as.integer(params$verbose))
 
@@ -883,7 +883,7 @@ compute_xa_delta_l_cox_a3 <- function(params, data) {
   # a pass by reference with the C call.
   w_xa  <- matrix(0, n, p1)
 
-  .Call("ComputeCox", data$survival$strata, data$x, w, deltal, w_xa,
+  .Call("compute_cox", data$survival$strata, data$x, w, deltal, w_xa,
         as.integer(n), as.integer(p1), as.integer(num_events),
         as.integer(params$verbose))
 
@@ -1489,7 +1489,7 @@ compute_cox_b3 <- function(params, data) {
     # a pass by reference with the C call.
     w_xb  <- matrix(0, n, p2)
 
-    .Call("ComputeCox", data$survival$strata, data$x, w, deltal, w_xb,
+    .Call("compute_cox", data$survival$strata, data$x, w, deltal, w_xb,
           as.integer(n), as.integer(p2), as.integer(num_events),
           as.integer(params$verbose))
 

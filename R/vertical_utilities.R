@@ -1183,7 +1183,7 @@ GetLion <- function(p) {
 }
 
 
-#' @importFrom stats flush.console
+#' @importFrom utils flush.console
 make_progress_bar_1 <- function(steps, message, verbose) {
   pb <- list()
   messageLength    = 18
@@ -1208,7 +1208,7 @@ make_progress_bar_1 <- function(steps, message, verbose) {
 }
 
 
-#' @importFrom stats flush.console
+#' @importFrom utils flush.console
 make_progress_bar_2 <- function(i, pb, verbose) {
   percent = floor(100 * i / pb$numSteps)
   if (percent == pb$percent) {
@@ -1542,18 +1542,18 @@ wait_for_turn.3p <- function(params, sleep_time) {
 send_pause_quit_3p <- function(params,
                                files_a = NULL,
                                files_b = NULL,
-                               filesT = NULL,
+                               files_t = NULL,
                                sleep_time = 10,
                                job_failed = FALSE,
                                wait_for_turn = FALSE) {
 
   params$lastIteration = TRUE
   params$completed     = TRUE
-  files <- c(files_a, files_b, filesT, "file_list.csv")
+  files <- c(files_a, files_b, files_t, "file_list.csv")
   transfer = c(rep(1, length(files) - 1), 10)
   destination = c(rep(1, length(files_a)),
                   rep(2, length(files_b)),
-                  rep(0, length(filesT)),
+                  rep(0, length(files_t)),
                   10)
   if (params$party != "T") {
     files <- c(files, "stamps.rdata", "log.rdata")
@@ -1571,7 +1571,7 @@ send_pause_quit_3p <- function(params,
     transfer = c(transfer, 10)
     destination = c(destination, 10)
   }
-  params <- StoreLogEntry.3p(params, c(files_a, files_b, filesT))
+  params <- StoreLogEntry.3p(params, c(files_a, files_b, files_t))
   params <- StoreTrackingTableEntry.3p(params)
   WriteLogCSV(params)
   write_log_raw(params)
@@ -1612,22 +1612,22 @@ send_pause_quit_3p <- function(params,
 send_pause_continue_3p <- function(params,
                                    files_a = NULL,
                                    files_b = NULL,
-                                   filesT = NULL,
+                                   files_t = NULL,
                                    from   = NULL,
                                    sleep_time = 10,
                                    max_waiting_time = 24 * 60 * 60,
                                    job_started = FALSE,
                                    wait_for_turn = FALSE) {
-  params <- StoreLogEntry.3p(params, c(files_a, files_b, filesT))
+  params <- StoreLogEntry.3p(params, c(files_a, files_b, files_t))
   params <- StoreTrackingTableEntry.3p(params)
   WriteLogCSV(params)
   write_log_raw(params)
 
-  files <- c(files_a, files_b, filesT, "file_list.csv")
+  files <- c(files_a, files_b, files_t, "file_list.csv")
   transfer = c(rep(1, length(files) - 1), 10)
   destination = c(rep(1, length(files_a)),
                   rep(2, length(files_b)),
-                  rep(0, length(filesT)), 10)
+                  rep(0, length(files_t)), 10)
   if (length(files) > 1) {
     WriteTrackingTableRaw(params)
   }
@@ -1641,7 +1641,7 @@ send_pause_continue_3p <- function(params,
     transfer = c(transfer, 1, 1, 1)
     destination = c(destination, 2, 2, 2)
   }
-  if (!is.null(filesT)) {
+  if (!is.null(files_t)) {
     files <- c(files, "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
     transfer = c(transfer, 1, 1, 1)
     destination = c(destination, 0, 0, 0)

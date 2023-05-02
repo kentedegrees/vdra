@@ -273,39 +273,39 @@ prepare_params_linear_DP <- function(params, data) {
 
 
 #' @importFrom stats rnorm
-PrepareSharesLinear.DP <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareSharesLinear.DP\n\n")
+prepare_shares_linear_dp <- function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "prepare_shares_linear_dp\n\n")
   read_time <- 0
-  read_size = 0
-  p = seed <- scaler = NULL
+  read_size <- 0
+  p <- seed <- scaler <- NULL
 
   set.seed(params$seed, kind = "Mersenne-Twister")
   halfshare <- matrix(rnorm(params$n * params$p, sd = 20), nrow = params$n, ncol = params$p)
 
   products <- rep(list(list()), params$num_data_partners)
 
-  params$ps = c()
-  params$scalers = c()
-  params$seeds = c()
+  params$ps <- c()
+  params$scalers <- c()
+  params$seeds <- c()
 
   for (id in 1:params$num_data_partners) {
     if (id == params$data_partner_id) {
       products[[id]] <- t(data$x) %*% data$x
-      params$ps      = c(params$ps, params$p)
-      params$scalers = c(params$scalers, params$scaler)
-      params$seeds   = c(params$seeds, params$seed)
+      params$ps      <- c(params$ps, params$p)
+      params$scalers <- c(params$scalers, params$scaler)
+      params$seeds   <- c(params$seeds, params$seed)
       next
     }
     read_time <- read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "p_scaler_seed.rdata"))
-    read_size = read_size + file.size(file.path(params$readPathDP[id], "p_scaler_seed.rdata"))
+    read_size <- read_size + file.size(file.path(params$readPathDP[id], "p_scaler_seed.rdata"))
     read_time <- read_time + proc.time()[3]
-    params$ps      = c(params$ps, p)
-    params$scalers = c(params$scalers, scaler)
-    params$seeds   = c(params$seeds, seed)
+    params$ps      <- c(params$ps, p)
+    params$scalers <- c(params$scalers, scaler)
+    params$seeds   <- c(params$seeds, seed)
 
     set.seed(seed, kind = "Mersenne-Twister")
-    halfshare_2 = matrix(rnorm(params$n * p, sd = 20), nrow = params$n, ncol = p)
+    halfshare_2 <- matrix(rnorm(params$n * p, sd = 20), nrow = params$n, ncol = p)
 
     if (id < params$data_partner_id) {
       products[[id]] <- t(halfshare_2) %*% (data$x - scaler / (scaler + params$scaler) * halfshare)
@@ -317,11 +317,11 @@ PrepareSharesLinear.DP <- function(params, data) {
   }
 
   halfshare <- data$x - halfshare
-  colmin    = data$colmin
-  colrange  = data$colrange
-  colsum    = data$colsum
-  colnames  = colnames(data$x)
-  tags      = data$tags
+  colmin    <- data$colmin
+  colrange  <- data$colrange
+  colsum    <- data$colsum
+  colnames  <- colnames(data$x)
+  tags      <- data$tags
 
   write_time <- proc.time()[3]
   save(products, file = file.path(params$write_path, "products.rdata"))
@@ -332,7 +332,7 @@ PrepareSharesLinear.DP <- function(params, data) {
                                                           "colstats.rdata"))))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "PrepareSharesLinear.DP", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "prepare_shares_linear_dp", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -651,7 +651,7 @@ DataPartnerKLinear <- function(data,
   params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
-  params <- PrepareSharesLinear.DP(params, data)
+  params <- prepare_shares_linear_dp(params, data)
   files <- c("products.rdata", "halfshare.rdata", "colstats.rdata")
   params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
