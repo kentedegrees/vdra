@@ -12,10 +12,10 @@ DataPartner.KParty(
   response = NULL,
   strata = NULL,
   mask = TRUE,
-  numDataPartners = NULL,
-  dataPartnerID = NULL,
+  num_data_partners = NULL,
+  data_partner_id = NULL,
   monitor_folder = NULL,
-  sleepTime = 10,
+  sleep_time = 10,
   max_waiting_time = 86400,
   popmednet = TRUE,
   trace = FALSE,
@@ -24,12 +24,12 @@ DataPartner.KParty(
 
 AnalysisCenter.KParty(
   regression = "linear",
-  numDataPartners = NULL,
+  num_data_partners = NULL,
   monitor_folder = NULL,
   msreqid = "v_default_00_000",
   tol = 1e-08,
   max_iterations = 25,
-  sleepTime = 10,
+  sleep_time = 10,
   max_waiting_time = 86400,
   popmednet = TRUE,
   trace = FALSE,
@@ -44,11 +44,11 @@ Alternatively, \code{"logistic"} returns a fitted logistic model, and
 
 \item{data}{a data.frame or matrix which contains the data to be used in the
 model.  All columns will be used as covariates in the regression with the
-exception of the data partner which has \code{dataPartnerID = 1}.  For this
+exception of the data partner which has \code{data_partner_id = 1}.  For this
 data partner, all columns, with the exception of the column specified by
 \code{response}, will be used as covariates in the regression.}
 
-\item{response}{only used for data partner with \code{dataPartnerID = 1}. For
+\item{response}{only used for data partner with \code{data_partner_id = 1}. For
 \code{"linear"} and \code{"logistic"} regression, the name of the column in
 \code{data} which holds the response variable.  If \code{reponse = NULL},
 then the first column of \code{data} will be used as the response variable.
@@ -69,19 +69,19 @@ by name. If \code{TRUE}, levels for the strata which belong to the party
 which specified \code{TRUE} will be put in a random order and level names
 will be changed to \code{NA}.}
 
-\item{numDataPartners}{the number of data partners which are supplying data
+\item{num_data_partners}{the number of data partners which are supplying data
 for the regression.}
 
-\item{dataPartnerID}{a unique identifier for each data partner.  The data
-partner with the response variable(s) must have \code{dataPartnerID = 1}.
+\item{data_partner_id}{a unique identifier for each data partner.  The data
+partner with the response variable(s) must have \code{data_partner_id = 1}.
 All other data partners must have an integer value from 2 to
-\code{numDataPartners}.}
+\code{num_data_partners}.}
 
 \item{monitor_folder}{the folder where the directories \code{dplocal},
 \code{inputfiles}, \code{macros}, \code{msoc}, and \code{rprograms} are
 located.}
 
-\item{sleepTime}{the number of seconds to wait after writing the last file to
+\item{sleep_time}{the number of seconds to wait after writing the last file to
 disk before signalling the PMN Datamart Client that files are ready to be
 transferred.}
 
@@ -138,7 +138,7 @@ Returns an object of \code{\link{class}} \code{\link{vdralinear}} for linear
 # requset for the analysis center.
 
 fit = AnalysisCenter.KParty(regression = "linear",
-                            numDataPartners = 2,
+                            num_data_partners = 2,
                             monitor_folder = tempdir())
 
 # Data Partner 1 -- To be run in second instand of R, on perhaps a different
@@ -148,8 +148,8 @@ fit = AnalysisCenter.KParty(regression = "linear",
 fit = DataPartner.KParty(regression = "linear",
                          data = vdra_data[, c(1, 5:7)],
                          response = "Change_BMI",
-                         numDataPartners = 2,
-                         dataPartnerID = 1,
+                         num_data_partners = 2,
+                         data_partner_id = 1,
                          monitor_folder = tempdir())
 
 # Data Partner 2 -- To be run in third instand of R, on perhaps a different
@@ -158,8 +158,8 @@ fit = DataPartner.KParty(regression = "linear",
 
 fit = DataPartner.KParty(regression = "linear",
                          data = vdra_data[, 8:11],
-                         numDataPartners = 2,
-                         dataPartnerID = 2,
+                         num_data_partners = 2,
+                         data_partner_id = 2,
                          monitor_folder = tempdir())
 
 ## 3 party logistic regression
@@ -169,7 +169,7 @@ fit = DataPartner.KParty(regression = "linear",
 # requset for the analysis center.
 
 fit = AnalysisCenter.KParty(regression = "logistic",
-                            numDataPartners = 2,
+                            num_data_partners = 2,
                             monitor_folder = tempdir())
 
 # Data Partner 1 -- To be run in second instand of R, on perhaps a different
@@ -179,8 +179,8 @@ fit = AnalysisCenter.KParty(regression = "logistic",
 fit = DataPartner.KParty(regression = "logistic",
                          data = vdra_data[, c(2, 5:7)],
                          response = "WtLost",
-                         numDataPartners = 2,
-                         dataPartnerID = 1,
+                         num_data_partners = 2,
+                         data_partner_id = 1,
                          monitor_folder = tempdir())
 
 # Data Partner 2 -- To be run in third instand of R, on perhaps a different
@@ -189,8 +189,8 @@ fit = DataPartner.KParty(regression = "logistic",
 
 fit = DataPartner.KParty(regression = "logistic",
                          data = vdra_data[, 8:11],
-                         numDataPartners = 2,
-                         dataPartnerID = 2,
+                         num_data_partners = 2,
+                         data_partner_id = 2,
                          monitor_folder = tempdir())
 
 ## 3 party cox regression
@@ -200,7 +200,7 @@ fit = DataPartner.KParty(regression = "logistic",
 # requset for the analysis center.
 
 fit = AnalysisCenter.KParty(regression = "cox",
-                            numDataPartners = 2,
+                            num_data_partners = 2,
                             monitor_folder = tempdir())
 
 # Data Partner 1 -- To be run in second instand of R, on perhaps a different
@@ -211,8 +211,8 @@ fit = DataPartner.KParty(regression = "cox",
                          data = vdra_data[, c(3:4, 5:7)],
                          response = c("Time", "Status"),
                          strata = c("Exposure", "Sex"),
-                         numDataPartners = 2,
-                         dataPartnerID = 1,
+                         num_data_partners = 2,
+                         data_partner_id = 1,
                          monitor_folder = tempdir())
 
 # Data Partner 2 -- To be run in third instand of R, on perhaps a different
@@ -222,8 +222,8 @@ fit = DataPartner.KParty(regression = "cox",
 fit = DataPartner.KParty(regression = "cox",
                          data = vdra_data[, 8:11],
                          strata = c("Exposure", "Sex"),
-                         numDataPartners = 2,
-                         dataPartnerID = 2,
+                         num_data_partners = 2,
+                         data_partner_id = 2,
                          monitor_folder = tempdir())
 }
 }

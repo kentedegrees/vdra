@@ -14,7 +14,7 @@ DataPartner1.3Party(
   strata = NULL,
   mask = TRUE,
   monitor_folder = NULL,
-  sleepTime = 10,
+  sleep_time = 10,
   max_waiting_time = 86400,
   popmednet = TRUE,
   trace = FALSE,
@@ -27,7 +27,7 @@ DataPartner2.3Party(
   strata = NULL,
   mask = TRUE,
   monitor_folder = NULL,
-  sleepTime = 10,
+  sleep_time = 10,
   max_waiting_time = 86400,
   popmednet = TRUE,
   trace = FALSE,
@@ -41,7 +41,7 @@ AnalysisCenter.3Party(
   blocksize = 500,
   tol = 1e-08,
   max_iterations = 25,
-  sleepTime = 10,
+  sleep_time = 10,
   max_waiting_time = 86400,
   popmednet = TRUE,
   trace = FALSE,
@@ -84,7 +84,7 @@ will be changed to \code{NA}.}
 \code{inputfiles}, \code{macros}, \code{msoc}, and \code{rprograms} are
 located.}
 
-\item{sleepTime}{the number of seconds to wait after writing the last file to
+\item{sleep_time}{the number of seconds to wait after writing the last file to
 disk before signalling the PMN Datamart Client that files are ready to be
 transferred.}
 

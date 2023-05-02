@@ -17,7 +17,7 @@ AnalysisCenter.2Party(
   blocksize = 500,
   tol = 1e-08,
   max_iterations = 25,
-  sleepTime = 10,
+  sleep_time = 10,
   max_waiting_time = 86400,
   popmednet = TRUE,
   trace = FALSE,
@@ -30,7 +30,7 @@ DataPartner.2Party(
   strata = NULL,
   mask = TRUE,
   monitor_folder = NULL,
-  sleepTime = 10,
+  sleep_time = 10,
   max_waiting_time = 86400,
   popmednet = TRUE,
   trace = FALSE,
@@ -87,7 +87,7 @@ and \code{"cox"} regression.}
 \code{"logistic"} or \code{"cox"} regression before non-convergence is
 declared.}
 
-\item{sleepTime}{the number of seconds to wait after writing the last file to
+\item{sleep_time}{the number of seconds to wait after writing the last file to
 disk before signalling the PMN Datamart Client that files are ready to be
 transferred.}
 

@@ -4,10 +4,10 @@
 \alias{pmn}
 \title{PopMedNet Simulator}
 \usage{
-pmn(numParty, directory = NULL, verbose = TRUE)
+pmn(num_party, directory = NULL, verbose = TRUE)
 }
 \arguments{
-\item{numParty}{The number of parties (analysis center + data partners)
+\item{num_party}{The number of parties (analysis center + data partners)
 involved in the multiple regression.  If a data partner is also acting as
 the analysis center, then that data partner is only counted once.}
 

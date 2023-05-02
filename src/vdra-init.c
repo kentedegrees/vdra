@@ -4,7 +4,7 @@
 void R_init_vdra(DllInfo *dll);
 
 static const R_CallMethodDef Callentries[] = {
-  {"ComputeCox",       (DL_FUNC) &ComputeCox,      9},
+  {"ComputeCox",       (DL_FUNC) &compute_cox,      9},
   {NULL, NULL, 0}
 };
 

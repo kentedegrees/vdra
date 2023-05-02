@@ -33,7 +33,7 @@ prepare_data_cox_dp <- function(params, data, y_name, strata, mask) {
     }
   }
   covariate_index <- setdiff(seq_len(ncol(data)), union(strata_index, response_index))
-  workdata$n = nrow(data)
+  workdata$n <- nrow(data)
   if (length(covariate_index) == 0) {
     if (params$data_partner_id == 1) {
       workdata$x  <- matrix(0, nrow = nrow(data), ncol = 0)
