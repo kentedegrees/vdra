@@ -387,12 +387,12 @@ get_wr_cox_a3 <- function(params, data) {
   container_ct_wr <- 0
   container_ct_pr <- 0
   for (i in 1:num_blocks) {
-    if (i %in% params$container$filebreak.wr) {
+    if (i %in% params$container$filebreak_wr) {
       container_ct_wr <- container_ct_wr + 1
       filename1 <- paste0("cwr_", container_ct_wr, ".rdata")
       to_read <- file(file.path(params$read_path[["T"]], filename1), "rb")
     }
-    if (i %in% params$container$filebreak.pr) {
+    if (i %in% params$container$filebreak_pr) {
       container_ct_pr <- container_ct_pr + 1
       filename2 <- paste0("cpr_", container_ct_pr, ".rdata")
       to_write <- file(file.path(params$write_path, filename2), "wb")
@@ -412,11 +412,11 @@ get_wr_cox_a3 <- function(params, data) {
     writeBin(as.vector(pr), con = to_write, endian = "little")
     write_time <- write_time + proc.time()[3]
 
-    if ((i + 1) %in% params$container$filebreak.wr || i == num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_wr || i == num_blocks) {
       close(to_read)
       read_size <- read_size + file.size(file.path(params$read_path[["T"]], filename1))
     }
-    if ((i + 1) %in% params$container$filebreak.pr || i == num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_pr || i == num_blocks) {
       close(to_write)
       write_size <- write_size + file.size(file.path(params$write_path, filename2))
     }
@@ -470,7 +470,7 @@ get_products_cox_t3 <- function(params) {
 
   container_ct_pr <- 0
   for (i in 1:num_blocks) {
-    if (i %in% params$container$filebreak.pr) {
+    if (i %in% params$container$filebreak_pr) {
       container_ct_pr <- container_ct_pr + 1
       filename1 <- paste0("cpr_", container_ct_pr, ".rdata")
       to_read <- file(file.path(params$read_path[["A"]], filename1), "rb")
@@ -488,7 +488,7 @@ get_products_cox_t3 <- function(params) {
                         endian = "little"), p1, p2)
     read_time <- read_time + proc.time()[3]
     xa_t_xb <- xa_t_xb + pr %*% t(r2)
-    if ((i + 1) %in% params$container$filebreak.pr || i == num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_pr || i == num_blocks) {
       close(to_read)
     }
     pbar <- make_progress_bar_2(i, pbar, params$verbose)
@@ -771,7 +771,7 @@ compute_log_likelihood_cox_t3 <- function(params) {
   params$loglikelihoodold <- params$loglikelihood
   params$loglikelihood <- loglikelihood
   if (params$alg_iteration_counter == 1) {
-    params$nullloglikelihood <- loglikelihood
+    params$null_loglikelihood <- loglikelihood
   }
   params$x_beta <- x_beta
   params$step_size <- step_size
@@ -815,11 +815,11 @@ compute_xb_delta_l_cox_b3 <- function(params, data) {
   pbar <- make_progress_bar_1(params$blocks$num_blocks, "R*(I-z*z')w*XB", params$verbose)
   for (i in 1:params$blocks$num_blocks) {
     if (i %in% params$container$filebreak_rz) {
-      container_ct_rz <- container_ct_RZ + 1
-      filename1 <- paste0("crz_", container_ct_RZ, ".rdata")
+      container_ct_rz <- container_ct_rz + 1
+      filename1 <- paste0("crz_", container_ct_rz, ".rdata")
       to_read <- file(file.path(params$read_path[["T"]], filename1), "rb")
     }
-    if (i %in% params$container$filebreak.Cox) {
+    if (i %in% params$container$filebreak_Cox) {
       container_ct_cox <- container_ct_cox + 1
       filename2 <- paste0("cCox_", container_ct_cox, ".rdata")
       to_write <- file(file.path(params$write_path, filename2), "wb")
@@ -844,7 +844,7 @@ compute_xb_delta_l_cox_b3 <- function(params, data) {
       close(to_read)
       read_size <- read_size + file.size(file.path(params$read_path[["T"]], filename1))
     }
-    if ((i + 1) %in% params$container$filebreak.Cox || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_Cox || i == params$blocks$num_blocks) {
       close(to_write)
       write_size <- write_size <- file.size(file.path(params$write_path, filename2))
     }
@@ -913,7 +913,7 @@ process_v_cox_t3 <- function(params) {
   container_ct_rv <- 0
   container_ct_vr <- 0
   for (i in 1:num_blocks) {
-    if (i %in% params$container$filebreak.rv) {
+    if (i %in% params$container$filebreak_rv) {
       container_ct_rv <- container_ct_rv + 1
       filename2 <- paste0("cCox_", container_ct_rv, ".rdata")
       to_read_2 <- file(file.path(params$read_path[["B"]], filename2), "rb")
@@ -952,7 +952,7 @@ process_v_cox_t3 <- function(params) {
     write_size <- write_size + file.size(file.path(params$dp_local_path, filename4))
     writeBin(as.vector(vr), con = to_write3, endian = "little")
     write_time <- write_time + proc.time()[3]
-    if ((i + 1) %in% params$container$filebreak.rv || i == num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_rv || i == num_blocks) {
       close(to_read_2)
       read_size <- read_size + file.size(file.path(params$read_path[["B"]], filename2))
     }
@@ -979,7 +979,7 @@ get_xr_cox_a3 <- function(params, data) {
   container_ct_xr <- 0
   pbar <- make_progress_bar_1(params$blocks$num_blocks, "XA'(I-z*z')w*XB*R", params$verbose)
   for (i in 1:params$blocks$num_blocks) {
-    if (i %in% params$container$filebreak.rv) {
+    if (i %in% params$container$filebreak_rv) {
       container_ct_vr <- container_ct_vr + 1
       filename1 <- paste0("cvr_", container_ct_vr, ".rdata")
       to_read <- file(file.path(params$read_path[["T"]], filename1), "rb")
@@ -1204,7 +1204,7 @@ compute_results_cox_t3 <- function(params) {
   }))
   stats$lower95      <- exp(stats$coefficients - qnorm(0.975) * stats$secoef)
   stats$upper95      <- exp(stats$coefficients + qnorm(0.975) * stats$secoef)
-  stats$loglik       <- c(params$nullLoglikelihood, params$loglikelihood)
+  stats$loglik       <- c(params$null_loglikelihood, params$loglikelihood)
   stats$n            <- params$n
   stats$nevent       <- sum(params$survival$status)
   stats$df           <- params$p
@@ -1532,7 +1532,7 @@ compute_cox_b3 <- function(params, data) {
 
     if (params$alg_iteration_counter == 1) {
       params$null_score         <- t(data$x) %*% deltal
-      params$nullloglikelihood <- loglikelihood
+      params$null_loglikelihood <- loglikelihood
     }
     loglikelihood_old <- loglikelihood
     EndingIteration(params)
@@ -1596,7 +1596,7 @@ compute_results_cox_b3 <- function(params, data) {
     stats$wald.test  <- params$fit$wald.test
     stats$concordance <- params$fit$concordance[c(2, 1, 3, 4, 6, 7)]
   } else {
-    stats$loglik       <- c(params$nullLoglikelihood, params$loglikelihood)
+    stats$loglik       <- c(params$null_loglikelihood, params$loglikelihood)
     stats$n            <- params$n
     stats$nevent       <- params$num_events
     stats$iter         <- params$alg_iteration_counter - 1
@@ -1763,7 +1763,7 @@ party_a_process_3_cox <- function(data,
 
   params <- get_wr_cox_a3(params, data)
   params <- get_s_xa_cox_a3(params, data)
-  files <- c("sxa.rdata", "xatxa.rdata", seq_zw("cpr_", length(params$container$filebreak.pr)))
+  files <- c("sxa.rdata", "xatxa.rdata", seq_zw("cpr_", length(params$container$filebreak_pr)))
   params <- send_pause_continue_3p(params, files_t = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
@@ -1933,7 +1933,7 @@ party_b_process_3_cox <- function(data,
   params <- prepare_blocks_linear_b3(params)
   params <- get_rw_linear_b3(params, data)
   params <- get_s_xb_cox_b3(params, data)
-  files <- c("sxb.rdata", "xbtxb.rdata", seq_zw("crw_", length(params$container$filebreak.RW)))
+  files <- c("sxb.rdata", "xbtxb.rdata", seq_zw("crw_", length(params$container$filebreak_RW)))
   params <- send_pause_continue_3p(params, files_t = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
@@ -1988,7 +1988,7 @@ party_b_process_3_cox <- function(data,
                                   wait_for_turn = TRUE)
 
     params <- compute_xb_delta_l_cox_b3(params, data)
-    files <- c("txb_w_xb.rdata", seq_zw("cCox_", length(params$container$filebreak.Cox)))
+    files <- c("txb_w_xb.rdata", seq_zw("cCox_", length(params$container$filebreak_Cox)))
     params <- send_pause_continue_3p(params, files_t = files, from = "T",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time,
                                   wait_for_turn = TRUE)
@@ -2138,7 +2138,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- process_w_linear_t3(params)
-  files <- c("p2.rdata", seq_zw("cwr_", length(params$container$filebreak.wr)))
+  files <- c("p2.rdata", seq_zw("cwr_", length(params$container$filebreak_wr)))
   params <- send_pause_continue_3p(params, files_a = files, from = "A",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 

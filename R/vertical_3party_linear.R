@@ -470,8 +470,8 @@ process_z_linear_t3 <- function(params) {
       to_read <- file(file.path(params$read_path[["A"]], filename1), "rb")
     }
     if (i %in% params$container$filebreak_rz) {
-      container_ct_rz <- container_ct_RZ + 1
-      filename2 <- paste0("crz_", container_ct_RZ, ".rdata")
+      container_ct_rz <- container_ct_rz + 1
+      filename2 <- paste0("crz_", container_ct_rz, ".rdata")
       to_write <- file(file.path(params$write_path, filename2), "wb")
     }
     filename3 <- paste0("r1_", i, ".rdata")
@@ -548,8 +548,8 @@ get_rw_linear_b3 <- function(params, data) {
   container_ct_rw <- 0
   for (i in 1:num_blocks) {
     if (i %in% params$container$filebreak_rz) {
-      container_ct_rz <- container_ct_RZ + 1
-      filename1 <- paste0("crz_", container_ct_RZ, ".rdata")
+      container_ct_rz <- container_ct_rz + 1
+      filename1 <- paste0("crz_", container_ct_rz, ".rdata")
       to_read <- file(file.path(params$read_path[["T"]], filename1), "rb")
     }
     if (i %in% params$container$filebreak_rw) {
@@ -615,7 +615,7 @@ process_w_linear_t3 <- function(params) {
       filename2 <- paste0("crw_", container_ct_rw, ".rdata")
       to_read_2 <- file(file.path(params$read_path[["B"]], filename2), "rb")
     }
-    if (i %in% params$container$filebreak.wr) {
+    if (i %in% params$container$filebreak_wr) {
       container_ct_wr <- container_ct_wr + 1
       filename3 <- paste0("cwr_", container_ct_wr, ".rdata")
       to_write3 <- file(file.path(params$write_path, filename3), "wb")
@@ -653,7 +653,7 @@ process_w_linear_t3 <- function(params) {
       close(to_read_2)
       read_size <- read_size + file.size(file.path(params$read_path[["B"]], filename2))
     }
-    if ((i + 1) %in% params$container$filebreak.wr || i == num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_wr || i == num_blocks) {
       close(to_write3)
       write_size <- write_size + file.size(file.path(params$write_path, filename3))
     }
@@ -687,12 +687,12 @@ get_wr_linear_a3 <- function(params, data) {
   container_ct_wr <- 0
   container_ct_pr <- 0
   for (i in 1:num_blocks) {
-    if (i %in% params$container$filebreak.wr) {
+    if (i %in% params$container$filebreak_wr) {
       container_ct_wr <- container_ct_wr + 1
       filename1 <- paste0("cwr_", container_ct_wr, ".rdata")
       to_read <- file(file.path(params$read_path[["T"]], filename1), "rb")
     }
-    if (i %in% params$container$filebreak.pr) {
+    if (i %in% params$container$filebreak_pr) {
       container_ct_pr <- container_ct_pr + 1
       filename2 <- paste0("cpr_", container_ct_pr, ".rdata")
       to_write <- file(file.path(params$write_path, filename2), "wb")
@@ -713,11 +713,11 @@ get_wr_linear_a3 <- function(params, data) {
     writeBin(as.vector(pr), con = to_write, endian = "little")
     write_time <- write_time + proc.time()[3]
 
-    if ((i + 1) %in% params$container$filebreak.wr || i == num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_wr || i == num_blocks) {
       close(to_read)
       read_size <- read_size + file.size(file.path(params$read_path[["T"]], filename1))
     }
-    if ((i + 1) %in% params$container$filebreak.pr || i == num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_pr || i == num_blocks) {
       close(to_write)
       write_size <- write_size + file.size(file.path(params$write_path, filename2))
     }
@@ -751,7 +751,7 @@ get_products_linear_t3 <- function(params) {
 
   container_ct_pr <- 0
   for (i in 1:num_blocks) {
-    if (i %in% params$container$filebreak.pr) {
+    if (i %in% params$container$filebreak_pr) {
       container_ct_pr <- container_ct_pr + 1
       filename1 <- paste0("cpr_", container_ct_pr, ".rdata")
       to_read <- file(file.path(params$read_path[["A"]], filename1), "rb")
@@ -772,7 +772,7 @@ get_products_linear_t3 <- function(params) {
 
     y_xa_t_xb <- y_xa_t_xb + pr %*% t(r2)
 
-    if ((i + 1) %in% params$container$filebreak.pr || i == num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_pr || i == num_blocks) {
       close(to_read)
     }
 
@@ -1029,7 +1029,7 @@ party_a_process_3_linear <- function(data,
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- get_wr_linear_a3(params, data)
-  files <- c("xatxa.rdata", seq_zw("cpr_", length(params$container$filebreak.pr)))
+  files <- c("xatxa.rdata", seq_zw("cpr_", length(params$container$filebreak_pr)))
   params <- send_pause_continue_3p(params, files_t = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
@@ -1185,7 +1185,7 @@ party_t_process_3_linear <- function(monitor_folder         = NULL,
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- process_w_linear_t3(params)
-  files <- c("p2.rdata", seq_zw("cwr_", length(params$container$filebreak.wr)))
+  files <- c("p2.rdata", seq_zw("cwr_", length(params$container$filebreak_wr)))
   params <- send_pause_continue_3p(params, files_a = files, from  = "A",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 

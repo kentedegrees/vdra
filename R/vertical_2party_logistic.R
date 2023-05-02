@@ -496,7 +496,7 @@ get_w_logistics_b2 <- function(params, data) {
       to_read <- file(file.path(params$read_path, filename1), "rb")
       read_size <- read_size + file.size(file.path(params$read_path, filename1))
     }
-    if (i %in% params$container$filebreak.w) {
+    if (i %in% params$container$filebreak_w) {
       container_ct_w <- container_ct_w + 1
       filename2 <- paste0("cw_", container_ct_w, ".rdata")
       to_write <- file(file.path(params$write_path, filename2), "wb")
@@ -520,7 +520,7 @@ get_w_logistics_b2 <- function(params, data) {
     if ((i + 1) %in% params$container$file_break_z || i == params$blocks$num_blocks) {
       close(to_read)
     }
-    if ((i + 1) %in% params$container$filebreak.w || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_w || i == params$blocks$num_blocks) {
       close(to_write)
       write_size <- write_size + file.size(file.path(params$write_path, filename2))
     }
@@ -561,7 +561,7 @@ check_colinearity_logistic_a2 <- function(params, data) {
 
   container_ct_w <- 0
   for (i in 1:params$blocks$num_blocks) {
-    if (i %in% params$container$filebreak.w) {
+    if (i %in% params$container$filebreak_w) {
       container_ct_w <- container_ct_w + 1
       filename <- paste0("cw_", container_ct_w, ".rdata")
       to_read <- file(file.path(params$read_path, filename), "rb")
@@ -578,7 +578,7 @@ check_colinearity_logistic_a2 <- function(params, data) {
     xa_t_xb <- xa_t_xb + t(data$x[strt:stp, ]) %*% w
     y_t_xb  <- y_t_xb  + t(data$Y[strt:stp, ]) %*% w
 
-    if ((i + 1) %in% params$container$filebreak.w || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_w || i == params$blocks$num_blocks) {
       close(to_read)
       read_size <- read_size + file.size(file.path(params$read_path, filename))
     }
@@ -797,7 +797,7 @@ get_v_logistic_b2 <- function(params, data) {
       filename1 <- paste0("cz_", container_ct_z, ".rdata")
       to_read <- file(file.path(params$read_path, filename1), "rb")
     }
-    if (i %in% params$container$filebreak.v) {
+    if (i %in% params$container$filebreak_v) {
       container_ct_v <- container_ct_v + 1
       filename2 <- paste0("cv_", container_ct_v, ".rdata")
       to_write <- file(file.path(params$write_path, filename2), "wb")
@@ -827,7 +827,7 @@ get_v_logistic_b2 <- function(params, data) {
       close(to_read)
       read_size <- read_size + file.size(file.path(params$read_path, filename1))
     }
-    if ((i + 1) %in% params$container$filebreak.v || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_v || i == params$blocks$num_blocks) {
       close(to_write)
       write_size <- write_size + file.size(file.path(params$write_path, filename2))
     }
@@ -875,7 +875,7 @@ get_ii_logistic_a2 <- function(params, data) {
   xa_t_w_xb <- 0
   container_ct_v <- 0
   for (i in 1:params$blocks$num_blocks) {
-    if (i %in% params$container$filebreak.v) {
+    if (i %in% params$container$filebreak_v) {
       container_ct_v <- container_ct_v + 1
       filename1 <- paste0("cv_", container_ct_v, ".rdata")
       to_read <- file(file.path(params$read_path, filename1), "rb")
@@ -892,7 +892,7 @@ get_ii_logistic_a2 <- function(params, data) {
     xa_t_w_xb <- xa_t_w_xb + t(data$x[strt:stp, ]) %*% v
 
     pbar <- make_progress_bar_2(i, pbar, params$verbose)
-    if ((i + 1) %in% params$container$filebreak.v || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_v || i == params$blocks$num_blocks) {
       close(to_read)
     }
   }
@@ -1341,7 +1341,7 @@ party_b_process_2_logistic <- function(data,
   params <- prepare_blocks_logistic_b2(params)
   params <- get_w_logistics_b2(params, data)
 
-  files <- c("xbtxb.rdata", seq_zw("cw_", length(params$container$filebreak.w)))
+  files <- c("xbtxb.rdata", seq_zw("cw_", length(params$container$filebreak_w)))
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
@@ -1365,7 +1365,7 @@ party_b_process_2_logistic <- function(data,
 
     params <- get_v_logistic_b2(params, data)
     files <- c("sumswx_xbtwxb.rdata",
-              seq_zw("cv_", length(params$container$filebreak.v)))
+              seq_zw("cv_", length(params$container$filebreak_v)))
     params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
     if (file.exists(file.path(params$read_path, "error_message.rdata"))) {

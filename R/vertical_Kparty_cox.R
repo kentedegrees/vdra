@@ -649,15 +649,15 @@ compute_u_cox_ac <- function(params) {
   if (params$alg_iteration_counter == 1) {
     u <- 1
   } else {
-    utemp <- 0
+    u_temp <- 0
     for (id in 1:params$num_data_partners) {
       read_time <- read_time - proc.time()[3]
       load(file.path(params$readPathDP[id], "u.rdata"))
       read_size <- read_size + file.size(file.path(params$readPathDP[id], "u.rdata"))
       read_time <- read_time + proc.time()[3]
-      utemp <- uTemp + u
+      u_temp <- u_temp + u
     }
-    u <- uTemp
+    u <- u_temp
   }
   params$u <- u
   write_time <- proc.time()[3]
@@ -819,7 +819,7 @@ compute_log_likelihood_cox_dp <- function(params, data) {
   }
 
   if (params$alg_iteration_counter == 1) {
-    params$nullloglikelihood <- loglikelihood
+    params$null_loglikelihood <- loglikelihood
   }
 
   converged <- abs(loglikelihood - loglikelihood_old) / (abs(loglikelihood) + 0.1) < params$cutoff
@@ -1237,7 +1237,7 @@ update_betas_cox_dp <- function(params) {
 
   if (params$data_partner_id == 1) {
     loglikelihood <- params$loglikelihood
-    nullloglikelihood <- params$nullLoglikelihood
+    null_loglikelihood <- params$null_loglikelihood
   }
   write_time <- proc.time()[3]
   save(u, file = file.path(params$write_path, "u.rdata"))
@@ -1246,7 +1246,7 @@ update_betas_cox_dp <- function(params) {
     betasnew  <- params$betas
     scorePart <- params$score
     if (params$data_partner_id == 1) {
-      save(scorePart, nullLoglikelihood, loglikelihood, betasnew, file = file.path(params$write_path, "betas.rdata"))
+      save(scorePart, null_loglikelihood, loglikelihood, betasnew, file = file.path(params$write_path, "betas.rdata"))
     } else {
       save(scorePart, betasnew, file = file.path(params$write_path, "betas.rdata"))
     }
@@ -1299,16 +1299,15 @@ survfit_cox_AC <- function(params, pred) {
   return(surv)
 }
 
-
 #' @importFrom  stats pchisq pnorm qnorm
-compute_results_cox_AC <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_results_cox_AC\n\n")
-  read_size          = 0
-  betasnew          = NULL
-  scorePart         = NULL
-  loglikelihood     = NULL
-  nullloglikelihood <- NULL
-  score             = params$score
+compute_results_cox_ac <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "compute_results_cox_ac\n\n")
+  read_size         <- 0
+  betasnew          <- NULL
+  scorePart         <- NULL
+  loglikelihood     <- NULL
+  null_loglikelihood <- NULL
+  score             <- params$score
   read_time <- proc.time()[3]
   betas  <- matrix(0, nrow = 0, ncol = 1)
   for (id in 1:params$num_data_partners) {
@@ -1346,7 +1345,7 @@ compute_results_cox_AC <- function(params) {
   }))
   stats$lower95      = exp(stats$coefficients - qnorm(0.975) * stats$secoef)
   stats$upper95      = exp(stats$coefficients + qnorm(0.975) * stats$secoef)
-  stats$loglik       = c(nullLoglikelihood, loglikelihood)
+  stats$loglik       = c(null_loglikelihood, loglikelihood)
   stats$n            = params$n
   stats$nevent       = sum(params$survival$status)
   stats$df           = sum(params$p_reduct)
@@ -1422,7 +1421,7 @@ compute_results_cox_AC <- function(params) {
   write_size <- file.size(file.path(params$write_path, "stats.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "compute_results_cox_AC", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "compute_results_cox_ac", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -1808,7 +1807,7 @@ AnalysisCenterKCox <- function(num_data_partners = NULL,
   params$lastIteration = TRUE
   params$completed <- TRUE
 
-  params <- compute_results_cox_AC(params)
+  params <- compute_results_cox_ac(params)
   files <- "stats.rdata"
   params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)

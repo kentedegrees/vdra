@@ -2117,8 +2117,8 @@ get_block_size <- function(pA, pB) {
   # We need to guarentee that pA + pB + g <= blocksize
   # where g = (pA + 1) / (pA + pB + 1) * blocksize
   # May change in the future.
-  minblocksize <- max(25, trunc(1 + (pA + pB + 1)^2 / pB))
-  return(minBlocksize)
+  min_blocksize <- max(25, trunc(1 + (pA + pB + 1)^2 / pB))
+  return(min_blocksize)
 }
 
 
@@ -2138,7 +2138,7 @@ create_blocks <- function(pA, pB, n, blocksize) {
   gBigBlock       <- trunc(bigBlocksize * (pA + 1) / (pA + pB + 1))
 
   blocks$num_blocks       = num_blocks
-  blocks$littleblocksize <- newBlocksize
+  blocks$little_blocksize <- newBlocksize
   blocks$bigBlocksize    = bigBlocksize
   blocks$numLittleBlocks = numLittleBlocks
   blocks$numBigBlocks    = numBigBlocks
@@ -2169,104 +2169,104 @@ create_blocks <- function(pA, pB, n, blocksize) {
 create_containers <- function(pA, pB, blocks) {
   containers <- list()
 
-  maximumFilesize = 25 * 1024^2
+  maximum_filesize = 25 * 1024^2
 
   num_blocks = blocks$num_blocks
-  littleblocksize <- blocks$littleBlocksize
+  little_blocksize <- blocks$little_blocksize
 
   littleBlockG = blocks$gLittleBlock
 
-  littleFilesize.z   = 8 * littleBlocksize * littleBlockG
-  littleFilesize.w   = 8 * littleBlocksize * pB # used for w, v, RW, wr, rv, Cox
-  littleFilesize_rz  = 8 * littleBlocksize^2
-  littleFilesize.pr  = 8 * (pA + 1) * pB        # I think this is not used anymore
-  littleFilesize_xr = 8 * pA * pB
+  little_filesize_z   = 8 * little_blocksize * littleBlockG
+  little_filesize_w   = 8 * little_blocksize * pB # used for w, v, RW, wr, rv, Cox
+  little_filesize_rz  = 8 * little_blocksize^2
+  little_filesize_pr  = 8 * (pA + 1) * pB        # I think this is not used anymore
+  little_filesize_xr = 8 * pA * pB
 
-  numContainers.z <- ceiling(num_blocks * littleFilesize.z / maximumFilesize)
-  num_blocksSmallContainer.z <- trunc(num_blocks / numContainers.z)
-  num_blocksLargeContainer.z <- num_blocksSmallContainer.z + 1
-  numLargeContainer.z <- num_blocks %% numContainers.z
-  numSmallContainer.z <- numContainers.z - numLargeContainer.z
+  num_containers_z <- ceiling(num_blocks * little_filesize_z / maximum_filesize)
+  num_blocks_small_container_z <- trunc(num_blocks / num_containers_z)
+  num_blocks_large_container_z <- num_blocks_small_container_z + 1
+  num_large_container_z <- num_blocks %% num_containers_z
+  num_small_container_z <- num_containers_z - num_large_container_z
 
-  numContainers.w = ceiling(num_blocks * littleFilesize.w / maximumFilesize)
-  num_blocksSmallContainer.w <- trunc(num_blocks / numContainers.w)
-  num_blocksLargeContainer.w = num_blocksSmallContainer.w + 1
-  numLargeContainer.w = num_blocks %% numContainers.w
-  numSmallContainer.w = numContainers.w - numLargeContainer.w
+  num_containers_w = ceiling(num_blocks * little_filesize_w / maximum_filesize)
+  num_blocks_small_container_w <- trunc(num_blocks / num_containers_w)
+  num_blocks_large_container_w = num_blocks_small_container_w + 1
+  num_large_container_w = num_blocks %% num_containers_w
+  num_small_container_w = num_containers_w - num_large_container_w
 
-  numContainers_rz <- ceiling(num_blocks * littleFilesize_rz / maximumFilesize)
-  num_blocksSmallContainer_rz <- trunc(num_blocks / numContainers_rz)
-  num_blocksLargeContainer_rz <- num_blocksSmallContainer_rz + 1
-  numLargeContainer_rz <- num_blocks %% numContainers_rz
-  numSmallContainer_rz <- numContainers_rz - numLargeContainer_rz
+  num_containers_rz <- ceiling(num_blocks * little_filesize_rz / maximum_filesize)
+  num_blocks_small_containers_rz <- trunc(num_blocks / num_containers_rz)
+  num_blocks_large_container_rz <- num_blocks_small_containers_rz + 1
+  num_large_container_rz <- num_blocks %% num_containers_rz
+  num_small_container_rz <- num_containers_rz - num_large_container_rz
 
-  numContainers.pr = ceiling(num_blocks * littleFilesize_pr / maximumFilesize)
-  num_blocksSmallContainer.pr <- trunc(num_blocks / numContainers_pr)
-  num_blocksLargeContainer.pr = num_blocksSmallContainer_pr + 1
-  numLargeContainer.pr = num_blocks %% numContainers_pr
-  numSmallContainer.pr = numContainers_pr - numLargeContainer_pr
+  num_containers_pr = ceiling(num_blocks * little_filesize_pr / maximum_filesize)
+  num_blocks_small_container_pr <- trunc(num_blocks / num_containers_pr)
+  num_blocks_large_container_pr = num_blocks_small_containers_pr + 1
+  num_large_container_pr = num_blocks %% num_containers_pr
+  num_small_container_pr = num_containers_pr - num_large_container_pr
 
-  numContainers_xr = ceiling(num_blocks * littleFilesize_xr / maximumFilesize)
-  num_blocksSmallContainer_xr <- trunc(num_blocks / numContainers_xr)
-  num_blocksLargeContainer_xr = num_blocksSmallContainer_xr + 1
-  numLargeContainer_xr = num_blocks %% numContainers_xr
-  numSmallContainer_xr = numContainers_xr - numLargeContainer_xr
+  num_containers_xr = ceiling(num_blocks * little_filesize_xr / maximum_filesize)
+  num_blocks_small_containers_xr <- trunc(num_blocks / num_containers_xr)
+  num_blocks_large_container_xr = num_blocks_small_containers_xr + 1
+  num_large_container_xr = num_blocks %% num_containers_xr
+  num_small_container_xr = num_containers_xr - num_large_container_xr
 
-  if (numLargeContainer.z > 0) {
-    file_break_z = c(0:(numLargeContainer.z - 1) * num_blocksLargeContainer.z + 1,
-                     0:(numSmallContainer.z - 1) * num_blocksSmallContainer.z + 1 +
-                       numLargeContainer.z * num_blocksLargeContainer.z)
+  if (num_large_container_z > 0) {
+    file_break_z = c(0:(num_large_container_z - 1) * num_blocks_large_container_z + 1,
+                     0:(num_small_container_z - 1) * num_blocks_small_container_z + 1 +
+                       num_large_container_z * num_blocks_large_container_z)
   } else {
-    file_break_z = c(0:(numSmallContainer.z - 1) * num_blocksSmallContainer.z + 1 +
-                       numLargeContainer.z * num_blocksLargeContainer.z)
+    file_break_z = c(0:(num_small_container_z - 1) * num_blocks_small_container_z + 1 +
+                       num_large_container_z * num_blocks_large_container_z)
   }
 
-  if (numLargeContainer.w > 0) {
-    filebreak.w = c(0:(numLargeContainer.w - 1) * num_blocksLargeContainer.w + 1,
-                    0:(numSmallContainer.w - 1) * num_blocksSmallContainer.w + 1 +
-                      numLargeContainer.w * num_blocksLargeContainer.w)
+  if (num_large_container_w > 0) {
+    filebreak_w = c(0:(num_large_container_w - 1) * num_blocks_large_container_w + 1,
+                    0:(num_small_container_w - 1) * num_blocks_small_container_w + 1 +
+                      num_large_container_w * num_blocks_large_container_w)
   } else {
-    filebreak.w = c(0:(numSmallContainer.w - 1) * num_blocksSmallContainer.w + 1 +
-                      numLargeContainer.w * num_blocksLargeContainer.w)
+    filebreak_w = c(0:(num_small_container_w - 1) * num_blocks_small_container_w + 1 +
+                      num_large_container_w * num_blocks_large_container_w)
   }
 
-  if (numLargeContainer_rz > 0) {
-    filebreak_rz <- c(0:(numLargeContainer_rz - 1) * num_blocksLargeContainer_rz + 1,
-                     0:(numSmallContainer_rz - 1) * num_blocksSmallContainer_rz + 1 +
-                       numLargeContainer_rz * num_blocksLargeContainer_rz)
+  if (num_large_container_rz > 0) {
+    filebreak_rz <- c(0:(num_large_container_rz - 1) * num_blocks_large_container_rz + 1,
+                     0:(num_small_container_rz - 1) * num_blocks_small_containers_rz + 1 +
+                       num_large_container_rz * num_blocks_large_container_rz)
   } else {
-    filebreak_rz <- c(0:(numSmallContainer_rz - 1) * num_blocksSmallContainer_rz + 1 +
-                       numLargeContainer_rz * num_blocksLargeContainer_rz)
+    filebreak_rz <- c(0:(num_small_container_rz - 1) * num_blocks_small_containers_rz + 1 +
+                       num_large_container_rz * num_blocks_large_container_rz)
   }
 
-  if (numLargeContainer.pr > 0) {
-    filebreak.pr = c(0:(numLargeContainer_pr - 1) * num_blocksLargeContainer_pr + 1,
-                     0:(numSmallContainer.pr - 1) * num_blocksSmallContainer_pr + 1 +
-                       numLargeContainer.pr * num_blocksLargeContainer_pr)
+  if (num_large_container_pr > 0) {
+    filebreak_pr = c(0:(num_large_container_pr - 1) * num_blocks_large_container_pr + 1,
+                     0:(num_small_container_pr - 1) * num_blocks_small_containers_pr + 1 +
+                       num_large_container_pr * num_blocks_large_container_pr)
   } else {
-    filebreak.pr = c(0:(numSmallContainer_pr - 1) * num_blocksSmallContainer_pr + 1 +
-                       numLargeContainer.pr * num_blocksLargeContainer_pr)
+    filebreak_pr = c(0:(num_small_container_pr - 1) * num_blocks_small_containers_pr + 1 +
+                       num_large_container_pr * num_blocks_large_container_pr)
   }
 
-  if (numLargeContainer_xr > 0) {
-    filebreak_xr = c(0:(numLargeContainer_xr - 1) * num_blocksLargeContainer_xr + 1,
-                     0:(numSmallContainer_xr - 1) * num_blocksSmallContainer_xr + 1 +
-                       numLargeContainer_xr * num_blocksLargeContainer_xr)
+  if (num_large_container_xr > 0) {
+    filebreak_xr = c(0:(num_large_container_xr - 1) * num_blocks_large_container_xr + 1,
+                     0:(num_small_container_xr - 1) * num_blocks_small_containers_xr + 1 +
+                       num_large_container_xr * num_blocks_large_container_xr)
   } else {
-    filebreak_xr = c(0:(numSmallContainer_xr - 1) * num_blocksSmallContainer_xr + 1 +
-                       numLargeContainer_xr * num_blocksLargeContainer_xr)
+    filebreak_xr = c(0:(num_small_container_xr - 1) * num_blocks_small_containers_xr + 1 +
+                       num_large_container_xr * num_blocks_large_container_xr)
   }
 
   containers$file_break_z   = file_break_z
-  containers$filebreak.w   = filebreak.w
+  containers$filebreak_w   = filebreak_w
   containers$filebreak_rz  = filebreak_rz
-  containers$filebreak.pr  = filebreak_pr # I think we are not using this anymore
-  containers$filebreak.v   = filebreak.w
-  containers$filebreak.RW  = filebreak.w
-  containers$filebreak.wr  = filebreak.w
-  containers$filebreak.rv  = filebreak.w
-  containers$filebreak_vr  = filebreak.w
-  containers$filebreak.Cox = filebreak.w
+  containers$filebreak_pr  = filebreak_pr # I think we are not using this anymore
+  containers$filebreak_v   = filebreak_w
+  containers$filebreak_RW  = filebreak_w
+  containers$filebreak_wr  = filebreak_w
+  containers$filebreak_rv  = filebreak_w
+  containers$filebreak_vr  = filebreak_w
+  containers$filebreak_Cox = filebreak_w
   containers$filebreak_xr = filebreak_xr
 
   return(containers)
@@ -2725,7 +2725,7 @@ SummarizeLog.2p <- function(params) {
   KB.Per.Second = round(Total.Bytes.Transferred / (Total.Transfer.Time * 1024), digits = 2)
   WriteToLogSummary(c1 = "Analysis", c2 = params$analysis, write_path = write_path, append = FALSE)
   if (!is.null(params$blocks)) {
-    WriteToLogSummary(c1 = "Blocksize", c2 = params$blocks$littleBlocksize, write_path = write_path)
+    WriteToLogSummary(c1 = "Blocksize", c2 = params$blocks$little_blocksize, write_path = write_path)
     WriteToLogSummary(c1 = "Number of Blocks",
                       c2 = params$blocks$numLittleBlocks + params$blocks$numBigBlocks,
                       write_path = write_path)
@@ -2951,7 +2951,7 @@ SummarizeLog.3p <- function(params) {
 
   WriteToLogSummary(c1 = "Analysis", c2 = params$analysis, write_path = write_path, append = FALSE)
   if (!is.null(params$blocks)) {
-    WriteToLogSummary(c1 = "Blocksize", c2 = params$blocks$littleBlocksize, write_path = write_path)
+    WriteToLogSummary(c1 = "Blocksize", c2 = params$blocks$little_blocksize, write_path = write_path)
     WriteToLogSummary(c1 = "Number of Blocks",
                       c2 = params$blocks$numLittleBlocks + params$blocks$numBigBlocks,
                       write_path = write_path)
@@ -4657,7 +4657,6 @@ survfitDistributed.formula <- function(x, formula, data) {
   return(invisible(surv))
 }
 
-
 #' @title Create Survival Curves for Vertical Distributed Cox Regression
 #' @aliases survfitDistributed survfitDistributed.object
 #'   print.survfitDistributed
@@ -4675,16 +4674,24 @@ survfitDistributed.formula <- function(x, formula, data) {
 #'   class have methods for the functions \code{print} and \code{plot}. The
 #'   following components must be included in a legitimate
 #'   \code{survfitDistributed} object.
-#' \description{
+#'
 #'   \item{n}{the total number of subjects in each curve.}
+#'
 #'   \item{time}{the time points at which the curve has a step.}
+#'
 #'   \item{n.risk}{the number of subjects at risk at each time point.}
+#'
 #'   \item{n.event}{the number of events that occour at each time point.}
-#'   \item{n.censor}{the number of subjects who are censored at each time point.}
+#'
+#'   \item{n.censor}{the number of subjects who are censored at each time
+#'   point.}
+#'
 #'   \item{strata}{the number of points in each strata.}
+#'
 #'   \item{surv}{the estimate of the survival time at each time step.}
+#'
 #'   \item{type}{the type of censoring.  Currently, always "right".}
-#' }
+#'
 #' @seealso \code{\link{plot.survfitDistributed}}
 #' @examples
 #'

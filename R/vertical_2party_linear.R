@@ -485,7 +485,7 @@ get_w_linear_b2 <- function(params, data) {
       to_read <- file(file.path(params$read_path, filename1), "rb")
       read_size <- read_size + file.size(file.path(params$read_path, filename1))
     }
-    if (i %in% params$container$filebreak.w) {
+    if (i %in% params$container$filebreak_w) {
       container_ct_w <- container_ct_w + 1
       filename2 <- paste0("cw_", container_ct_w, ".rdata")
       to_write <- file(file.path(params$write_path, filename2), "wb")
@@ -509,7 +509,7 @@ get_w_linear_b2 <- function(params, data) {
     if ((i + 1) %in% params$container$file_break_z || i == params$blocks$num_blocks) {
       close(to_read)
     }
-    if ((i + 1) %in% params$container$filebreak.w || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_w || i == params$blocks$num_blocks) {
       close(to_write)
       write_size <- write_size + file.size(file.path(params$write_path, filename2))
     }
@@ -549,7 +549,7 @@ get_products_linear_a2 <- function(params, data) {
 
   container_ct_w <- 0
   for (i in 1:params$blocks$num_blocks) {
-    if (i %in% params$container$filebreak.w) {
+    if (i %in% params$container$filebreak_w) {
       container_ct_w <- container_ct_w + 1
       filename <- paste0("cw_", container_ct_w, ".rdata")
       to_read <- file(file.path(params$read_path, filename), "rb")
@@ -566,7 +566,7 @@ get_products_linear_a2 <- function(params, data) {
     xa_t_xb <- xa_t_xb + t(data$x[strt:stp, ]) %*% w
     y_t_xb  <- y_t_xb  + t(data$Y[strt:stp, ]) %*% w
 
-    if ((i + 1) %in% params$container$filebreak.w || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_w || i == params$blocks$num_blocks) {
       close(to_read)
       read_size <- read_size + file.size(file.path(params$read_path, filename))
     }
@@ -878,7 +878,7 @@ party_b_process_2_linear <- function(data,
   params <- prepare_blocks_linear_b2(params)
   params <- get_w_linear_b2(params, data)
 
-  files <- c("xbtxb.rdata", seq_zw("cw_", length(params$container$filebreak.w)))
+  files <- c("xbtxb.rdata", seq_zw("cw_", length(params$container$filebreak_w)))
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   params <- get_results_linear_b2(params)

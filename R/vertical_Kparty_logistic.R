@@ -454,10 +454,10 @@ update_beta_logistic_DP <- function(params) {
   delta_beta = IDt - I %*% D0
   params$betas <- params$betas + delta_beta
   maxdifference = max(abs(delta_beta) / (abs(params$betas) + .1))
-  utemp <- sum(runif(length(delta_beta), min = 1, max = 5) * abs(params$betas))
+  u_temp <- sum(runif(length(delta_beta), min = 1, max = 5) * abs(params$betas))
 
   write_time <- proc.time()[3]
-  save(utemp, maxdifference, file = file.path(params$write_path, "u_converge.rdata"))
+  save(u_temp, maxdifference, file = file.path(params$write_path, "u_converge.rdata"))
   write_size <- file.size(file.path(params$write_path, "u_converge.rdata"))
   write_time <- proc.time()[3] - write_time
 
@@ -472,14 +472,14 @@ compute_converged_status_logistic_ac <- function(params) {
   read_size <- 0
   u = 0
   converged = TRUE
-  utemp <- NULL
+  u_temp <- NULL
   maxdifference = NULL
   for (id in 1:params$num_data_partners) {
     read_time <- read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "u_converge.rdata"))
     read_size <- read_size + file.size(file.path(params$readPathDP[id], "u_converge.rdata"))
     read_time <- read_time + proc.time()[3]
-    u = u + utemp
+    u = u + u_temp
     converged <- converged && (maxdifference < params$cutoff)
   }
   maxIterExceeded = params$alg_iteration_counter >= params$max_iterations

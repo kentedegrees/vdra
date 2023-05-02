@@ -736,7 +736,7 @@ get_w_cox_b2 <- function(params, data) {
       to_read <- file(file.path(params$read_path, filename1), "rb")
       read_size <- read_size + file.size(file.path(params$read_path, filename1))
     }
-    if (i %in% params$container$filebreak.w) {
+    if (i %in% params$container$filebreak_w) {
       container_ct_w <- container_ct_w + 1
       filename2 <- paste0("cw_", container_ct_w, ".rdata")
       to_write <- file(file.path(params$write_path, filename2), "wb")
@@ -761,7 +761,7 @@ get_w_cox_b2 <- function(params, data) {
         i == params$blocks$num_blocks) {
       close(to_read)
     }
-    if ((i + 1) %in% params$container$filebreak.w ||
+    if ((i + 1) %in% params$container$filebreak_w ||
         i == params$blocks$num_blocks) {
       close(to_write)
       write_size <- write_size +
@@ -805,7 +805,7 @@ check_colinearity_cox_a2 <- function(params, data) {
 
   container_ct_w <- 0
   for (i in 1:params$blocks$num_blocks) {
-    if (i %in% params$container$filebreak.w) {
+    if (i %in% params$container$filebreak_w) {
       container_ct_w <- container_ct_w + 1
       filename <- paste0("cw_", container_ct_w, ".rdata")
       to_read <- file(file.path(params$read_path, filename), "rb")
@@ -821,7 +821,7 @@ check_colinearity_cox_a2 <- function(params, data) {
 
     xa_t_xb <- xa_t_xb + t(data$x[strt:stp, ]) %*% w
 
-    if ((i + 1) %in% params$container$filebreak.w ||
+    if ((i + 1) %in% params$container$filebreak_w ||
         i == params$blocks$num_blocks) {
       close(to_read)
       read_size <- read_size + file.size(file.path(params$read_path, filename))
@@ -994,7 +994,7 @@ compute_log_likelihood_cox_a2 <- function(params, data) {
   params$t_xa_delta_l <- t(data$x) %*% deltal
 
   if (params$alg_iteration_counter == 1) {
-    params$nullloglikelihood <- loglikelihood
+    params$null_loglikelihood <- loglikelihood
     params$null_score <- params$t_xa_delta_l
   }
   params$x_betas <- x_betas
@@ -1093,7 +1093,7 @@ compute_log_likelihood_cox_b2 <- function(params, data) {
       filename1 <- paste0("cz_", container_ct_z, ".rdata")
       to_read <- file(file.path(params$read_path, filename1), "rb")
     }
-    if (i %in% params$container$filebreak.Cox) {
+    if (i %in% params$container$filebreak_Cox) {
       container_ct_cox <- container_ct_cox + 1
       filename2 <- paste0("cCox_", container_ct_cox, ".rdata")
       to_write <- file(file.path(params$write_path, filename2), "wb")
@@ -1120,7 +1120,7 @@ compute_log_likelihood_cox_b2 <- function(params, data) {
       close(to_read)
       read_size <- read_size + file.size(file.path(params$read_path, filename1))
     }
-    if ((i + 1) %in% params$container$filebreak.Cox ||
+    if ((i + 1) %in% params$container$filebreak_Cox ||
         i == params$blocks$num_blocks) {
       close(to_write)
       write_size <- write_size +
@@ -1171,7 +1171,7 @@ compute_inverse_cox_a2 <- function(params, data) {
   container_ct_cox <- 0
 
   for (i in 1:params$blocks$num_blocks) {
-    if (i %in% params$container$filebreak.Cox) {
+    if (i %in% params$container$filebreak_Cox) {
       container_ct_cox <- container_ct_cox + 1
       filename <- paste0("cCox_", container_ct_cox, ".rdata")
       to_read <- file(file.path(params$read_path, filename), "rb")
@@ -1186,7 +1186,7 @@ compute_inverse_cox_a2 <- function(params, data) {
     read_time <- read_time + proc.time()[3]
 
     txa_w_xb <- txa_w_xb + t(data$x[strt:stp, ]) %*% iz_tz_w_xb
-    if ((i + 1) %in% params$container$filebreak.Cox ||
+    if ((i + 1) %in% params$container$filebreak_Cox ||
         i == params$blocks$num_blocks) {
       close(to_read)
       read_size <- read_size + file.size(file.path(params$read_path, filename))
@@ -1432,7 +1432,7 @@ compute_results_cox_a2 <- function(params, data) {
   }))
   stats$lower95      <- exp(stats$coefficients - qnorm(0.975) * stats$secoef)
   stats$upper95      <- exp(stats$coefficients + qnorm(0.975) * stats$secoef)
-  stats$loglik       <- c(params$nullLoglikelihood, params$loglikelihood)
+  stats$loglik       <- c(params$null_loglikelihood, params$loglikelihood)
   stats$n            <- params$n
   stats$nevent       <- params$num_events
   stats$iter         <- params$alg_iteration_counter - 1
@@ -1777,7 +1777,7 @@ compute_cox_b2 <- function(params, data) {
 
     if (params$alg_iteration_counter == 1) {
       params$null_score         <- t(data$x) %*% deltal
-      params$nullloglikelihood <- loglikelihood
+      params$null_loglikelihood <- loglikelihood
     }
     loglikelihood_old <- loglikelihood
     EndingIteration(params)
@@ -1847,7 +1847,7 @@ compute_results_cox_b2 <- function(params, data) {
     stats$wald.test  <- params$fit$wald.test
     stats$concordance <- params$fit$concordance[c(2, 1, 3, 4, 6, 7)]
   } else {
-    stats$loglik       <- c(params$nullLoglikelihood, params$loglikelihood)
+    stats$loglik       <- c(params$null_loglikelihood, params$loglikelihood)
     stats$n            <- params$n
     stats$nevent       <- params$num_events
     stats$iter         <- params$alg_iteration_counter - 1
@@ -2243,7 +2243,7 @@ party_b_process_2_cox <- function(data,
   params <- prepare_blocks_cox_b2(params)
   params <- get_w_cox_b2(params, data)
 
-  files <- c("xbtxb.rdata", seq_zw("cw_", length(params$container$filebreak.w)))
+  files <- c("xbtxb.rdata", seq_zw("cw_", length(params$container$filebreak_w)))
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   if (file.exists(file.path(params$read_path, "transferControl.rdata"))) {
@@ -2298,7 +2298,7 @@ party_b_process_2_cox <- function(data,
     params <- compute_log_likelihood_cox_b2(params, data)
 
     files <- c("txb_w_xb.rdata",
-               seq_zw("cCox_", length(params$container$filebreak.Cox)))
+               seq_zw("cCox_", length(params$container$filebreak_Cox)))
     params <- send_pause_continue_2p(params, files,
                                      sleep_time, max_waiting_time)
 
