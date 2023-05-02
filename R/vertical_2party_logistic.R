@@ -197,7 +197,7 @@ prepare_data_logistic_b23 <- function(params, data) {
   data <- data.frame(data) # convert to a clean data.frame
 
   workdata$tags <- create_model_matrix_tags(data)
-  if (ncol(data) < 2 | !("numeric" %in% names(workdata$tags))) {
+  if (ncol(data) < 2 || !("numeric" %in% names(workdata$tags))) {
     warning("The data partner that does not have the response must have at least 2 covariates at least one of which must be numeric.")
     workdata$failed <- TRUE
     return(workdata)

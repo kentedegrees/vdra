@@ -9,7 +9,7 @@ prepare_folder_cox_a2 <- function(params, monitor_folder) {
   params$read_path       <- file.path(monitor_folder, "msoc1")
 
   if (is.null(monitor_folder)) {
-    warning(paste("monitor_folder must be specified.".
+    warning(paste("monitor_folder must be specified.",
                   "Please use the same monitor_folder as the DataMart Client."))
     params$failed <- TRUE
     return(params)
@@ -167,7 +167,7 @@ extract_strata <- function(params, data, stratas, mask) {
       if (length(strata$strata_index) > 0) {
         strata$x <- data[, strata$strata_index, drop = FALSE]
         strata$legend <- list()
-        for (i in 1:ncol(strata$x)) {
+        for (i in seq_len(ncol(strata$x))) {
           levels <- unique(strata$x[, i])
           strata$legend[[colnames(strata$x)[i]]] <- levels
           if (mask) {
@@ -279,7 +279,7 @@ prepare_params_cox_b2 <- function(params, data) {
   params$max_iterations <- 1
 
   params$survival_installed <- requireNamespace("survival", quietly = TRUE)
-  if (params$survival_installed & !("package:survival" %in% search())) {
+  if (params$survival_installed && !("package:survival" %in% search())) {
     attachNamespace("survival")
   }
 
@@ -546,7 +546,7 @@ prepare_params_cox_a2 <- function(params,
   params$max_iterations <- max_iterations
 
   params$survival_installed <- requireNamespace("survival", quietly = TRUE)
-  if (params$survival_installed & !("package:survival" %in% search())) {
+  if (params$survival_installed && !("package:survival" %in% search())) {
     attachNamespace("survival")
   }
 
@@ -1412,13 +1412,13 @@ compute_results_cox_a2 <- function(params, data) {
   stats$coefficients <- rep(NA, length(stats$party))
   tempcoefs          <- c(params$betas_a, params$betas_b)
   stats$coefficients[idx] <- tempcoefs
-  stats$expcoef      <- exp(stats$coefficients)  # exp(coef) = hazard ratios
+  stats$expcoef      <- exp(stats$coefficients)  # hazard ratios
   stats$expncoef     <- exp(-stats$coefficients)
   tempvar            <- solve(params$XtWX)
   stats$var          <- matrix(0, length(names_old), length(names_old))
   stats$var[idx, idx] <- tempvar
   stats$secoef       <- rep(NA, length(names_old))
-  stats$secoef[idx]  <- sqrt(diag(tempvar))  # se(coef)
+  stats$secoef[idx]  <- sqrt(diag(tempvar))  # standard error
 
   stats$zvals        <- stats$coefficients / stats$secoef  # z values
   stats$pvals        <- 2 * pnorm(abs(stats$zvals), lower.tail = FALSE)   # pvals
@@ -1698,10 +1698,10 @@ compute_cox_b2 <- function(params, data) {
         if (data$survival$strata[[i]]$J > 0) {
           for (j in 1:data$survival$strata[[i]]$J) {
             nj <- data$survival$strata[[i]]$nfails[j]
-            y_start   <- data$survival$strata[[i]]$start0[j]
-            y_end   <-data$survival$strata[[i]]$end
+            y_start <- data$survival$strata[[i]]$start0[j]
+            y_end   <- data$survival$strata[[i]]$end
             z_start <- data$survival$strata[[i]]$start1[j]
-            z_end <-data$survival$strata[[i]]$stop1[j]
+            z_end   <- data$survival$strata[[i]]$stop1[j]
             y_index <- y_start:y_end
             z_index <- z_start:z_end
             a_j1 <- sum(w[y_index])
@@ -1824,7 +1824,7 @@ compute_results_cox_b2 <- function(params, data) {
   stats$var          <- matrix(0, length(names_old), length(names_old))
   stats$var[idx, idx] <- tempvar
   stats$secoef       <- rep(NA, length(names_old))
-  stats$secoef[idx]  <- sqrt(diag(tempvar))  # se(coef)
+  stats$secoef[idx]  <- sqrt(diag(tempvar))  # standard error
 
   stats$zvals        <- stats$coefficients / stats$secoef  # z values
   stats$pvals        <- 2 * pnorm(abs(stats$zvals), lower.tail = FALSE) # pvals
@@ -2048,7 +2048,7 @@ party_a_process_2_cox <- function(data,
   params <- get_z_cox_a2(params, data)
 
   # This works even in the case that we send no blocks over.  Just set
-  # file_break_z = c()
+  # file_break_z to c()
   files <- c("pa.rdata", "blocksize.rdata", "survival.rdata",
              seq_zw("cz_", length(params$container$file_break_z)))
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)

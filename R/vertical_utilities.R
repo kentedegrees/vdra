@@ -2398,7 +2398,7 @@ WriteStampsCSV <- function(params) {
 
 initialize_time_stamps_2p <- function(params) {
   stamps <- list()
-  stamps$blank <- data.frame(#Iteration   = params$pmnIterationCounter,
+  stamps$blank <- data.frame(
     Step        = params$pmn_step_counter,
     Source      = paste("Org", params$party_name, "Dist Reg"),
     Description = "R program execution begins",
@@ -2433,7 +2433,7 @@ MergeStampsRaw.2p <- function(params) {
 
 initialize_time_stamps_3p <- function(params) {
   stamps <- list()
-  stamps$blank <- data.frame(#Iteration   = params$pmnIterationCounter,
+  stamps$blank <- data.frame(
     Step        = params$pmn_step_counter,
     Source      = paste("Org", params$party_name, "Dist Reg"),
     Description = "R program execution begins",
@@ -3252,16 +3252,24 @@ initialize_tracking_table_2p <- function(params) {
   trackingTable$current <- data.frame(DP_CD              = ifelse(params$party_name == "A", 0, 1),
                                      MSREQID            = params$msreqid,
                                      RUNID              = "dl",
-                                     ITER_NB            = 0,  # params$pmnIterationCounter
-                                     STEP_NB            = 0, # ifelse(params$party_name == "A", 2, 1),
-                                     START_DTM          = GetUTCTime(), # from log$Start.Time
-                                     END_DTM            = GetUTCTime(), # from log$End.Time
+                                     # from params$pmnIterationCounter
+                                     ITER_NB            = 0,
+                                     # if params$party_name is "A" then 2 else 1
+                                     STEP_NB            = 0,
+                                     # from log$Start.Time
+                                     START_DTM          = GetUTCTime(),
+                                     # from log$End.Time
+                                     END_DTM            = GetUTCTime(),
                                      CURR_STEP_IN       = 0,
                                      STEP_RETURN_CD     = 0,
-                                     STEP_RETURN_MSG    = "PASS", # copy errorMessage.rdata here if exists
-                                     REG_CONV_IN        = 0,  # 1 = converge, 0 = no converge
-                                     REG_CONV_MSG       = "", # Success or Failed when decided
-                                     LAST_ITER_IN       = 0,  # 1 at last iteration, so right before quit
+                                     # copy errorMessage.rdata here if exists
+                                     STEP_RETURN_MSG    = "PASS",
+                                     # 1 = converge, 0 = no converge
+                                     REG_CONV_IN        = 0,
+                                     # Success or Failed when decided
+                                     REG_CONV_MSG       = "",
+                                     # 1 at last iteration, so right before quit
+                                     LAST_ITER_IN       = 0,
                                      LAST_RUNID_IN      = 0,
                                      UTC_OFFSET_DISPLAY = GetUTCOffset(),
                                      UTC_OFFSET_SEC     = GetUTCOffsetSeconds(),

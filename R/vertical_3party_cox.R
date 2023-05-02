@@ -8,7 +8,7 @@ prepare_params_cox_a3 <- function(params, data) {
   params$colnames <- colnames(data$x)
 
   params$survival_installed <- requireNamespace("survival", quietly = TRUE)
-  if (params$survival_installed & !("package:survival" %in% search())) {
+  if (params$survival_installed && !("package:survival" %in% search())) {
     attachNamespace("survival")
   }
 
@@ -38,7 +38,7 @@ prepare_params_cox_b3 <- function(params, data) {
   params$colnames <- colnames(data$x)
 
   params$survival_installed <- requireNamespace("survival", quietly = TRUE)
-  if (params$survival_installed & !("package:survival" %in% search())) {
+  if (params$survival_installed && !("package:survival" %in% search())) {
     attachNamespace("survival")
   }
 
@@ -85,7 +85,7 @@ prepare_params_cox_t3 <- function(params, cutoff, max_iterations) {
   }
 
   params$survival_installed <- requireNamespace("survival", quietly = TRUE)
-  if (params$survival_installed & !("package:survival" %in% search())) {
+  if (params$survival_installed && !("package:survival" %in% search())) {
     attachNamespace("survival")
   }
 
@@ -1190,7 +1190,7 @@ compute_results_cox_t3 <- function(params) {
   stats$var          <- matrix(0, length(names_old), length(names_old))
   stats$var[idx, idx] <- tempvar
   stats$secoef       <- rep(NA, length(names_old))
-  stats$secoef[idx]  <- sqrt(diag(tempvar))  # se(coef)
+  stats$secoef[idx]  <- sqrt(diag(tempvar))  # standard error
 
   stats$zvals        <- stats$coefficients / stats$secoef  # z values
   stats$pvals        <- 2 * pnorm(abs(stats$zvals), lower.tail = FALSE)   # pvals
@@ -1516,9 +1516,6 @@ compute_cox_b3 <- function(params, data) {
       betas[params$b_indicies_keep] <- betas_b
       betas <- data.frame(betas)
       rownames(betas) <- params$Bcolnames_old
-      # if (params$verbose) cat("Current Parameters:\n")
-      # if (params$verbose) print(betas)
-      # if (params$verbose) cat("\n")
       params <- add_to_log(params, "compute_cox_b3", read_time, read_size, 0, 0)
       return(params)
     }
@@ -1577,9 +1574,9 @@ compute_results_cox_b3 <- function(params, data) {
   stats$var           <- matrix(0, length(names_old), length(names_old))
   stats$var[idx, idx] <- tempvar
   stats$secoef       <- rep(NA, length(names_old))
-  stats$secoef[idx]  <- sqrt(diag(tempvar))  # se(coef)
+  stats$secoef[idx]  <- sqrt(diag(tempvar))  # standard error
   stats$zvals        <- stats$coefficients / stats$secoef  # z values
-  stats$pvals        <- 2 * pnorm(abs(stats$zvals), lower.tail = FALSE)   # pvals
+  stats$pvals        <- 2 * pnorm(abs(stats$zvals), lower.tail = FALSE) # pvals
   stats$stars         <- matrix(sapply(stats$pvals, function(x) {
     if (is.na(x))       ""
     else if (x < 0.001) "***"

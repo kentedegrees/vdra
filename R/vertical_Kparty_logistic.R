@@ -136,7 +136,7 @@ check_colinearity_logistic_AC <- function(params) {
   }
 
   params$error_message <- ""
-  if ((length(unique(tags[[1]])) == 1) | (length(unique(tags[[1]])) >= 2 & !("numeric" %in% names(tags[[1]])))) {
+  if ((length(unique(tags[[1]])) == 1) || (length(unique(tags[[1]])) >= 2 && !("numeric" %in% names(tags[[1]])))) {
     params$failed <- TRUE
     params$error_message <- "Data Partner 1 must have no covariates or at least 2 covariates at least one of which is continuous.\n"
   }

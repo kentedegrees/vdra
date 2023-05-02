@@ -1327,12 +1327,12 @@ compute_results_cox_AC <- function(params) {
   stats$party          = params$party[-(1:params$pStrata)]
   stats$coefficients   = rep(NA, length(stats$party))
   stats$coefficients[idx] = betas / params$colrange
-  stats$expcoef      = exp(stats$coefficients)  # exp(coef) = hazard ratios
+  stats$expcoef      = exp(stats$coefficients)  # hazard ratios
   stats$expncoef     = exp(-stats$coefficients)
   stats$var           <- matrix(0, length(names_old), length(names_old))
   stats$var[idx, idx] = params$I
   stats$secoef       = rep(NA, length(names_old))
-  stats$secoef[idx]  = sqrt(diag(params$I)) / params$colrange  # se(coef)
+  stats$secoef[idx]  = sqrt(diag(params$I)) / params$colrange  # standard error
 
   stats$zvals        <- stats$coefficients / stats$secoef  # z values
   stats$pvals        = 2 * pnorm(abs(stats$zvals), lower.tail = FALSE)   # pvals

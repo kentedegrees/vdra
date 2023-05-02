@@ -55,7 +55,7 @@ check_colinearity_logistic_t3 <- function(params) {
   b_tags <- params$b_tags[params$b_indicies_keep]
   a_tags <- params$a_tags[params$a_indicies_keep][-1]
 
-  if ((length(unique(a_tags)) == 1) | (length(unique(a_tags)) >= 2 & !("numeric" %in% names(a_tags)))) {
+  if ((length(unique(a_tags)) == 1) || (length(unique(a_tags)) >= 2 && !("numeric" %in% names(a_tags)))) {
     params$failed <- TRUE
     params$error_message <- "A must have no covariates or at least 2 covariates at least one of which is continuous."
   } else if (length(unique(b_tags)) < 2) {
