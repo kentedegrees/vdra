@@ -9,12 +9,14 @@ prepare_folder_cox_a2 <- function(params, monitor_folder) {
   params$read_path       <- file.path(monitor_folder, "msoc1")
 
   if (is.null(monitor_folder)) {
-    warning("monitor_folder must be specified.  Please use the same monitor_folder as the DataMart Client.")
+    warning(paste("monitor_folder must be specified.".
+                  "Please use the same monitor_folder as the DataMart Client."))
     params$failed <- TRUE
     return(params)
   }
   if (class(monitor_folder) != "character") {
-    warning("monitor_folder directory is not valid.  Please use the same monitor_folder as the DataMart Client.")
+    warning(paste("monitor_folder directory is not valid.",
+                  "Please use the same monitor_folder as the DataMart Client."))
     params$failed <- TRUE
     return(params)
   }
@@ -58,7 +60,8 @@ prepare_folder_cox_a2 <- function(params, monitor_folder) {
                                   "Check the path and restart the program.")
   }
 
-  params <- add_to_log(params, "prepare_data_cox_a23, prepare_folder_cox_a2", 0, 0, 0, 0)
+  params <- add_to_log(params, "prepare_data_cox_a23, prepare_folder_cox_a2",
+                       0, 0, 0, 0)
   return(params)
 }
 
@@ -73,12 +76,14 @@ prepare_folder_cox_b2 <- function(params, monitor_folder) {
   params$read_path       <- file.path(monitor_folder, "inputfiles")
 
   if (is.null(monitor_folder)) {
-    warning("monitor_folder must be specified.  Please use the same monitor_folder as the DataMart Client.")
+    warning(paste("monitor_folder must be specified.",
+                  "Please use the same monitor_folder as the DataMart Client."))
     params$failed <- TRUE
     return(params)
   }
   if (class(monitor_folder) != "character") {
-    warning("monitor_folder directory is not valid.  Please use the same monitor_folder as the DataMart Client.")
+    warning(paste("monitor_folder directory is not valid.",
+                  "Please use the same monitor_folder as the DataMart Client."))
     params$failed <- TRUE
     return(params)
   }
@@ -126,7 +131,8 @@ prepare_folder_cox_b2 <- function(params, monitor_folder) {
   Sys.sleep(1)
   delete_trigger("files_done.ok", params$read_path)
 
-  params <- add_to_log(params, "prepare_data_cox_b23, prepare_folder_cox_b2", 0, 0, 0, 0)
+  params <- add_to_log(params, "prepare_data_cox_b23, prepare_folder_cox_b2",
+                       0, 0, 0, 0)
 
   return(params)
 }
@@ -169,9 +175,9 @@ extract_strata <- function(params, data, stratas, mask) {
             strata$legend[[colnames(strata$x)[i]]] <- rep("NA", length(levels))
           }
           strata$x[, i] <- sapply(strata$x[, i],
-                                 function(x) {
-                                   which(levels %in% x)
-                                 })
+                                  function(x) {
+                                    which(levels %in% x)
+                                  })
         }
       }
     }
@@ -219,25 +225,31 @@ prepare_data_cox_23 <- function(params, data, y_name, strata, mask) {
     }
   }
 
-  covariate_index <- setdiff(1:ncol(data), union(strata_index, response_index))
+  covariate_index <- setdiff(seq_len(ncol(data)), union(strata_index, response_index))
 
   if (length(covariate_index) == 0) {
     if (params$party_name == "A") {
       workdata$x  <- matrix(0, nrow = nrow(data), ncol = 0)
     } else {
-      warning("After removing strata, data is empty.  Party B must supply at least one non-strata covariate.")
+      warning(paste("After removing strata, data is empty.",
+                    "Party B must supply at least one non-strata covariate."))
       workdata$failed <- TRUE
       return(workdata)
     }
   } else {
-    workdata$tags <- create_model_matrix_tags(data[, covariate_index, drop = FALSE])
-    if (params$party_name == "B" & (ncol(data) < 2 | !("numeric" %in% names(workdata$tags)))) {
-      warning("The data partner that does not have the response must have at least 2 covariates at least one of which must be numeric.")
+    workdata$tags <- create_model_matrix_tags(data[, covariate_index,
+                                                   drop = FALSE])
+    if (params$party_name == "B" && (ncol(data) < 2 ||
+                                     !("numeric" %in% names(workdata$tags)))) {
+      warning(paste("The data partner that does not have the response",
+                    "must have at least 2 covariates at least one of",
+                    "which must be numeric."))
       workdata$failed <- TRUE
       return(workdata)
     }
-    workdata$x <- scale(model.matrix(~ ., data[, covariate_index, drop = FALSE]),
-                       center = TRUE, scale = FALSE)
+    workdata$x <- scale(model.matrix(~ ., data[, covariate_index,
+                                               drop = FALSE]),
+                        center = TRUE, scale = FALSE)
     workdata$x <- workdata$x[, -1, drop = FALSE]
   }
 
@@ -285,7 +297,8 @@ prepare_params_cox_b2 <- function(params, data) {
   save(pb, file <- file.path(params$write_path, "pb.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, "pb.rdata")))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "prepare_params_cox_b2", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "prepare_params_cox_b2", 0, 0,
+                       write_time, write_size)
   return(params)
 }
 
@@ -300,9 +313,11 @@ check_strata_cox_a2 <- function(params, data) {
   if (length(pb$strata_b$strata_from_a) == length(data$strata$strata_from_a) &&
       length(pb$strata_b$strata_from_b) == length(data$strata$strata_from_b) &&
       ifelse(length(pb$strata_b$strata_from_a) == 0, TRUE,
-             order(pb$strata_b$strata_from_a) == order(data$strata$strata_from_a)) &&
+             order(pb$strata_b$strata_from_a) ==
+             order(data$strata$strata_from_a)) &&
       ifelse(length(pb$strata_b$strata_from_b) == 0, TRUE,
-             order(pb$strata_b$strata_from_b) == order(data$strata$strata_from_b))) {
+             order(pb$strata_b$strata_from_b) ==
+             order(data$strata$strata_from_b))) {
     params$get_strata_from_b <- length(data$strata$strata_from_b) > 0
   } else {
     params$get_strata_from_b <- FALSE
@@ -310,14 +325,19 @@ check_strata_cox_a2 <- function(params, data) {
     b_cap_a <- intersect(data$strata$strata_from_b, pb$strata_b$strata_from_a)
     if (length(a_cap_b) > 0) {
       params$error_message <-
-        paste("Party A and Party B have", length(a_cap_b), "variable(s) with the same name which are used in the strata.",
+        paste("Party A and Party B have",
+              length(a_cap_b),
+              "variable(s) with the same name which are used in the strata.",
               "These variable(s) are <", paste0(a_cap_b, collapse = ", "), ">.",
               "Make sure the variables from each party have distinct names_")
     } else if (length(b_cap_a) > 0) {
       params$error_message <-
-        paste("Party A and Party B have specified", length(b_cap_a), "variable(s) for the strata which are not found in the data.",
+        paste("Party A and Party B have specified",
+              length(b_cap_a),
+              "variable(s) for the strata which are not found in the data.",
               "These variable(s) are <", paste0(b_cap_a, collapse = ", "), ">.",
-              "Check the spelling of the variables names and / or remove them from the strata.")
+              "Check the spelling of the variables names and / or",
+              "remove them from the strata.")
     } else {
       params$error_message <-
         paste("Party A and Party B have specified different strata.",
@@ -338,14 +358,16 @@ send_strata_cox_b2 <- function(params, data) {
   save(strata_temp, file = file.path(params$write_path, "strata.rdata"))
   write_size <- file.size(file.path(params$write_path, "strata.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "send_strata_cox_b2", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "send_strata_cox_b2", 0, 0,
+                       write_time, write_size)
   return(params)
 }
 
 
 prepare_strata_cox_a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_strata_cox_a2\n\n")
-  # I will need to update both data$survival and params$logs, etc in this function.
+  # I will need to update both data$survival and params$logs, etc in this
+  # function.
   read_time <- 0
   read_size <- 0
   write_time <- 0
@@ -358,18 +380,23 @@ prepare_strata_cox_a2 <- function(params, data) {
     read_size <- file.size(file.path(params$read_path, "strata.rdata"))
     read_time <- proc.time()[3] - read_time
   }
-  if (length(data$strata$strata_from_a) == 0 && length(data$strata$strata_from_b) == 0) {
+  if (length(data$strata$strata_from_a) == 0 &&
+      length(data$strata$strata_from_b) == 0) {
     strata_temp$x <- data.frame(const__ = rep(1, params$n))
     strata_temp$legend <- FALSE
-  } else if (length(data$strata$strata_from_a) > 0 && length(data$strata$strata_from_b) == 0) {
+  } else if (length(data$strata$strata_from_a) > 0 &&
+             length(data$strata$strata_from_b) == 0) {
     strata_temp$x <- data$strata$x
     strata_temp$legend <- data$strata$legend
-  } else if (length(data$strata$strata_from_a) > 0 && length(data$strata$strata_from_b) > 0) {
+  } else if (length(data$strata$strata_from_a) > 0 &&
+             length(data$strata$strata_from_b) > 0) {
     strata_temp$x <- cbind(data$strata$x, strata_temp$x)
     strata_temp$legend <- c(data$strata$legend, strata_temp$legend)
   }
 
-  sorted <- do.call("order", cbind(strata_temp$x, data$survival$rank, data$survival$status))
+  sorted <- do.call("order", cbind(strata_temp$x,
+                                   data$survival$rank,
+                                   data$survival$status))
   strata_temp$x <- strata_temp$x[sorted, , drop = FALSE]
   data$survival$rank   <- data$survival$rank[sorted]
   data$survival$status <- data$survival$status[sorted]
@@ -385,13 +412,14 @@ prepare_strata_cox_a2 <- function(params, data) {
     strata[[1]]$label <- ""
   } else {
     start <- 1
-    for (i in  1:length(ranks)) {
+    for (i in  seq_along(ranks)) {
       strata[[i]]$start <- start
       strata[[i]]$end   <- as.integer(ranks[i])
       label <- ""
-      for (j in 1:ncol(strata_temp$x)) {
+      for (j in seq_len(ncol(strata_temp$x))) {
         temp  <- colnames(strata_temp$x)[j]
-        label <- paste0(label, temp, "=", strata_temp$legend[[temp]][strata_temp$x[start, j]])
+        label <- paste0(label, temp, "=",
+                        strata_temp$legend[[temp]][strata_temp$x[start, j]])
         if (j < ncol(strata_temp$x)) {
           label <- paste0(label, ", ")
         }
@@ -403,11 +431,12 @@ prepare_strata_cox_a2 <- function(params, data) {
 
   empty_strata <- c()
   data$x <- cbind(matrix(0, nrow = nrow(data$x), ncol = length(strata)), data$x)
-  for (i in 1:length(strata)) {
+  for (i in seq_along(strata)) {
     idx <- strata[[i]]$start:strata[[i]]$end
     data$x[idx, i] <- 1
     temp <- table(data$survival$rank[idx])
-    m <- length(temp)   # number of unique observed times, including where no one fails
+    m <- length(temp)
+    # number of unique observed times, including where no one fails
     # Count the number of 0's and 1's for each observed time
     temp0 <- table(data$survival$rank[idx], data$survival$status[idx])
     # Check if there are all 1's or all 0's .  If so, add them into the table.
@@ -420,21 +449,27 @@ prepare_strata_cox_a2 <- function(params, data) {
         colnames(temp0) <- c("0", "1")
       }
     }
-    strata[[i]]$J <- as.integer(sum(temp0[, 2] > 0))         # number of distinct failure times
+    # number of distinct failure times
+    strata[[i]]$J <- as.integer(sum(temp0[, 2] > 0))
     if (strata[[i]]$J == 0) {
       empty_strata <- c(empty_strata, i)
     }
     # The number of failures at each rank which has a failure
     strata[[i]]$nfails <- as.numeric(temp0[which(temp0[, 2] > 0), 2])
     # The first index of the ranks for which the number of failures is > 0.
-    strata[[i]]$start0 <- c(1, (cumsum(temp)[1:(m - 1)] + 1))[which(temp0[, 2] > 0)]
+    strata[[i]]$start0 <- c(1, (cumsum(temp)[1:(m - 1)] +
+                                  1))[which(temp0[, 2] > 0)]
     # The first index of a failure for each rank which has a failure
     strata[[i]]$start1 <- strata[[i]]$start0 + temp0[which(temp0[, 2] > 0), 1]
     # The last index of a failure for each rank which has a failure
-    strata[[i]]$stop1  <- as.numeric(strata[[i]]$start1 + strata[[i]]$nfails  - 1)
-    strata[[i]]$start0 <- as.numeric(strata[[i]]$start0 + strata[[i]]$start - 1)
-    strata[[i]]$start1 <- as.numeric(strata[[i]]$start1 + strata[[i]]$start - 1)
-    strata[[i]]$stop1  <- as.numeric(strata[[i]]$stop1  + strata[[i]]$start - 1)
+    strata[[i]]$stop1  <- as.numeric(strata[[i]]$start1 +
+                                       strata[[i]]$nfails - 1)
+    strata[[i]]$start0 <- as.numeric(strata[[i]]$start0 +
+                                       strata[[i]]$start - 1)
+    strata[[i]]$start1 <- as.numeric(strata[[i]]$start1 +
+                                       strata[[i]]$start - 1)
+    strata[[i]]$stop1  <- as.numeric(strata[[i]]$stop1  +
+                                       strata[[i]]$start - 1)
   }
 
   data$survival$strata <- strata
@@ -453,7 +488,10 @@ prepare_strata_cox_a2 <- function(params, data) {
 }
 
 
-prepare_params_cox_a2 <- function(params, data, cutoff = 0.01, max_iterations = 25) {
+prepare_params_cox_a2 <- function(params,
+                                  data,
+                                  cutoff = 0.01,
+                                  max_iterations = 25) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_cox_a2\n\n")
   params$converged       <- FALSE
   params$halted          <- FALSE
@@ -468,7 +506,8 @@ prepare_params_cox_a2 <- function(params, data, cutoff = 0.01, max_iterations = 
 
   if (params$analysis != pb$analysis) {
     params$error_message <-
-      paste("Party A is running", params$analysis, "regression and Party B is running", pb$analysis, "regression.")
+      paste("Party A is running", params$analysis,
+            "regression and Party B is running", pb$analysis, "regression.")
     warning(params$error_message)
     params$failed <- TRUE
     return(params)
@@ -478,7 +517,8 @@ prepare_params_cox_a2 <- function(params, data, cutoff = 0.01, max_iterations = 
   params$num_events <- sum(data$survival$status)
   if (pb$n != params$n) {
     params$error_message <-
-      paste("Party A has", params$n, "observations and Party B has", pb$n, "observations.")
+      paste("Party A has", params$n, "observations and Party B has",
+            pb$n, "observations.")
     warning(params$error_message)
     params$failed <- TRUE
     return(params)
@@ -545,7 +585,8 @@ prepare_blocks_cox_a2 <- function(params, blocksize) {
             "Your options are:\n",
             "Increase the number of observations to at least",
             paste0(minimum_block_size, ".\n"),
-            "Decrease the number of A covariates to", max_a_covariates, "or less.")
+            "Decrease the number of A covariates to",
+            max_a_covariates, "or less.")
 
     b <- n - 2 * p1 - 2
     discrim <- b^2 - 4 * (p1 + 1)^2
@@ -554,7 +595,8 @@ prepare_blocks_cox_a2 <- function(params, blocksize) {
       max_b_covariates <- trunc((b + sqrt(discrim)) / 2)
       params$error_message <-
         paste0(params$error_message,
-               "\nSet the number of B covariates to be between ", min_b_covariates, "and",
+               "\nSet the number of B covariates to be between ",
+               min_b_covariates, "and",
                paste0(max_b_covariates, "."))
     }
     warning(params$error_message)
@@ -583,7 +625,8 @@ prepare_blocks_cox_a2 <- function(params, blocksize) {
   save(blocksize, file = file.path(params$write_path, "blocksize.rdata"))
   write_size <- file.size(file.path(params$write_path, "blocksize.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "prepare_blocks_cox_a2", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "prepare_blocks_cox_a2", 0, 0,
+                       write_time, write_size)
   return(params)
 }
 
@@ -611,7 +654,8 @@ get_z_cox_a2 <- function(params, data) {
     write_time <- write_time + proc.time()[3]
     if ((i + 1) %in% params$container$file_break_z || i == num_blocks) {
       close(to_write)
-      write_size <- write_size + file.size(file.path(params$write_path, filename))
+      write_size <- write_size +
+        file.size(file.path(params$write_path, filename))
     }
     pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
@@ -648,7 +692,8 @@ finalize_params_cox_b2 <- function(params, data) {
   params$max_iterations <- pa$max_iterations
   params$p             <- params$p1 + params$p2
   params$a_col_names     <- pa$a_col_names
-  params <- add_to_log(params, "finalize_params_cox_b2", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "finalize_params_cox_b2",
+                       read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -663,7 +708,8 @@ prepare_blocks_cox_b2 <- function(params) {
   read_time <- proc.time()[3] - read_time
   params$blocks    <- create_blocks(params$p1, params$p2, params$n, blocksize)
   params$container <- create_containers(params$p1, params$p2, params$blocks)
-  params <- add_to_log(params, "prepare_blocks_cox_b2", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "prepare_blocks_cox_b2",
+                       read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -675,7 +721,8 @@ get_w_cox_b2 <- function(params, data) {
   write_time <- 0
   write_size <- 0
 
-  pbar <- make_progress_bar_1(params$blocks$num_blocks, "(I-z*z')x", params$verbose)
+  pbar <- make_progress_bar_1(params$blocks$num_blocks,
+                              "(I-z*z')x", params$verbose)
 
   xb_t_xb <- t(data$x) %*% data$x
 
@@ -701,7 +748,7 @@ get_w_cox_b2 <- function(params, data) {
 
     read_time <- read_time - proc.time()[3]
     z <- matrix(readBin(con = to_read, what = numeric(), n = n2 * g1,
-                       endian = "little"), nrow = n2, ncol = g1)
+                        endian = "little"), nrow = n2, ncol = g1)
     read_time <- read_time + proc.time()[3]
 
     w <- data$x[strt:stp, ] - z %*% (t(z) %*% data$x[strt:stp, ])
@@ -710,12 +757,15 @@ get_w_cox_b2 <- function(params, data) {
     writeBin(as.vector(w), con = to_write, endian = "little")
     write_time <- write_time + proc.time()[3]
 
-    if ((i + 1) %in% params$container$file_break_z || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$file_break_z ||
+        i == params$blocks$num_blocks) {
       close(to_read)
     }
-    if ((i + 1) %in% params$container$filebreak.w || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$filebreak.w ||
+        i == params$blocks$num_blocks) {
       close(to_write)
-      write_size <- write_size + file.size(file.path(params$write_path, filename2))
+      write_size <- write_size +
+        file.size(file.path(params$write_path, filename2))
     }
 
     pbar <- make_progress_bar_2(i, pbar, params$verbose)
@@ -723,17 +773,20 @@ get_w_cox_b2 <- function(params, data) {
 
   write_time <- write_time - proc.time()[3]
   save(xb_t_xb, file = file.path(params$write_path, "xbtxb.rdata"))
-  write_size <- write_size + file.size(file.path(params$write_path, "xbtxb.rdata"))
+  write_size <- write_size +
+    file.size(file.path(params$write_path, "xbtxb.rdata"))
   write_time <- write_time + proc.time()[3]
 
-  params <- add_to_log(params, "get_w_cox_b2", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "get_w_cox_b2",
+                       read_time, read_size, write_time, write_size)
 
   return(params)
 }
 
 
 check_colinearity_cox_a2 <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "check_colinearity_cox_a2\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "check_colinearity_cox_a2\n\n")
   p2 <- params$p2
   read_time <- 0
   read_size <- 0
@@ -763,12 +816,13 @@ check_colinearity_cox_a2 <- function(params, data) {
 
     read_time <- read_time - proc.time()[3]
     w  <- matrix(readBin(con = to_read, what = numeric(), n = n2 * p2,
-                       endian = "little"), nrow = n2, ncol = p2)
+                         endian = "little"), nrow = n2, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
     xa_t_xb <- xa_t_xb + t(data$x[strt:stp, ]) %*% w
 
-    if ((i + 1) %in% params$container$filebreak.w || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$filebreak.w ||
+        i == params$blocks$num_blocks) {
       close(to_read)
       read_size <- read_size + file.size(file.path(params$read_path, filename))
     }
@@ -778,7 +832,7 @@ check_colinearity_cox_a2 <- function(params, data) {
   xtx <- rbind(cbind(xa_t_xa, xa_t_xb), cbind(t(xa_t_xb), xb_t_xb))
 
   nrow <- nrow(xtx)
-  indicies <- 1:length(data$survival$strata)
+  indicies <- seq_along(data$survival$strata)
   for (i in (1 + length(data$survival$strata)):nrow) {
     temp_indicies <- c(indicies, i)
     if (rcond(xtx[temp_indicies, temp_indicies]) > 10^8 * .Machine$double.eps) {
@@ -789,7 +843,8 @@ check_colinearity_cox_a2 <- function(params, data) {
   num_strata <- length(data$survival$strata)
   a_names <- params$a_col_names
   b_names <- params$b_col_names
-  indicies <- indicies[-(1:length(data$survival$strata))] - num_strata # Get rid of the strata indicators
+  # Get rid of the strata indicators
+  indicies <- indicies[-(seq_along(data$survival$strata))] - num_strata
   a_index <- which(indicies < length(a_names))
   b_index <- which(indicies > length(a_names))
   params$a_indicies_keep <- indicies[a_index]
@@ -812,16 +867,19 @@ check_colinearity_cox_a2 <- function(params, data) {
 
 
   write_time <- write_time - proc.time()[3]
-  save(a_indicies, b_indicies, file = file.path(params$write_path, "indicies.rdata"))
+  save(a_indicies, b_indicies,
+       file = file.path(params$write_path, "indicies.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, "indicies.rdata")))
   write_time <- write_time + proc.time()[3]
   tags <- params$b_tags[b_indicies]
 
   if (length(unique(tags)) == 0) {
     params$failed <- TRUE
-    params$error_message <- "After removing colinear covariates, Party B has no covariates."
+    params$error_message <-
+      "After removing colinear covariates, Party B has no covariates."
   }
-  params <- add_to_log(params, "check_colinearity_cox_a2", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "check_colinearity_cox_a2",
+                       read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -829,7 +887,8 @@ check_colinearity_cox_a2 <- function(params, data) {
 update_data_cox_a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "update_data_cox_a2\n\n")
   num_strata <- length(data$survival$strata)
-  data$x <- as.matrix(data$x[, params$a_indicies_keep + num_strata, drop = FALSE])
+  data$x <- as.matrix(data$x[, params$a_indicies_keep + num_strata,
+                             drop = FALSE])
   return(data)
 }
 
@@ -846,7 +905,8 @@ prepare_loop_cox_a2 <- function(params) {
 
 
 compute_log_likelihood_cox_a2 <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_log_likelihood_cox_a2\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "compute_log_likelihood_cox_a2\n\n")
   n <- params$n
   p1 <- params$p1
   read_time <- 0
@@ -859,7 +919,8 @@ compute_log_likelihood_cox_a2 <- function(params, data) {
     params$loglikelihood_old <- -Inf
   } else {
     read_time <- -proc.time()[3]
-    load(file.path(params$read_path, "XB_betasB.rdata")) # load xb_betas_b
+    # load xb_betas_b
+    load(file.path(params$read_path, "XB_betasB.rdata"))
     read_size <- file.size(file.path(params$read_path, "XB_betasB.rdata"))
     read_time <- read_time + proc.time()[3]
     params$x_betas_old <- params$x_betas
@@ -884,12 +945,16 @@ compute_log_likelihood_cox_a2 <- function(params, data) {
     step_counter <- 0
     pbar <- make_progress_bar_1(num_events, "Loglikelihood", params$verbose)
     loglikelihood <- 0
-    for (i in 1:length(data$survival$strata)) {                    ##!
-      if (data$survival$strata[[i]]$J > 0) {                       ##!
-        for (j in 1:data$survival$strata[[i]]$J) {                 ##!
-          nj <- data$survival$strata[[i]]$nfails[j]                 ##!
-          y_index <- data$survival$strata[[i]]$start0[j]:data$survival$strata[[i]]$end      ##!
-          z_index <- data$survival$strata[[i]]$start1[j]:data$survival$strata[[i]]$stop1[j] ##!
+    for (i in seq_along(data$survival$strata)) {
+      if (data$survival$strata[[i]]$J > 0) {
+        for (j in 1:data$survival$strata[[i]]$J) {
+          nj <- data$survival$strata[[i]]$nfails[j]
+          y_start <- data$survival$strata[[i]]$start0[j]
+          y_end   <- data$survival$strata[[i]]$end
+          y_index <- y_start:y_end
+          z_start <- data$survival$strata[[i]]$start1[j]
+          z_end   <- data$survival$strata[[i]]$stop1[j]
+          z_index <- z_start:z_end
           a_j1 <- sum(w[y_index])
           a_j2 <- sum(w[z_index]) / nj
           loglikelihood <- loglikelihood + sum(log(w[z_index]))
@@ -913,8 +978,9 @@ compute_log_likelihood_cox_a2 <- function(params, data) {
   }
 
   deltal <- as.numeric(data$survival$status)
-  deltal[1] <- deltal[1]  # This is to force R to make a copy since we are exploiting
+  # This is to force R to make a copy since we are exploiting
   # a pass by reference with the C call.
+  deltal[1] <- deltal[1]
   w_xa  <- matrix(0, n, p1)
   step_counter <- 0
 
@@ -935,10 +1001,13 @@ compute_log_likelihood_cox_a2 <- function(params, data) {
   params$step_size <- step_size
 
   write_time <- proc.time()[3]
-  save(x_betas, step_size, file = file.path(params$write_path, "Xbetas_ss.rdata"))
-  write_size <- sum(file.size(file.path(params$write_path, "Xbetas_ss.rdata")))
+  save(x_betas, step_size, file = file.path(params$write_path,
+                                            "Xbetas_ss.rdata"))
+  write_size <- sum(file.size(file.path(params$write_path,
+                                        "Xbetas_ss.rdata")))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "compute_log_likelihood_cox_a2", read_time, read_size,
+  params <- add_to_log(params, "compute_log_likelihood_cox_a2",
+                       read_time, read_size,
                        write_time, write_size)
   return(params)
 }
@@ -950,7 +1019,8 @@ update_params_cox_b2 <- function(params) {
   b_indicies <- NULL
 
   read_time <- proc.time()[3]
-  load(file.path(params$read_path, "indicies.rdata")) # load a_indicies, b_indicies
+  # load a_indicies, b_indicies
+  load(file.path(params$read_path, "indicies.rdata"))
   read_size <- sum(file.size(file.path(params$read_path, "indicies.rdata")))
   read_time <- proc.time()[3] - read_time
   params$a_col_names_old <- params$a_col_names
@@ -967,7 +1037,8 @@ update_params_cox_b2 <- function(params) {
   params$a_indicies_keep <- a_indicies
   params$betas_b     <- matrix(0, params$p2, 1)
   params$betas_b_old  <- matrix(0, params$p2, 1)
-  params <- add_to_log(params, "update_params_cox_b2", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "update_params_cox_b2",
+                       read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -979,7 +1050,8 @@ update_data_cox_b2 <- function(params, data) {
 
 
 compute_log_likelihood_cox_b2 <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_log_likelihood_cox_b2\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "compute_log_likelihood_cox_b2\n\n")
   n <- params$n
   p2  <- params$p2
   step_size <- NULL
@@ -991,7 +1063,8 @@ compute_log_likelihood_cox_b2 <- function(params, data) {
   write_size <- 0
 
   read_time <- read_time - proc.time()[3]
-  load(file.path(params$read_path, "Xbetas_ss.rdata")) # load x_betas, step_size
+  # load x_betas, step_size
+  load(file.path(params$read_path, "Xbetas_ss.rdata"))
   read_size <- sum(file.size(file.path(params$read_path, "Xbetas_ss.rdata")))
   read_time <- read_time + proc.time()[3]
 
@@ -999,8 +1072,9 @@ compute_log_likelihood_cox_b2 <- function(params, data) {
 
   w <- exp(x_betas)
   deltal <- as.numeric(data$survival$status)
-  deltal[1] <- deltal[1]  # This is to force R to make a copy since we are exploiting
+  # This is to force R to make a copy since we are exploiting
   # a pass by reference with the C call.
+  deltal[1] <- deltal[1]
   num_events <- sum(data$survival$status)
   w_xb  <- matrix(0, n, p2)
 
@@ -1008,7 +1082,8 @@ compute_log_likelihood_cox_b2 <- function(params, data) {
         as.integer(n), as.integer(p2), as.integer(num_events),
         as.integer(params$verbose))
 
-  pbar <- make_progress_bar_1(params$blocks$num_blocks, "(I-z*z')WX", params$verbose)
+  pbar <- make_progress_bar_1(params$blocks$num_blocks, "(I-z*z')WX",
+                              params$verbose)
   container_ct_z <- 0
   container_ct_cox <- 0
 
@@ -1030,22 +1105,26 @@ compute_log_likelihood_cox_b2 <- function(params, data) {
 
     read_time <- read_time - proc.time()[3]
     z <- matrix(readBin(con = to_read, what = numeric(), n = n2 * g,
-                       endian = "little"), nrow = n2, ncol = g)
+                        endian = "little"), nrow = n2, ncol = g)
     read_time <- read_time + proc.time()[3]
 
-    iz_tz_w_xbtemp <- w_xb[strt:stp, , drop = FALSE] - z %*% (t(z) %*% w_xb[strt:stp, , drop = FALSE])
+    iz_tz_w_xbtemp <- w_xb[strt:stp, , drop = FALSE] -
+      z %*% (t(z) %*% w_xb[strt:stp, , drop = FALSE])
 
     write_time <- write_time - proc.time()[3]
     writeBin(as.vector(iz_tz_w_xbtemp), con = to_write, endian = "little")
     write_time <- write_time + proc.time()[3]
 
-    if ((i + 1) %in% params$container$file_break_z || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$file_break_z ||
+        i == params$blocks$num_blocks) {
       close(to_read)
       read_size <- read_size + file.size(file.path(params$read_path, filename1))
     }
-    if ((i + 1) %in% params$container$filebreak.Cox || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$filebreak.Cox ||
+        i == params$blocks$num_blocks) {
       close(to_write)
-      write_size <- write_size + file.size(file.path(params$write_path, filename2))
+      write_size <- write_size +
+        file.size(file.path(params$write_path, filename2))
     }
 
     pbar <- make_progress_bar_2(i, pbar, params$verbose)
@@ -1059,16 +1138,20 @@ compute_log_likelihood_cox_b2 <- function(params, data) {
 
   txb_w_xb <- params$txb_w_xb
   write_time <- write_time - proc.time()[3]
-  save(txb_w_xb, file = file.path(params$write_path, "txb_w_xb.rdata"))
-  write_size <- write_size + file.size(file.path(params$write_path, "txb_w_xb.rdata"))
+  save(txb_w_xb, file = file.path(params$write_path,
+                                  "txb_w_xb.rdata"))
+  write_size <- write_size + file.size(file.path(params$write_path,
+                                                 "txb_w_xb.rdata"))
   write_time <- write_time + proc.time()[3]
-  params <- add_to_log(params, "compute_log_likelihood_cox_b2", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "compute_log_likelihood_cox_b2",
+                       read_time, read_size, write_time, write_size)
   return(params)
 }
 
 
 compute_inverse_cox_a2 <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_inverse_cox_a2\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "compute_inverse_cox_a2\n\n")
   p1 <- params$p1
   p2 <- params$p2
   read_time <- 0
@@ -1079,8 +1162,10 @@ compute_inverse_cox_a2 <- function(params, data) {
   txa_w_xb <- 0
 
   read_time <- read_time - proc.time()[3]
-  load(file.path(params$read_path, "txb_w_xb.rdata")) # load txb_w_xb
-  read_size <- read_size + file.size(file.path(params$read_path, "txb_w_xb.rdata"))
+  # load txb_w_xb
+  load(file.path(params$read_path, "txb_w_xb.rdata"))
+  read_size <- read_size + file.size(file.path(params$read_path,
+                                               "txb_w_xb.rdata"))
   read_time <- read_time + proc.time()[3]
 
   container_ct_cox <- 0
@@ -1097,18 +1182,19 @@ compute_inverse_cox_a2 <- function(params, data) {
 
     read_time <- read_time - proc.time()[3]
     iz_tz_w_xb  <- matrix(readBin(con = to_read, what = numeric(), n = n2 * p2,
-                                endian = "little"), nrow = n2, ncol = p2)
+                                  endian = "little"), nrow = n2, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
     txa_w_xb <- txa_w_xb + t(data$x[strt:stp, ]) %*% iz_tz_w_xb
-    if ((i + 1) %in% params$container$filebreak.Cox || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$filebreak.Cox ||
+        i == params$blocks$num_blocks) {
       close(to_read)
       read_size <- read_size + file.size(file.path(params$read_path, filename))
     }
   }
 
   m <- rbind(cbind(params$t_xa_w_xa, txa_w_xb),
-            cbind(t(txa_w_xb), txb_w_xb))
+             cbind(t(txa_w_xb), txb_w_xb))
 
   if (params$alg_iteration_counter == 1) {
     params$nullHessian <- m
@@ -1126,7 +1212,9 @@ compute_inverse_cox_a2 <- function(params, data) {
   m <- inv
   if (is.null(m)) {
     params$failed <- TRUE
-    params$error_message <- "The matrix XWX is singular.  This is probably due to divergence of the coefficients."
+    params$error_message <-
+      paste("The matrix XWX is singular.",
+            "This is probably due to divergence of the coefficients.")
     warning(params$error_message)
 
     betas <- rep(NA, length(params$a_col_names_old))
@@ -1181,7 +1269,7 @@ compute_beta_cox_b2 <- function(params, data) {
   save(m2_txb_deta_l, file = file.path(params$write_path, "M2_tXB_deltal.rdata"))
   save(xb_betas_b, file = file.path(params$write_path, "XB_betasB.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, c("M2_tXB_deltal.rdata",
-                                                            "XB_betasB.rdata"))))
+                                                             "XB_betasB.rdata"))))
   write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "compute_beta_cox_b2", read_time, read_size, write_time, write_size)
 
@@ -1258,7 +1346,7 @@ get_converged_status_cox_b2 <- function(params) {
 survfit_cox_a2 <- function(params, survival, pred) {
   if (params$trace) cat(as.character(Sys.time()), "survfit_cox_a2\n\n")
   surv <- rep(1, length(survival$rank))
-  for (i in 1:length(survival$strata)) {
+  for (i in seq_along(survival$strata)) {
     if (survival$strata[[i]]$J > 0) {
       start   <- survival$strata[[i]]$start
       end     <- survival$strata[[i]]$end
@@ -1309,7 +1397,7 @@ compute_results_cox_a2 <- function(params, data) {
   load(file.path(params$read_path, "B_betas_ns.rdata")) # load betas_b, nullscoreB
   load(file.path(params$read_path, "XB_betasB.rdata")) # load xb_betas_b
   read_size <- sum(file.size(file.path(params$read_path, c("B_betas_ns.rdata",
-                                                          "XB_betasB.rdata"))))
+                                                           "XB_betasB.rdata"))))
   read_time <- proc.time()[3] - read_time
   params$betas_b <- betas_b
   params$null_score <- rbind(params$null_score, null_score_b)
@@ -1320,7 +1408,7 @@ compute_results_cox_a2 <- function(params, data) {
   idx_b               <- params$b_indicies_keep
   idx                <- c(idx_a, idx_b + length(params$a_col_names_old))
   stats$party        <- c(rep("dp0", length(params$a_col_names_old)),
-                         rep("dp1", length(params$b_col_names_old)))
+                          rep("dp1", length(params$b_col_names_old)))
   stats$coefficients <- rep(NA, length(stats$party))
   tempcoefs          <- c(params$betas_a, params$betas_b)
   stats$coefficients[idx] <- tempcoefs
@@ -1357,21 +1445,23 @@ compute_results_cox_a2 <- function(params, data) {
   stats$lrt          <- 2 * (stats$loglik[2] - stats$loglik[1])
   stats$lrt          <- c(stats$lrt, 1 - pchisq(stats$lrt, stats$df))
   stats$rsquare      <- c(1 - exp(-stats$lrt[1] / stats$n),
-                         1 - exp(2 * stats$loglik[1] / stats$n))
+                          1 - exp(2 * stats$loglik[1] / stats$n))
   stats$wald.test    <- t(tempcoefs) %*% params$XtWX %*% tempcoefs
   stats$wald.test    <- c(stats$wald.test,
-                         1 - pchisq(stats$wald.test, stats$df))
+                          1 - pchisq(stats$wald.test, stats$df))
   pred <- -params$xa_betas_a - xb_betas_b
   if (params$survival_installed) {
     surv <- survival::Surv(data$survival$rank, data$survival$status)
     strat <- rep(0, length(surv))
-    for (i in 1:length(data$survival$strata)) {
+    for (i in seq_along(data$survival$strata)) {
       strat[data$survival$strata[[i]]$start:data$survival$strata[[i]]$end] <- i
     }
     results <- survival::concordance(surv ~ pred + strata(strat))
-    if (class(results$stats) == "matrix") {  # more than one strata
+    if (class(results$stats) == "matrix") {
+      # more than one strata
       stats$concordance <- c(apply(results$count, 2, sum)[1:4], results$concordance, sqrt(results$var))
-    } else {                                 # only one strata, so a numeric vector
+    } else {
+      # only one strata, so a numeric vector
       stats$concordance <- c(results$count[1:4], results$concordance, sqrt(results$var))
     }
   } else {
@@ -1388,7 +1478,7 @@ compute_results_cox_a2 <- function(params, data) {
   stats$strata <- as.data.frame(matrix(0, length(data$survival$strata), 3))
   stats$strata$label <- ""
   colnames(stats$strata) <- c("start", "end", "events", "label")
-  for (i in 1:length(data$survival$strata)) {
+  for (i in seq_along(data$survival$strata)) {
     stats$strata$start[i]  <- data$survival$strata[[i]]$start
     stats$strata$end[i]    <- data$survival$strata[[i]]$end
     stats$strata$events[i] <- sum(data$survival$status[stats$strata$start[i]:stats$strata$end[i]])
@@ -1412,8 +1502,9 @@ compute_results_cox_a2 <- function(params, data) {
   names(stats$lrt)             <- c("likelihood ratio", "p-value")
   names(stats$rsquare)         <- c("r-square", "max possible")
   names(stats$wald.test)       <- c("wald", "p-value")
-  names(stats$concordance)     <- c("concordant", "discordant", "tied.risk", "tied.time",
-                                   "concordance", "stderr")
+  names(stats$concordance)     <- c("concordant", "discordant",
+                                    "tied.risk", "tied.time",
+                                    "concordance", "stderr")
 
   params$stats <- stats
   write_time <- proc.time()[3]
@@ -1444,7 +1535,8 @@ get_results_cox_b2 <- function(params) {
 
 finalize_params_2_cox_b2 <- function(params, data) {
   pa <- NULL
-  if (params$trace) cat(as.character(Sys.time()), "finalize_params_2_cox_b2\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "finalize_params_2_cox_b2\n\n")
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "pa.rdata")) # read pa
   read_size <- file.size(file.path(params$read_path, "pa.rdata"))
@@ -1454,13 +1546,15 @@ finalize_params_2_cox_b2 <- function(params, data) {
   params$cutoff <- pa$cutoff
   params$max_iterations <- pa$max_iterations
   params$p <- params$p1 + params$p2
-  params <- add_to_log(params, "finalize_params_2_cox_b2", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "finalize_params_2_cox_b2",
+                       read_time, read_size, 0, 0)
   return(params)
 }
 
 
 check_colinearity_cox_b2 <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "check_colinearity_cox_b2\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "check_colinearity_cox_b2\n\n")
   # Add in the strata here
   num_strata <- length(data$survival$strata)
   x <- cbind(matrix(0, nrow = nrow(data$x), ncol = num_strata), data$x)
@@ -1477,7 +1571,8 @@ check_colinearity_cox_b2 <- function(params, data) {
       indicies <- c(indicies, i)
     }
   }
-  indicies <- indicies[-(1:num_strata)] - num_strata  # Get rid of the Strata
+  # Get rid of the Strata
+  indicies <- indicies[-(1:num_strata)] - num_strata
 
   params$a_indicies_keep <- c()
   params$a_col_names_old <- c()
@@ -1496,7 +1591,8 @@ check_colinearity_cox_b2 <- function(params, data) {
 
   if (params$p2 == 0) {
     params$failed <- TRUE
-    params$error_message <- "Party A has no covariates and all of Party B's covariates are linear."
+    params$error_message <-
+      "Party A has no covariates and all of Party B's covariates are linear."
     warning(params$error_message)
   }
   params <- add_to_log(params, "check_colinearity_cox_b2", 0, 0, 0, 0)
@@ -1506,25 +1602,27 @@ check_colinearity_cox_b2 <- function(params, data) {
 
 #' @importFrom stats as.formula
 compute_cox_from_survival_b2 <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_cox_from_survival_b2\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "compute_cox_from_survival_b2\n\n")
   # We have loaded survival previously
 
   strata <- rep(0, nrow(data$x))
-  for (i in 1:length(data$survival$strata)) {
+  for (i in seq_along(data$survival$strata)) {
     strata[data$survival$strata[[i]]$start:data$survival$strata[[i]]$end] <- i
   }
 
-  colnames(data$x) <- paste0("V", 1:ncol(data$x))
-  f <- paste(c("Surv(rank, status) ~ strata(strata)", paste0("V", 1:ncol(data$x))), collapse = " + ")
+  colnames(data$x) <- paste0("V", seq_len(ncol(data$x)))
+  f <- paste(c("Surv(rank, status) ~ strata(strata)",
+               paste0("V", seq_len(ncol(data$x)))), collapse = " + ")
 
   error <- tryCatch(
     {
       fit <- survival::coxph(as.formula(f),
-                            data <- data.frame(rank = data$survival$rank,
-                                              status = data$survival$status,
-                                              strata = strata,
-                                              data$x),
-                            iter.max = params$max_iterations)
+                             data <- data.frame(rank = data$survival$rank,
+                                                status = data$survival$status,
+                                                strata = strata,
+                                                data$x),
+                             iter.max = params$max_iterations)
     },
     error = function(e) {
       return(TRUE)
@@ -1542,12 +1640,13 @@ compute_cox_from_survival_b2 <- function(params, data) {
   } else {
     params$converged <- TRUE
     if (class(error) == "logical") {
-      fit <- suppressWarnings(survival::coxph(as.formula(f),
-                                             data <- data.frame(rank = data$survival$rank,
-                                                               status = data$survival$status,
-                                                               strata = strata,
-                                                               data$x),
-                                             iter.max = params$max_iterations))
+      fit <- suppressWarnings(survival::coxph(
+        as.formula(f),
+        data <- data.frame(rank = data$survival$rank,
+                           status = data$survival$status,
+                           strata = strata,
+                           data$x),
+        iter.max = params$max_iterations))
       params$converged <- FALSE
     }
     fit$linear.predictors <- NULL
@@ -1577,7 +1676,8 @@ compute_cox_b2 <- function(params, data) {
   loglikelihood_old <- -Inf
 
 
-  while (params$alg_iteration_counter <= params$max_iterations && !params$converged) {
+  while (params$alg_iteration_counter <= params$max_iterations &&
+         !params$converged) {
     BeginningIteration(params)
     loglikelihood <- 0
     step_size <- 1
@@ -1594,12 +1694,16 @@ compute_cox_b2 <- function(params, data) {
       step_counter <- 0
       pbar <- make_progress_bar_1(num_events, "Loglikelihood", params$verbose)
       loglikelihood <- 0
-      for (i in 1:length(data$survival$strata)) {                    ##!
-        if (data$survival$strata[[i]]$J > 0) {                       ##!
-          for (j in 1:data$survival$strata[[i]]$J) {                 ##!
-            nj <- data$survival$strata[[i]]$nfails[j]                 ##!
-            y_index <- data$survival$strata[[i]]$start0[j]:data$survival$strata[[i]]$end      ##!
-            z_index <- data$survival$strata[[i]]$start1[j]:data$survival$strata[[i]]$stop1[j] ##!
+      for (i in seq_along(data$survival$strata)) {
+        if (data$survival$strata[[i]]$J > 0) {
+          for (j in 1:data$survival$strata[[i]]$J) {
+            nj <- data$survival$strata[[i]]$nfails[j]
+            y_start   <- data$survival$strata[[i]]$start0[j]
+            y_end   <-data$survival$strata[[i]]$end
+            z_start <- data$survival$strata[[i]]$start1[j]
+            z_end <-data$survival$strata[[i]]$stop1[j]
+            y_index <- y_start:y_end
+            z_index <- z_start:z_end
             a_j1 <- sum(w[y_index])
             a_j2 <- sum(w[z_index]) / nj
             loglikelihood <- loglikelihood + sum(log(w[z_index]))
@@ -1623,8 +1727,9 @@ compute_cox_b2 <- function(params, data) {
     }
     num_events <- sum(data$survival$status)
     deltal <- as.numeric(data$survival$status)
-    deltal[1] <- deltal[1]  # This is to force R to make a copy since we are exploiting
+    # This is to force R to make a copy since we are exploiting
     # a pass by reference with the C call.
+    deltal[1] <- deltal[1]
     w_xb  <- matrix(0, n, p2)
 
     .Call("ComputeCox", data$survival$strata, data$x, w, deltal, w_xb,
@@ -1648,7 +1753,9 @@ compute_cox_b2 <- function(params, data) {
     m <- inv
     if (is.null(m)) {
       params$failed <- TRUE
-      params$error_message <- "The matrix t(X)WX is singular.  This is probably due to divergence of the coefficients."
+      params$error_message <-
+        paste("The matrix t(X)WX is singular.",
+              "This is probably due to divergence of the coefficients.")
       warning(params$error_message)
 
       betas <- rep(NA, length(params$b_col_names_old))
@@ -1681,7 +1788,8 @@ compute_cox_b2 <- function(params, data) {
   params$x_betas <- x_betas
   if (!params$converged) {
     params$failed <- TRUE
-    params$error_message <- "Cox failed to converge in the specified number of iterations."
+    params$error_message <-
+      "Cox failed to converge in the specified number of iterations."
     warning(params$error_message)
   }
   params <- add_to_log(params, "compute_cox_b2", 0, 0, 0, 0)
@@ -1702,7 +1810,7 @@ compute_results_cox_b2 <- function(params, data) {
   idx_b               <- params$b_indicies_keep
   idx                <- c(idx_a, idx_b + length(params$a_col_names_old))
   stats$party        <- c(rep("dp0", length(params$a_col_names_old)),
-                         rep("dp1", length(params$b_col_names_old)))
+                          rep("dp1", length(params$b_col_names_old)))
   stats$coefficients <- rep(NA, length(stats$party))
   if (fit_exists) {
     stats$coefficients[idx] <- params$fit$coefficients
@@ -1711,7 +1819,7 @@ compute_results_cox_b2 <- function(params, data) {
     stats$coefficients[idx] <- params$betas_b
     tempvar            <- solve(params$XtWX)
   }
-  stats$expcoef      <- exp(stats$coefficients)  # exp(coef) <- hazard ratios
+  stats$expcoef      <- exp(stats$coefficients)  # hazard ratios
   stats$expncoef     <- exp(-stats$coefficients)
   stats$var          <- matrix(0, length(names_old), length(names_old))
   stats$var[idx, idx] <- tempvar
@@ -1719,7 +1827,7 @@ compute_results_cox_b2 <- function(params, data) {
   stats$secoef[idx]  <- sqrt(diag(tempvar))  # se(coef)
 
   stats$zvals        <- stats$coefficients / stats$secoef  # z values
-  stats$pvals        <- 2 * pnorm(abs(stats$zvals), lower.tail = FALSE)   # pvals
+  stats$pvals        <- 2 * pnorm(abs(stats$zvals), lower.tail = FALSE) # pvals
   stats$stars        <- matrix(sapply(stats$pvals, function(x) {
     if (is.na(x)) ""
     else if (x < 0.001) "***"
@@ -1754,9 +1862,9 @@ compute_results_cox_b2 <- function(params, data) {
   stats$lrt          <- 2 * (stats$loglik[2] - stats$loglik[1])
   stats$lrt          <- c(stats$lrt, 1 - pchisq(stats$lrt, stats$df))
   stats$rsquare      <- c(1 - exp(-stats$lrt[1] / stats$n),
-                         1 - exp(2 * stats$loglik[1] / stats$n))
+                          1 - exp(2 * stats$loglik[1] / stats$n))
   stats$wald.test    <- c(stats$wald.test,
-                         1 - pchisq(stats$wald.test, stats$df))
+                          1 - pchisq(stats$wald.test, stats$df))
 
   pred <- data$x %*% stats$coefficients[idx]
   stats$survival <- data.frame(
@@ -1768,10 +1876,12 @@ compute_results_cox_b2 <- function(params, data) {
   stats$strata <- as.data.frame(matrix(0, length(data$survival$strata), 3))
   stats$strata$label <- ""
   colnames(stats$strata) <- c("start", "end", "events", "label")
-  for (i in 1:length(data$survival$strata)) {
+  for (i in seq_along(data$survival$strata)) {
     stats$strata$start[i]  <- data$survival$strata[[i]]$start
     stats$strata$end[i]    <- data$survival$strata[[i]]$end
-    stats$strata$events[i] <- sum(data$survival$status[stats$strata$start[i]:stats$strata$end[i]])
+    start                  <- stats$strata$start[i]
+    end                    <- stats$strata$end[i]
+    stats$strata$events[i] <- sum(data$survival$status[start:end])
     stats$strata$label[i]  <- data$survival$strata[[i]]$label
   }
 
@@ -1792,15 +1902,17 @@ compute_results_cox_b2 <- function(params, data) {
   names(stats$lrt)             <- c("likelihood ratio", "p-value")
   names(stats$rsquare)         <- c("r-square", "max possible")
   names(stats$wald.test)       <- c("wald", "p-value")
-  names(stats$concordance)     <- c("concordant", "discordant", "tied.risk", "tied.time",
-                                   "concordance", "stderr")
+  names(stats$concordance)     <- c("concordant", "discordant",
+                                    "tied.risk", "tied.time",
+                                    "concordance", "stderr")
 
   params$stats <- stats
   write_time <- proc.time()[3]
   save(stats, file = file.path(params$write_path, "stats.rdata"))
   write_size <- file.size(file.path(params$write_path, "stats.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "compute_results_cox_b2", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "compute_results_cox_b2", 0, 0,
+                       write_time, write_size)
   return(params)
 }
 
@@ -1822,21 +1934,22 @@ get_results_cox_a2 <- function(params) {
 
 
 party_a_process_2_cox <- function(data,
-                             y_name          = NULL,
-                             strata         = NULL,
-                             mask           = TRUE,
-                             monitor_folder  = NULL,
-                             msreqid        = "v_default_00_000",
-                             blocksize      = 500,
-                             cutoff         = 1e-8,
-                             max_iterations  = 25,
-                             sleep_time     = 10,
-                             max_waiting_time = 24 * 60 * 60,
-                             popmednet      = TRUE,
-                             trace          = FALSE,
-                             verbose        = TRUE) {
+                                  y_name          = NULL,
+                                  strata         = NULL,
+                                  mask           = TRUE,
+                                  monitor_folder  = NULL,
+                                  msreqid        = "v_default_00_000",
+                                  blocksize      = 500,
+                                  cutoff         = 1e-8,
+                                  max_iterations  = 25,
+                                  sleep_time     = 10,
+                                  max_waiting_time = 24 * 60 * 60,
+                                  popmednet      = TRUE,
+                                  trace          = FALSE,
+                                  verbose        = TRUE) {
   params <- prepare_params_2p("cox", "A", msreqid = msreqid,
-                             popmednet = popmednet, trace = trace, verbose = verbose)
+                              popmednet = popmednet, trace = trace,
+                              verbose = verbose)
   params <- initialize_log_2p(params)
   params <- initialize_time_stamps_2p(params)
   params <- initialize_tracking_table_2p(params)
@@ -1853,7 +1966,8 @@ party_a_process_2_cox <- function(data,
     params$complete <- TRUE
     warning(read_error_message(params$read_path))
     params$pmn_step_counter <- 1
-    params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_quit_2p(params, sleep_time = sleep_time,
+                                 job_failed = TRUE)
     SummarizeLog.2p(params)
     return(params$stats)
   }
@@ -1864,8 +1978,10 @@ party_a_process_2_cox <- function(data,
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
     params$pmn_step_counter <- 1
-    params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
-    params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_2p(params, files, sleep_time,
+                                     max_waiting_time)
+    params <- send_pause_quit_2p(params, sleep_time = sleep_time,
+                                 job_failed = TRUE)
     SummarizeLog.2p(params)
     return(params$stats)
   }
@@ -1873,7 +1989,8 @@ party_a_process_2_cox <- function(data,
   params <- check_strata_cox_a2(params, data)
   if (params$get_strata_from_b) {
     files <- c()
-    params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
+    params <- send_pause_continue_2p(params, files, sleep_time,
+                                     max_waiting_time)
   }
 
   params <- prepare_params_cox_a2(params, data, cutoff, max_iterations)
@@ -1883,7 +2000,8 @@ party_a_process_2_cox <- function(data,
     make_error_message(params$write_path, params$error_message)
     files <- c("error_message.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
-    params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_quit_2p(params, sleep_time = sleep_time,
+                                 job_failed = TRUE)
     SummarizeLog.2p(params)
     return(params$stats)
   }
@@ -1893,14 +2011,17 @@ party_a_process_2_cox <- function(data,
   params <- add_to_log(params, "prepare_strata_cox_a2", data$read_time,
                        data$read_size, data$write_time, data$write_size)
 
-  if (params$p1 == 0) { # Check for $p1 == 0 => no covariates, only strata
+  # Check for $p1 == 0 => no covariates, only strata
+  if (params$p1 == 0) {
     MakeTransferMessage(params$write_path)
     files <- c("transferControl.rdata", "pa.rdata", "survival.rdata")
-    params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
+    params <- send_pause_continue_2p(params, files,
+                                     sleep_time, max_waiting_time)
     if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
       params$complete <- TRUE
       warning(read_error_message(params$read_path))
-      params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
+      params <- send_pause_quit_2p(params, sleep_time = sleep_time,
+                                   job_failed = TRUE)
       SummarizeLog.2p(params)
       return(params$stats)
     }
@@ -1916,8 +2037,10 @@ party_a_process_2_cox <- function(data,
     params$complete <- TRUE
     make_error_message(params$write_path, params$error_message)
     files <- c("error_message.rdata")
-    params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
-    params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_2p(params, files, sleep_time,
+                                     max_waiting_time)
+    params <- send_pause_quit_2p(params, sleep_time = sleep_time,
+                                 job_failed = TRUE)
     SummarizeLog.2p(params)
     return(params$stats)
   }
@@ -1927,7 +2050,7 @@ party_a_process_2_cox <- function(data,
   # This works even in the case that we send no blocks over.  Just set
   # file_break_z = c()
   files <- c("pa.rdata", "blocksize.rdata", "survival.rdata",
-            seq_zw("cz_", length(params$container$file_break_z)))
+             seq_zw("cz_", length(params$container$file_break_z)))
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   params <- check_colinearity_cox_a2(params, data)
@@ -1938,7 +2061,8 @@ party_a_process_2_cox <- function(data,
     make_error_message(params$write_path, params$error_message)
     files <- c("error_message.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
-    params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_quit_2p(params, sleep_time = sleep_time,
+                                 job_failed = TRUE)
     SummarizeLog.2p(params)
     return(params$stats)
   }
@@ -1950,7 +2074,8 @@ party_a_process_2_cox <- function(data,
     if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
       params$complete <- TRUE
       warning(read_error_message(params$read_path))
-      params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
+      params <- send_pause_quit_2p(params, sleep_time = sleep_time,
+                                   job_failed = TRUE)
       SummarizeLog.2p(params)
       return(params$stats)
     }
@@ -1976,22 +2101,25 @@ party_a_process_2_cox <- function(data,
       files <- c("converged.rdata", files)
     }
 
-    params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
+    params <- send_pause_continue_2p(params, files, sleep_time,
+                                     max_waiting_time)
 
     params <- compute_inverse_cox_a2(params, data)
-
-    if (params$failed) { # Check for failed from compute_inverse_cox_a2()
+    # Check for failed from compute_inverse_cox_a2()
+    if (params$failed) {
       params$complete <- TRUE
       make_error_message(params$write_path, params$error_message)
       files <- c("error_message.rdata")
       params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
-      params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
+      params <- send_pause_quit_2p(params, sleep_time = sleep_time,
+                                   job_failed = TRUE)
       SummarizeLog.2p(params)
       return(params$stats)
     }
 
     files <- c("M.rdata")
-    params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
+    params <- send_pause_continue_2p(params, files, sleep_time,
+                                     max_waiting_time)
 
     params <- compute_beta_cox_a2(params, data)
 
@@ -2013,16 +2141,16 @@ party_a_process_2_cox <- function(data,
 
 
 party_b_process_2_cox <- function(data,
-                             strata              = NULL,
-                             mask                = TRUE,
-                             monitor_folder       = NULL,
-                             sleep_time           = 10,
-                             max_waiting_time      = 24 * 60 * 60,
-                             popmednet           = TRUE,
-                             trace               = FALSE,
-                             verbose             = TRUE) {
+                                  strata              = NULL,
+                                  mask                = TRUE,
+                                  monitor_folder      = NULL,
+                                  sleep_time          = 10,
+                                  max_waiting_time    = 24 * 60 * 60,
+                                  popmednet           = TRUE,
+                                  trace               = FALSE,
+                                  verbose             = TRUE) {
   params <- prepare_params_2p("cox", "B", popmednet = popmednet, trace = trace,
-                             verbose = verbose)
+                              verbose = verbose)
   params <- initialize_log_2p(params)
   params <- initialize_time_stamps_2p(params)
   params <- initialize_tracking_table_2p(params)
@@ -2039,7 +2167,8 @@ party_b_process_2_cox <- function(data,
     message <- "Error in processing the data for Party B."
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
-    params <- send_pause_quit_2p(params, files, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_quit_2p(params, files, sleep_time = sleep_time,
+                                 job_failed = TRUE)
     return(params$stats)
   }
 
@@ -2050,19 +2179,22 @@ party_b_process_2_cox <- function(data,
   if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
     params$complete <- TRUE
     warning(read_error_message(params$read_path))
-    params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_quit_2p(params, sleep_time = sleep_time,
+                                 job_failed = TRUE)
     return(params$stats)
   }
 
   if (!is.null(data$strata$strata_from_b)) {
     params <- send_strata_cox_b2(params, data)
     files <- c("strata.rdata")
-    params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
+    params <- send_pause_continue_2p(params, files, sleep_time,
+                                     max_waiting_time)
 
     if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
       params$complete <- TRUE
       warning(read_error_message(params$read_path))
-      params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
+      params <- send_pause_quit_2p(params, sleep_time = sleep_time,
+                                   job_failed = TRUE)
       return(params$stats)
     }
   }
@@ -2079,7 +2211,8 @@ party_b_process_2_cox <- function(data,
       params$complete <- TRUE
       make_error_message(params$write_path, params$error_message)
       files <- c("error_message.rdata")
-      params <- send_pause_quit_2p(params, files, sleep_time = sleep_time, job_failed = TRUE)
+      params <- send_pause_quit_2p(params, files, sleep_time = sleep_time,
+                                   job_failed = TRUE)
       return(params$stats)
     }
     data <- update_data_cox_b2(params, data)
@@ -2089,12 +2222,13 @@ party_b_process_2_cox <- function(data,
     } else {
       params <- compute_cox_b2(params, data)
     }
-
-    if (params$failed) {      # We could get a job_failed here from coefficient explosion
+    # We could get a job_failed here from coefficient explosion
+    if (params$failed) {
       params$complete <- TRUE
       make_error_message(params$write_path, params$error_message)
       files <- c("error_message.rdata")
-      params <- send_pause_quit_2p(params, files, sleep_time = sleep_time, job_failed = TRUE)
+      params <- send_pause_quit_2p(params, files, sleep_time = sleep_time,
+                                   job_failed = TRUE)
       return(params$stats)
     }
     params <- compute_results_cox_b2(params, data)
@@ -2122,11 +2256,13 @@ party_b_process_2_cox <- function(data,
       params <- compute_cox_b2(params, data)
     }
 
-    if (params$failed) {      # We could get a job_failed here from coefficient explosion
+    # We could get a job_failed here from coefficient explosion
+    if (params$failed) {
       params$complete <- TRUE
       make_error_message(params$write_path, params$error_message)
       files <- c("error_message.rdata")
-      params <- send_pause_quit_2p(params, files, sleep_time = sleep_time, job_failed = TRUE)
+      params <- send_pause_quit_2p(params, files, sleep_time = sleep_time,
+                                   job_failed = TRUE)
       return(params$stats)
     }
     params <- compute_results_cox_b2(params, data)
@@ -2143,7 +2279,8 @@ party_b_process_2_cox <- function(data,
       if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
         params$complete <- TRUE
         warning(read_error_message(params$read_path))
-        params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
+        params <- send_pause_quit_2p(params, sleep_time = sleep_time,
+                                     job_failed = TRUE)
         return(params$stats)
       }
       params <- update_params_cox_b2(params)
@@ -2160,20 +2297,24 @@ party_b_process_2_cox <- function(data,
 
     params <- compute_log_likelihood_cox_b2(params, data)
 
-    files <- c("txb_w_xb.rdata", seq_zw("cCox_", length(params$container$filebreak.Cox)))
-    params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
+    files <- c("txb_w_xb.rdata",
+               seq_zw("cCox_", length(params$container$filebreak.Cox)))
+    params <- send_pause_continue_2p(params, files,
+                                     sleep_time, max_waiting_time)
 
     if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
       params$complete <- TRUE
       warning(read_error_message(params$read_path))
-      params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
+      params <- send_pause_quit_2p(params, sleep_time = sleep_time,
+                                   job_failed = TRUE)
       return(params$stats)
     }
 
     params <- compute_beta_cox_b2(params, data)
 
     files <- c("XB_betasB.rdata", "M2_tXB_deltal.rdata")
-    params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
+    params <- send_pause_continue_2p(params, files,
+                                     sleep_time, max_waiting_time)
 
     EndingIteration(params)
 

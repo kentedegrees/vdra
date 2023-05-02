@@ -152,14 +152,14 @@ prepare_data_logistic_a23 <- function(params, data, y_name = NULL) {
     workdata$failed <- TRUE
     return(workdata)
   }
-  covariate_index <- setdiff(1:ncol(data), response_index)
+  covariate_index <- setdiff(seq_len(ncol(data)), response_index)
   workdata$tags <- create_model_matrix_tags(data[, covariate_index, drop = FALSE])
   workdata$tags <- c("(Intercept)", workdata$tags)
   names(workdata$tags)[1] <- "numeric"
 
   x <- model.matrix(~ ., data[, c(response_index, covariate_index), drop = FALSE])
   rownames(x) <- NULL
-  covariate_index <- setdiff(1:ncol(x), 2)
+  covariate_index <- setdiff(seq_len(ncol(x)), 2)
 
   means <- apply(x, 2, mean)
   sd    <- apply(x, 2, sd)
@@ -211,7 +211,7 @@ prepare_data_logistic_b23 <- function(params, data) {
     ifelse(x > 0, x, 1)
   })
 
-  for (i in 1:ncol(workdata$x)) {
+  for (i in seq_len(ncol(workdata$x))) {
     workdata$x[, i] <- (workdata$x[, i] - workdata$means[i]) / workdata$sd[i]
   }
 

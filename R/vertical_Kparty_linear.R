@@ -112,13 +112,13 @@ PrepareDataLinLog.DP1 <- function(params, data, y_name = NULL) {
     workdata$failed <- TRUE
     return(workdata)
   }
-  covariate_index <- setdiff(1:ncol(data), response_index)
+  covariate_index <- setdiff(seq_len(ncol(data)), response_index)
   workdata$tags <- create_model_matrix_tags(data[, covariate_index, drop = FALSE])
   workdata$tags <- c("(Intercept)", workdata$tags)
   names(workdata$tags)[1] = "numeric"
   x = model.matrix(~ ., data[, c(response_index, covariate_index), drop = FALSE])
   rownames(x) = NULL
-  covariate_index <- setdiff(1:ncol(x), 2)
+  covariate_index <- setdiff(seq_len(ncol(x)), 2)
   workdata$x <- x[, c(2, covariate_index), drop = FALSE]
 
   workdata$n        = nrow(workdata$x)
@@ -126,7 +126,7 @@ PrepareDataLinLog.DP1 <- function(params, data, y_name = NULL) {
   workdata$colmax   <- apply(workdata$x, 2, max)
   workdata$colsum   <- apply(workdata$x, 2, sum)
   workdata$colrange <- workdata$colmax - workdata$colmin
-  for (i in 1:ncol(workdata$x)) {
+  for (i in seq_len(ncol(workdata$x))) {
     if (workdata$colmin[i] == workdata$colmax[i]) {
       workdata$colmin[i] = 0
       workdata$colrange[i] = 1
@@ -162,7 +162,7 @@ PrepareDataLinLog.DPk <- function(params, data) {
   workdata$colmax   <- apply(workdata$x, 2, max)
   workdata$colsum   <- apply(workdata$x, 2, sum)
   workdata$colrange <- workdata$colmax - workdata$colmin
-  for (i in 1:ncol(workdata$x)) {
+  for (i in seq_len(ncol(workdata$x))) {
     if (workdata$colmin[i] == workdata$colmax[i]) {
       workdata$colmin[i] = 0
       workdata$colrange[i] = 1

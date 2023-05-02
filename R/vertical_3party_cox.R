@@ -227,11 +227,11 @@ prepare_strata_cox_t3 <- function(params) {
     strata[[1]]$label <- ""
   } else {
     start <- 1
-    for (i in  1:length(ranks)) {
+    for (i in  seq_along(ranks)) {
       strata[[i]]$start <- start
       strata[[i]]$end   <- as.integer(ranks[i])
       label <- ""
-      for (j in 1:ncol(strata_temp$x)) {
+      for (j in seq_len(ncol(strata_temp$x))) {
         temp <- colnames(strata_temp$x)[j]
         label <- paste0(label, temp, "=", strata_temp$legend[[temp]][strata_temp$x[start, j]])
         if (j < ncol(strata_temp$x)) {
@@ -242,7 +242,7 @@ prepare_strata_cox_t3 <- function(params) {
       start <- as.numeric(ranks[i]) + 1
     }
   }
-  for (i in 1:length(strata)) {
+  for (i in seq_along(strata)) {
     idx <- strata[[i]]$start:strata[[i]]$end
     temp  <- table(survival$rank[idx])
     m <- length(temp)   # number of unique observed times, including where no one fails
@@ -353,7 +353,7 @@ sort_data_cox_b3 <- function(params, data) {
 get_s_xb_cox_b3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "get_s_xb_cox_b3\n\n")
   s  <- matrix(0, nrow = params$n, ncol = length(data$survival$strata))
-  for (i in 1:length(data$survival$strata)) {
+  for (i in seq_along(data$survival$strata)) {
     s[data$survival$strata[[i]]$start:data$survival$strata[[i]]$end, i] <- 1
   }
   s_t_xb <- t(s) %*% data$x
@@ -431,7 +431,7 @@ get_wr_cox_a3 <- function(params, data) {
 get_s_xa_cox_a3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "get_s_xa_cox_a3\n\n")
   s  <- matrix(0, nrow = params$n, ncol = length(data$survival$strata))
-  for (i in 1:length(data$survival$strata)) {
+  for (i in seq_along(data$survival$strata)) {
     s[data$survival$strata[[i]]$start:data$survival$strata[[i]]$end, i] <- 1
   }
   s_t_xa <- t(s) %*% data$x
@@ -741,7 +741,7 @@ compute_log_likelihood_cox_t3 <- function(params) {
     step_counter <- 0
     pbar <- make_progress_bar_1(num_events, "Loglikelihood", params$verbose)
     loglikelihood <- 0
-    for (i in 1:length(params$survival$strata)) {                    ##!
+    for (i in seq_along(params$survival$strata)) {                    ##!
       if (params$survival$strata[[i]]$J > 0) {                       ##!
         for (j in 1:params$survival$strata[[i]]$J) {                 ##!
           nj <- params$survival$strata[[i]]$nfails[j]                 ##!
@@ -1136,7 +1136,7 @@ survfit_cox_bt3 <- function(params, pred) {
   if (params$trace) cat(as.character(Sys.time()), "survfit_cox_bt3\n\n")
   survival <- params$survival
   surv <- rep(1, length(survival$rank))
-  for (i in 1:length(survival$strata)) {
+  for (i in seq_along(survival$strata)) {
     if (survival$strata[[i]]$J > 0) {
       start   <- survival$strata[[i]]$start
       end     <- survival$strata[[i]]$end
@@ -1223,7 +1223,7 @@ compute_results_cox_t3 <- function(params) {
   if (params$survival_installed) {
     surv <- survival::Surv(params$survival$rank, params$survival$status)
     strat <- rep(0, length(surv))
-    for (i in 1:length(params$survival$strata)) {
+    for (i in seq_along(params$survival$strata)) {
       strat[params$survival$strata[[i]]$start:params$survival$strata[[i]]$end] <- i
     }
     results <- survival::concordance(surv ~ pred + strata(strat))
@@ -1245,7 +1245,7 @@ compute_results_cox_t3 <- function(params) {
   stats$strata <- as.data.frame(matrix(0, length(params$survival$strata), 3))
   stats$strata$label <- ""
   colnames(stats$strata) <- c("start", "end", "events", "label")
-  for (i in 1:length(params$survival$strata)) {
+  for (i in seq_along(params$survival$strata)) {
     stats$strata$start[i]  <- params$survival$strata[[i]]$start
     stats$strata$end[i]    <- params$survival$strata[[i]]$end
     stats$strata$events[i] <- sum(params$survival$status[stats$strata$start[i]:stats$strata$end[i]])
@@ -1366,12 +1366,12 @@ compute_cox_from_survival_b3 <- function(params, data) {
   read_size <- file.size(file.path(params$read_path[["T"]], "max_iterations.rdata"))
   read_time <- proc.time()[3] - read_time
   strata <- rep(0, nrow(data$x))
-  for (i in 1:length(data$survival$strata)) {
+  for (i in seq_along(data$survival$strata)) {
     strata[data$survival$strata[[i]]$start:data$survival$strata[[i]]$end] <- i
   }
 
-  colnames(data$x) <- paste0("V", 1:ncol(data$x))
-  f <- paste(c("Surv(rank, status) ~ strata(strata)", paste0("V", 1:ncol(data$x))), collapse = " + ")
+  colnames(data$x) <- paste0("V", seq_len(ncol(data$x)))
+  f <- paste(c("Surv(rank, status) ~ strata(strata)", paste0("V", seq_len(ncol(data$x)))), collapse = " + ")
 
   error <- tryCatch(
     {
@@ -1456,7 +1456,7 @@ compute_cox_b3 <- function(params, data) {
       step_counter <- 0
       pbar <- make_progress_bar_1(num_events, "Loglikelihood", params$verbose)
       loglikelihood <- 0
-      for (i in 1:length(data$survival$strata)) {                    ##!
+      for (i in seq_along(data$survival$strata)) {                    ##!
         if (data$survival$strata[[i]]$J > 0) {                       ##!
           for (j in 1:data$survival$strata[[i]]$J) {                 ##!
             nj <- data$survival$strata[[i]]$nfails[j]                 ##!
@@ -1629,7 +1629,7 @@ compute_results_cox_b3 <- function(params, data) {
   stats$strata <- as.data.frame(matrix(0, length(data$survival$strata), 3))
   stats$strata$label <- ""
   colnames(stats$strata) <- c("start", "end", "events", "label")
-  for (i in 1:length(data$survival$strata)) {
+  for (i in seq_along(data$survival$strata)) {
     stats$strata$start[i]  <- data$survival$strata[[i]]$start
     stats$strata$end[i]    <- data$survival$strata[[i]]$end
     stats$strata$events[i] <- sum(data$survival$status[stats$strata$start[i]:stats$strata$end[i]])

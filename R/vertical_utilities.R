@@ -797,7 +797,7 @@ check_data_format <- function(params, data) {
     return(TRUE)
   }
   badValue = rep(FALSE, nrow(data))
-  for (i in 1:ncol(data)) {
+  for (i in seq_len(ncol(data))) {
     if (class(data[, i]) %in% c("integer", "single", "double", "numeric")) {
       badValue = badValue | !is.finite(data[, i])
     } else {
@@ -871,7 +871,7 @@ check_response <- function(params, data, y_name) {
     }
     responseColIndex = c(responseColIndexTime, responseColIndexCensor)
   }
-  for (i in 1:length(y_name)) {
+  for (i in seq_along(y_name)) {
     if (!("numeric" %in% class(data[, responseColIndex[i]])) &&
         !("integer" %in% class(data[, responseColIndex[i]]))) {
       warning(paste(y_name[i], "is not numeric."))
@@ -899,7 +899,7 @@ create_model_matrix_tags <- function(data) {
   }
   num     = numeric(ncol(data))
   classes = character(ncol(data))
-  for (i in 1:ncol(data)) {
+  for (i in seq_len(ncol(data))) {
     if (class(data[, i]) %in% c("integer", "single", "double", "numeric")) {
       num[i] = 1
       classes[i] = "numeric"
@@ -1241,11 +1241,11 @@ MultiplyDiagonalWTimesX <- function(w, x) {
     wx1 = matrix(NA, nrow = nrow(x), ncol = ncol(x))
   }
   if (is.matrix(w)) {
-    for (i in 1:nrow(w)) {
+    for (i in seq_len(nrow(w))) {
       wx1[i, ] = w[i] * x[i, ]
     }
   } else {
-    for (i in 1:length(w)) {
+    for (i in seq_along(w)) {
       wx1[i, ] = w[i] * x[i, ]
     }
   }
@@ -4227,7 +4227,7 @@ HoslemInternal <- function(x, data = NULL, nGroups = 10) {
   o0 = gn - o1
 
   testStat = 0
-  for (i in 1:length(e1)) {
+  for (i in seq_along(e1)) {
     if (o0[i] == e0[i]) {
       temp1 = 0
     } else {
@@ -4502,7 +4502,7 @@ plot.survfitDistributed <- function(x, merge = FALSE, ...) {
 print.survfitDistributed <- function(x, ...) {
   start = 1
   events = integer(length(x$strata))
-  for (i in 1:length(x$strata)) {
+  for (i in seq_along(x$strata)) {
     end = start + x$strata[i] - 1
     events[i] = sum(x$n.event[start:end])
     start = end + 1
@@ -4518,7 +4518,7 @@ print.survfitDistributed <- function(x, ...) {
 survfitDistributed.stats <- function(x) {
   surv          <- list()
   surv$n        = x$strata$end - x$strata$start + 1
-  for (i in 1:nrow(x$strata)) {
+  for (i in seq_len(nrow(x$strata))) {
     start = x$strata$start[i]
     end   = x$strata$end[i]
     idx   <- which(c(1, diff(x$survival$rank[start:end])) != 0)
@@ -4575,7 +4575,7 @@ survfitDistributed.formula <- function(x, formula, data) {
   data2  = matrix(0, nrow = nrow(data), ncol = ncol(data))
   legend <- list()
   colnames(data2) = colnames(data)
-  for (i in 1:ncol(data)) {
+  for (i in seq_len(ncol(data))) {
     levels = levels(as.factor(data[, i]))
     legend[[colnames(data)[i]]] <- levels
     data2[, i] <- sapply(data[, i], function(x) {
@@ -4585,7 +4585,7 @@ survfitDistributed.formula <- function(x, formula, data) {
   ranks <- which(apply(abs(apply(data2, 2, diff)), 1, sum) > 0)
   ranks = c(ranks, nrow(data2))
   start = 1
-  for (i in 1:length(ranks)) {
+  for (i in seq_along(ranks)) {
     end = ranks[i]
     surv$n = c(surv$n, end - start + 1)
     # Calculate the Kaplan Meier Curve Here per notes from 9/4/19
@@ -4613,7 +4613,7 @@ survfitDistributed.formula <- function(x, formula, data) {
     S = 1
     t2 = rep(0, length(nfails))
     S2 = rep(0, length(nfails))
-    for (j in 1:length(nfails)) {
+    for (j in seq_along(nfails)) {
       n = final - start0[j] + 1
       d = stop1[j] - start1[j] + 1
       S = S * (n - d) / n
@@ -4630,7 +4630,7 @@ survfitDistributed.formula <- function(x, formula, data) {
       names(surv$strata)[i] = ""
     } else {
       label <- ""
-      for (j in 1:ncol(data)) {
+      for (j in seq_len(ncol(data))) {
         temp <- colnames(data)[j]
         label <- paste0(label, temp, "=", legend[[temp]][data2[start, j]])
         if (j < ncol(data)) {

@@ -3,7 +3,7 @@
 check_colinearity_logistic_t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "check_colinearity_logistic_t3\n\n")
   xtx <- params$xtx
-  xty = params$xty
+  xty <- params$xty
 
   nrow <- nrow(xtx)
   indicies <- c(1)
@@ -1207,7 +1207,7 @@ party_t_process_3_logistic <- function(monitor_folder         = NULL,
   }
 
   params <- get_final_fitted_logistic_t3(params)
-  files_a = "finalfitted.rdata"
+  files_a <- "finalfitted.rdata"
   params <- send_pause_continue_3p(params, files_a = files_a, from  = "A",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
