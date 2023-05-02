@@ -1007,13 +1007,13 @@ party_a_process_3_linear <- function(data,
     message <- "Error in processing the data for Party A."
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
-    params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, wait_for_turn = TRUE)
+    params <- send_pause_quit_3p(params, files_t = files, sleep_time = sleep_time, job_failed = TRUE, wait_for_turn = TRUE)
     return(params$stats)
   }
 
   params <- prepare_params_linear_a3(params, data)
   files <- "pa.rdata"
-  params <- send_pause_continue_3p(params, filesT = files, from = "T",
+  params <- send_pause_continue_3p(params, files_t = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
@@ -1025,12 +1025,12 @@ party_a_process_3_linear <- function(data,
   params <- prepare_blocks_linear_a3(params)
   params <- get_z_linear_a3(params, data)
   files <- seq_zw("cz_", length(params$container$file_break_z))
-  params <- send_pause_continue_3p(params, filesT = files, from = "T",
+  params <- send_pause_continue_3p(params, files_t = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   params <- get_wr_linear_a3(params, data)
   files <- c("xatxa.rdata", seq_zw("cpr_", length(params$container$filebreak.pr)))
-  params <- send_pause_continue_3p(params, filesT = files, from = "T",
+  params <- send_pause_continue_3p(params, files_t = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
@@ -1072,13 +1072,13 @@ party_b_process_3_linear <- function(data,
     message <- "Error in processing the data for Party B."
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
-    params <- send_pause_quit_3p(params, filesT = files, sleep_time = sleep_time, job_failed = TRUE, wait_for_turn = TRUE)
+    params <- send_pause_quit_3p(params, files_t = files, sleep_time = sleep_time, job_failed = TRUE, wait_for_turn = TRUE)
     return(params$stats)
   }
 
   params <- prepare_params_linear_b3(params, data)
   files <- "pb.rdata"
-  params <- send_pause_continue_3p(params, filesT = files, from = "T",
+  params <- send_pause_continue_3p(params, files_t = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
 
@@ -1091,7 +1091,7 @@ party_b_process_3_linear <- function(data,
   params <- prepare_blocks_linear_b3(params)
   params <- get_rw_linear_b3(params, data)
   files <- c("xbtxb.rdata", seq_zw("crw_", length(params$container$filebreak_rw)))
-  params <- send_pause_continue_3p(params, filesT = files, from = "T",
+  params <- send_pause_continue_3p(params, files_t = files, from = "T",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {

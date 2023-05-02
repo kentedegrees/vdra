@@ -280,9 +280,9 @@ PrepareSharesLinear.DP <- function(params, data) {
   p = seed <- scaler = NULL
 
   set.seed(params$seed, kind = "Mersenne-Twister")
-  halfshare = matrix(rnorm(params$n * params$p, sd = 20), nrow = params$n, ncol = params$p)
+  halfshare <- matrix(rnorm(params$n * params$p, sd = 20), nrow = params$n, ncol = params$p)
 
-  products = rep(list(list()), params$num_data_partners)
+  products <- rep(list(list()), params$num_data_partners)
 
   params$ps = c()
   params$scalers = c()
@@ -308,11 +308,11 @@ PrepareSharesLinear.DP <- function(params, data) {
     halfShare2 = matrix(rnorm(params$n * p, sd = 20), nrow = params$n, ncol = p)
 
     if (id < params$data_partner_id) {
-      products[[id]] = t(halfShare2) %*% (data$x - scaler / (scaler + params$scaler) * halfshare)
+      products[[id]] <- t(halfShare2) %*% (data$x - scaler / (scaler + params$scaler) * halfshare)
     }
 
     if (id > params$data_partner_id) {
-      products[[id]] = t(data$x - scaler / (scaler + params$scaler) * halfshare) %*% halfShare2
+      products[[id]] <- t(data$x - scaler / (scaler + params$scaler) * halfshare) %*% halfShare2
     }
   }
 
@@ -344,11 +344,11 @@ get_products_linear_AC <- function(params) {
   p = 0
   n = 0
 
-  allproducts  = rep(list(list()), params$num_data_partners)
-  allhalfshare = rep(list(list()), params$num_data_partners)
-  alltags      = rep(list(list()), params$num_data_partners)
+  allproducts  <- rep(list(list()), params$num_data_partners)
+  allhalfshare <- rep(list(list()), params$num_data_partners)
+  alltags      <- rep(list(list()), params$num_data_partners)
   products  = NULL
-  halfshare = NULL
+  halfshare <- NULL
   tags      = NULL
   allcolmin = allcolrange = allcolsum = allcolnames = NULL
   colmin = colrange = colsum = colnames = NULL
@@ -365,7 +365,7 @@ get_products_linear_AC <- function(params) {
     read_time <- read_time + proc.time()[3]
 
     allproducts[[id]]  = products
-    allhalfshare[[id]] = halfshare
+    allhalfshare[[id]] <- halfshare
     alltags[[id]]      = tags
     allcolmin          = c(allcolmin, colmin)
     allcolrange        = c(allcolrange, colrange)
@@ -453,7 +453,7 @@ compute_results_linear_AC <- function(params) {
     idx <- indicies[which(min <= indicies & indicies <= max)] - min + 1
     temp <- tags[[id]]
     temp <- temp[idx]
-    tags[[id]] = temp
+    tags[[id]] <- temp
     min = max + 1
   }
 

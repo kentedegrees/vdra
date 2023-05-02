@@ -8,11 +8,11 @@ GetProductsLogistic.AC <- function(params) {
   n = 0
   pi = c()
 
-  allproducts  = rep(list(list()), params$num_data_partners)
-  allhalfshare = rep(list(list()), params$num_data_partners)
-  alltags      = rep(list(list()), params$num_data_partners)
+  allproducts  <- rep(list(list()), params$num_data_partners)
+  allhalfshare <- rep(list(list()), params$num_data_partners)
+  alltags      <- rep(list(list()), params$num_data_partners)
   products  = NULL
-  halfshare = NULL
+  halfshare <- NULL
   tags      = NULL
   allcolmin = allcolrange = allcolsum = allcolnames = NULL
   colmin = colrange = colsum = colnames = NULL
@@ -29,7 +29,7 @@ GetProductsLogistic.AC <- function(params) {
     read_time <- read_time + proc.time()[3]
 
     allproducts[[id]]  = products
-    allhalfshare[[id]] = halfshare
+    allhalfshare[[id]] <- halfshare
     alltags[[id]]      = tags
     allcolmin          = c(allcolmin, colmin)
     allcolrange        = c(allcolrange, colrange)
@@ -118,20 +118,20 @@ check_colinearity_logistic_AC <- function(params) {
 
   indicies = indicies + 1  # take into account that pi still counts sty, which we removed earlier.
 
-  params$indicies   = rep(list(list()), params$num_data_partners)
-  tags              = rep(list(list()), params$num_data_partners)
+  params$indicies   <- rep(list(list()), params$num_data_partners)
+  tags              <- rep(list(list()), params$num_data_partners)
   min = 1
 
   for (id in 1:params$num_data_partners) {
     max = min + params$pi[id] - 1
     idx <- indicies[which(min <= indicies & indicies <= max)] - min + 1
-    params$indicies[[id]] = idx
+    params$indicies[[id]] <- idx
     if (id == 1) {
       idx <- (idx - 1)[-1]
     }
     temp <- params$tags[[id]]
     temp <- temp[idx]
-    tags[[id]] = temp
+    tags[[id]] <- temp
     min = max + 1
   }
 
@@ -160,7 +160,7 @@ check_colinearity_logistic_AC <- function(params) {
   }
 
   for (id in 1:params$num_data_partners) {
-    params$halfshare[[id]] = params$halfshare[[id]][, indicies[[id]], drop = FALSE]
+    params$halfshare[[id]] <- params$halfshare[[id]][, indicies[[id]], drop = FALSE]
   }
 
   write_time <- proc.time()[3]
@@ -294,11 +294,11 @@ ComputeStWSLogistic.DP <- function(params, data) {
   params$pi_ = pi_
 
   w = pi_ * (1 - pi_)
-  C = rep(list(list()), params$num_data_partners)
+  C <- rep(list(list()), params$num_data_partners)
 
   idx <- params$indicies[[params$data_partner_id]]
   set.seed(params$seed, kind = "Mersenne-Twister")
-  halfshare = matrix(rnorm(params$n * params$p, sd = 20),
+  halfshare <- matrix(rnorm(params$n * params$p, sd = 20),
                      nrow = params$n, ncol = params$p)[, idx, drop = FALSE]
 
   for (id in 1:params$num_data_partners) {
@@ -307,7 +307,7 @@ ComputeStWSLogistic.DP <- function(params, data) {
       idx <- params$indicies[[id]]
       halfshareDP = matrix(rnorm(params$n * params$ps[id], sd = 20),
                            nrow = params$n, ncol = params$ps[id])[, idx, drop = FALSE]
-      C[[id]] = params$scaler / (params$scaler + params$scalers[id]) *
+      C[[id]] <- params$scaler / (params$scaler + params$scalers[id]) *
         t(halfshareDP) %*% MultiplyDiagonalWTimesX(w, halfshare) +
         t(halfshareDP) %*% MultiplyDiagonalWTimesX(w, data$x - halfshare)
     } else if (id == params$data_partner_id) {
@@ -317,7 +317,7 @@ ComputeStWSLogistic.DP <- function(params, data) {
       idx <- params$indicies[[id]]
       halfshareDP = matrix(rnorm(params$n * params$ps[id], sd = 20),
                            nrow = params$n, ncol = params$ps[id])[, idx, drop = FALSE]
-      C[[id]] = params$scaler / (params$scaler + params$scalers[id]) *
+      C[[id]] <- params$scaler / (params$scaler + params$scalers[id]) *
         t(halfshare) %*% MultiplyDiagonalWTimesX(w, halfshareDP) +
         t(data$x - halfshare) %*% MultiplyDiagonalWTimesX(w, halfshareDP)
     }
@@ -400,7 +400,7 @@ ComputeStWSLogistic.AC <- function(params) {
     return(params)
   }
   params$I = I
-  halfshare = params$halfshare[[1]]
+  halfshare <- params$halfshare[[1]]
   for (id in 2:params$num_data_partners) {
     halfshare <- cbind(halfshare, params$halfshare[[id]])
   }
@@ -820,7 +820,7 @@ AnalysisCenterKLogistic <- function(num_data_partners = NULL,
                                    trace           = FALSE,
                                    verbose         = TRUE) {
 
-  filesList = rep(list(list()), num_data_partners)
+  filesList <- rep(list(list()), num_data_partners)
 
   params <- prepare_params_kp("logistic", 0, num_data_partners, msreqid, cutoff, max_iterations, ac = TRUE,
                             popmednet = popmednet, trace = trace, verbose = verbose)
@@ -891,7 +891,7 @@ AnalysisCenterKLogistic <- function(num_data_partners = NULL,
   params <- compute_initial_betas_logistic_AC(params)
 
   for (id in 1:num_data_partners) {
-    filesList[[id]] = c(paste0("u_beta_", id, ".rdata"), "indicies.rdata")
+    filesList[[id]] <- c(paste0("u_beta_", id, ".rdata"), "indicies.rdata")
   }
 
   params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP",
@@ -919,7 +919,7 @@ AnalysisCenterKLogistic <- function(num_data_partners = NULL,
     }
 
     for (id in 1:num_data_partners) {
-      filesList[[id]] = paste0("id", id, ".rdata")
+      filesList[[id]] <- paste0("id", id, ".rdata")
     }
     params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
@@ -933,8 +933,8 @@ AnalysisCenterKLogistic <- function(num_data_partners = NULL,
   }
 
   params <- ComputeFinalSBetaLogistic.AC(params)
-  filesList = rep(list(list()), num_data_partners)
-  filesList[[1]] = "sbeta.rdata"
+  filesList <- rep(list(list()), num_data_partners)
+  filesList[[1]] <- "sbeta.rdata"
   params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP1",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
