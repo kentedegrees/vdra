@@ -587,7 +587,7 @@ check_colinearity_cox_t3 <- function(params) {
        file = file.path(params$write_path, "Bindicies.rdata"))
   write_size <- sum(file.size(file.path(params$write_path,
                                         c("Aindicies.rdata",
-                                                             "Bindicies.rdata"))))
+                                          "Bindicies.rdata"))))
 
   tags <- params$b_tags[b_indicies]
 
@@ -628,8 +628,8 @@ compute_initial_betas_cox_t3 <- function(params) {
        file = file.path(params$write_path, "converged.rdata"))
   write_size <- sum(file.size(file.path(params$write_path,
                                         c("betasA.rdata",
-                                                             "betasB.rdata",
-                                                             "converged.rdata"))))
+                                          "betasB.rdata",
+                                          "converged.rdata"))))
   write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "compute_initial_betas_cox_t3",
@@ -1200,8 +1200,8 @@ process_x_t_w_x_cox_t3 <- function(params) {
        file = file.path(params$write_path, "converged.rdata"))
   write_size <- sum(file.size(file.path(params$write_path,
                                         c("betasA.rdata",
-                                                             "betasB.rdata",
-                                                             "converged.rdata"))))
+                                          "betasB.rdata",
+                                          "converged.rdata"))))
   write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "process_x_t_w_x_cox_t3",

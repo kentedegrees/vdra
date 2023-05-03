@@ -80,10 +80,10 @@ prepare_folder_acdp <- function(params, monitor_folder) {
     }
   }
 
-  empty = NULL
+  empty <- NULL
   write_time <- proc.time()[3]
   save(empty, file = file.path(params$write_path, "empty.rdata"))
-  write_size = file.size(file.path(params$write_path, "empty.rdata"))
+  write_size <- file.size(file.path(params$write_path, "empty.rdata"))
   write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "prepare_folder_acdp", 0, 0, write_time, write_size)
@@ -115,23 +115,23 @@ prepare_data_linlog_dp1 <- function(params, data, y_name = NULL) {
   covariate_index <- setdiff(seq_len(ncol(data)), response_index)
   workdata$tags <- create_model_matrix_tags(data[, covariate_index, drop = FALSE])
   workdata$tags <- c("(Intercept)", workdata$tags)
-  names(workdata$tags)[1] = "numeric"
-  x = model.matrix(~ ., data[, c(response_index, covariate_index), drop = FALSE])
-  rownames(x) = NULL
+  names(workdata$tags)[1] <- "numeric"
+  x <- model.matrix(~ ., data[, c(response_index, covariate_index), drop = FALSE])
+  rownames(x) <- NULL
   covariate_index <- setdiff(seq_len(ncol(x)), 2)
   workdata$x <- x[, c(2, covariate_index), drop = FALSE]
 
-  workdata$n        = nrow(workdata$x)
+  workdata$n        <- nrow(workdata$x)
   workdata$colmin   <- apply(workdata$x, 2, min)
   workdata$colmax   <- apply(workdata$x, 2, max)
   workdata$colsum   <- apply(workdata$x, 2, sum)
   workdata$colrange <- workdata$colmax - workdata$colmin
   for (i in seq_len(ncol(workdata$x))) {
     if (workdata$colmin[i] == workdata$colmax[i]) {
-      workdata$colmin[i] = 0
-      workdata$colrange[i] = 1
+      workdata$colmin[i] <- 0
+      workdata$colrange[i] <- 1
     }
-    workdata$x[, i] = (workdata$x[, i] - workdata$colmin[i]) / workdata$colrange[i]
+    workdata$x[, i] <- (workdata$x[, i] - workdata$colmin[i]) / workdata$colrange[i]
   }
 
   return(workdata)
@@ -154,20 +154,20 @@ prepare_data_linlog_dpk <- function(params, data) {
 
   workdata$tags <- create_model_matrix_tags(data)
   workdata$x <- model.matrix(~ ., data)
-  rownames(workdata$x) = NULL
+  rownames(workdata$x) <- NULL
   workdata$x <- workdata$x[, -1, drop = FALSE]
 
-  workdata$n        = nrow(workdata$x)
+  workdata$n        <- nrow(workdata$x)
   workdata$colmin   <- apply(workdata$x, 2, min)
   workdata$colmax   <- apply(workdata$x, 2, max)
   workdata$colsum   <- apply(workdata$x, 2, sum)
   workdata$colrange <- workdata$colmax - workdata$colmin
   for (i in seq_len(ncol(workdata$x))) {
     if (workdata$colmin[i] == workdata$colmax[i]) {
-      workdata$colmin[i] = 0
-      workdata$colrange[i] = 1
+      workdata$colmin[i] <- 0
+      workdata$colrange[i] <- 1
     }
-    workdata$x[, i] = (workdata$x[, i] - workdata$colmin[i]) / workdata$colrange[i]
+    workdata$x[, i] <- (workdata$x[, i] - workdata$colmin[i]) / workdata$colrange[i]
   }
 
   return(workdata)
@@ -175,13 +175,13 @@ prepare_data_linlog_dpk <- function(params, data) {
 
 SendBasicInfo.DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "SendbasicInfo.DP\n\n")
-  n = data$n
+  n <- data$n
   params$n <- n
-  analysis = params$analysis
-  data_partner_id = params$data_partner_id
+  analysis <- params$analysis
+  data_partner_id <- params$data_partner_id
   write_time <- proc.time()[3]
   save(analysis, n, data_partner_id, file = file.path(params$write_path, "n_analysis.rdata"))
-  write_size = file.size(file.path(params$write_path, "n_analysis.rdata"))
+  write_size <- file.size(file.path(params$write_path, "n_analysis.rdata"))
   write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "SendBasicInfo.DP", 0, 0, write_time, write_size)
   return(params)
@@ -190,53 +190,53 @@ SendBasicInfo.DP <- function(params, data) {
 CheckAgreement.AC <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "CheckAgreement.AC\n\n")
   read_time <- 0
-  read_size = 0
-  analysisAll = rep("", params$num_data_partners)
-  nAll        = rep(0, params$num_data_partners)
-  ndata_partner_id = rep(0, params$num_data_partners)
-  message1    = NULL
-  message2    = NULL
-  n           = NULL
-  analysis    = NULL
-  data_partner_id = NULL
+  read_size <- 0
+  analysisAll <- rep("", params$num_data_partners)
+  nAll        <- rep(0, params$num_data_partners)
+  ndata_partner_id <- rep(0, params$num_data_partners)
+  message1    <- NULL
+  message2    <- NULL
+  n           <- NULL
+  analysis    <- NULL
+  data_partner_id <- NULL
   for (id in 1:params$num_data_partners) {
     read_time <- read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "n_analysis.rdata"))
-    read_size = read_size + file.size(file.path(params$readPathDP[id], "n_analysis.rdata"))
+    read_size <- read_size + file.size(file.path(params$readPathDP[id], "n_analysis.rdata"))
     read_time <- read_time + proc.time()[3]
-    analysisAll[id] = analysis
-    nAll[id]        = n
-    ndata_partner_id[id] = data_partner_id
+    analysisAll[id] <- analysis
+    nAll[id]        <- n
+    ndata_partner_id[id] <- data_partner_id
   }
 
   if (any(params$analysis != analysisAll)) {
     params$failed <- TRUE
-    message1 = "Different regressions have been specified.\n"
-    message1 = paste(message1, "Analysis center specified", params$analysis, "regression.\n")
+    message1 <- "Different regressions have been specified.\n"
+    message1 <- paste(message1, "Analysis center specified", params$analysis, "regression.\n")
     for (id in 1:params$num_data_partners) {
-      message1 = paste(message1, "Data partner", id, "specified", analysisAll[id], "regression.\n")
+      message1 <- paste(message1, "Data partner", id, "specified", analysisAll[id], "regression.\n")
     }
   }
 
   if (min(nAll) < max(nAll)) {
     params$failed <- TRUE
-    message2 = "Data partners provided different numbers of observations.\n"
+    message2 <- "Data partners provided different numbers of observations.\n"
     for (id in 1:params$num_data_partners) {
-      message2 = paste(message2, "Data partner", id, "has", nAll[id], "observations.\n")
+      message2 <- paste(message2, "Data partner", id, "has", nAll[id], "observations.\n")
     }
   }
 
-  message3error = FALSE
-  message3 = ""
+  message3error <- FALSE
+  message3 <- ""
   for (i in 1:params$num_data_partners) {
     if (i != ndata_partner_id[i]) {
-      message3error = TRUE
+      message3error <- TRUE
       params$failed <- TRUE
-      message3 = paste0(message3, "Data Partner ", i, " reports its ID as ", ndata_partner_id[i], "\n")
+      message3 <- paste0(message3, "Data Partner ", i, " reports its ID as ", ndata_partner_id[i], "\n")
     }
   }
   if (message3error) {
-    message3 = paste0("Check PopMedNet DataMart setup.\n", message3)
+    message3 <- paste0("Check PopMedNet DataMart setup.\n", message3)
   }
 
   if (params$failed) {
@@ -251,20 +251,20 @@ CheckAgreement.AC <- function(params) {
 #' @importFrom stats runif
 prepare_params_linear_DP <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_DP\n\n")
-  params$n          = nrow(data$x)
-  params$p          = ncol(data$x)
+  params$n          <- nrow(data$x)
+  params$p          <- ncol(data$x)
   temp <- as.numeric(Sys.time())
   set.seed((temp - trunc(temp)) * .Machine$integer.max)
-  params$seed       = floor(runif(1) * .Machine$integer.max)
-  params$scaler     = 1 + runif(1)
+  params$seed       <- floor(runif(1) * .Machine$integer.max)
+  params$scaler     <- 1 + runif(1)
 
   p <- params$p
-  seed = params$seed
-  scaler = params$scaler
+  seed <- params$seed
+  scaler <- params$scaler
 
   write_time <- proc.time()[3]
   save(p, scaler, seed, file = file.path(params$write_path, "p_scaler_seed.rdata"))
-  write_size = file.size(file.path(params$write_path, "p_scaler_seed.rdata"))
+  write_size <- file.size(file.path(params$write_path, "p_scaler_seed.rdata"))
   write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "prepare_params_linear_DP", 0, 0, write_time, write_size)
@@ -327,7 +327,7 @@ prepare_shares_linear_dp <- function(params, data) {
   save(products, file = file.path(params$write_path, "products.rdata"))
   save(halfshare, file = file.path(params$write_path, "halfshare.rdata"))
   save(colmin, colrange, colsum, colnames, tags, file = file.path(params$write_path, "colstats.rdata"))
-  write_size = sum(file.size(file.path(params$write_path, c("products.rdata",
+  write_size <- sum(file.size(file.path(params$write_path, c("products.rdata",
                                                           "halfshare.rdata",
                                                           "colstats.rdata"))))
   write_time <- proc.time()[3] - write_time
@@ -340,81 +340,81 @@ prepare_shares_linear_dp <- function(params, data) {
 get_products_linear_ac <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "get_products_linear_ac\n\n")
   read_time <- 0
-  read_size = 0
-  p = 0
-  n = 0
+  read_size <- 0
+  p <- 0
+  n <- 0
 
   allproducts  <- rep(list(list()), params$num_data_partners)
   allhalfshare <- rep(list(list()), params$num_data_partners)
   alltags      <- rep(list(list()), params$num_data_partners)
-  products  = NULL
+  products  <- NULL
   halfshare <- NULL
-  tags      = NULL
-  allcolmin = allcolrange = allcolsum = allcolnames = NULL
-  colmin = colrange = colsum = colnames = NULL
-  party = NULL
+  tags      <- NULL
+  allcolmin <- allcolrange <- allcolsum <- allcolnames <- NULL
+  colmin <- colrange <- colsum <- colnames <- NULL
+  party <- NULL
   for (id in 1:params$num_data_partners) {
     read_time <- read_time - proc.time()[3]
     load(file.path(params$readPathDP[id], "products.rdata"))
     load(file.path(params$readPathDP[id], "halfshare.rdata"))
     load(file.path(params$readPathDP[id], "colstats.rdata"))
-    read_size = read_size + sum(file.size(file.path(params$readPathDP[id],
+    read_size <- read_size + sum(file.size(file.path(params$readPathDP[id],
                                                   c("products.rdata",
                                                     "halfshare.rdata",
                                                     "colstats.rdata"))))
     read_time <- read_time + proc.time()[3]
 
-    allproducts[[id]]  = products
+    allproducts[[id]]  <- products
     allhalfshare[[id]] <- halfshare
-    alltags[[id]]      = tags
-    allcolmin          = c(allcolmin, colmin)
-    allcolrange        = c(allcolrange, colrange)
-    allcolsum          = c(allcolsum, colsum)
-    allcolnames        = c(allcolnames, colnames)
-    party              = c(party, rep(paste0("dp", id), length(colnames)))
-    p = p + ncol(halfshare)
-    if (id == 1) n = nrow(halfshare)
+    alltags[[id]]      <- tags
+    allcolmin          <- c(allcolmin, colmin)
+    allcolrange        <- c(allcolrange, colrange)
+    allcolsum          <- c(allcolsum, colsum)
+    allcolnames        <- c(allcolnames, colnames)
+    party              <- c(party, rep(paste0("dp", id), length(colnames)))
+    p <- p + ncol(halfshare)
+    if (id == 1) n <- nrow(halfshare)
   }
 
-  m = matrix(0, p, p)
-  colnames(m) = allcolnames
-  rownames(m) = allcolnames
-  offset1 = 1
-  params$pi = rep(0, params$num_data_partners)
+  m <- matrix(0, p, p)
+  colnames(m) <- allcolnames
+  rownames(m) <- allcolnames
+  offset1 <- 1
+  params$pi <- rep(0, params$num_data_partners)
   for (id1 in 1:params$num_data_partners) {
-    p1 = ncol(allhalfshare[[id1]])
-    params$pi[id1] = p1
-    offset2 = offset1
+    p1 <- ncol(allhalfshare[[id1]])
+    params$pi[id1] <- p1
+    offset2 <- offset1
     for (id2 in id1:params$num_data_partners) {
-      p2 = ncol(allhalfshare[[id2]])
+      p2 <- ncol(allhalfshare[[id2]])
       if (id1 == id2) {
-        m[offset1:(offset1 + p1 - 1), offset2:(offset2 + p2 - 1)] = allproducts[[id1]][[id2]]
+        m[offset1:(offset1 + p1 - 1), offset2:(offset2 + p2 - 1)] <- allproducts[[id1]][[id2]]
       } else {
         temp <- allproducts[[id1]][[id2]] + allproducts[[id2]][[id1]] +
           t(allhalfshare[[id1]]) %*% allhalfshare[[id2]]
-        m[offset1:(offset1 + p1 - 1), offset2:(offset2 + p2 - 1)] = temp
-        m[offset2:(offset2 + p2 - 1), offset1:(offset1 + p1 - 1)] = t(temp)
+        m[offset1:(offset1 + p1 - 1), offset2:(offset2 + p2 - 1)] <- temp
+        m[offset2:(offset2 + p2 - 1), offset1:(offset1 + p1 - 1)] <- t(temp)
       }
-      offset2 = offset2 + p2
+      offset2 <- offset2 + p2
     }
-    offset1 = offset1 + p1
+    offset1 <- offset1 + p1
   }
 
-  m = diag(allcolrange) %*% m %*% diag(allcolrange) +
+  m <- diag(allcolrange) %*% m %*% diag(allcolrange) +
     outer(allcolmin, allcolsum) + outer(allcolsum, allcolmin) -
     n * outer(allcolmin, allcolmin)
 
-  params$xtx          = m[2:p, 2:p, drop = FALSE]
-  params$xty          = m[2:p, 1, drop = FALSE]
-  params$yty          = m[1, 1]
-  params$means_y       = allcolsum[1] / n
-  params$means        = allcolsum[-1] / n
-  params$n            = n
-  params$p            = p
-  params$colnames     = allcolnames[-1]
-  params$party        = party[-1]
-  params$converged    = TRUE
-  params$tags         = alltags
+  params$xtx          <- m[2:p, 2:p, drop = FALSE]
+  params$xty          <- m[2:p, 1, drop = FALSE]
+  params$yty          <- m[1, 1]
+  params$means_y       <- allcolsum[1] / n
+  params$means        <- allcolsum[-1] / n
+  params$n            <- n
+  params$p            <- p
+  params$colnames     <- allcolnames[-1]
+  params$party        <- party[-1]
+  params$converged    <- TRUE
+  params$tags         <- alltags
 
   params <- add_to_log(params, "get_products_linear_ac", read_time, read_size, 0, 0)
   return(params)
@@ -426,39 +426,39 @@ compute_results_linear_ac <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "compute_results_linear_ac\n\n")
   stats           <- params$stats
   stats$converged <- params$converged
-  n        = params$n
-  yty      = params$yty
-  xty      = params$xty
-  xtx      = params$xtx
-  means_y   = params$means_y
+  n        <- params$n
+  yty      <- params$yty
+  xty      <- params$xty
+  xtx      <- params$xtx
+  means_y   <- params$means_y
 
   # First we de-standardize.
 
-  nrow = nrow(xtx)
-  indicies = c(1)
+  nrow <- nrow(xtx)
+  indicies <- c(1)
   for (i in 2:nrow) {
-    temp_indicies = c(indicies, i)
+    temp_indicies <- c(indicies, i)
     if (rcond(xtx[temp_indicies, temp_indicies]) > 10^8 * .Machine$double.eps) {
-      indicies = c(indicies, i)
+      indicies <- c(indicies, i)
     }
   }
 
   tags <- params$tags
-  min = 1
+  min <- 1
   for (id in 1:params$num_data_partners) {
-    max = min + params$pi[id] - 1
+    max <- min + params$pi[id] - 1
     if (id == 1) {
-      max = max - 1
+      max <- max - 1
     }
     idx <- indicies[which(min <= indicies & indicies <= max)] - min + 1
     temp <- tags[[id]]
     temp <- temp[idx]
     tags[[id]] <- temp
-    min = max + 1
+    min <- max + 1
   }
 
   params$error_message <- ""
-  numeric_found = FALSE
+  numeric_found <- FALSE
   for (id in 2:params$num_data_partners) {
     if (length(unique(tags[[id]])) == 0) {
       params$failed <- TRUE
@@ -466,7 +466,7 @@ compute_results_linear_ac <- function(params) {
                                    paste("After removing colinear covariates, Data Partner",
                                          id, "has no covariates."))
     } else {
-      numeric_found = numeric_found | "numeric" %in% names(tags[[id]])
+      numeric_found <- numeric_found | "numeric" %in% names(tags[[id]])
     }
   }
   if (!numeric_found) {
@@ -475,29 +475,29 @@ compute_results_linear_ac <- function(params) {
                                  paste("After removing colinear covariates, no Data Partner > DP1 has a numeric covariate."))
   }
 
-  stats$failed    = params$failed
+  stats$failed    <- params$failed
 
-  p             = length(indicies)
-  p1            = ncol(xtx)
-  xtx_old       = xtx
-  xty_old       = xty
-  xtx           = xtx[indicies, indicies, drop = FALSE]
-  xty           = xty[indicies, , drop = FALSE]
+  p             <- length(indicies)
+  p1            <- ncol(xtx)
+  xtx_old       <- xtx
+  xty_old       <- xty
+  xtx           <- xtx[indicies, indicies, drop = FALSE]
+  xty           <- xty[indicies, , drop = FALSE]
 
   invxtx <- solve(xtx)
-  betas  = drop(invxtx %*% xty)
+  betas  <- drop(invxtx %*% xty)
 
   num_covariates <- p - 1
 
   #   # If true sse is approximately 0, random variations could cause this
   #   # calculation to be less than 0
   #   # If calculated sse is less than 0, we set it equal to 0.
-  sse     = max(drop(yty - 2 * t(xty) %*% betas + (t(betas) %*% xtx) %*% betas), 0)
-  rstderr = drop(sqrt(sse / (n - num_covariates - 1)))
-  sst     = drop(yty - means_y^2 * n)
-  ssr     = sst - sse
-  df1     = num_covariates
-  df2     = n - num_covariates - 1
+  sse     <- max(drop(yty - 2 * t(xty) %*% betas + (t(betas) %*% xtx) %*% betas), 0)
+  rstderr <- drop(sqrt(sse / (n - num_covariates - 1)))
+  sst     <- drop(yty - means_y^2 * n)
+  ssr     <- sst - sse
+  df1     <- num_covariates
+  df2     <- n - num_covariates - 1
   if (sse == 0) {
     f_stat <- Inf
   } else {
@@ -511,54 +511,54 @@ compute_results_linear_ac <- function(params) {
   }
   adj_r_sq <- drop(1 - (n - 1) / (n - num_covariates - 1) * (1 - r_sq))
   if (rstderr == 0) {
-    tvals = rep(Inf, num_covariates + 1)
+    tvals <- rep(Inf, num_covariates + 1)
   } else {
-    tvals   = betas / (rstderr * sqrt(diag(invxtx)))
+    tvals   <- betas / (rstderr * sqrt(diag(invxtx)))
   }
-  secoef  = tvals^-1 * betas
-  pvals   = 2 * pt(abs(tvals), n - num_covariates - 1, lower.tail = FALSE)
-  stats$party                  = params$party
-  stats$responseParty          = "dp1"
-  stats$coefficients           = rep(NA, p1)
-  stats$tvals                  = rep(NA, p1)
-  stats$secoef                 = rep(NA, p1)
-  stats$pvals                  = rep(NA, p1)
+  secoef  <- tvals^-1 * betas
+  pvals   <- 2 * pt(abs(tvals), n - num_covariates - 1, lower.tail = FALSE)
+  stats$party                  <- params$party
+  stats$responseParty          <- "dp1"
+  stats$coefficients           <- rep(NA, p1)
+  stats$tvals                  <- rep(NA, p1)
+  stats$secoef                 <- rep(NA, p1)
+  stats$pvals                  <- rep(NA, p1)
 
-  stats$sse                    = sse
-  stats$coefficients[indicies] = betas
-  stats$tvals[indicies]        = tvals
-  stats$secoef[indicies]       = secoef
-  stats$pvals[indicies]        = pvals
-  stats$rstderr                = rstderr
-  stats$rsquare                = r_sq
-  stats$adjrsquare             = adj_r_sq
-  stats$f_stat                  = f_stat
+  stats$sse                    <- sse
+  stats$coefficients[indicies] <- betas
+  stats$tvals[indicies]        <- tvals
+  stats$secoef[indicies]       <- secoef
+  stats$pvals[indicies]        <- pvals
+  stats$rstderr                <- rstderr
+  stats$rsquare                <- r_sq
+  stats$adjrsquare             <- adj_r_sq
+  stats$f_stat                  <- f_stat
   stats$f_pval <- f_pval
-  stats$df1                    = df1
-  stats$df2                    = df2
-  stats$n                      = params$n
-  stats$xtx                    = xtx_old
-  stats$xty                    = xty_old
-  stats$yty                    = yty
-  stats$means_y                 = means_y
-  stats$means                  = params$means
+  stats$df1                    <- df1
+  stats$df2                    <- df2
+  stats$n                      <- params$n
+  stats$xtx                    <- xtx_old
+  stats$xty                    <- xty_old
+  stats$yty                    <- yty
+  stats$means_y                 <- means_y
+  stats$means                  <- params$means
 
-  names(stats$party)           = params$colnames
-  names(stats$coefficients)    = params$colnames
-  names(stats$secoef)          = params$colnames
-  names(stats$tvals)           = params$colnames
-  names(stats$pvals)           = params$colnames
-  colnames(stats$xtx)          = params$colnames
-  rownames(stats$xtx)          = params$colnames
-  colnames(stats$xty)          = colnames(params$xty)
-  rownames(stats$xty)          = params$colnames
+  names(stats$party)           <- params$colnames
+  names(stats$coefficients)    <- params$colnames
+  names(stats$secoef)          <- params$colnames
+  names(stats$tvals)           <- params$colnames
+  names(stats$pvals)           <- params$colnames
+  colnames(stats$xtx)          <- params$colnames
+  rownames(stats$xtx)          <- params$colnames
+  colnames(stats$xty)          <- colnames(params$xty)
+  rownames(stats$xty)          <- params$colnames
 
-  class(stats) = "vdralinear"
+  class(stats) <- "vdralinear"
 
   params$stats <- stats
   write_time <- proc.time()[3]
   save(stats, file = file.path(params$write_path, "stats.rdata"))
-  write_size = file.size(file.path(params$write_path, "stats.rdata"))
+  write_size <- file.size(file.path(params$write_path, "stats.rdata"))
   write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "compute_results_linear_ac", 0, 0, write_time, write_size)
   return(params)
@@ -571,7 +571,7 @@ get_results_linear_DP <- function(params) {
   stats <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$readPathAC, "stats.rdata"))
-  read_size = file.size(file.path(params$readPathAC, "stats.rdata"))
+  read_size <- file.size(file.path(params$readPathAC, "stats.rdata"))
   read_time <- proc.time()[3] - read_time
   params$stats <- stats
 

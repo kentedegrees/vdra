@@ -1,7 +1,8 @@
 ################### DISTRIBUTED LOGISTIC REGRESSION FUNCTIONS ##################
 
 check_colinearity_logistic_t3 <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "check_colinearity_logistic_t3\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "check_colinearity_logistic_t3\n\n")
   xtx <- params$xtx
   xty <- params$xty
 
@@ -49,30 +50,38 @@ check_colinearity_logistic_t3 <- function(params) {
   save(a_indicies, file = file.path(params$write_path, "Aindicies.rdata"))
   save(b_indicies, file = file.path(params$write_path, "Bindicies.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, c("Aindicies.rdata",
-                                                          "Bindicies.rdata"))))
+                                                             "Bindicies.rdata"))))
   write_time <- proc.time()[3] - write_time
 
   b_tags <- params$b_tags[params$b_indicies_keep]
   a_tags <- params$a_tags[params$a_indicies_keep][-1]
 
-  if ((length(unique(a_tags)) == 1) || (length(unique(a_tags)) >= 2 && !("numeric" %in% names(a_tags)))) {
+  if ((length(unique(a_tags)) == 1) ||
+      (length(unique(a_tags)) >= 2 && !("numeric" %in% names(a_tags)))) {
     params$failed <- TRUE
-    params$error_message <- "A must have no covariates or at least 2 covariates at least one of which is continuous."
+    params$error_message <-
+      paste("A must have no covariates or at least 2",
+            "covariates at least one of which is continuous.")
   } else if (length(unique(b_tags)) < 2) {
     params$failed <- TRUE
-    params$error_message <- "After removing colinear covariates, Party B has 1 or fewer covariates."
+    params$error_message <-
+      "After removing colinear covariates, Party B has 1 or fewer covariates."
   } else if (!("numeric" %in% names(b_tags))) {
     params$failed <- TRUE
-    params$error_message <- "After removing colinear covariates, Party B has no continuous covariates."
+    params$error_message <-
+      paste("After removing colinear covariates,",
+            "Party B has no continuous covariates.")
   }
 
-  params <- add_to_log(params, "check_colinearity_logistic_t3", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "check_colinearity_logistic_t3",
+                       0, 0, write_time, write_size)
   return(params)
 }
 
 
 compute_initial_betas_logistic_t3 <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_initial_betas_logistic_t3\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "compute_initial_betas_logistic_t3\n\n")
   # de-standardize xty
   p1     <- params$p1
   p2     <- params$p2
@@ -107,28 +116,30 @@ compute_initial_betas_logistic_t3 <- function(params) {
   save(converged, max_iter_exceeded,
        file = file.path(params$write_path, "converged.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, c("betasA.rdata",
-                                                          "betasB.rdata",
-                                                          "a_xty.rdata",
-                                                          "b_xty.rdata",
-                                                          "converged.rdata"))))
+                                                             "betasB.rdata",
+                                                             "a_xty.rdata",
+                                                             "b_xty.rdata",
+                                                             "converged.rdata"))))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "compute_initial_betas_logistic_t3", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "compute_initial_betas_logistic_t3",
+                       0, 0, write_time, write_size)
 
   return(params)
 }
 
 
 update_params_logistic_a3 <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "update_params_logistic_a3\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "update_params_logistic_a3\n\n")
   a_indicies <- NULL
   a_xty      <- NULL
   p2        <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "Aindicies.rdata"))
   load(file.path(params$read_path[["T"]], "a_xty.rdata"))
-  read_size <- sum(file.size(file.path(params$read_path[["T"]], c("Aindicies.rdata",
-                                                               "a_xty.rdata"))))
+  read_size <- sum(file.size(file.path(params$read_path[["T"]],
+                                       c("Aindicies.rdata", "a_xty.rdata"))))
 
   read_time <- proc.time()[3] - read_time
   params$colnames_a_old <- params$colnamesA
@@ -140,20 +151,23 @@ update_params_logistic_a3 <- function(params) {
   params$means         <- params$means[a_indicies]
   params$sd            <- params$sd[a_indicies]
   params$a_xty          <- a_xty
-  params <- add_to_log(params, "update_params_logistic_a3, update_data_logistic_a3", read_time, read_size, 0, 0)
+  params <- add_to_log(params,
+                       "update_params_logistic_a3, update_data_logistic_a3",
+                       read_time, read_size, 0, 0)
   return(params)
 }
 
 
 update_params_logistic_b3 <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "update_params_logistic_b3\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "update_params_logistic_b3\n\n")
   b_indicies <- NULL
   b_xty      <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "Bindicies.rdata"))
   load(file.path(params$read_path[["T"]], "b_xty.rdata"))
-  read_size <- sum(file.size(file.path(params$read_path[["T"]], c("Bindicies.rdata",
-                                                               "b_xty.rdata"))))
+  read_size <- sum(file.size(file.path(params$read_path[["T"]],
+                                       c("Bindicies.rdata", "b_xty.rdata"))))
 
   read_time <- proc.time()[3] - read_time
   params$colnamesB_old <- params$colnamesB
@@ -164,7 +178,9 @@ update_params_logistic_b3 <- function(params) {
   params$means         <- params$means[b_indicies]
   params$sd            <- params$sd[b_indicies]
   params$b_xty          <- b_xty
-  params <- add_to_log(params, "update_params_logistic_b3, update_data_logistic_b3", read_time, read_size, 0, 0)
+  params <- add_to_log(params,
+                       "update_params_logistic_b3, update_data_logistic_b3",
+                       read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -191,13 +207,14 @@ get_beta_a_logistic_a3 <- function(params) {
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "converged.rdata"))
   load(file.path(params$read_path[["T"]], "betasA.rdata"))
-  read_size <- sum(file.size(file.path(params$read_path[["T"]], c("converged.rdata",
-                                                               "betasA.rdata"))))
+  read_size <- sum(file.size(file.path(params$read_path[["T"]],
+                                       c("converged.rdata", "betasA.rdata"))))
   read_time <- proc.time()[3] - read_time
   params$converged <- converged
   params$max_iter_exceeded <- max_iter_exceeded
   params$betas <- a_betas
-  params <- add_to_log(params, "get_beta_a_logistic_a3", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "get_beta_a_logistic_a3",
+                       read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -210,13 +227,14 @@ get_beta_b_logistic_b3 <- function(params) {
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "converged.rdata"))
   load(file.path(params$read_path[["T"]], "betasB.rdata"))
-  read_size <- sum(file.size(file.path(params$read_path[["T"]], c("converged.rdata",
-                                                               "betasB.rdata"))))
+  read_size <- sum(file.size(file.path(params$read_path[["T"]],
+                                       c("converged.rdata", "betasB.rdata"))))
   read_time <- proc.time()[3] - read_time
   params$converged <- converged
   params$max_iter_exceeded <- max_iter_exceeded
   params$betas <- b_betas
-  params <- add_to_log(params, "get_beta_b_logistic_b3", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "get_beta_b_logistic_b3",
+                       read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -230,7 +248,8 @@ get_xa_beta_a_logistic_a3 <- function(params, data) {
   write_size <- file.size(file.path(params$write_path, "xabeta.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "get_xa_beta_a_logistic_a3", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "get_xa_beta_a_logistic_a3",
+                       0, 0, write_time, write_size)
   return(params)
 }
 
@@ -244,7 +263,8 @@ get_xb_beta_b_logistic_b3 <- function(params, data) {
   write_size <- file.size(file.path(params$write_path, "xbbeta.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "get_xb_beta_b_logistic_b3", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "get_xb_beta_b_logistic_b3",
+                       0, 0, write_time, write_size)
   return(params)
 }
 
@@ -254,8 +274,8 @@ get_weights_logistic_t3 <- function(params) {
   xa_beta <- NULL
   xb_beta <- NULL
   read_time <- proc.time()[3]
-  load(file.path(params$read_path[["A"]], "xabeta.rdata"))  # Load x_beta_b
-  load(file.path(params$read_path[["B"]], "xbbeta.rdata"))  # Load x_beta_b
+  load(file.path(params$read_path[["A"]], "xabeta.rdata"))
+  load(file.path(params$read_path[["B"]], "xbbeta.rdata"))
   read_size <- file.size(file.path(params$read_path[["A"]], "xabeta.rdata")) +
     file.size(file.path(params$read_path[["B"]], "xbbeta.rdata"))
   read_time <- proc.time()[3] - read_time
@@ -268,7 +288,8 @@ get_weights_logistic_t3 <- function(params) {
   save(pi_, file = file.path(params$write_path, "pi.rdata"))
   write_size <- file.size(file.path(params$write_path, "pi.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "get_weights_logistic_t3", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "get_weights_logistic_t3",
+                       read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -286,7 +307,8 @@ get_rv_logistic_b3 <- function(params, data) {
   params$pi_ <- pi_
   w <- pi_ * (1 - params$pi_)
   xb_t_w_xb <- 0
-  pbar <- make_progress_bar_1(params$blocks$num_blocks, "R(I-z*z')w*XB", params$verbose)
+  pbar <- make_progress_bar_1(params$blocks$num_blocks,
+                              "R(I-z*z')w*XB", params$verbose)
   container_ct_rz <- 0
   container_ct_rv <- 0
   for (i in 1:params$blocks$num_blocks) {
@@ -310,7 +332,7 @@ get_rv_logistic_b3 <- function(params, data) {
 
     read_time <- read_time - proc.time()[3]
     rz <- matrix(readBin(con = to_read, what = numeric(), n = n * n,
-                        endian = "little"), nrow = n, ncol = n)
+                         endian = "little"), nrow = n, ncol = n)
     read_time <- read_time + proc.time()[3]
 
     rv <- rz %*% wx_block
@@ -321,23 +343,29 @@ get_rv_logistic_b3 <- function(params, data) {
 
     xb_t_w_xb <- xb_t_w_xb + t(x_block) %*% wx_block
 
-    if ((i + 1) %in% params$container$filebreak_rz || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_rz ||
+        i == params$blocks$num_blocks) {
       close(to_read)
-      read_size <- read_size + file.size(file.path(params$read_path[["T"]], filename1))
+      read_size <- read_size +
+        file.size(file.path(params$read_path[["T"]], filename1))
     }
-    if ((i + 1) %in% params$container$filebreak_rv || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_rv ||
+        i == params$blocks$num_blocks) {
       close(to_write)
-      write_size <- write_size + file.size(file.path(params$write_path, filename2))
+      write_size <- write_size +
+        file.size(file.path(params$write_path, filename2))
     }
     pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
 
   write_time <- write_time - proc.time()[3]
   save(xb_t_w_xb, file = file.path(params$write_path, "xbtwxb.rdata"))
-  write_size <- write_size + sum(file.size(c(file.path(params$write_path, "xbtwxb.rdata"))))
+  write_size <- write_size +
+    sum(file.size(c(file.path(params$write_path, "xbtwxb.rdata"))))
   write_time <- write_time + proc.time()[3]
 
-  params <- add_to_log(params, "get_rv_logistic_b3", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "get_rv_logistic_b3",
+                       read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -382,11 +410,11 @@ process_v_logistic_t3 <- function(params) {
     read_time <- read_time - proc.time()[3]
     to_read_1 <- file(file.path(params$dplocalPath, filename1), "rb")
     r2  <- matrix(readBin(con = to_read_1, what = numeric(), n = n * n,
-                        endian = "little"), nrow = n, ncol = n)
+                          endian = "little"), nrow = n, ncol = n)
     read_size <- read_size + file.size(file.path(params$dplocalPath, filename1))
     close(to_read_1)
     rv  <- matrix(readBin(con = to_read_2, what = numeric(), n = n * p2,
-                        endian = "little"), nrow = n, ncol = p2)
+                          endian = "little"), nrow = n, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
     v <- t(r2) %*% rv
@@ -397,21 +425,25 @@ process_v_logistic_t3 <- function(params) {
     to_write4 <- file(file.path(params$dplocalPath, filename4), "wb")
     writeBin(as.vector(r_3), con = to_write4, endian = "little")
     close(to_write4)
-    write_size <- write_size + file.size(file.path(params$dplocalPath, filename4))
+    write_size <- write_size +
+      file.size(file.path(params$dplocalPath, filename4))
     writeBin(as.vector(vr), con = to_write3, endian = "little")
     write_time <- write_time + proc.time()[3]
     if ((i + 1) %in% params$container$filebreak_rv || i == num_blocks) {
       close(to_read_2)
-      read_size <- read_size + file.size(file.path(params$dplocalPath, filename1))
+      read_size <- read_size +
+        file.size(file.path(params$dplocalPath, filename1))
     }
     if ((i + 1) %in% params$container$filebreak_vr || i == num_blocks) {
       close(to_write3)
-      write_size <- write_size + file.size(file.path(params$write_path, filename3))
+      write_size <- write_size +
+        file.size(file.path(params$write_path, filename3))
     }
 
     pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
-  params <- add_to_log(params, "process_v_logistic_t3", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "process_v_logistic_t3",
+                       read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -431,7 +463,8 @@ get_xr_logistic_a3 <- function(params, data) {
   w <- pi_ * (1 - params$pi_)
   xa_t_w_xa <- 0
 
-  pbar <- make_progress_bar_1(params$blocks$num_blocks, "XA'(I-z*z')w*XB*R", params$verbose)
+  pbar <- make_progress_bar_1(params$blocks$num_blocks,
+                              "XA'(I-z*z')w*XB*R", params$verbose)
 
   container_ct_vr <- 0
   container_ct_xr <- 0
@@ -456,7 +489,7 @@ get_xr_logistic_a3 <- function(params, data) {
 
     read_time <- read_time - proc.time()[3]
     vr  <- matrix(readBin(con = to_read, what = numeric(), n = n * p2,
-                        endian = "little"), nrow = n, ncol = p2)
+                          endian = "little"), nrow = n, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
     xr <- t(x_block) %*% vr
@@ -467,29 +500,36 @@ get_xr_logistic_a3 <- function(params, data) {
 
     xa_t_w_xa <- xa_t_w_xa + t(x_block) %*% wx_block
 
-    if ((i + 1) %in% params$container$filebreak_vr || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_vr ||
+        i == params$blocks$num_blocks) {
       close(to_read)
-      read_size <- read_size + file.size(file.path(params$read_path[["T"]], filename1))
+      read_size <- read_size +
+        file.size(file.path(params$read_path[["T"]], filename1))
     }
-    if ((i + 1) %in% params$container$filebreak_xr || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_xr ||
+        i == params$blocks$num_blocks) {
       close(to_write)
-      write_size <- write_size + file.size(file.path(params$write_path, filename2))
+      write_size <- write_size +
+        file.size(file.path(params$write_path, filename2))
     }
     pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
 
   write_time <- write_time - proc.time()[3]
   save(xa_t_w_xa, file = file.path(params$write_path, "xatwxa.rdata"))
-  write_size <- write_size + sum(file.size(c(file.path(params$write_path, "xatwxa.rdata"))))
+  write_size <- write_size +
+    sum(file.size(c(file.path(params$write_path, "xatwxa.rdata"))))
   write_time <- write_time + proc.time()[3]
 
-  params <- add_to_log(params, "get_xr_logistic_a3", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "get_xr_logistic_a3",
+                       read_time, read_size, write_time, write_size)
   return(params)
 }
 
 
 process_xt_wx_logistic_t3 <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "process_xt_wx_logistic_t3\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "process_xt_wx_logistic_t3\n\n")
   xa_t_w_xa <- NULL
   p1 <- params$p1
   p2 <- params$p2
@@ -516,23 +556,26 @@ process_xt_wx_logistic_t3 <- function(params) {
     read_time <- read_time - proc.time()[3]
     to_read_1 <- file(file.path(params$dplocalPath, filename2), "rb")
     r  <- matrix(readBin(con = to_read_1, what = numeric(), n = p2 * p2,
-                       endian = "little"), nrow = p2, ncol = p2)
+                         endian = "little"), nrow = p2, ncol = p2)
     close(to_read_1)
     xr  <- matrix(readBin(con = to_read, what = numeric(), n = p1 * p2,
-                        endian = "little"), nrow = p1, ncol = p2)
+                          endian = "little"), nrow = p1, ncol = p2)
     read_size <- read_size + file.size(file.path(params$dplocalPath, filename2))
     read_time <- read_time + proc.time()[3]
 
     xa_t_w_xb <- xa_t_w_xb + xr %*% t(r)
 
-    if ((i + 1) %in% params$container$filebreak_xr || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_xr ||
+        i == params$blocks$num_blocks) {
       close(to_read)
-      read_size <- read_size + file.size(file.path(params$read_path[["A"]], filename1))
+      read_size <- read_size +
+        file.size(file.path(params$read_path[["A"]], filename1))
     }
     pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
 
-  xtwx <- rbind(cbind(params$xatwxa, xa_t_w_xb), cbind(t(xa_t_w_xb), params$xbtwxb))
+  xtwx <- rbind(cbind(params$xatwxa, xa_t_w_xb),
+                cbind(t(xa_t_w_xb), params$xbtwxb))
   params$xtwx <- xtwx
 
   ii <- NULL
@@ -565,10 +608,12 @@ process_xt_wx_logistic_t3 <- function(params) {
   write_time <- proc.time()[3]
   save(ii_a, file = file.path(params$write_path, "IIA.rdata"))
   save(ii_b, file = file.path(params$write_path, "IIB.rdata"))
-  write_size <- sum(file.size(file.path(params$write_path, c("IIA.rdata", "IIB.rdata"))))
+  write_size <- sum(file.size(file.path(params$write_path,
+                                        c("IIA.rdata", "IIB.rdata"))))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "process_xt_wx_logistic_t3", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "process_xt_wx_logistic_t3",
+                       read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -589,7 +634,8 @@ update_beta_logistic_a3 <- function(params, data) {
   save(ai, file = file.path(params$write_path, "AI.rdata"))
   write_size <- file.size(file.path(params$write_path, "AI.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "update_beta_logistic_a3", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "update_beta_logistic_a3",
+                       read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -609,7 +655,8 @@ update_beta_logistic_b3 <- function(params, data) {
   save(bi, file = file.path(params$write_path, "BI.rdata"))
   write_size <- file.size(file.path(params$write_path, "BI.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "update_beta_logistic_b3", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "update_beta_logistic_b3",
+                       read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -629,7 +676,8 @@ update_beta_logistic_t3 <- function(params) {
   betas <- params$betas + delta
   params$betas <- betas
   converged <- all(abs(delta) / (abs(betas) + .1) < params$cutoff)
-  max_iter_exceeded <- (params$alg_iteration_counter >= params$max_iterations) && !converged
+  max_iter_exceeded <- (params$alg_iteration_counter >=
+                          params$max_iterations) && !converged
 
   params$converged <- converged
   params$max_iter_exceeded <- max_iter_exceeded
@@ -641,11 +689,13 @@ update_beta_logistic_t3 <- function(params) {
        file = file.path(params$write_path, "converged.rdata"))
   save(a_betas, file = file.path(params$write_path, "betasA.rdata"))
   save(b_betas, file = file.path(params$write_path, "betasB.rdata"))
-  write_size <- sum(file.size(file.path(params$write_path, c("betasA.rdata",
-                                                          "betasB.rdata",
-                                                          "converged.rdata"))))
+  write_size <- sum(file.size(file.path(params$write_path,
+                                        c("betasA.rdata",
+                                          "betasB.rdata",
+                                          "converged.rdata"))))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "update_beta_logistic_t3", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "update_beta_logistic_t3",
+                       read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -657,10 +707,12 @@ get_final_beta_logistic_a3 <- function(params, data) {
   a_final_fitted <- t(params$sd * t(data$x) + params$means) %*% betas -
     t(params$sd[1] * t(data$x[, 1]) + params$means[1]) %*% betas[1]
   write_time <- proc.time()[3]
-  save(offset_a, a_final_fitted, file = file.path(params$write_path, "Afinalfitted.rdata"))
+  save(offset_a, a_final_fitted,
+       file = file.path(params$write_path, "Afinalfitted.rdata"))
   write_size <- file.size(file.path(params$write_path, "Afinalfitted.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "get_final_beta_logistic_a3", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "get_final_beta_logistic_a3",
+                       0, 0, write_time, write_size)
   return(params)
 }
 
@@ -672,16 +724,19 @@ get_final_beta_logistic_b3 <- function(params, data) {
   b_final_fitted <- t(params$sd * t(data$x) + params$means) %*% betas
 
   write_time <- proc.time()[3]
-  save(offset_b, b_final_fitted, file = file.path(params$write_path, "Bfinalfitted.rdata"))
+  save(offset_b, b_final_fitted,
+       file = file.path(params$write_path, "Bfinalfitted.rdata"))
   write_size <- file.size(file.path(params$write_path, "Bfinalfitted.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "get_final_beta_logistic_b3", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "get_final_beta_logistic_b3",
+                       0, 0, write_time, write_size)
   return(params)
 }
 
 
 get_final_fitted_logistic_t3 <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "get_final_fitted_logistic_t3\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "get_final_fitted_logistic_t3\n\n")
   offset_a <- NULL
   offset_b <- NULL
   a_final_fitted <- NULL
@@ -689,7 +744,8 @@ get_final_fitted_logistic_t3 <- function(params) {
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["A"]], "Afinalfitted.rdata"))
   load(file.path(params$read_path[["B"]], "Bfinalfitted.rdata"))
-  read_size <- file.size(file.path(params$read_path[["A"]], "Afinalfitted.rdata")) +
+  read_size <- file.size(file.path(params$read_path[["A"]],
+                                   "Afinalfitted.rdata")) +
     file.size(file.path(params$read_path[["B"]], "Bfinalfitted.rdata"))
   read_time <- proc.time()[3] - read_time
 
@@ -706,17 +762,20 @@ get_final_fitted_logistic_t3 <- function(params) {
   write_size <- file.size(file.path(params$write_path, "finalFitted.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "get_final_beta_logistic_t3", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "get_final_beta_logistic_t3",
+                       read_time, read_size, write_time, write_size)
   return(params)
 }
 
 compute_results_logistic_a3 <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_results_logistic_a3\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "compute_results_logistic_a3\n\n")
   final_fitted <- NULL
 
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["T"]], "finalFitted.rdata"))
-  read_size <- file.size(file.path(params$read_path[["T"]], "finalFitted.rdata"))
+  read_size <- file.size(file.path(params$read_path[["T"]],
+                                   "finalFitted.rdata"))
   read_time <- proc.time()[3] - read_time
 
   n <- params$n
@@ -728,24 +787,28 @@ compute_results_logistic_a3 <- function(params, data) {
   roc     <- roc_internal(params, data)
 
   write_time <- proc.time()[3]
-  save(resdev, nulldev, hoslem, roc, file = file.path(params$write_path, "logisticstats.rdata"))
+  save(resdev, nulldev, hoslem, roc,
+       file = file.path(params$write_path, "logisticstats.rdata"))
   write_size <- file.size(file.path(params$write_path, "logisticstats.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "compute_results_logistic_a3", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "compute_results_logistic_a3",
+                       read_time, read_size, write_time, write_size)
   return(params)
 }
 
 #' @importFrom stats pnorm
 compute_results_logistic_t3 <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_results_logistic_t3\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "compute_results_logistic_t3\n\n")
   nulldev <- NULL
   resdev  <- NULL
   hoslem  <- NULL
   roc     <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path[["A"]], "logisticstats.rdata"))
-  read_size <- file.size(file.path(params$read_path[["A"]], "logisticstats.rdata"))
+  read_size <- file.size(file.path(params$read_path[["A"]],
+                                   "logisticstats.rdata"))
   read_time <- proc.time()[3] - read_time
 
   stats <- params$stats
@@ -808,7 +871,8 @@ compute_results_logistic_t3 <- function(params) {
 
   params$stats      <- stats
 
-  params <- add_to_log(params, "compute_results_logistic_t3", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "compute_results_logistic_t3",
+                       read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -823,7 +887,8 @@ get_results_logistic_a3 <- function(params, data) {
   stats$Y           <- data$Y # For Hoslem and ROC
   stats$final_fitted <- params$final_fitted
   params$stats      <- stats
-  params <- add_to_log(params, "get_results_logistic_a3", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "get_results_logistic_a3",
+                       read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -836,7 +901,8 @@ get_results_logistic_b3 <- function(params) {
   read_size <- file.size(file.path(params$read_path[["T"]], "stats.rdata"))
   read_time <- proc.time()[3] - read_time
   params$stats <- stats
-  params <- add_to_log(params, "get_results_logistic_b3", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "get_results_logistic_b3",
+                       read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -845,16 +911,16 @@ get_results_logistic_b3 <- function(params) {
 
 
 party_a_process_3_logistic <- function(data,
-                                  y_name          = NULL,
-                                  monitor_folder  = NULL,
-                                  sleep_time      = 10,
-                                  max_waiting_time = 24 * 60 * 60,
-                                  popmednet      = TRUE,
-                                  trace          = FALSE,
-                                  verbose        = TRUE) {
+                                       y_name          = NULL,
+                                       monitor_folder  = NULL,
+                                       sleep_time      = 10,
+                                       max_waiting_time = 24 * 60 * 60,
+                                       popmednet      = TRUE,
+                                       trace          = FALSE,
+                                       verbose        = TRUE) {
 
   params <- prepare_params_3p("logistic", "A",
-                            popmednet = popmednet, trace = trace, verbose = verbose)
+                              popmednet = popmednet, trace = trace, verbose = verbose)
   params <- initialize_log_3p(params)
   params <- initialize_time_stamps_3p(params)
   params <- initialize_tracking_table_3p(params)
@@ -872,18 +938,28 @@ party_a_process_3_logistic <- function(data,
     message <- "Error in processing the data for Party A."
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
-    params <- send_pause_quit_3p(params, files_t = files, sleep_time = sleep_time, job_failed = TRUE, wait_for_turn = TRUE)
+    params <- send_pause_quit_3p(params, files_t = files,
+                                 sleep_time = sleep_time,
+                                 job_failed = TRUE,
+                                 wait_for_turn = TRUE)
     return(params$stats)
   }
 
   params <- prepare_params_linear_a3(params, data)
   files <- "pa.rdata"
-  params <- send_pause_continue_3p(params, files_t = files, from = "T",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+  params <- send_pause_continue_3p(params,
+                                   files_t = files,
+                                   from = "T",
+                                   sleep_time = sleep_time,
+                                   max_waiting_time = max_waiting_time,
+                                   wait_for_turn = TRUE)
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
     warning(read_error_message(params$read_path[["T"]]))
-    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, wait_for_turn = TRUE)
+    params <- send_pause_quit_3p(params,
+                                 sleep_time = sleep_time,
+                                 job_failed = TRUE,
+                                 wait_for_turn = TRUE)
     return(params$stats)
   }
 
@@ -892,17 +968,27 @@ party_a_process_3_logistic <- function(data,
 
   params <- get_z_linear_a3(params, data)
   files <- seq_zw("cz_", length(params$container$file_break_z))
-  params <- send_pause_continue_3p(params, files_t = files, from = "T",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+  params <- send_pause_continue_3p(params,
+                                   files_t = files,
+                                   from = "T",
+                                   sleep_time = sleep_time,
+                                   max_waiting_time = max_waiting_time)
 
   params <- get_wr_linear_a3(params, data)
-  files <- c("xatxa.rdata", seq_zw("cpr_", length(params$container$filebreak_pr)))
-  params <- send_pause_continue_3p(params, files_t = files, from = "T",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+  files <- c("xatxa.rdata",
+             seq_zw("cpr_", length(params$container$filebreak_pr)))
+  params <- send_pause_continue_3p(params,
+                                   files_t = files,
+                                   from = "T",
+                                   sleep_time = sleep_time,
+                                   max_waiting_time = max_waiting_time)
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
     warning(read_error_message(params$read_path[["T"]]))
-    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, wait_for_turn = TRUE)
+    params <- send_pause_quit_3p(params,
+                                 sleep_time = sleep_time,
+                                 job_failed = TRUE,
+                                 wait_for_turn = TRUE)
     return(params$stats)
   }
 
@@ -915,24 +1001,40 @@ party_a_process_3_logistic <- function(data,
     BeginningIteration(params)
     params <- get_xa_beta_a_logistic_a3(params, data)
     files <- c("xabeta.rdata")
-    params <- send_pause_continue_3p(params, files_t = files, from = "T",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+    params <- send_pause_continue_3p(params,
+                                     files_t = files,
+                                     from = "T",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time,
+                                     wait_for_turn = TRUE)
 
     params <- get_xr_logistic_a3(params, data)
-    files <- c("xatwxa.rdata", seq_zw("cxr_", length(params$container$filebreak_xr)))
-    params <- send_pause_continue_3p(params, files_t = files, from = "T",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    files <- c("xatwxa.rdata",
+               seq_zw("cxr_", length(params$container$filebreak_xr)))
+    params <- send_pause_continue_3p(params,
+                                     files_t = files,
+                                     from = "T",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time)
 
-    if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
+    if (file.exists(file.path(params$read_path[["T"]],
+                              "error_message.rdata"))) {
       warning(read_error_message(params$read_path[["T"]]))
-      params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, wait_for_turn = TRUE)
+      params <- send_pause_quit_3p(params,
+                                   sleep_time = sleep_time,
+                                   job_failed = TRUE,
+                                   wait_for_turn = TRUE)
       return(params$stats)
     }
 
     params <- update_beta_logistic_a3(params, data)
     files <- c("ai.rdata")
-    params <- send_pause_continue_3p(params, files_t = files, from = "T",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+    params <- send_pause_continue_3p(params,
+                                     files_t = files,
+                                     from = "T",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time,
+                                     wait_for_turn = TRUE)
 
     params <- get_beta_a_logistic_a3(params)
     EndingIteration(params)
@@ -941,30 +1043,41 @@ party_a_process_3_logistic <- function(data,
 
   params <- get_final_beta_logistic_a3(params, data)
   files <- "Afinalfitted.rdata"
-  params <- send_pause_continue_3p(params, files_t = files, from = "T",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+  params <- send_pause_continue_3p(params,
+                                   files_t = files,
+                                   from = "T",
+                                   sleep_time = sleep_time,
+                                   max_waiting_time = max_waiting_time,
+                                   wait_for_turn = TRUE)
 
   params <- compute_results_logistic_a3(params, data)
   files <- c("logisticstats.rdata")
-  params <- send_pause_continue_3p(params, files_t = files, from = "T",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+  params <- send_pause_continue_3p(params,
+                                   files_t = files,
+                                   from = "T",
+                                   sleep_time = sleep_time,
+                                   max_waiting_time = max_waiting_time)
 
   params <- get_results_logistic_a3(params, data)
 
-  params <- send_pause_quit_3p(params, sleep_time = sleep_time, wait_for_turn = TRUE)
+  params <- send_pause_quit_3p(params,
+                               sleep_time = sleep_time,
+                               wait_for_turn = TRUE)
   return(params$stats)
 }
 
 
 party_b_process_3_logistic <- function(data,
-                                  monitor_folder  = NULL,
-                                  sleep_time      = 10,
-                                  max_waiting_time = 24 * 60 * 60,
-                                  popmednet      = TRUE,
-                                  trace          = FALSE,
-                                  verbose        = TRUE) {
+                                       monitor_folder  = NULL,
+                                       sleep_time      = 10,
+                                       max_waiting_time = 24 * 60 * 60,
+                                       popmednet      = TRUE,
+                                       trace          = FALSE,
+                                       verbose        = TRUE) {
   params <- prepare_params_3p("logistic", "B",
-                            popmednet = popmednet, trace = trace, verbose = verbose)
+                              popmednet = popmednet,
+                              trace = trace,
+                              verbose = verbose)
   params <- initialize_log_3p(params)
   params <- initialize_time_stamps_3p(params)
   params <- initialize_tracking_table_3p(params)
@@ -983,18 +1096,29 @@ party_b_process_3_logistic <- function(data,
     message <- "Error in processing the data for Party B."
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
-    params <- send_pause_quit_3p(params, files_t = files, sleep_time = sleep_time, job_failed = TRUE, wait_for_turn = TRUE)
+    params <- send_pause_quit_3p(params,
+                                 files_t = files,
+                                 sleep_time = sleep_time,
+                                 job_failed = TRUE,
+                                 wait_for_turn = TRUE)
     return(params$stats)
   }
 
   params <- prepare_params_linear_b3(params, data)
   files <- "pb.rdata"
-  params <- send_pause_continue_3p(params, files_t = files, from = "T",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+  params <- send_pause_continue_3p(params,
+                                   files_t = files,
+                                   from = "T",
+                                   sleep_time = sleep_time,
+                                   max_waiting_time = max_waiting_time,
+                                   wait_for_turn = TRUE)
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
     warning(read_error_message(params$read_path[["T"]]))
-    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, wait_for_turn = TRUE)
+    params <- send_pause_quit_3p(params,
+                                 sleep_time = sleep_time,
+                                 job_failed = TRUE,
+                                 wait_for_turn = TRUE)
     return(params$stats)
   }
 
@@ -1002,13 +1126,20 @@ party_b_process_3_logistic <- function(data,
   params <- prepare_blocks_linear_b3(params)
 
   params <- get_rw_linear_b3(params, data)
-  files <- c("xbtxb.rdata", seq_zw("crw_", length(params$container$filebreak_RW)))
-  params <- send_pause_continue_3p(params, files_t = files, from = "T",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+  files <- c("xbtxb.rdata",
+             seq_zw("crw_", length(params$container$filebreak_RW)))
+  params <- send_pause_continue_3p(params,
+                                   files_t = files,
+                                   from = "T",
+                                   sleep_time = sleep_time,
+                                   max_waiting_time = max_waiting_time)
 
   if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
     warning(read_error_message(params$read_path[["T"]]))
-    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, wait_for_turn = TRUE)
+    params <- send_pause_quit_3p(params,
+                                 sleep_time = sleep_time,
+                                 job_failed = TRUE,
+                                 wait_for_turn = TRUE)
     return(params$stats)
   }
 
@@ -1021,24 +1152,41 @@ party_b_process_3_logistic <- function(data,
     BeginningIteration(params)
     params <- get_xb_beta_b_logistic_b3(params, data)
     files <- c("xbbeta.rdata")
-    params <- send_pause_continue_3p(params, files_t = files, from = "T",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+    params <- send_pause_continue_3p(params,
+                                     files_t = files
+                                     , from = "T",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time,
+                                     wait_for_turn = TRUE)
 
     params <- get_rv_logistic_b3(params, data)
-    files <- c("xbtwxb.rdata", seq_zw("crv_", length(params$container$filebreak_rv)))
-    params <- send_pause_continue_3p(params, files_t = files, from = "T",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    files <- c("xbtwxb.rdata",
+               seq_zw("crv_", length(params$container$filebreak_rv)))
+    params <- send_pause_continue_3p(params,
+                                     files_t = files,
+                                     from = "T",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time)
 
-    if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
+    if (file.exists(file.path(params$read_path[["T"]],
+
+                              "error_message.rdata"))) {
       warning(read_error_message(params$read_path[["T"]]))
-      params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE, wait_for_turn = TRUE)
+      params <- send_pause_quit_3p(params,
+                                   sleep_time = sleep_time,
+                                   job_failed = TRUE,
+                                   wait_for_turn = TRUE)
       return(params$stats)
     }
 
     params <- update_beta_logistic_b3(params, data)
     files <- c("bi.rdata")
-    params <- send_pause_continue_3p(params, files_t = files, from = "T",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+    params <- send_pause_continue_3p(params,
+                                     files_t = files,
+                                     from = "T",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time,
+                                     wait_for_turn = TRUE)
 
     params <- get_beta_b_logistic_b3(params)
     EndingIteration(params)
@@ -1047,28 +1195,36 @@ party_b_process_3_logistic <- function(data,
 
   params <- get_final_beta_logistic_b3(params, data)
   files <- "Bfinalfitted.rdata"
-  params <- send_pause_continue_3p(params, files_t = files, from = "T",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+  params <- send_pause_continue_3p(params,
+                                   files_t = files,
+                                   from = "T",
+                                   sleep_time = sleep_time,
+                                   max_waiting_time = max_waiting_time,
+                                   wait_for_turn = TRUE)
 
   params <- get_results_logistic_b3(params)
 
-  params <- send_pause_quit_3p(params, sleep_time = sleep_time, wait_for_turn = TRUE)
+  params <- send_pause_quit_3p(params, sleep_time = sleep_time,
+                               wait_for_turn = TRUE)
   return(params$stats)
 }
 
 
-party_t_process_3_logistic <- function(monitor_folder         = NULL,
-                                  msreqid               = "v_default_0_000",
-                                  blocksize             = 500,
-                                  cutoff                = 1e-8,
-                                  max_iterations         = 25,
-                                  sleep_time             = 10,
-                                  max_waiting_time        = 24 * 60 * 60,
-                                  popmednet             = TRUE,
-                                  trace                 = FALSE,
-                                  verbose               = TRUE) {
-  params <- prepare_params_3p("logistic", "T", msreqid = msreqid,
-                            popmednet = popmednet, trace = trace, verbose = verbose)
+party_t_process_3_logistic <- function(monitor_folder   = NULL,
+                                       msreqid          = "v_default_0_000",
+                                       blocksize        = 500,
+                                       cutoff           = 1e-8,
+                                       max_iterations   = 25,
+                                       sleep_time       = 10,
+                                       max_waiting_time = 24 * 60 * 60,
+                                       popmednet        = TRUE,
+                                       trace            = FALSE,
+                                       verbose          = TRUE) {
+  params <- prepare_params_3p("logistic", "T",
+                              msreqid = msreqid,
+                              popmednet = popmednet,
+                              trace = trace,
+                              verbose = verbose)
   params <- initialize_log_3p(params)
   params <- initialize_time_stamps_3p(params)
   params <- initialize_tracking_table_3p(params)
@@ -1080,13 +1236,16 @@ party_t_process_3_logistic <- function(monitor_folder         = NULL,
     return(invisible(NULL))
   }
 
-  params <- PauseContinue.3p(params, from = c("A", "B"), max_waiting_time = max_waiting_time)
+  params <- PauseContinue.3p(params, from = c("A", "B"),
+                             max_waiting_time = max_waiting_time)
 
   if (file.exists(file.path(params$read_path[["A"]], "error_message.rdata")) &&
       file.exists(file.path(params$read_path[["B"]], "error_message.rdata"))) {
     warning(read_error_message(params$read_path[["A"]]))
     warning(read_error_message(params$read_path[["B"]]))
-    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_quit_3p(params,
+                                 sleep_time = sleep_time,
+                                 job_failed = TRUE)
     SummarizeLog.3p(params)
     return(params$stats)
   }
@@ -1095,9 +1254,14 @@ party_t_process_3_logistic <- function(monitor_folder         = NULL,
     file.copy(file.path(params$read_path[["A"]], "error_message.rdata"),
               file.path(params$write_path, "error_message.rdata"))
     files <- "error_message.rdata"
-    params <- send_pause_continue_3p(params, files_b = files, from = "B",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
-    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_3p(params,
+                                     files_b = files,
+                                     from = "B",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_3p(params,
+                                 sleep_time = sleep_time,
+                                 job_failed = TRUE)
     SummarizeLog.3p(params)
     return(params$stats)
   }
@@ -1106,9 +1270,14 @@ party_t_process_3_logistic <- function(monitor_folder         = NULL,
     file.copy(file.path(params$read_path[["B"]], "error_message.rdata"),
               file.path(params$write_path, "error_message.rdata"))
     files <- "error_message.rdata"
-    params <- send_pause_continue_3p(params, files_a = files, from = "A",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
-    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_3p(params,
+                                     files_a = files,
+                                     from = "A",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_3p(params,
+                                 sleep_time = sleep_time,
+                                 job_failed = TRUE)
     SummarizeLog.3p(params)
     return(params$stats)
   }
@@ -1121,28 +1290,41 @@ party_t_process_3_logistic <- function(monitor_folder         = NULL,
     warning(params$error_message)
     make_error_message(params$write_path, params$error_message)
     files <- "error_message.rdata"
-    params <- send_pause_continue_3p(params, files_a = files, files_b = files,
-                                  from = c("A", "B"),
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_continue_3p(params,
+                                     files_a = files,
+                                     files_b = files,
+                                     from = c("A", "B"),
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time)
     params <- send_pause_quit_3p(params, sleep_time = sleep_time)
     SummarizeLog.3p(params)
     return(params$stats)
   }
 
   files <- "blocks.rdata"
-  params <- send_pause_continue_3p(params, files_a = files, from = "A",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+  params <- send_pause_continue_3p(params,
+                                   files_a = files,
+                                   from = "A",
+                                   sleep_time = sleep_time,
+                                   max_waiting_time = max_waiting_time)
 
   params$alg_iteration_counter <- 1
   params <- process_z_linear_t3(params)
-  files <- c("blocks.rdata", seq_zw("crz_", length(params$container$filebreak_rz)))
-  params <- send_pause_continue_3p(params, files_b = files, from  = "B",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+  files <- c("blocks.rdata",
+             seq_zw("crz_", length(params$container$filebreak_rz)))
+  params <- send_pause_continue_3p(params,
+                                   files_b = files,
+                                   from  = "B",
+                                   sleep_time = sleep_time,
+                                   max_waiting_time = max_waiting_time)
 
   params <- process_w_linear_t3(params)
   files <- c("p2.rdata", seq_zw("cwr_", length(params$container$filebreak_wr)))
-  params <- send_pause_continue_3p(params, files_a = files, from  = "A",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+  params <- send_pause_continue_3p(params,
+                                   files_a = files,
+                                   from  = "A",
+                                   sleep_time = sleep_time,
+                                   max_waiting_time = max_waiting_time)
 
   params <- get_products_linear_t3(params)
 
@@ -1152,32 +1334,49 @@ party_t_process_3_logistic <- function(monitor_folder         = NULL,
     warning(params$error_message)
     make_error_message(params$write_path, params$error_message)
     files <- "error_message.rdata"
-    params <- send_pause_continue_3p(params, files_a = files, files_b = files,
-                                  from = c("A", "B"),
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_continue_3p(params,
+                                     files_a = files,
+                                     files_b = files,
+                                     from = c("A", "B"),
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time)
     params <- send_pause_quit_3p(params, sleep_time = sleep_time)
     SummarizeLog.3p(params)
     return(params$stats)
   }
 
   params <- compute_initial_betas_logistic_t3(params)
-  files_a <- c("Aindicies.rdata", "betasA.rdata", "a_xty.rdata", "converged.rdata")
-  files_b <- c("Bindicies.rdata", "betasB.rdata", "b_xty.rdata", "converged.rdata")
-  params <- send_pause_continue_3p(params, files_a = files_a, files_b = files_b, from  = c("A", "B"),
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+  files_a <-
+    c("Aindicies.rdata", "betasA.rdata", "a_xty.rdata", "converged.rdata")
+  files_b <-
+    c("Bindicies.rdata", "betasB.rdata", "b_xty.rdata", "converged.rdata")
+  params <- send_pause_continue_3p(params,
+                                   files_a = files_a,
+                                   files_b = files_b,
+                                   from  = c("A", "B"),
+                                   sleep_time = sleep_time,
+                                   max_waiting_time = max_waiting_time)
 
   params$alg_iteration_counter <- 1
   while (!params$converged && !params$max_iter_exceeded) {
     BeginningIteration(params)
     params <- get_weights_logistic_t3(params)
     files <- "pi.rdata"
-    params <- send_pause_continue_3p(params, files_b = files, from  = "B",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_continue_3p(params,
+                                     files_b = files,
+                                     from  = "B",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time)
 
     params <- process_v_logistic_t3(params)
-    files <- c("pi.rdata", seq_zw("cvr_", length(params$container$filebreak_rv)))
-    params <- send_pause_continue_3p(params, files_a = files, from  = "A",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    files <- c("pi.rdata",
+
+               seq_zw("cvr_", length(params$container$filebreak_rv)))
+    params <- send_pause_continue_3p(params,
+                                     files_a = files,
+                                     from  = "A",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time)
 
     params <- process_xt_wx_logistic_t3(params)
 
@@ -1185,36 +1384,54 @@ party_t_process_3_logistic <- function(monitor_folder         = NULL,
       warning(params$error_message)
       make_error_message(params$write_path, params$error_message)
       files <- "error_message.rdata"
-      params <- send_pause_continue_3p(params, files_a = files, files_b = files,
-                                    from = c("A", "B"),
-                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+      params <- send_pause_continue_3p(params,
+                                       files_a = files,
+                                       files_b = files,
+                                       from = c("A", "B"),
+                                       sleep_time = sleep_time,
+                                       max_waiting_time = max_waiting_time)
       params <- send_pause_quit_3p(params, sleep_time = sleep_time)
       SummarizeLog.3p(params)
       return(params$stats)
     }
     files_a <- c("IIA.rdata")
     files_b <- c("IIB.rdata")
-    params <- send_pause_continue_3p(params, files_a = files_a, files_b = files_b, from  = c("A", "B"),
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_continue_3p(params,
+                                     files_a = files_a,
+                                     files_b = files_b,
+                                     from  = c("A", "B"),
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time)
 
     params <- update_beta_logistic_t3(params)
     files_a <- c("betasA.rdata", "converged.rdata")
     files_b <- c("betasB.rdata", "converged.rdata")
-    params <- send_pause_continue_3p(params, files_a = files_a, files_b = files_b, from  = c("A", "B"),
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_continue_3p(params,
+                                     files_a = files_a,
+                                     files_b = files_b,
+                                     from  = c("A", "B"),
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time)
     EndingIteration(params)
     params$alg_iteration_counter <- params$alg_iteration_counter + 1
   }
 
   params <- get_final_fitted_logistic_t3(params)
   files_a <- "finalfitted.rdata"
-  params <- send_pause_continue_3p(params, files_a = files_a, from  = "A",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+  params <- send_pause_continue_3p(params,
+                                   files_a = files_a,
+                                   from  = "A",
+                                   sleep_time = sleep_time,
+                                   max_waiting_time = max_waiting_time)
 
   params <- compute_results_logistic_t3(params)
   files <- "stats.rdata"
-  params <- send_pause_continue_3p(params, files_a = files, files_b = files, from  = c("A", "B"),
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+  params <- send_pause_continue_3p(params,
+                                   files_a = files,
+                                   files_b = files,
+                                   from  = c("A", "B"),
+                                   sleep_time = sleep_time,
+                                   max_waiting_time = max_waiting_time)
 
   params <- send_pause_quit_3p(params, sleep_time = sleep_time)
   SummarizeLog.3p(params)
