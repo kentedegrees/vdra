@@ -589,12 +589,12 @@ RocTest(vdra_fit_logistic_A, 50)
 We can compute the survival curve for a distributed Cox regression (either [2-party](#twoparty-cox), [$2^T$-party](#twoTparty-cox), or [$k^T$-party](#kTparty-cox)).  This function is works similar to `survfit()` in the `survival` package.  The results can be both printed and plotted.  Only the data partner which holds the response can run this function.  The plot command takes only takes the plotting parameters: `xlim`, `ylim`, `xlab`, `ylab`, and `main`.
 
 ```{r, out.width="75%", fig.width=6, fig.height=6}
-sf = survfitDistributed(vdra_fit_cox_A)
+sf <- survfitDistributed(vdra_fit_cox_A)
 print(sf)
 plot(sf)
 
 # Calculate the results based on strat that the data partner with the response holds
-sf = survfitDistributed(vdra_fit_cox_A, ~ Exposure, data = vdra_data[c(3:4, 5:7)])
+sf <- survfitDistributed(vdra_fit_cox_A, ~ Exposure, data = vdra_data[c(3:4, 5:7)])
 print(sf)
 
 # plot both curves in the same plot

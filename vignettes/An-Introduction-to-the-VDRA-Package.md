@@ -893,7 +893,7 @@ We can compute the survival curve for a distributed Cox regression (either [2-pa
 
 
 ```r
-sf = survfitDistributed(vdra_fit_cox_A)
+sf <- survfitDistributed(vdra_fit_cox_A)
 print(sf)
 ```
 
@@ -910,7 +910,7 @@ plot(sf)
 
 ```r
 # Calculate the results based on strat that the data partner with the response holds
-sf = survfitDistributed(vdra_fit_cox_A, ~ Exposure, data = vdra_data[c(3:4, 5:7)])
+sf <- survfitDistributed(vdra_fit_cox_A, ~ Exposure, data = vdra_data[c(3:4, 5:7)])
 print(sf)
 ```
 

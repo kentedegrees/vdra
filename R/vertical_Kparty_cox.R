@@ -1146,22 +1146,27 @@ compute_st_w_s_cox_ac <- function(params) {
   if (params$alg_iteration_counter == 1) {
     params$score <- t(params$ts_delta_l_r) %*% i_mat %*% params$ts_delta_l_r
   }
-  params$max_iter_exceeded <- params$alg_iteration_counter > params$max_iterations
+  params$max_iter_exceeded <-
+    params$alg_iteration_counter > params$max_iterations
   max_iter_exceeded <- params$max_iter_exceeded
 
   write_time <- 0
   write_size <- 0
   for (id in 1:params$num_data_partners) {
-    i_mat.part <- i_mat[params$idx[[id]], , drop = FALSE]
+    i_mat_part <- i_mat[params$idx[[id]], , drop = FALSE]
     i_dt_part <- i_dt[params$idx[[id]], , drop = FALSE]
     write_time <- write_time - proc.time()[3]
-    save(i_mat.part, i_dt_part, file = file.path(params$write_path, paste0("update", id, ".rdata")))
-    save(max_iter_exceeded, file = file.path(params$write_path, "maxiterexceeded.rdata"))
-    write_size <- write_size + file.size(file.path(params$write_path, paste0("update", id, ".rdata"))) +
+    save(i_mat_part, i_dt_part,
+         file = file.path(params$write_path, paste0("update", id, ".rdata")))
+    save(max_iter_exceeded,
+         file = file.path(params$write_path, "maxiterexceeded.rdata"))
+    write_size <- write_size +
+      file.size(file.path(params$write_path, paste0("update", id, ".rdata"))) +
       file.size(file.path(params$write_path, "maxiterexceeded.rdata"))
     write_time <- write_time + proc.time()[3]
   }
-  params <- add_to_log(params, "compute_st_w_s_cox_ac", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "compute_st_w_s_cox_ac",
+                       read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -1183,17 +1188,19 @@ UpdateConvergeStatus.DP <- function(params) {
   }
   read_time <- read_time - proc.time()[3]
   load(file.path(params$readPathAC, "maxiterexceeded.rdata"))
-  read_size <- read_size + file.size(file.path(params$readPathAC, "maxiterexceeded.rdata"))
+  read_size <- read_size +
+    file.size(file.path(params$readPathAC, "maxiterexceeded.rdata"))
   read_time <- read_time + proc.time()[3]
   params$max_iter_exceeded <- max_iter_exceeded
-  params <- add_to_log(params, "UpdateConvergeStatus.DP", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "UpdateConvergeStatus.DP",
+                       read_time, read_size, 0, 0)
 }
 
 
 #' @importFrom stats runif
 update_betas_cox_dp <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "update_betas_cox_dp\n\n")
-  i_mat.part <- NULL
+  i_mat_part <- NULL
   i_dt_part <- NULL
   ts_delta_l_l <- NULL
   read_time <- proc.time()[3]
@@ -1206,23 +1213,23 @@ update_betas_cox_dp <- function(params) {
   read_time <- proc.time()[3] - read_time
 
   if (params$data_partner_id == 1) {
-    deltabeta <- i_dt_part + i_mat.part %*% params$ts_delta_l_l
+    deltabeta <- i_dt_part + i_mat_part %*% params$ts_delta_l_l
     if (params$alg_iteration_counter == 1) {
       if (params$p_reduct[1] == 0) {
         params$score <- 0
       } else {
         idx <- 1:params$p_reduct[1]
         params$score <- 2 * t(i_dt_part) %*% params$ts_delta_l_l[idx, 1, drop = FALSE] +
-          t(i_mat.part %*% params$ts_delta_l_l) %*% params$ts_delta_l_l[idx, 1, drop = FALSE]
+          t(i_mat_part %*% params$ts_delta_l_l) %*% params$ts_delta_l_l[idx, 1, drop = FALSE]
       }
     }
   } else {
-    deltabeta <- i_dt_part + i_mat.part %*% ts_delta_l_l
+    deltabeta <- i_dt_part + i_mat_part %*% ts_delta_l_l
     if (params$alg_iteration_counter == 1) {
       temp <- sum(params$p_reduct[1:(params$data_partner_id - 1)])
       idx <- (temp + 1):(temp + params$p_reduct[params$data_partner_id])
       params$score <- 2 * t(i_dt_part) %*% ts_delta_l_l[idx, 1, drop = FALSE] +
-        t(i_mat.part %*% ts_delta_l_l) %*% ts_delta_l_l[idx, 1, drop = FALSE]
+        t(i_mat_part %*% ts_delta_l_l) %*% ts_delta_l_l[idx, 1, drop = FALSE]
     }
   }
 

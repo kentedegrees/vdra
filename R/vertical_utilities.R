@@ -4037,7 +4037,7 @@ print.summary.vdracox <- function(x, lion = FALSE, ...) {
 #' @importFrom  stats pf pt
 #' @export
 differentModel <- function(formula = NULL, x = NULL) {
-  if (class(x) != "vdralinear") {
+  if (!inherits(x, "vdralinear")) {
     warning("This function can only be on objects of class vdralinear. Returning original model.")
     return(invisible(x))
   }
@@ -4289,7 +4289,7 @@ print.hoslemdistributed <- function(x, ...) {
 #'  HoslemTest(vdra_fit_logistic_A, 20)
 #' @export
 HoslemTest <- function(x = NULL, nGroups = 10) {
-  if (class(x) != "vdralogistic") {
+  if (!inherits(x, "vdralogistic")) {
     warning("Cannot perform test on non vdralogistic object.")
     return(invisible(NULL))
   }
@@ -4388,7 +4388,7 @@ print.rocdistributed <- function(x, ...) {
 #' RocTest(vdra_fit_logistic_A, 40)
 #' @export
 RocTest <- function(x = NULL, bins = 10) {
-  if (class(x) != "vdralogistic") {
+  if (!inherits(x, "vdralogistic")) {
     warning("Cannot create ROC on non vdralogistic object.")
     return(invisible(NULL))
   }
@@ -4718,7 +4718,7 @@ survfitDistributed.formula <- function(x, formula, data) {
 #' plot(sfit, merge = TRUE)
 #' @export
 survfitDistributed <- function(x = NULL, formula = NULL, data = NULL) {
-  if (class(x) != "vdracox") {
+  if (!inherits(x, "vdracox")) {
     warning("The first parameter must be a vdracox object.")
     return(invisible(NULL))
   }
@@ -4730,7 +4730,7 @@ survfitDistributed <- function(x = NULL, formula = NULL, data = NULL) {
                   "Please use the same data that you used for the distributed regression."))
     return(invisible(NULL))
   }
-  if (class(formula) != "formula" || !validFormula2(formula)) {
+  if (!inherits(formula, "formula") || !validFormula2(formula)) {
     warning(paste("The formula must be of the form \"~ var1 + ... + vark\" where the variables",
                   "are found in the data. The formula can also be \"~ 1\"."))
   }
