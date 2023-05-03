@@ -585,7 +585,8 @@ check_colinearity_cox_t3 <- function(params) {
   save(p2, a_indicies, file = file.path(params$write_path, "Aindicies.rdata"))
   save(colnames_a_old, b_indicies,
        file = file.path(params$write_path, "Bindicies.rdata"))
-  write_size <- sum(file.size(file.path(params$write_path, c("Aindicies.rdata",
+  write_size <- sum(file.size(file.path(params$write_path,
+                                        c("Aindicies.rdata",
                                                              "Bindicies.rdata"))))
 
   tags <- params$b_tags[b_indicies]
@@ -625,7 +626,8 @@ compute_initial_betas_cox_t3 <- function(params) {
   save(b_betas, file = file.path(params$write_path, "betasB.rdata"))
   save(converged, max_iter_exceeded,
        file = file.path(params$write_path, "converged.rdata"))
-  write_size <- sum(file.size(file.path(params$write_path, c("betasA.rdata",
+  write_size <- sum(file.size(file.path(params$write_path,
+                                        c("betasA.rdata",
                                                              "betasB.rdata",
                                                              "converged.rdata"))))
   write_time <- proc.time()[3] - write_time
@@ -1071,12 +1073,14 @@ get_xr_cox_a3 <- function(params, data) {
     if ((i + 1) %in% params$container$filebreak_vr ||
         i == params$blocks$num_blocks) {
       close(to_read)
-      read_size <- read_size + file.size(file.path(params$read_path[["T"]], filename1))
+      read_size <- read_size +
+        file.size(file.path(params$read_path[["T"]], filename1))
     }
     if ((i + 1) %in% params$container$filebreak_xr ||
         i == params$blocks$num_blocks) {
       close(to_write)
-      write_size <- write_size + file.size(file.path(params$write_path, filename2))
+      write_size <- write_size +
+        file.size(file.path(params$write_path, filename2))
     }
     pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
@@ -1194,12 +1198,14 @@ process_x_t_w_x_cox_t3 <- function(params) {
   save(b_betas, file = file.path(params$write_path, "betasB.rdata"))
   save(converged, max_iter_exceeded,
        file = file.path(params$write_path, "converged.rdata"))
-  write_size <- sum(file.size(file.path(params$write_path, c("betasA.rdata",
+  write_size <- sum(file.size(file.path(params$write_path,
+                                        c("betasA.rdata",
                                                              "betasB.rdata",
                                                              "converged.rdata"))))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "process_x_t_w_x_cox_t3", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "process_x_t_w_x_cox_t3",
+                       read_time, read_size, write_time, write_size)
 
   return(params)
 }
@@ -1318,7 +1324,8 @@ compute_results_cox_t3 <- function(params) {
                              results$concordance, sqrt(results$var))
     } else {
       # only one strata, so a numeric vector
-      stats$concordance <- c(results$count[1:4], results$concordance, sqrt(results$var))
+      stats$concordance <- c(results$count[1:4],
+                             results$concordance, sqrt(results$var))
     }
   } else {
     stats$concordance <- c(NA, NA, NA, NA, NA, NA)
@@ -1938,7 +1945,8 @@ party_a_process_3_cox <- function(data,
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
 
-    if (file.exists(file.path(params$read_path[["T"]], "error_message.rdata"))) {
+    if (file.exists(file.path(params$read_path[["T"]],
+                              "error_message.rdata"))) {
       warning(read_error_message(params$read_path[["T"]]))
       params <- send_pause_quit_3p(params, sleep_time = sleep_time,
                                    job_failed = TRUE,
@@ -2013,7 +2021,8 @@ party_b_process_3_cox <- function(data,
                                    max_waiting_time = max_waiting_time,
                                    wait_for_turn = TRUE)
 
-  if (file.exists(file.path(params$read_path[["T"]], "transferControl.rdata"))) {
+  if (file.exists(file.path(params$read_path[["T"]],
+                            "transferControl.rdata"))) {
     params$alg_iteration_counter <- 1
     data <- sort_data_cox_b3(params, data)
     params <- add_to_log(params, "sort_data_cox_b3",
@@ -2296,7 +2305,8 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
                                      from = c("A", "B"),
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
-    params <- send_pause_quit_3p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_quit_3p(params, sleep_time = sleep_time,
+                                 job_failed = TRUE)
     SummarizeLog.3p(params)
     return(params$stats)
   }
@@ -2344,7 +2354,8 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
     params <- send_pause_continue_3p(params, files_b = files, from = "B",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
-    if (file.exists(file.path(params$read_path[["B"]], "error_message.rdata"))) {
+    if (file.exists(file.path(params$read_path[["B"]],
+                              "error_message.rdata"))) {
       warning(read_error_message(params$read_path[["B"]]))
       file.copy(file.path(params$read_path[["B"]], "error_message.rdata"),
                 file.path(params$write_path, "error_message.rdata"))
@@ -2382,7 +2393,8 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
     if (params$alg_iteration_counter > 1) {
       files_a <- c("converged.rdata", "betasA.rdata")
       files_b <- c("converged.rdata", "betasB.rdata")
-      params <- send_pause_continue_3p(params, files_a = files_a, files_b = files_b,
+      params <- send_pause_continue_3p(params, files_a = files_a,
+                                       files_b = files_b,
                                        from = c("A", "B"),
                                        sleep_time = sleep_time,
                                        max_waiting_time = max_waiting_time)

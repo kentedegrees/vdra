@@ -225,7 +225,8 @@ prepare_data_cox_23 <- function(params, data, y_name, strata, mask) {
     }
   }
 
-  covariate_index <- setdiff(seq_len(ncol(data)), union(strata_index, response_index))
+  covariate_index <- setdiff(seq_len(ncol(data)),
+                             union(strata_index, response_index))
 
   if (length(covariate_index) == 0) {
     if (params$party_name == "A") {

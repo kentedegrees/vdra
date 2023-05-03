@@ -4524,6 +4524,7 @@ print.survfitDistributed <- function(x, ...) {
 
 
 #' @rdname survfitDistributed
+#' @export
 survfitDistributed.stats <- function(x) {
   surv          <- list()
   surv$n        = x$strata$end - x$strata$start + 1
@@ -4559,6 +4560,7 @@ survfitDistributed.stats <- function(x) {
 }
 
 #' @rdname survfitDistributed
+#' @export
 survfitDistributed.formula <- function(x, formula, data) {
   surv <- list()
   vars = all.vars(formula)
@@ -4714,6 +4716,7 @@ survfitDistributed.formula <- function(x, formula, data) {
 #'                           data = vdra_data[, 8:11])
 #' print(sfit)
 #' plot(sfit, merge = TRUE)
+#' @export
 survfitDistributed <- function(x = NULL, formula = NULL, data = NULL) {
   if (class(x) != "vdracox") {
     warning("The first parameter must be a vdracox object.")

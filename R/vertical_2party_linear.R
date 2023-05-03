@@ -1,7 +1,8 @@
 ################### DISTRIBUTED LINEAR REGRESSION FUNCTIONS ###################
 
 prepare_folder_linear_a2 <- function(params, monitor_folder) {
-  if (params$trace) cat(as.character(Sys.time()), "prepare_folder_linear_a2\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "prepare_folder_linear_a2\n\n")
   params$dp_local_path   <- file.path(monitor_folder, "dplocal")
   params$r_programs_path <- file.path(monitor_folder, "rprograms")
   params$macros_path     <- file.path(monitor_folder, "macros")
@@ -789,15 +790,15 @@ get_results_linear_b2 <- function(params) {
 ############################## PARENT FUNCTIONS ###############################
 
 party_a_process_2_linear <- function(data,
-                                     y_name                 = NULL,
-                                     monitor_folder         = NULL,
-                                     msreqid               = "v_default_00_0000",
-                                     blocksize             = NULL,
-                                     sleep_time             = 10,
-                                     max_waiting_time        = 24 * 60 * 60,
-                                     popmednet             = TRUE,
-                                     trace                 = FALSE,
-                                     verbose               = TRUE) {
+                                     y_name            = NULL,
+                                     monitor_folder    = NULL,
+                                     msreqid           = "v_default_00_0000",
+                                     blocksize         = NULL,
+                                     sleep_time        = 10,
+                                     max_waiting_time  = 24 * 60 * 60,
+                                     popmednet         = TRUE,
+                                     trace             = FALSE,
+                                     verbose           = TRUE) {
 
   params <- prepare_params_2p("linear", "A", msreqid = msreqid,
                               popmednet = popmednet, trace = trace,
