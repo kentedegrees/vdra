@@ -2752,7 +2752,7 @@ SummarizeLog.2p <- function(params) {
   }
   if (!is.null(params$n))   WriteToLogSummary(c1 = "N", c2 = params$n, write_path = write_path)
 
-  p = max(0, params$p1_old - (params$analysis != "cox"))
+  p <- max(0, params$p1_old - (params$analysis != "cox"))
   WriteToLogSummary(c1 = "pA", c2 = p, write_path = write_path)
   p <- params$p2_old
   WriteToLogSummary(c1 = "pB", c2 = p, write_path = write_path)
@@ -2837,11 +2837,11 @@ new_log_entry_3p <- function(params) {
 
 
 StoreLogEntry.3p <- function(params, files) {
-  params$log$current$Step          = params$pmn_step_counter
-  params$log$current$Iteration.alg = params$algIterationCounter
-  params$log$current$Party = params$party_name
-  params$log$current$End.Time = GetUTCTime()
-  params$log$current$Computation.Time = round(as.numeric(difftime(
+  params$log$current$Step          <- params$pmn_step_counter
+  params$log$current$Iteration.alg <- params$algIterationCounter
+  params$log$current$Party <- params$party_name
+  params$log$current$End.Time <- GetUTCTime()
+  params$log$current$Computation.Time <- round(as.numeric(difftime(
     params$log$current$End.Time, params$log$current$Start.Time, units <- "secs")) -
       params$log$current$Read.Time - params$log$current$Write.Time, 2)
   params$log$current$Files.Sent <- paste(files, collapse <- ", ")
@@ -2851,7 +2851,7 @@ StoreLogEntry.3p <- function(params, files) {
   }
   nrows <- nrow(params$log$history)
   if (nrows >= 3) {
-    params$log$current$Wait.Time =
+    params$log$current$Wait.Time <-
       round(as.numeric(difftime(
         params$log$current$Start.Time,
         max(params$log$history$End.Time[which(params$log$history$Party ==
@@ -3092,7 +3092,7 @@ StoreLogEntry.kp <- function(params, files) {
   }
   nrows <- nrow(params$log$history)
   if (nrows >= 3) {
-    params$log$current$Wait.Time =
+    params$log$current$Wait.Time <-
       round(as.numeric(difftime(
         params$log$current$Start.Time,
         max(params$log$history$End.Time[which(params$log$history$Party ==
@@ -3942,38 +3942,38 @@ print.vdracox <- function(x, ...) {
 #' @export
 summary.vdracox <- function(object, ...) {
   temp <- list()
-  class(temp)         = "summary.vdracox"
-  temp$failed         = object$failed
-  temp$converged      = object$converged
+  class(temp)         <- "summary.vdracox"
+  temp$failed         <- object$failed
+  temp$converged      <- object$converged
   if (object$failed) {
     return(temp)
   }
-  temp$party          = object$party
-  temp$coefficients   = object$coefficients
-  temp$expcoef        = object$expcoef
-  temp$secoef         = object$secoef
-  temp$zval           = object$zval
-  temp$pvals          = object$pvals
-  temp$expncoef       = object$expncoef
-  temp$lower          = object$lower
-  temp$upper          = object$upper
-  temp$n              = object$n
-  temp$nevent         = object$nevent
-  temp$concordance    = object$concordance
-  temp$rsquare        = object$rsquare
-  temp$lrt            = object$lrt
-  temp$df             = object$df
-  temp$wald.test      = object$wald.test
-  temp$score          = object$score
-  temp$iter           = object$iter
+  temp$party          <- object$party
+  temp$coefficients   <- object$coefficients
+  temp$expcoef        <- object$expcoef
+  temp$secoef         <- object$secoef
+  temp$zval           <- object$zval
+  temp$pvals          <- object$pvals
+  temp$expncoef       <- object$expncoef
+  temp$lower          <- object$lower
+  temp$upper          <- object$upper
+  temp$n              <- object$n
+  temp$nevent         <- object$nevent
+  temp$concordance    <- object$concordance
+  temp$rsquare        <- object$rsquare
+  temp$lrt            <- object$lrt
+  temp$df             <- object$df
+  temp$wald.test      <- object$wald.test
+  temp$score          <- object$score
+  temp$iter           <- object$iter
   return(temp)
 }
 
 #' @export
 print.summary.vdracox <- function(x, lion = FALSE, ...) {
-  arguments = list(...)
+  arguments <- list(...)
 
-  if (!is.na(arguments$lion) && is.logical(arguments$lion)) lion = arguments$lion
+  if (!is.na(arguments$lion) && is.logical(arguments$lion)) lion <- arguments$lion
 
   if (x$failed) {
     warning("Distributed Cox regression failed.  No results to print.")
@@ -4001,14 +4001,14 @@ print.summary.vdracox <- function(x, lion = FALSE, ...) {
                       formatStatList(x$zval),
                       format.pval(x$pvals),
                       formatStrings(x$stars))
-  colnames(temp1) = c("", "party", "   coef", "exp(coef)", "se(coef)", "   z", "Pr(>|z|)", "")
+  colnames(temp1) <- c("", "party", "   coef", "exp(coef)", "se(coef)", "   z", "Pr(>|z|)", "")
   temp2 <- data.frame(formatStrings(names(x$party)),
                       formatStrings(x$party, minWidth = 5, justify = "centre"),
                       formatStatList(x$expcoef),
                       formatStatList(x$expncoef),
                       formatStatList(x$lower),
                       formatStatList(x$upper))
-  colnames(temp2) = c("", "party", "exp(coef)", "exp(-coef)", "lower .95", "upper .95")
+  colnames(temp2) <- c("", "party", "exp(coef)", "exp(-coef)", "lower .95", "upper .95")
   cat("  n=", paste0(x$n, ","), "number of events=", x$nevent, "\n\n")
   print(temp1, row.names = FALSE, right = TRUE)
   cat("---\n")
@@ -4077,14 +4077,14 @@ differentModel <- function(formula = NULL, x = NULL) {
     return(x)
   }
 
-  valid_names    = c(colnames(x$xty), colnames(x$xtx)[-1])
-  responseName   = all.vars(formula)[1]
-  covariateNames = all.vars(formula)[-1]
-  variableNames  = all.vars(formula)
-  variableNames  = variableNames[which(variableNames != ".")]
+  valid_names    <- c(colnames(x$xty), colnames(x$xtx)[-1])
+  responseName   <- all.vars(formula)[1]
+  covariateNames <- all.vars(formula)[-1]
+  variableNames  <- all.vars(formula)
+  variableNames  <- variableNames[which(variableNames != ".")]
 
   if (!all(variableNames %in% valid_names)) {
-    vars = variableNames[which(variableNames %in% valid_names == FALSE)]
+    vars <- variableNames[which(variableNames %in% valid_names == FALSE)]
     if (length(vars) == 1) {
       warning("Variable", vars, "not found. Returning original model.")
     } else {
@@ -4095,57 +4095,57 @@ differentModel <- function(formula = NULL, x = NULL) {
   }
 
   if ("." %in% covariateNames) {
-    covariateNames = valid_names[which(valid_names != responseName)]
+    covariateNames <- valid_names[which(valid_names != responseName)]
   }
 
-  xytxy = rbind(cbind(x$yty, t(x$xty)), cbind(x$xty, x$xtx))
-  scramble = c(2, 1, 3:ncol(xytxy))
-  xytxy[scramble, scramble] = xytxy
+  xytxy <- rbind(cbind(x$yty, t(x$xty)), cbind(x$xty, x$xtx))
+  scramble <- c(2, 1, 3:ncol(xytxy))
+  xytxy[scramble, scramble] <- xytxy
 
   # Put (intercept) first
-  all_names = c(colnames(x$xty), colnames(x$xtx))[scramble]
-  colnames(xytxy) = all_names
-  rownames(xytxy) = all_names
+  all_names <- c(colnames(x$xty), colnames(x$xtx))[scramble]
+  colnames(xytxy) <- all_names
+  rownames(xytxy) <- all_names
 
-  response_index = match(responseName, all_names)
-  covariate_index = c(1, match(covariateNames, all_names))
+  response_index <- match(responseName, all_names)
+  covariate_index <- c(1, match(covariateNames, all_names))
 
-  xtx    = xytxy[covariate_index, covariate_index]
-  xty    = matrix(xytxy[covariate_index, response_index], ncol = 1)
-  yty    = xytxy[response_index, response_index]
-  means  = c(x$means_y, x$means)[scramble][covariate_index]
-  means_y = c(x$means_y, x$means)[scramble][response_index]
+  xtx    <- xytxy[covariate_index, covariate_index]
+  xty    <- matrix(xytxy[covariate_index, response_index], ncol = 1)
+  yty    <- xytxy[response_index, response_index]
+  means  <- c(x$means_y, x$means)[scramble][covariate_index]
+  means_y <- c(x$means_y, x$means)[scramble][response_index]
 
-  nrow = nrow(xtx)
-  indicies = c(1)
+  nrow <- nrow(xtx)
+  indicies <- c(1)
   for (i in 2:nrow) {
-    temp_indicies = c(indicies, i)
+    temp_indicies <- c(indicies, i)
     if (rcond(xtx[temp_indicies, temp_indicies]) > 10 * .Machine$double.eps) {
-      indicies = c(indicies, i)
+      indicies <- c(indicies, i)
     }
   }
 
-  xtx_old   = xtx
-  xty_old   = xty
-  xtx       = xtx[indicies, indicies]
-  xty       = matrix(xty[indicies, 1], ncol = 1)
-  means_old = means
-  means     = means[indicies]
-  p         = length(indicies)
-  n         = x$n
+  xtx_old   <- xtx
+  xty_old   <- xty
+  xtx       <- xtx[indicies, indicies]
+  xty       <- matrix(xty[indicies, 1], ncol = 1)
+  means_old <- means
+  means     <- means[indicies]
+  p         <- length(indicies)
+  n         <- x$n
 
   invxtx <- solve(xtx)
-  betas  = drop(invxtx %*% xty)
+  betas  <- drop(invxtx %*% xty)
 
   num_covariates <- p - 1
 
-  sse     = max(drop(yty - 2 * t(xty) %*% betas +
+  sse     <- max(drop(yty - 2 * t(xty) %*% betas +
                        (t(betas) %*% xtx) %*% betas), 0)
-  rstderr = drop(sqrt(sse / (n - num_covariates - 1)))
-  sst     = drop(yty - means_y^2 * n)
-  ssr     = sst - sse
-  df1     = num_covariates
-  df2     = n - num_covariates - 1
+  rstderr <- drop(sqrt(sse / (n - num_covariates - 1)))
+  sst     <- drop(yty - means_y^2 * n)
+  ssr     <- sst - sse
+  df1     <- num_covariates
+  df2     <- n - num_covariates - 1
   if (sse == 0) {
     f_stat <- Inf
   } else {
@@ -4159,13 +4159,13 @@ differentModel <- function(formula = NULL, x = NULL) {
   }
   adj_r_sq <- drop(1 - (n - 1) / (n - num_covariates - 1) * (1 - r_sq))
   if (rstderr == 0) {
-    tvals = rep(Inf, num_covariates + 1)
+    tvals <- rep(Inf, num_covariates + 1)
   } else {
-    tvals   = betas / (rstderr * sqrt(diag(invxtx)))
+    tvals   <- betas / (rstderr * sqrt(diag(invxtx)))
   }
-  secoef  = tvals^-1 * betas
-  pvals   = 2 * pt(abs(tvals), n - num_covariates - 1, lower.tail = FALSE)
-  stars   = matrix(sapply(pvals, function(x) {
+  secoef  <- tvals^-1 * betas
+  pvals   <- 2 * pt(abs(tvals), n - num_covariates - 1, lower.tail = FALSE)
+  stars   <- matrix(sapply(pvals, function(x) {
     if (is.na(x)) ""
     else if (x < 0.001) "***"
     else if (x < 0.01)  "**"
@@ -4175,47 +4175,47 @@ differentModel <- function(formula = NULL, x = NULL) {
   }))
 
   y <- list()
-  class(y) = "vdralinear"
-  y$failed    = x$failed
-  y$converged = x$converged
+  class(y) <- "vdralinear"
+  y$failed    <- x$failed
+  y$converged <- x$converged
 
-  y$party = c(x$responseParty, x$party)[scramble][covariate_index]
-  y$responseParty = c(x$responseParty, x$party)[scramble][response_index]
-  p1 = length(covariate_index)
-  y$coefficients           = rep(NA, p1)
-  y$tvals                  = rep(NA, p1)
-  y$secoef                 = rep(NA, p1)
-  y$pvals                  = rep(NA, p1)
+  y$party <- c(x$responseParty, x$party)[scramble][covariate_index]
+  y$responseParty <- c(x$responseParty, x$party)[scramble][response_index]
+  p1 <- length(covariate_index)
+  y$coefficients           <- rep(NA, p1)
+  y$tvals                  <- rep(NA, p1)
+  y$secoef                 <- rep(NA, p1)
+  y$pvals                  <- rep(NA, p1)
 
-  y$sse                    = sse
-  y$coefficients[indicies] = betas
-  y$tvals[indicies]        = tvals
-  y$secoef[indicies]       = secoef
-  y$pvals[indicies]        = pvals
-  y$rstderr                = rstderr
-  y$rsquare                = r_sq
-  y$adjrsquare             = adj_r_sq
-  y$f_stat                  = f_stat
+  y$sse                    <- sse
+  y$coefficients[indicies] <- betas
+  y$tvals[indicies]        <- tvals
+  y$secoef[indicies]       <- secoef
+  y$pvals[indicies]        <- pvals
+  y$rstderr                <- rstderr
+  y$rsquare                <- r_sq
+  y$adjrsquare             <- adj_r_sq
+  y$f_stat                  <- f_stat
   y$f_pval <- f_pval
-  y$df1                    = df1
-  y$df2                    = df2
-  y$n                      = x$n
-  y$xtx                    = xtx_old
-  y$xty                    = xty_old
-  y$yty                    = yty
-  y$means_y                 = means_y
-  y$means                  = means_old
+  y$df1                    <- df1
+  y$df2                    <- df2
+  y$n                      <- x$n
+  y$xtx                    <- xtx_old
+  y$xty                    <- xty_old
+  y$yty                    <- yty
+  y$means_y                 <- means_y
+  y$means                  <- means_old
 
-  names_old                = all_names[covariate_index]
-  names(y$party)           = names_old
-  names(y$coefficients)    = names_old
-  names(y$secoef)          = names_old
-  names(y$tvals)           = names_old
-  names(y$pvals)           = names_old
-  colnames(y$xtx)          = names_old
-  rownames(y$xtx)          = names_old
-  colnames(y$xty)          = responseName
-  rownames(y$xty)          = names_old
+  names_old                <- all_names[covariate_index]
+  names(y$party)           <- names_old
+  names(y$coefficients)    <- names_old
+  names(y$secoef)          <- names_old
+  names(y$tvals)           <- names_old
+  names(y$pvals)           <- names_old
+  colnames(y$xtx)          <- names_old
+  rownames(y$xtx)          <- names_old
+  colnames(y$xty)          <- responseName
+  rownames(y$xty)          <- names_old
   return(invisible(y))
 }
 
@@ -4233,51 +4233,51 @@ HoslemInternal <- function(x, data = NULL, nGroups = 10) {
   #
   # Returns vector c(chisq, df, pval)
 
-  n = x$n
+  n <- x$n
 
   if (nGroups <= 0) {
-    nGroups = 10
+    nGroups <- 10
   }
 
   if (nGroups > n) {
-    nGroups = n
+    nGroups <- n
   }
 
   if (is.null(data)) {
-    Y = x$Y
+    Y <- x$Y
   } else {
-    Y = data$Y
+    Y <- data$Y
   }
-  pi_ = exp(x$final_fitted) / (1 + exp(x$final_fitted))
+  pi_ <- exp(x$final_fitted) / (1 + exp(x$final_fitted))
   uq <- unique(quantile(pi_, probs = seq(0, 1, 1 / nGroups)))
-  group_ = cut(pi_, breaks = uq, include.lowest = TRUE)
+  group_ <- cut(pi_, breaks = uq, include.lowest = TRUE)
   dd <- data.frame(y = Y[order(pi_)], pi_ = sort(pi_),
                    group = group_[order(pi_)])
 
-  e1 = by(dd, dd$group, function(x) sum(x$pi_))
-  o1 = by(dd, dd$group, function(x) sum(x$y))
-  gn = table(dd$group)
-  e0 = gn - e1
-  o0 = gn - o1
+  e1 <- by(dd, dd$group, function(x) sum(x$pi_))
+  o1 <- by(dd, dd$group, function(x) sum(x$y))
+  gn <- table(dd$group)
+  e0 <- gn - e1
+  o0 <- gn - o1
 
-  testStat = 0
+  testStat <- 0
   for (i in seq_along(e1)) {
     if (o0[i] == e0[i]) {
-      temp1 = 0
+      temp1 <- 0
     } else {
-      temp1 = (o0[i] - e0[i])^2 / e0[i]
+      temp1 <- (o0[i] - e0[i])^2 / e0[i]
     }
     if (o1[i] == e1[i]) {
-      temp2 = 0
+      temp2 <- 0
     } else {
-      temp2 = (o1[i] - e1[i])^2 / e1[i]
+      temp2 <- (o1[i] - e1[i])^2 / e1[i]
     }
-    testStat = testStat + temp1 + temp2
+    testStat <- testStat + temp1 + temp2
   }
 
-  df = nGroups - 2
-  rtrn = c(testStat, df, 1 - pchisq(testStat, df))
-  names(rtrn) = c("Chi-sq", "DF", "p-value")
+  df <- nGroups - 2
+  rtrn <- c(testStat, df, 1 - pchisq(testStat, df))
+  names(rtrn) <- c("Chi-sq", "DF", "p-value")
 
   return(rtrn)
 }
@@ -4329,8 +4329,8 @@ HoslemTest <- function(x = NULL, nGroups = 10) {
     return(invisible(NULL))
   } else if (is.numeric(nGroups)) {
     temp <- list()
-    class(temp) = "hoslemdistributed"
-    temp$hoslem = HoslemInternal(x, nGroups = nGroups)
+    class(temp) <- "hoslemdistributed"
+    temp$hoslem <- HoslemInternal(x, nGroups = nGroups)
     return(temp)
   }
 }
@@ -4347,43 +4347,43 @@ roc_internal <- function(x, data = NULL, bins = 500) {
   # (thresholds) rows and 2 columns
 
   if (is.null(data)) {
-    Y = x$Y
+    Y <- x$Y
   } else {
-    Y = data$Y
+    Y <- data$Y
   }
 
-  if (bins < 2) bins = 2
+  if (bins < 2) bins <- 2
 
-  positive = sum(Y)
-  negative = length(Y) - positive
-  pi_ = exp(x$final_fitted) / (1 + exp(x$final_fitted))
-  threshold = seq(0, 1, length.out = bins)
-  rtrn = matrix(NA, bins, 2)
+  positive <- sum(Y)
+  negative <- length(Y) - positive
+  pi_ <- exp(x$final_fitted) / (1 + exp(x$final_fitted))
+  threshold <- seq(0, 1, length.out = bins)
+  rtrn <- matrix(NA, bins, 2)
 
-  oldX = 1
-  oldY = 1
-  AUC = 0
+  oldX <- 1
+  oldY <- 1
+  AUC <- 0
 
   for (i in 1:bins) {
-    newX = 1 - sum(Y == 0 & pi_ < threshold[i]) / negative
-    newY = sum(Y & pi_ >= threshold[i]) / positive
-    rtrn[i, 1] = newX
-    rtrn[i, 2] = newY
-    AUC = AUC + oldY * (oldX - newX)
-    oldX = newX
-    oldY = newY
+    newX <- 1 - sum(Y == 0 & pi_ < threshold[i]) / negative
+    newY <- sum(Y & pi_ >= threshold[i]) / positive
+    rtrn[i, 1] <- newX
+    rtrn[i, 2] <- newY
+    AUC <- AUC + oldY * (oldX - newX)
+    oldX <- newX
+    oldY <- newY
   }
 
   temp <- list()
-  temp$roc = rtrn
-  temp$auc = AUC
+  temp$roc <- rtrn
+  temp$auc <- AUC
   return(temp)
 }
 
 #' @importFrom graphics axis lines text plot
 #' @export
 print.rocdistributed <- function(x, ...) {
-  rtrn = x$roc
+  rtrn <- x$roc
   plot(rtrn[, 1], rtrn[, 2], xaxt = "n", yaxt = "n",
        xlim = c(-0.2, 1.2), ylim = c(0, 1),
        type = "s", ylab = "Sensitivity", xlab = "1 - Specificity", col = "blue",
@@ -4432,7 +4432,7 @@ RocTest <- function(x = NULL, bins = 10) {
   } else if (is.numeric(bins)) {
     temp <- list()
     temp <- roc_internal(x, bins = bins)
-    class(temp) = "rocdistributed"
+    class(temp) <- "rocdistributed"
     return(temp)
   }
 }
@@ -4442,30 +4442,30 @@ RocTest <- function(x = NULL, bins = 10) {
 
 #' @importFrom grDevices rgb
 GetColors <- function(n) {
-  color = matrix(0, 6, 3)
-  color[1, ] = c(0.000, 0.000, 1.000) # blue
-  color[2, ] = c(0.627, 0.125, 0.941) # purple
-  color[3, ] = c(1.000, 0.000, 0.000) # red
-  color[4, ] = c(1.000, 0.647, 0.000) # orange
-  color[5, ] = c(0.000, 1.000, 0.000) # green
+  color <- matrix(0, 6, 3)
+  color[1, ] <- c(0.000, 0.000, 1.000) # blue
+  color[2, ] <- c(0.627, 0.125, 0.941) # purple
+  color[3, ] <- c(1.000, 0.000, 0.000) # red
+  color[4, ] <- c(1.000, 0.647, 0.000) # orange
+  color[5, ] <- c(0.000, 1.000, 0.000) # green
 
   if (n == 1) {
     return(rgb(0, 0, 0))
   }
   if (n <= 3) {
-    cols = c(rgb(color[1, 1], color[1, 2], color[1, 3]),
+    cols <- c(rgb(color[1, 1], color[1, 2], color[1, 3]),
              rgb(color[2, 1], color[2, 2], color[2, 3]),
              rgb(color[3, 1], color[3, 2], color[3, 3]))
     return(cols[1:n])
   }
-  cols = c()
+  cols <- c()
   for (i in 1:n) {
     idx <- 4 * (i - 1) / (n - 1) + 1 # If we add yellow back in, change 4 to 5
-    idx1 = floor(idx)
-    idx2 = ceiling(idx)
-    dx   = idx - idx1
-    tcol = color[idx1, ] + (color[idx2, ] - color[idx1, ]) * dx
-    cols = c(cols, rgb(tcol[1], tcol[2], tcol[3]))
+    idx1 <- floor(idx)
+    idx2 <- ceiling(idx)
+    dx   <- idx - idx1
+    tcol <- color[idx1, ] + (color[idx2, ] - color[idx1, ]) * dx
+    cols <- c(cols, rgb(tcol[1], tcol[2], tcol[3]))
   }
   return(cols)
 }
@@ -4499,39 +4499,39 @@ GetColors <- function(n) {
 #' @importFrom graphics legend lines
 #' @export
 plot.survfitDistributed <- function(x, merge = FALSE, ...) {
-  max = 0
-  n = length(x$strata)
-  labels = c()
-  max = max(x$time)
-  labels = names(x$strata)
-  arguments = list(...)
-  arguments$x = 1
-  arguments$type = "n"
-  if (is.null(arguments$ylim)) arguments$ylim = c(0, 1)
-  if (is.null(arguments$xlim)) arguments$xlim = c(0, max)
-  if (is.null(arguments$xlab)) arguments$xlab = "Time"
-  if (is.null(arguments$ylab)) arguments$ylab = "Percent Survival"
-  if (is.null(arguments$main)) arguments$main = "Survival Curve"
+  max <- 0
+  n <- length(x$strata)
+  labels <- c()
+  max <- max(x$time)
+  labels <- names(x$strata)
+  arguments <- list(...)
+  arguments$x <- 1
+  arguments$type <- "n"
+  if (is.null(arguments$ylim)) arguments$ylim <- c(0, 1)
+  if (is.null(arguments$xlim)) arguments$xlim <- c(0, max)
+  if (is.null(arguments$xlab)) arguments$xlab <- "Time"
+  if (is.null(arguments$ylab)) arguments$ylab <- "Percent Survival"
+  if (is.null(arguments$main)) arguments$main <- "Survival Curve"
 
   if (merge) {
     do.call("plot", arguments)
-    cols = GetColors(n)
-    start = 1
+    cols <- GetColors(n)
+    start <- 1
     for (i in 1:n) {
-      end = start + x$strata[i] - 1
+      end <- start + x$strata[i] - 1
       lines(c(1, x$surv[start:end]) ~ c(0, x$time[start:end]), type = "s", col = cols[i])
-      start = end + 1
+      start <- end + 1
     }
     legend("bottomleft", legend = labels, col = cols, lty = 1)
   } else {
-    cols = GetColors(1)
-    start = 1
+    cols <- GetColors(1)
+    start <- 1
     for (i in 1:n) {
-      end = start + x$strata[i] - 1
+      end <- start + x$strata[i] - 1
       do.call("plot", arguments)
       lines(c(1, x$surv[start:end]) ~ c(0, x$time[start:end]), type = "s", col = cols)
       legend("bottomleft", legend = labels[i], col = cols, lty = 1)
-      start = end + 1
+      start <- end + 1
     }
   }
 }
@@ -4540,15 +4540,15 @@ plot.survfitDistributed <- function(x, merge = FALSE, ...) {
 #' @rdname survfitDistributed
 #' @export
 print.survfitDistributed <- function(x, ...) {
-  start = 1
-  events = integer(length(x$strata))
+  start <- 1
+  events <- integer(length(x$strata))
   for (i in seq_along(x$strata)) {
-    end = start + x$strata[i] - 1
-    events[i] = sum(x$n.event[start:end])
-    start = end + 1
+    end <- start + x$strata[i] - 1
+    events[i] <- sum(x$n.event[start:end])
+    start <- end + 1
   }
   df <- data.frame(n = x$n, events = events)
-  row.names(df) = names(x$strata)
+  row.names(df) <- names(x$strata)
   print(df)
 }
 
@@ -4557,35 +4557,35 @@ print.survfitDistributed <- function(x, ...) {
 #' @export
 survfitDistributed.stats <- function(x) {
   surv          <- list()
-  surv$n        = x$strata$end - x$strata$start + 1
+  surv$n        <- x$strata$end - x$strata$start + 1
   for (i in seq_len(nrow(x$strata))) {
-    start = x$strata$start[i]
-    end   = x$strata$end[i]
+    start <- x$strata$start[i]
+    end   <- x$strata$end[i]
     idx   <- which(c(1, diff(x$survival$rank[start:end])) != 0)
     temp0 <- table(x$survival$rank[start:end], x$survival$status[start:end])
     if (ncol(temp0) == 1) {
       if (which(c(0, 1) %in% colnames(temp0)) == 1) {
         temp0 <- cbind(temp0, 0)
-        colnames(temp0) = c("0", "1")
+        colnames(temp0) <- c("0", "1")
       } else {
         temp0 <- cbind(0, temp0)
-        colnames(temp0) = c("0", "1")
+        colnames(temp0) <- c("0", "1")
       }
     }
 
-    surv$time     = c(surv$time, x$survival$rank[start:end][idx])
-    surv$n.risk   = c(surv$n.risk, rev(cumsum(rev(temp0[, 1] + temp0[, 2]))))
-    surv$n.event  = c(surv$n.event, temp0[, 2])
-    surv$n.censor = c(surv$n.censor, temp0[, 1])
-    surv$strata   = c(surv$strata, length(idx))
-    surv$surv     = c(surv$surv, x$survival$surv[start:end][idx])
+    surv$time     <- c(surv$time, x$survival$rank[start:end][idx])
+    surv$n.risk   <- c(surv$n.risk, rev(cumsum(rev(temp0[, 1] + temp0[, 2]))))
+    surv$n.event  <- c(surv$n.event, temp0[, 2])
+    surv$n.censor <- c(surv$n.censor, temp0[, 1])
+    surv$strata   <- c(surv$strata, length(idx))
+    surv$surv     <- c(surv$surv, x$survival$surv[start:end][idx])
   }
-  names(surv$n.risk) = NULL
-  names(surv$n.event) = NULL
-  names(surv$n.censor) = NULL
-  names(surv$strata) = x$strata$label
-  surv$type     = "right"
-  class(surv) = "survfitDistributed"
+  names(surv$n.risk) <- NULL
+  names(surv$n.event) <- NULL
+  names(surv$n.censor) <- NULL
+  names(surv$strata) <- x$strata$label
+  surv$type     <- "right"
+  class(surv) <- "survfitDistributed"
   return(invisible(surv))
 }
 
@@ -4593,7 +4593,7 @@ survfitDistributed.stats <- function(x) {
 #' @export
 survfitDistributed.formula <- function(x, formula, data) {
   surv <- list()
-  vars = all.vars(formula)
+  vars <- all.vars(formula)
   if ("." %in% vars) {
     warning("This function does not allow the . symbol in formulas.")
     return(invisible(NULL))
@@ -4610,64 +4610,64 @@ survfitDistributed.formula <- function(x, formula, data) {
   }
   sorted <- do.call("order", as.data.frame(cbind(data, x$survival$rank, x$survival$status)))
   data   <- data[sorted, , drop = FALSE]
-  rank   = x$survival$rank[sorted]
-  status = x$survival$status[sorted]
-  data2  = matrix(0, nrow = nrow(data), ncol = ncol(data))
+  rank   <- x$survival$rank[sorted]
+  status <- x$survival$status[sorted]
+  data2  <- matrix(0, nrow = nrow(data), ncol = ncol(data))
   legend <- list()
-  colnames(data2) = colnames(data)
+  colnames(data2) <- colnames(data)
   for (i in seq_len(ncol(data))) {
-    levels = levels(as.factor(data[, i]))
+    levels <- levels(as.factor(data[, i]))
     legend[[colnames(data)[i]]] <- levels
     data2[, i] <- sapply(data[, i], function(x) {
       which(levels %in% x)
     })
   }
   ranks <- which(apply(abs(apply(data2, 2, diff)), 1, sum) > 0)
-  ranks = c(ranks, nrow(data2))
-  start = 1
+  ranks <- c(ranks, nrow(data2))
+  start <- 1
   for (i in seq_along(ranks)) {
-    end = ranks[i]
-    surv$n = c(surv$n, end - start + 1)
+    end <- ranks[i]
+    surv$n <- c(surv$n, end - start + 1)
     # Calculate the Kaplan Meier Curve Here per notes from 9/4/19
-    rank2 = rank[start:end]
-    event2 = status[start:end]
+    rank2 <- rank[start:end]
+    event2 <- status[start:end]
     temp <- table(rank2)
-    m = length(temp)
+    m <- length(temp)
     temp0 <- table(rank2, event2)
     if (ncol(temp0) == 1) {
       if (which(c(0, 1) %in% colnames(temp0)) == 1) {
         temp0 <- cbind(temp0, 0)
-        colnames(temp0) = c("0", "1")
+        colnames(temp0) <- c("0", "1")
       } else {
         temp0 <- cbind(0, temp0)
-        colnames(temp0) = c("0", "1")
+        colnames(temp0) <- c("0", "1")
       }
     }
     idx <- which(temp0[, 2] > 0)
     if (temp0[nrow(temp0), 2] == 0) idx <- c(idx, nrow(temp0))
-    nfails = temp0[idx, 2]
-    start0 = c(1, (cumsum(temp)[1:(m - 1)] + 1))[idx]
-    start1 = start0 + temp0[idx, 1]
-    stop1  = start1 + nfails  - 1
-    final = length(rank2)
-    S = 1
-    t2 = rep(0, length(nfails))
-    S2 = rep(0, length(nfails))
+    nfails <- temp0[idx, 2]
+    start0 <- c(1, (cumsum(temp)[1:(m - 1)] + 1))[idx]
+    start1 <- start0 + temp0[idx, 1]
+    stop1  <- start1 + nfails  - 1
+    final <- length(rank2)
+    S <- 1
+    t2 <- rep(0, length(nfails))
+    S2 <- rep(0, length(nfails))
     for (j in seq_along(nfails)) {
-      n = final - start0[j] + 1
-      d = stop1[j] - start1[j] + 1
-      S = S * (n - d) / n
-      t2[j] = rank2[start0[j]]
-      S2[j] = S
+      n <- final - start0[j] + 1
+      d <- stop1[j] - start1[j] + 1
+      S <- S * (n - d) / n
+      t2[j] <- rank2[start0[j]]
+      S2[j] <- S
     }
-    surv$time = c(surv$time, t2)
-    surv$n.risk   = c(surv$n.risk, rev(cumsum(rev(temp0[, 1] + temp0[, 2]))))
-    surv$n.event = c(surv$n.event, temp0[, 2])
-    surv$n.censor = c(surv$n.censor, temp0[, 1])
-    surv$surv = c(surv$surv, S2)
-    surv$strata = c(surv$strata, length(idx))
+    surv$time <- c(surv$time, t2)
+    surv$n.risk   <- c(surv$n.risk, rev(cumsum(rev(temp0[, 1] + temp0[, 2]))))
+    surv$n.event <- c(surv$n.event, temp0[, 2])
+    surv$n.censor <- c(surv$n.censor, temp0[, 1])
+    surv$surv <- c(surv$surv, S2)
+    surv$strata <- c(surv$strata, length(idx))
     if (length(vars) == 0) {
-      names(surv$strata)[i] = ""
+      names(surv$strata)[i] <- ""
     } else {
       label <- ""
       for (j in seq_len(ncol(data))) {
@@ -4677,15 +4677,15 @@ survfitDistributed.formula <- function(x, formula, data) {
           label <- paste0(label, ", ")
         }
       }
-      names(surv$strata)[i] = label
+      names(surv$strata)[i] <- label
     }
-    start = end + 1
+    start <- end + 1
   }
-  surv$type            = "right"
-  names(surv$n.risk)   = NULL
-  names(surv$n.event)  = NULL
-  names(surv$n.censor) = NULL
-  class(surv) = "survfitDistributed"
+  surv$type            <- "right"
+  names(surv$n.risk)   <- NULL
+  names(surv$n.event)  <- NULL
+  names(surv$n.censor) <- NULL
+  class(surv) <- "survfitDistributed"
   return(invisible(surv))
 }
 
