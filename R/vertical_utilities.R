@@ -826,7 +826,7 @@ check_response <- function(params, data, y_name) {
     warning("Response is not specified.")
     return(NULL)
   }
-  if (class(y_name) != "character") {
+  if (!is.character(y_name)) {
     warning("response label is not a character string.")
     return(NULL)
   }
@@ -2174,9 +2174,9 @@ create_containers <- function(pA, pB, blocks) {
   num_blocks = blocks$num_blocks
   little_blocksize <- blocks$little_blocksize
 
-  littleBlockG = blocks$gLittleBlock
+  little_block_g = blocks$gLittleBlock
 
-  little_filesize_z   = 8 * little_blocksize * littleBlockG
+  little_filesize_z   = 8 * little_blocksize * little_block_g
   little_filesize_w   = 8 * little_blocksize * pB # used for w, v, RW, wr, rv, Cox
   little_filesize_rz  = 8 * little_blocksize^2
   little_filesize_pr  = 8 * (pA + 1) * pB        # I think this is not used anymore
@@ -2202,7 +2202,7 @@ create_containers <- function(pA, pB, blocks) {
 
   num_containers_pr = ceiling(num_blocks * little_filesize_pr / maximum_filesize)
   num_blocks_small_container_pr <- trunc(num_blocks / num_containers_pr)
-  num_blocks_large_container_pr = num_blocks_small_containers_pr + 1
+  num_blocks_large_container_pr = num_blocks_small_container_pr + 1
   num_large_container_pr = num_blocks %% num_containers_pr
   num_small_container_pr = num_containers_pr - num_large_container_pr
 
@@ -2241,10 +2241,10 @@ create_containers <- function(pA, pB, blocks) {
 
   if (num_large_container_pr > 0) {
     filebreak_pr = c(0:(num_large_container_pr - 1) * num_blocks_large_container_pr + 1,
-                     0:(num_small_container_pr - 1) * num_blocks_small_containers_pr + 1 +
+                     0:(num_small_container_pr - 1) * num_blocks_small_container_pr + 1 +
                        num_large_container_pr * num_blocks_large_container_pr)
   } else {
-    filebreak_pr = c(0:(num_small_container_pr - 1) * num_blocks_small_containers_pr + 1 +
+    filebreak_pr = c(0:(num_small_container_pr - 1) * num_blocks_small_container_pr + 1 +
                        num_large_container_pr * num_blocks_large_container_pr)
   }
 
@@ -2257,17 +2257,17 @@ create_containers <- function(pA, pB, blocks) {
                        num_large_container_xr * num_blocks_large_container_xr)
   }
 
-  containers$file_break_z   = file_break_z
-  containers$filebreak_w   = filebreak_w
-  containers$filebreak_rz  = filebreak_rz
-  containers$filebreak_pr  = filebreak_pr # I think we are not using this anymore
-  containers$filebreak_v   = filebreak_w
-  containers$filebreak_RW  = filebreak_w
-  containers$filebreak_wr  = filebreak_w
-  containers$filebreak_rv  = filebreak_w
-  containers$filebreak_vr  = filebreak_w
-  containers$filebreak_Cox = filebreak_w
-  containers$filebreak_xr = filebreak_xr
+  containers$file_break_z  <- file_break_z
+  containers$filebreak_w   <- filebreak_w
+  containers$filebreak_rz  <- filebreak_rz
+  containers$filebreak_pr  <- filebreak_pr # I think we are not using this anymore
+  containers$filebreak_v   <- filebreak_w
+  containers$filebreak_RW  <- filebreak_w
+  containers$filebreak_wr  <- filebreak_w
+  containers$filebreak_rv  <- filebreak_w
+  containers$filebreak_vr  <- filebreak_w
+  containers$filebreak_cox <- filebreak_w
+  containers$filebreak_xr  <- filebreak_xr
 
   return(containers)
 }

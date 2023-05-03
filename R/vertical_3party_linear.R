@@ -8,7 +8,7 @@ prepare_folder_linear_a3 <- function(params, monitor_folder = NULL) {
     params <- add_to_log(params, "prepare_folder_linear_a3", 0, 0, 0, 0)
     return(params)
   }
-  if (class(monitor_folder) != "character") {
+  if (!is.character(monitor_folder)) {
     warning("monitor_folder directory is not valid.  Please use the same monitor_folder as the DataMart Client.")
     params$failed <- TRUE
     params <- add_to_log(params, "prepare_folder_linear_a3", 0, 0, 0, 0)
@@ -88,7 +88,7 @@ prepare_folder_linear_b3 <- function(params, monitor_folder = NULL) {
     params <- add_to_log(params, "prepare_folder_linear_b3", 0, 0, 0, 0)
     return(params)
   }
-  if (class(monitor_folder) != "character") {
+  if (!is.character(monitor_folder)) {
     warning("monitor_folder directory is not valid.  Please use the same monitor_folder as the DataMart Client.")
     params$failed <- TRUE
     params <- add_to_log(params, "prepare_folder_linear_b3", 0, 0, 0, 0)
@@ -168,7 +168,7 @@ prepare_folder_linear_t3 <- function(params, monitor_folder = NULL) {
     params <- add_to_log(params, "prepare_folder_linear_a3", 0, 0, 0, 0)
     return(params)
   }
-  if (class(monitor_folder) != "character") {
+  if (!is.character(monitor_folder)) {
     warning("monitor_folder directory is not valid.  Please use the same monitor_folder as the DataMart Client.")
     params$failed <- TRUE
     params <- add_to_log(params, "prepare_folder_linear_a3", 0, 0, 0, 0)
@@ -1065,8 +1065,8 @@ party_b_process_3_linear <- function(data,
     return(invisible(NULL))
   }
 
-  data <- prepare_data_linear_B23(params, data)
-  params <- add_to_log(params, "prepare_data_linear_B23", 0, 0, 0, 0)
+  data <- prepare_data_linear_b23(params, data)
+  params <- add_to_log(params, "prepare_data_linear_b23", 0, 0, 0, 0)
 
   if (data$failed) {
     message <- "Error in processing the data for Party B."

@@ -30,16 +30,23 @@ Returns an object of class \code{survfitDistributed}. Objects of this
   class have methods for the functions \code{print} and \code{plot}. The
   following components must be included in a legitimate
   \code{survfitDistributed} object.
-\description{
+
   \item{n}{the total number of subjects in each curve.}
+
   \item{time}{the time points at which the curve has a step.}
+
   \item{n.risk}{the number of subjects at risk at each time point.}
+
   \item{n.event}{the number of events that occour at each time point.}
-  \item{n.censor}{the number of subjects who are censored at each time point.}
+
+  \item{n.censor}{the number of subjects who are censored at each time
+  point.}
+
   \item{strata}{the number of points in each strata.}
+
   \item{surv}{the estimate of the survival time at each time step.}
+
   \item{type}{the type of censoring.  Currently, always "right".}
-}
 }
 \description{
 This function creates survival curves for a previously defined

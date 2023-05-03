@@ -819,7 +819,7 @@ compute_xb_delta_l_cox_b3 <- function(params, data) {
       filename1 <- paste0("crz_", container_ct_rz, ".rdata")
       to_read <- file(file.path(params$read_path[["T"]], filename1), "rb")
     }
-    if (i %in% params$container$filebreak_Cox) {
+    if (i %in% params$container$filebreak_cox) {
       container_ct_cox <- container_ct_cox + 1
       filename2 <- paste0("cCox_", container_ct_cox, ".rdata")
       to_write <- file(file.path(params$write_path, filename2), "wb")
@@ -844,7 +844,7 @@ compute_xb_delta_l_cox_b3 <- function(params, data) {
       close(to_read)
       read_size <- read_size + file.size(file.path(params$read_path[["T"]], filename1))
     }
-    if ((i + 1) %in% params$container$filebreak_Cox || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_cox || i == params$blocks$num_blocks) {
       close(to_write)
       write_size <- write_size <- file.size(file.path(params$write_path, filename2))
     }
@@ -1988,7 +1988,7 @@ party_b_process_3_cox <- function(data,
                                   wait_for_turn = TRUE)
 
     params <- compute_xb_delta_l_cox_b3(params, data)
-    files <- c("txb_w_xb.rdata", seq_zw("cCox_", length(params$container$filebreak_Cox)))
+    files <- c("txb_w_xb.rdata", seq_zw("cCox_", length(params$container$filebreak_cox)))
     params <- send_pause_continue_3p(params, files_t = files, from = "T",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time,
                                   wait_for_turn = TRUE)

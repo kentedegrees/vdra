@@ -14,7 +14,7 @@ prepare_folder_cox_a2 <- function(params, monitor_folder) {
     params$failed <- TRUE
     return(params)
   }
-  if (class(monitor_folder) != "character") {
+  if (!is.character(monitor_folder)) {
     warning(paste("monitor_folder directory is not valid.",
                   "Please use the same monitor_folder as the DataMart Client."))
     params$failed <- TRUE
@@ -81,7 +81,7 @@ prepare_folder_cox_b2 <- function(params, monitor_folder) {
     params$failed <- TRUE
     return(params)
   }
-  if (class(monitor_folder) != "character") {
+  if (!is.character(monitor_folder)) {
     warning(paste("monitor_folder directory is not valid.",
                   "Please use the same monitor_folder as the DataMart Client."))
     params$failed <- TRUE
@@ -142,7 +142,7 @@ extract_strata <- function(params, data, stratas, mask) {
   strata <- list()
   strata$failed <- FALSE
   if (!is.null(stratas)) {
-    if (!("character" %in% class(stratas))) {
+    if (!is.character(stratas)) {
       warning("Strata is not a valid variable name(s).")
       strata$failed <- TRUE
       return(strata)
@@ -1093,7 +1093,7 @@ compute_log_likelihood_cox_b2 <- function(params, data) {
       filename1 <- paste0("cz_", container_ct_z, ".rdata")
       to_read <- file(file.path(params$read_path, filename1), "rb")
     }
-    if (i %in% params$container$filebreak_Cox) {
+    if (i %in% params$container$filebreak_cox) {
       container_ct_cox <- container_ct_cox + 1
       filename2 <- paste0("cCox_", container_ct_cox, ".rdata")
       to_write <- file(file.path(params$write_path, filename2), "wb")
@@ -1120,7 +1120,7 @@ compute_log_likelihood_cox_b2 <- function(params, data) {
       close(to_read)
       read_size <- read_size + file.size(file.path(params$read_path, filename1))
     }
-    if ((i + 1) %in% params$container$filebreak_Cox ||
+    if ((i + 1) %in% params$container$filebreak_cox ||
         i == params$blocks$num_blocks) {
       close(to_write)
       write_size <- write_size +
@@ -1171,7 +1171,7 @@ compute_inverse_cox_a2 <- function(params, data) {
   container_ct_cox <- 0
 
   for (i in 1:params$blocks$num_blocks) {
-    if (i %in% params$container$filebreak_Cox) {
+    if (i %in% params$container$filebreak_cox) {
       container_ct_cox <- container_ct_cox + 1
       filename <- paste0("cCox_", container_ct_cox, ".rdata")
       to_read <- file(file.path(params$read_path, filename), "rb")
@@ -1186,7 +1186,7 @@ compute_inverse_cox_a2 <- function(params, data) {
     read_time <- read_time + proc.time()[3]
 
     txa_w_xb <- txa_w_xb + t(data$x[strt:stp, ]) %*% iz_tz_w_xb
-    if ((i + 1) %in% params$container$filebreak_Cox ||
+    if ((i + 1) %in% params$container$filebreak_cox ||
         i == params$blocks$num_blocks) {
       close(to_read)
       read_size <- read_size + file.size(file.path(params$read_path, filename))
@@ -2298,7 +2298,7 @@ party_b_process_2_cox <- function(data,
     params <- compute_log_likelihood_cox_b2(params, data)
 
     files <- c("txb_w_xb.rdata",
-               seq_zw("cCox_", length(params$container$filebreak_Cox)))
+               seq_zw("cCox_", length(params$container$filebreak_cox)))
     params <- send_pause_continue_2p(params, files,
                                      sleep_time, max_waiting_time)
 

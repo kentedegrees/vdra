@@ -7,7 +7,7 @@ PrepareFolder.ACDP <- function(params, monitor_folder) {
     params$failed <- TRUE
     return(params)
   }
-  if (class(monitor_folder) != "character") {
+  if (!is.character(monitor_folder)) {
     warning("monitor_folder directory is not valid.  Please use the same monitor_folder as the DataMart Client.")
     params$failed <- TRUE
     return(params)

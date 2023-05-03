@@ -976,8 +976,8 @@ party_b_process_3_logistic <- function(data,
     return(invisible(NULL))
   }
 
-  data <- prepare_data_logistic_B23(params, data)
-  params <- add_to_log(params, "prepare_data_logistic_B23", 0, 0, 0, 0)
+  data <- prepare_data_logistic_b23(params, data)
+  params <- add_to_log(params, "prepare_data_logistic_b23", 0, 0, 0, 0)
 
   if (data$failed) {
     message <- "Error in processing the data for Party B."
