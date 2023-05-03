@@ -1037,14 +1037,14 @@ update_converge_status_ac <- function(params) {
 }
 
 
-ComputeStWSCox.AC <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "ComputeStWSCox.AC\n\n")
-  e = NULL
-  f1 = NULL
-  scaled_w_s_l_r = NULL
-  colmin_w_s_l = NULL
-  colrange_w_s_l = NULL
-  f1 = rep(list(list()), params$num_data_partners)
+compute_st_w_s_cox_ac <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "compute_st_w_s_cox_ac\n\n")
+  e <- NULL
+  f1 <- NULL
+  scaled_w_s_l_r <- NULL
+  colmin_w_s_l <- NULL
+  colrange_w_s_l <- NULL
+  f1 <- rep(list(list()), params$num_data_partners)
   read_time <- proc.time()[3]
   load(file.path(params$readPathDP[1], "scaledwslr.rdata"))
   load(file.path(params$readPathDP[1], "products.rdata"))
@@ -1056,73 +1056,74 @@ ComputeStWSCox.AC <- function(params) {
     load(file.path(params$readPathDP[id], "products.rdata"))
     read_size <- read_size + file.size(file.path(params$readPathDP[id], "products.rdata"))
     read_time <- read_time + proc.time()[3]
-    f1[[id]] = f1
+    f1[[id]] <- f1
   }
-  p = 0
+  p <- 0
   for (id in 1:params$num_data_partners) {
-    p = p + length(params$idx[[id]])
+    p <- p + length(params$idx[[id]])
   }
   m  <- matrix(0, p, p)
-  startrow = 1
+  startrow <- 1
   for (id1 in 1:params$num_data_partners) {
-    p1 = length(params$idx[[id1]])
+    p1 <- length(params$idx[[id1]])
     if (p1 == 0) next
-    endrow = startrow + p1 - 1
-    startcol = startrow
-    d = diag(x = colrange_w_s_l[params$idx[[id1]]], nrow = p1, ncol = p1)
+    endrow <- startrow + p1 - 1
+    startcol <- startrow
+    d <- diag(x = colrange_w_s_l[params$idx[[id1]]], nrow = p1, ncol = p1)
     for (id2  in id1:params$num_data_partners) {
-      p2 = length(params$idx[[id2]])
-      endcol = startcol + p2 - 1
+      p2 <- length(params$idx[[id2]])
+      endcol <- startcol + p2 - 1
       if (p2 == 0) next
       if (id1 == 1 && id2 == 1) {
-        m[startrow:endrow, startcol:endcol] = e[[1]][[1]]
+        m[startrow:endrow, startcol:endcol] <- e[[1]][[1]]
       } else if (id1 == id2) {
         idx <- params$idx[[id1]]
-        G = d %*% (e[[id1]][[id1]] + f1[[id1]][[id1]] + t(scaled_w_s_l_r[, idx, drop = FALSE]) %*%
+        g <- d %*% (e[[id1]][[id1]] + f1[[id1]][[id1]] + t(scaled_w_s_l_r[, idx, drop = FALSE]) %*%
                      params$halfshare[, idx, drop = FALSE]) +
           outer(colmin_w_s_l[idx], params$halfsharecolsum[idx])
-        m[startrow:endrow, startcol:endcol] = G + t(G) +
-          t(params$halfshare[, idx, drop = FALSE]) %*% params$w_s_r[, idx, drop = FALSE]
+        m[startrow:endrow, startcol:endcol] <- g + t(g) +
+          t(params$halfshare[, idx, drop = FALSE]) %*%
+          params$w_s_r[, idx, drop = FALSE]
       } else {
-        idx1 = params$idx[[id1]]
-        idx2 = params$idx[[id2]]
+        idx1 <- params$idx[[id1]]
+        idx2 <- params$idx[[id2]]
         if (id1 == 1) {
           temp <- d %*% (e[[id1]][[id2]] + f1[[id2]][[id1]] + t(scaled_w_s_l_r[, idx1, drop = FALSE]) %*%
                           params$halfshare[, idx2, drop = FALSE]) +
             t(params$halfshare[, idx1, drop = FALSE]) %*% params$w_s_r[, idx2, drop = FALSE] +
             outer(colmin_w_s_l[idx1], params$halfsharecolsum[idx2])
-          m[startrow:endrow, startcol:endcol] = temp
-          m[startcol:endcol, startrow:endrow] = t(temp)
+          m[startrow:endrow, startcol:endcol] <- temp
+          m[startcol:endcol, startrow:endrow] <- t(temp)
         } else {
-          p1 = length(params$idx[[id2]])
-          D2 = diag(x = colrange_w_s_l[params$idx[[id2]]], nrow = p2, ncol = p2)
-          G23 = d %*% (e[[id1]][[id2]] + f1[[id2]][[id1]] + t(scaled_w_s_l_r[, idx1, drop = FALSE]) %*%
+          p1 <- length(params$idx[[id2]])
+          d2 <- diag(x = colrange_w_s_l[params$idx[[id2]]], nrow = p2, ncol = p2)
+          g23 <- d %*% (e[[id1]][[id2]] + f1[[id2]][[id1]] + t(scaled_w_s_l_r[, idx1, drop = FALSE]) %*%
                          params$halfshare[, idx2, drop = FALSE]) +
             outer(colmin_w_s_l[idx1], params$halfsharecolsum[idx2])
-          G32 = D2 %*% (e[[id2]][[id1]] + f1[[id1]][[id2]] + t(scaled_w_s_l_r[, idx2, drop = FALSE]) %*%
+          g32 <- d2 %*% (e[[id2]][[id1]] + f1[[id1]][[id2]] + t(scaled_w_s_l_r[, idx2, drop = FALSE]) %*%
                           params$halfshare[, idx1, drop = FALSE]) +
             outer(colmin_w_s_l[idx2], params$halfsharecolsum[idx1])
-          temp <- G23 + t(G32) + t(params$halfshare[, idx1, drop = FALSE]) %*% params$w_s_r[, idx2, drop = FALSE]
-          m[startrow:endrow, startcol:endcol] = temp
-          m[startcol:endcol, startrow:endrow] = t(temp)
+          temp <- g23 + t(g32) + t(params$halfshare[, idx1, drop = FALSE]) %*% params$w_s_r[, idx2, drop = FALSE]
+          m[startrow:endrow, startcol:endcol] <- temp
+          m[startcol:endcol, startrow:endrow] <- t(temp)
         }
       }
-      startcol = endcol + 1
+      startcol <- endcol + 1
     }
-    startrow = endrow + 1
+    startrow <- endrow + 1
   }
 
-  I = NULL
+  I <- NULL
   tryCatch({
-    I = solve(m)
+    I <- solve(m)
   },
   error = function(err) {
-    I = NULL
+    I <- NULL
   }
   )
   if (is.null(I)) {
     params$failed <- TRUE
-    params$singular_matrix = TRUE
+    params$singular_matrix <- TRUE
     params$error_message <-
       paste0("The matrix t(S)*w*S is not invertible.\n",
              "       This may be due to one of two possible problems.\n",
@@ -1134,33 +1135,33 @@ ComputeStWSCox.AC <- function(params) {
              "          duplicates for both parties and / or reduce the\n",
              "          number of variables used. Once this is done,\n",
              "          rerun the data analysis.")
-    params <- add_to_log(params, "computeStWSCox.AC", read_time, read_size, 0, 0)
+    params <- add_to_log(params, "compute_st_w_s_cox_ac", read_time, read_size, 0, 0)
     return(params)
   }
 
-  params$I = I
+  params$I <- I
 
-  IDt = I %*% params$ts_delta_l_r
+  i_dt <- I %*% params$ts_delta_l_r
 
   if (params$alg_iteration_counter == 1) {
-    params$score = t(params$ts_delta_l_r) %*% I %*% params$ts_delta_l_r
+    params$score <- t(params$ts_delta_l_r) %*% I %*% params$ts_delta_l_r
   }
-  params$max_iter_exceeded = params$alg_iteration_counter > params$max_iterations
-  max_iter_exceeded = params$max_iter_exceeded
+  params$max_iter_exceeded <- params$alg_iteration_counter > params$max_iterations
+  max_iter_exceeded <- params$max_iter_exceeded
 
   write_time <- 0
   write_size <- 0
   for (id in 1:params$num_data_partners) {
-    I.part = I[params$idx[[id]], , drop = FALSE]
-    IDt.part = IDt[params$idx[[id]], , drop = FALSE]
+    I.part <- I[params$idx[[id]], , drop = FALSE]
+    i_dt_part <- i_dt[params$idx[[id]], , drop = FALSE]
     write_time <- write_time - proc.time()[3]
-    save(I.part, IDt.part, file = file.path(params$write_path, paste0("update", id, ".rdata")))
+    save(I.part, i_dt_part, file = file.path(params$write_path, paste0("update", id, ".rdata")))
     save(max_iter_exceeded, file = file.path(params$write_path, "maxiterexceeded.rdata"))
     write_size <- write_size + file.size(file.path(params$write_path, paste0("update", id, ".rdata"))) +
       file.size(file.path(params$write_path, "maxiterexceeded.rdata"))
     write_time <- write_time + proc.time()[3]
   }
-  params <- add_to_log(params, "ComputeStWSCox.AC", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "compute_st_w_s_cox_ac", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -1169,9 +1170,9 @@ UpdateConvergeStatus.DP <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "UpdateConvergeStatus.DP\n\n")
   read_time <- 0
   read_size <- 0
-  scale    = NULL
+  scale    <- NULL
   converged <- NULL
-  max_iter_exceeded = NULL
+  max_iter_exceeded <- NULL
   if (params$data_partner_id > 1) {
     read_time <- proc.time()[3]
     load(file.path(params$readPathDP[1], "converged.rdata"))
@@ -1184,7 +1185,7 @@ UpdateConvergeStatus.DP <- function(params) {
   load(file.path(params$readPathAC, "maxiterexceeded.rdata"))
   read_size <- read_size + file.size(file.path(params$readPathAC, "maxiterexceeded.rdata"))
   read_time <- read_time + proc.time()[3]
-  params$max_iter_exceeded = max_iter_exceeded
+  params$max_iter_exceeded <- max_iter_exceeded
   params <- add_to_log(params, "UpdateConvergeStatus.DP", read_time, read_size, 0, 0)
 }
 
@@ -1193,7 +1194,7 @@ UpdateConvergeStatus.DP <- function(params) {
 update_betas_cox_dp <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "update_betas_cox_dp\n\n")
   I.part <- NULL
-  IDt.part <- NULL
+  i_dt_part <- NULL
   ts_delta_l_l <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$readPathAC, paste0("update", params$data_partner_id, ".rdata")))
@@ -1205,22 +1206,22 @@ update_betas_cox_dp <- function(params) {
   read_time <- proc.time()[3] - read_time
 
   if (params$data_partner_id == 1) {
-    deltabeta <- IDt.part + I.part %*% params$ts_delta_l_l
+    deltabeta <- i_dt_part + I.part %*% params$ts_delta_l_l
     if (params$alg_iteration_counter == 1) {
       if (params$p_reduct[1] == 0) {
         params$score <- 0
       } else {
         idx <- 1:params$p_reduct[1]
-        params$score <- 2 * t(IDt.part) %*% params$ts_delta_l_l[idx, 1, drop = FALSE] +
+        params$score <- 2 * t(i_dt_part) %*% params$ts_delta_l_l[idx, 1, drop = FALSE] +
           t(I.part %*% params$ts_delta_l_l) %*% params$ts_delta_l_l[idx, 1, drop = FALSE]
       }
     }
   } else {
-    deltabeta <- IDt.part + I.part %*% ts_delta_l_l
+    deltabeta <- i_dt_part + I.part %*% ts_delta_l_l
     if (params$alg_iteration_counter == 1) {
       temp <- sum(params$p_reduct[1:(params$data_partner_id - 1)])
       idx <- (temp + 1):(temp + params$p_reduct[params$data_partner_id])
-      params$score <- 2 * t(IDt.part) %*% ts_delta_l_l[idx, 1, drop = FALSE] +
+      params$score <- 2 * t(i_dt_part) %*% ts_delta_l_l[idx, 1, drop = FALSE] +
         t(I.part %*% ts_delta_l_l) %*% ts_delta_l_l[idx, 1, drop = FALSE]
     }
   }
@@ -1262,7 +1263,7 @@ update_betas_cox_dp <- function(params) {
 
 survfit_cox_AC <- function(params, pred) {
   if (params$trace) cat(as.character(Sys.time()), "survfit_cox_AC\n\n")
-  survival = params$survival
+  survival <- params$survival
   surv = rep(1, length(survival$rank))
   for (i in seq_along(survival$strata)) {
     if (survival$strata[[i]]$J > 0) {
@@ -1782,7 +1783,7 @@ AnalysisCenterKCox <- function(num_data_partners = NULL,
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
     params <- update_converge_status_ac(params)
-    params <- ComputeStWSCox.AC(params)
+    params <- compute_st_w_s_cox_ac(params)
 
     if (params$failed) {
       make_error_message(params$write_path, params$error_message)
