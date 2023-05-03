@@ -79,7 +79,7 @@ prepare_folder_linear_b2 <- function(params, monitor_folder) {
   params$read_path       <- file.path(monitor_folder, "inputfiles")
 
   if (is.null(monitor_folder)) {
-    warning("monitor_folder must be specified. " ,
+    warning("monitor_folder must be specified. ",
             "Please use the same monitor_folder as the DataMart Client.")
     params$failed <- TRUE
     return(params)

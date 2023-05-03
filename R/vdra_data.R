@@ -41,3 +41,14 @@
 #' }
 #' @keywords data vdra_data
 NULL
+
+#' vdra: A package for performing vertical distributed regression analysis.
+#'
+#' All the functions in this package are desingned to be run in a distributed
+#' network using popMedNet.
+#'
+#'
+#' @docType package
+#' @name vdra
+#' @useDynLib vdra, .registration=TRUE
+NULL

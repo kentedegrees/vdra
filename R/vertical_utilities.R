@@ -721,7 +721,7 @@ DataPartner.KParty <- function(regression            = "linear",
 #'                          data_partner_id = 2,
 #'                          monitor_folder = tempdir())
 #' }
-
+#' @export
 AnalysisCenter.KParty <- function(regression            = "linear",
                                   num_data_partners       = NULL,
                                   monitor_folder         = NULL,
@@ -3593,6 +3593,7 @@ validFormula2 <- function(expression) {
 
 ###################### SHARED SUMMARY AND PRINT FUNCTIONS ######################
 
+#' @export
 print.vdralinear <- function(x, ...) {
   if (x$failed) {
     warning("Distributed linear regression failed.  No results to print.")
@@ -3671,7 +3672,7 @@ summary.vdralinear <- function(object, ...) {
   return(temp)
 }
 
-
+#' @export
 print.summary.vdralinear <- function(x, lion = FALSE, ...) {
   arguments = list(...)
 
@@ -3708,7 +3709,7 @@ print.summary.vdralinear <- function(x, lion = FALSE, ...) {
   cat("F-statistic:", formatStat(x$f_stat), "on", x$df1, "and", x$df2, "DF, p-value:", format.pval(x$f_pval), "\n\n")
 }
 
-
+#' @export
 print.vdralogistic <- function(x, ...) {
   if (x$failed) {
     warning("Distributed logistic regression failed.  No results to print.")
@@ -3778,7 +3779,6 @@ print.vdralogistic <- function(x, ...) {
 #' @examples
 #' summary(vdra_fit_logistic_A)
 #' @export
-
 summary.vdralogistic <- function(object, ...) {
   temp <- list()
   class(temp)         = "summary.vdralogistic"
@@ -3802,7 +3802,7 @@ summary.vdralogistic <- function(object, ...) {
   return(temp)
 }
 
-
+#' @export
 print.summary.vdralogistic <- function(x, lion = FALSE, ...) {
   arguments = list(...)
 
@@ -3850,6 +3850,7 @@ print.summary.vdralogistic <- function(x, lion = FALSE, ...) {
 
 
 #' @importFrom stats printCoefmat
+#' @export
 print.vdracox <- function(x, ...) {
   if (x$failed) {
     warning("Distributed Cox regression failed.  No results to print.")
@@ -3948,7 +3949,7 @@ summary.vdracox <- function(object, ...) {
   return(temp)
 }
 
-
+#' @export
 print.summary.vdracox <- function(x, lion = FALSE, ...) {
   arguments = list(...)
 
@@ -4256,7 +4257,7 @@ HoslemInternal <- function(x, data = NULL, nGroups = 10) {
   return(rtrn)
 }
 
-
+#' @export
 print.hoslemdistributed <- function(x, ...) {
   cat("Hosmer and Lemeshow goodness of fit (GOF) test\n",
       "       Chi-squared:", x$hoslem[1], "with DF",
@@ -4351,6 +4352,7 @@ roc_internal <- function(x, data = NULL, bins = 500) {
 }
 
 #' @importFrom graphics axis lines text plot
+#' @export
 print.rocdistributed <- function(x, ...) {
   rtrn = x$roc
   plot(rtrn[, 1], rtrn[, 2], xaxt = "n", yaxt = "n",
@@ -4522,7 +4524,6 @@ print.survfitDistributed <- function(x, ...) {
 
 
 #' @rdname survfitDistributed
-#' @export
 survfitDistributed.stats <- function(x) {
   surv          <- list()
   surv$n        = x$strata$end - x$strata$start + 1
@@ -4558,7 +4559,6 @@ survfitDistributed.stats <- function(x) {
 }
 
 #' @rdname survfitDistributed
-#' @export
 survfitDistributed.formula <- function(x, formula, data) {
   surv <- list()
   vars = all.vars(formula)
@@ -4714,7 +4714,6 @@ survfitDistributed.formula <- function(x, formula, data) {
 #'                           data = vdra_data[, 8:11])
 #' print(sfit)
 #' plot(sfit, merge = TRUE)
-#' @export
 survfitDistributed <- function(x = NULL, formula = NULL, data = NULL) {
   if (class(x) != "vdracox") {
     warning("The first parameter must be a vdracox object.")
