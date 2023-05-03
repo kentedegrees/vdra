@@ -1,7 +1,7 @@
 ################### DISTRIBUTED LINEAR REGRESSION FUNCTIONS ###################
 
-PrepareFolder.ACDP <- function(params, monitor_folder) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareFolder.ACDP\n\n")
+prepare_folder_acdp <- function(params, monitor_folder) {
+  if (params$trace) cat(as.character(Sys.time()), "prepare_folder_acdp\n\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.  Please use the same monitor_folder as the DataMart Client.")
     params$failed <- TRUE
@@ -86,14 +86,14 @@ PrepareFolder.ACDP <- function(params, monitor_folder) {
   write_size = file.size(file.path(params$write_path, "empty.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "PrepareFolder.ACDP", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "prepare_folder_acdp", 0, 0, write_time, write_size)
   return(params)
 }
 
 
 #' @importFrom stats model.matrix
-PrepareDataLinLog.DP1 <- function(params, data, y_name = NULL) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareDataLinLog.DP1\n\n")
+prepare_data_linlog_dp1 <- function(params, data, y_name = NULL) {
+  if (params$trace) cat(as.character(Sys.time()), "prepare_data_linlog_dp1\n\n")
 
   workdata <- list()
   workdata$failed <- FALSE
@@ -138,8 +138,8 @@ PrepareDataLinLog.DP1 <- function(params, data, y_name = NULL) {
 }
 
 #' @importFrom stats model.matrix
-PrepareDataLinLog.DPk <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "PrepareDataLinLog.DPk\n\n")
+prepare_data_linlog_dpk <- function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "prepare_data_linlog_dpk\n\n")
 
   workdata <- list()
   workdata$failed <- FALSE
@@ -337,8 +337,8 @@ prepare_shares_linear_dp <- function(params, data) {
 }
 
 
-get_products_linear_AC <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "get_products_linear_AC\n\n")
+get_products_linear_ac <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "get_products_linear_ac\n\n")
   read_time <- 0
   read_size = 0
   p = 0
@@ -416,14 +416,14 @@ get_products_linear_AC <- function(params) {
   params$converged    = TRUE
   params$tags         = alltags
 
-  params <- add_to_log(params, "get_products_linear_AC", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "get_products_linear_ac", read_time, read_size, 0, 0)
   return(params)
 }
 
 
 #' @importFrom  stats pf pt
-compute_results_linear_AC <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_results_linear_AC\n\n")
+compute_results_linear_ac <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "compute_results_linear_ac\n\n")
   stats           <- params$stats
   stats$converged <- params$converged
   n        = params$n
@@ -560,7 +560,7 @@ compute_results_linear_AC <- function(params) {
   save(stats, file = file.path(params$write_path, "stats.rdata"))
   write_size = file.size(file.path(params$write_path, "stats.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "compute_results_linear_AC", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "compute_results_linear_ac", 0, 0, write_time, write_size)
   return(params)
 }
 
@@ -605,7 +605,7 @@ DataPartnerKLinear <- function(data,
   params <- initialize_tracking_table_kp(params)
   header(params)
 
-  params   = PrepareFolder.ACDP(params, monitor_folder)
+  params <- prepare_folder_acdp(params, monitor_folder)
 
   if (params$failed) {
     warning(params$error_message)
@@ -613,10 +613,10 @@ DataPartnerKLinear <- function(data,
   }
 
   if (data_partner_id == 1) {
-    data <- PrepareDataLinLog.DP1(params, data, y_name)
-    params <- add_to_log(params, "PrepareDataLinLog.DP1", 0, 0, 0, 0)
+    data <- prepare_data_linlog_dp1(params, data, y_name)
+    params <- add_to_log(params, "prepare_data_linlog_dp1", 0, 0, 0, 0)
   } else {
-    data <- PrepareDataLinLog.DPk(params, data)
+    data <- prepare_data_linlog_dpk(params, data)
     params <- add_to_log(params, "PrepareDataLinLog.DP2", 0, 0, 0, 0)
   }
 
@@ -638,10 +638,10 @@ DataPartnerKLinear <- function(data,
   params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
-  possibleError = ReceivedError.kp(params, from = "AC")
-  if (possibleError$error) {
-    params$error_message <- possibleError$message
-    warning(possibleError$message)
+  possible_error = ReceivedError.kp(params, from = "AC")
+  if (possible_error$error) {
+    params$error_message <- possible_error$message
+    warning(possible_error$message)
     params <- send_pause_quit_kp(params, sleep_time = sleep_time, wait_for_turn = TRUE)
     return(params$stats)
   }
@@ -656,10 +656,10 @@ DataPartnerKLinear <- function(data,
   params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
 
-  possibleError = ReceivedError.kp(params, from = "AC")
-  if (possibleError$error) {
-    params$error_message <- possibleError$message
-    warning(possibleError$message)
+  possible_error = ReceivedError.kp(params, from = "AC")
+  if (possible_error$error) {
+    params$error_message <- possible_error$message
+    warning(possible_error$message)
     params <- send_pause_quit_kp(params, sleep_time = sleep_time, wait_for_turn = TRUE)
     return(params$stats)
   } else {
@@ -689,7 +689,7 @@ AnalysisCenterKLinear <- function(num_data_partners = NULL,
   params <- initialize_tracking_table_kp(params)
   header(params)
 
-  params   = PrepareFolder.ACDP(params, monitor_folder)
+  params <- prepare_folder_acdp(params, monitor_folder)
 
   if (params$failed) {
     warning(params$error_message)
@@ -698,11 +698,11 @@ AnalysisCenterKLinear <- function(num_data_partners = NULL,
 
   params <- PauseContinue.kp(params, from = "DP", max_waiting_time = max_waiting_time)
 
-  possibleError = ReceivedError.kp(params, from = "DP")
-  if (possibleError$error) {
-    params$error_message <- possibleError$message
-    warning(possibleError$message)
-    make_error_message(params$write_path, possibleError$message)
+  possible_error = ReceivedError.kp(params, from = "DP")
+  if (possible_error$error) {
+    params$error_message <- possible_error$message
+    warning(possible_error$message)
+    make_error_message(params$write_path, possible_error$message)
     files <- "error_message.rdata"
     params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
                                   sleep_time = sleep_time, max_waiting_time = max_waiting_time)
@@ -728,8 +728,8 @@ AnalysisCenterKLinear <- function(num_data_partners = NULL,
   params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
-  params <- get_products_linear_AC(params)
-  params <- compute_results_linear_AC(params)
+  params <- get_products_linear_ac(params)
+  params <- compute_results_linear_ac(params)
 
   if (params$failed) {
     make_error_message(params$write_path, params$error_message)

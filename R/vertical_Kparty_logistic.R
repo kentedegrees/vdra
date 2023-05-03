@@ -1,12 +1,12 @@
 ################### DISTRIBUTED LOGISTIC REGRESSION FUNCTIONS ###################
 
-GetProductsLogistic.AC <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "GetProductsLogistic.AC\n\n")
+get_products_logistic_ac <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "get_products_logistic_ac\n\n")
   read_time <- 0
   read_size <- 0
-  p = 0
-  n = 0
-  pi = c()
+  p         <- 0
+  n         <- 0
+  pi        <- c()
 
   allproducts  <- rep(list(list()), params$num_data_partners)
   allhalfshare <- rep(list(list()), params$num_data_partners)
@@ -82,13 +82,13 @@ GetProductsLogistic.AC <- function(params) {
   params$party        = party[-1]
   params$tags         = alltags
 
-  params <- add_to_log(params, "GetProductsLogistic.AC", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "get_products_logistic_ac", read_time, read_size, 0, 0)
   return(params)
 }
 
 
-check_colinearity_logistic_AC <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "check_colinearity_logistic_AC\n\n")
+check_colinearity_logistic_ac <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "check_colinearity_logistic_ac\n\n")
   sts = params$sts
   sty = params$sty
 
@@ -168,15 +168,15 @@ check_colinearity_logistic_AC <- function(params) {
   write_size <- file.size(file.path(params$write_path, "indicies.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "check_colinearity_logistic_AC", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "check_colinearity_logistic_ac", 0, 0, write_time, write_size)
 
   return(params)
 }
 
 
 #' @importFrom stats runif
-compute_initial_betas_logistic_AC <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_initial_betas_logistic_AC\n\n")
+compute_initial_betas_logistic_ac <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "compute_initial_betas_logistic_ac\n\n")
   write_time <- 0
   write_size <- 0
   colsumS = (params$colsum - params$n * params$colmin) / params$colran
@@ -195,7 +195,7 @@ compute_initial_betas_logistic_AC <- function(params) {
     write_time <- write_time + proc.time()[3]
     start = end + 1
   }
-  params <- add_to_log(params, "compute_initial_betas_logistic_AC", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "compute_initial_betas_logistic_ac", 0, 0, write_time, write_size)
   return(params)
 }
 
@@ -572,8 +572,8 @@ compute_results_logistic_DP <- function(params, data) {
 }
 
 #' @importFrom stats pnorm
-compute_results_logistic_AC <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_results_logistic_AC\n\n")
+compute_results_logistic_ac <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "compute_results_logistic_ac\n\n")
   nulldev = NULL
   resdev  = NULL
   hoslem  = NULL
@@ -644,7 +644,7 @@ compute_results_logistic_AC <- function(params) {
 
   params$stats      <- stats
 
-  params <- add_to_log(params, "compute_results_logistic_AC", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "compute_results_logistic_ac", read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -689,7 +689,7 @@ DataPartnerKLogistic <- function(data,
   params <- initialize_tracking_table_kp(params)
   header(params)
 
-  params   = PrepareFolder.ACDP(params, monitor_folder)
+  params <- prepare_folder_acdp(params, monitor_folder)
 
   if (params$failed) {
     warning(params$error_message)
@@ -697,10 +697,10 @@ DataPartnerKLogistic <- function(data,
   }
 
   if (data_partner_id == 1) {
-    data <- PrepareDataLinLog.DP1(params, data, y_name)
+    data <- prepare_data_linlog_dp1(params, data, y_name)
     params <- add_to_log(params, "PrepareParamsLinLog.DP1", 0, 0, 0, 0)
   } else {
-    data <- PrepareDataLinLog.DPk(params, data)
+    data <- prepare_data_linlog_dpk(params, data)
     params <- add_to_log(params, "PrepareParamsLinLog.DPk", 0, 0, 0, 0)
   }
 
@@ -833,7 +833,7 @@ AnalysisCenterKLogistic <- function(num_data_partners = NULL,
   params <- initialize_tracking_table_kp(params)
   header(params)
 
-  params   = PrepareFolder.ACDP(params, monitor_folder)
+  params <- prepare_folder_acdp(params, monitor_folder)
 
   if (params$failed) {
     warning(params$error_message)
@@ -872,10 +872,10 @@ AnalysisCenterKLogistic <- function(num_data_partners = NULL,
   params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
-  params <- GetProductsLogistic.AC(params)
+  params <- get_products_logistic_ac(params)
 
 
-  params <- check_colinearity_logistic_AC(params)
+  params <- check_colinearity_logistic_ac(params)
 
   if (params$failed) {
     make_error_message(params$write_path, params$error_message)
@@ -888,7 +888,7 @@ AnalysisCenterKLogistic <- function(num_data_partners = NULL,
     return(params$stats)
   }
 
-  params <- compute_initial_betas_logistic_AC(params)
+  params <- compute_initial_betas_logistic_ac(params)
 
   for (id in 1:num_data_partners) {
     filesList[[id]] <- c(paste0("u_beta_", id, ".rdata"), "indicies.rdata")
@@ -938,7 +938,7 @@ AnalysisCenterKLogistic <- function(num_data_partners = NULL,
   params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP1",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)
 
-  params <- compute_results_logistic_AC(params)
+  params <- compute_results_logistic_ac(params)
   files <- "stats.rdata"
   params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
                                 sleep_time = sleep_time, max_waiting_time = max_waiting_time)

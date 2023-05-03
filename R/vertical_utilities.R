@@ -79,7 +79,7 @@
 #' # The working directory should be the same as specified in the PopMedNet
 #' # requset for the analysis center.
 #'
-#' fit = AnalysisCenter.2Party(regression = "linear",
+#' fit <- AnalysisCenter.2Party(regression = "linear",
 #'                             data = vdra_data[, c(1, 5:7)],
 #'                             response = "Change_BMI",
 #'                             monitor_folder = tempdir())
@@ -88,7 +88,7 @@
 #' # machine. The working directory should be the same as specified in the
 #' # PopMedNet request for the data partner.
 #'
-#' fit = DataPartner.2Party(regression = "linear", data = vdra_data[, 8:11],
+#' fit <- DataPartner.2Party(regression = "linear", data = vdra_data[, 8:11],
 #'                             monitor_folder = tempdir())
 #'
 #' ## 2 party logistic regression
@@ -97,7 +97,7 @@
 #' # The working directory should be the same as specified in the PopMedNet
 #' # requset for the analysis center.
 #'
-#' fit = AnalysisCenter.2Party(regression = "logistic",
+#' fit <- AnalysisCenter.2Party(regression = "logistic",
 #'                             data = vdra_data[, c(2, 5:7)],
 #'                             response = "WtLost",
 #'                             monitor_folder = tempdir())
@@ -106,7 +106,7 @@
 #' # machine. The working directory should be the same as specified in the
 #' # PopMedNet request for the data partner.
 #'
-#' fit = DataPartner.2Party(regression = "logistic",
+#' fit <- DataPartner.2Party(regression = "logistic",
 #'                          data = vdra_data[, 8:11],
 #'                          monitor_folder = tempdir())
 #'
@@ -116,7 +116,7 @@
 #' # The working directory should be the same as specified in the PopMedNet
 #' # requset for the analysis center.
 #'
-#' fit = AnalysisCenter.2Party(regression = "cox",
+#' fit <- AnalysisCenter.2Party(regression = "cox",
 #'                             data = vdra_data[, c(3:4, 5:7)],
 #'                             response = c("Time", "Status"),
 #'                             strata = c("Exposure", "Sex"),
@@ -126,7 +126,7 @@
 #' # machine. The working directory should be the same as specified in the
 #' # PopMedNet request for the data partner.
 #'
-#'    fit = DataPartner.2Party(regression = "cox",
+#'    fit <- DataPartner.2Party(regression = "cox",
 #'                             data = vdra_data[, 8:11],
 #'                             strata = c("Exposure", "Sex"),
 #'                             monitor_folder = tempdir())
@@ -169,7 +169,7 @@ AnalysisCenter.2Party <- function(regression            = "linear",
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp = GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
+  elp <- GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -206,7 +206,7 @@ DataPartner.2Party <- function(regression          = "linear",
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp = GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
+  elp <- GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -249,7 +249,7 @@ DataPartner1.3Party <- function(regression            = "linear",
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp = GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
+  elp <- GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -289,7 +289,7 @@ DataPartner2.3Party <- function(regression          = "linear",
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp = GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
+  elp <- GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -384,14 +384,14 @@ DataPartner2.3Party <- function(regression          = "linear",
 #' # The working directory should be the same as specified in the PopMedNet
 #' # requset for the analysis center.
 #'
-#' fit = AnalysisCenter.3Party(regression = "linear",
+#' fit <- AnalysisCenter.3Party(regression = "linear",
 #'                             monitor_folder = tempdir())
 #'
 #' # Data Partner 1 -- To be run in second instand of R, on perhaps a different
 #' # machine. The working directory should be the same as specified in the
 #' # PopMedNet request for the data partner.
 #'
-#' fit = DataPartner1.3Party(regression = "linear",
+#' fit <- DataPartner1.3Party(regression = "linear",
 #'                           data = vdra_data[, c(1, 5:7)],
 #'                           response = "Change_BMI",
 #'                           monitor_folder = tempdir())
@@ -400,7 +400,7 @@ DataPartner2.3Party <- function(regression          = "linear",
 #' # machine. The working directory should be the same as specified in the
 #' # PopMedNet request for the data partner.
 #'
-#' fit = DataPartner2.3Party(regression = "linear",
+#' fit <- DataPartner2.3Party(regression = "linear",
 #'                           data = vdra_data[, 8:11],
 #'                           monitor_folder = tempdir())
 #'
@@ -410,14 +410,14 @@ DataPartner2.3Party <- function(regression          = "linear",
 #' # The working directory should be the same as specified in the PopMedNet
 #' # requset for the analysis center.
 #'
-#' fit = AnalysisCenter.3Party(regression = "logistic",
+#' fit <- AnalysisCenter.3Party(regression = "logistic",
 #'                             monitor_folder = tempdir())
 #'
 #' # Data Partner 1 -- To be run in second instand of R, on perhaps a different
 #' # machine. The working directory should be the same as specified in the
 #' # PopMedNet request for the data partner.
 #'
-#' fit = DataPartner1.3Party(regression = "logistic",
+#' fit <- DataPartner1.3Party(regression = "logistic",
 #'                           data = vdra_data[, c(2, 5:7)],
 #'                           response = "WtLost",
 #'                           monitor_folder = tempdir())
@@ -426,7 +426,7 @@ DataPartner2.3Party <- function(regression          = "linear",
 #' # machine. The working directory should be the same as specified in the
 #' # PopMedNet request for the data partner.
 #'
-#' fit = DataPartner2.3Party(regression = "logistic",
+#' fit <- DataPartner2.3Party(regression = "logistic",
 #'                           data = vdra_data[, 8:11],
 #'                           monitor_folder = tempdir())
 #'
@@ -436,14 +436,14 @@ DataPartner2.3Party <- function(regression          = "linear",
 #' # The working directory should be the same as specified in the PopMedNet
 #' # requset for the analysis center.
 #'
-#' fit = AnalysisCenter.3Party(regression = "cox",
+#' fit <- AnalysisCenter.3Party(regression = "cox",
 #'                             monitor_folder = tempdir())
 #'
 #' # Data Partner 1 -- To be run in second instand of R, on perhaps a different
 #' # machine. The working directory should be the same as specified in the
 #' # PopMedNet request for the data partner.
 #'
-#' fit = DataPartner1.3Party(regression = "cox",
+#' fit <- DataPartner1.3Party(regression = "cox",
 #'                           data = vdra_data[, c(3:4, 5:7)],
 #'                           response = c("Time", "Status"),
 #'                           strata = c("Exposure", "Sex"),
@@ -453,7 +453,7 @@ DataPartner2.3Party <- function(regression          = "linear",
 #' # machine. The working directory should be the same as specified in the
 #' # PopMedNet request for the data partner.
 #'
-#' fit = DataPartner2.3Party(regression = "cox",
+#' fit <- DataPartner2.3Party(regression = "cox",
 #'                           data = vdra_data[, 8:11],
 #'                           strata = c("Exposure", "Sex"),
 #'                           monitor_folder = tempdir())
@@ -491,7 +491,7 @@ AnalysisCenter.3Party <- function(regression            = "linear",
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp = GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
+  elp <- GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -524,7 +524,7 @@ DataPartner.KParty <- function(regression            = "linear",
   } else if (is.null(data_partner_id)) {
     warning("data_partner_id must be specified")
   } else if (regression == "cox") {
-    stats <- DataPartnerKCox(data, response, strata, mask, num_data_partners,
+    stats <- data_partner_k_cox(data, response, strata, mask, num_data_partners,
                             data_partner_id, monitor_folder,
                             sleep_time, max_waiting_time, popmednet, trace,
                             verbose)
@@ -542,7 +542,7 @@ DataPartner.KParty <- function(regression            = "linear",
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp = GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
+  elp <- GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -632,7 +632,7 @@ DataPartner.KParty <- function(regression            = "linear",
 #' # The working directory should be the same as specified in the PopMedNet
 #' # requset for the analysis center.
 #'
-#' fit = AnalysisCenter.KParty(regression = "linear",
+#' fit <- AnalysisCenter.KParty(regression = "linear",
 #'                             num_data_partners = 2,
 #'                             monitor_folder = tempdir())
 #'
@@ -640,7 +640,7 @@ DataPartner.KParty <- function(regression            = "linear",
 #' # machine. The working directory should be the same as specified in the
 #' # PopMedNet request for the data partner.
 #'
-#' fit = DataPartner.KParty(regression = "linear",
+#' fit <- DataPartner.KParty(regression = "linear",
 #'                          data = vdra_data[, c(1, 5:7)],
 #'                          response = "Change_BMI",
 #'                          num_data_partners = 2,
@@ -651,7 +651,7 @@ DataPartner.KParty <- function(regression            = "linear",
 #' # machine. The working directory should be the same as specified in the
 #' # PopMedNet request for the data partner.
 #'
-#' fit = DataPartner.KParty(regression = "linear",
+#' fit <- DataPartner.KParty(regression = "linear",
 #'                          data = vdra_data[, 8:11],
 #'                          num_data_partners = 2,
 #'                          data_partner_id = 2,
@@ -663,7 +663,7 @@ DataPartner.KParty <- function(regression            = "linear",
 #' # The working directory should be the same as specified in the PopMedNet
 #' # requset for the analysis center.
 #'
-#' fit = AnalysisCenter.KParty(regression = "logistic",
+#' fit <- AnalysisCenter.KParty(regression = "logistic",
 #'                             num_data_partners = 2,
 #'                             monitor_folder = tempdir())
 #'
@@ -671,7 +671,7 @@ DataPartner.KParty <- function(regression            = "linear",
 #' # machine. The working directory should be the same as specified in the
 #' # PopMedNet request for the data partner.
 #'
-#' fit = DataPartner.KParty(regression = "logistic",
+#' fit <- DataPartner.KParty(regression = "logistic",
 #'                          data = vdra_data[, c(2, 5:7)],
 #'                          response = "WtLost",
 #'                          num_data_partners = 2,
@@ -682,7 +682,7 @@ DataPartner.KParty <- function(regression            = "linear",
 #' # machine. The working directory should be the same as specified in the
 #' # PopMedNet request for the data partner.
 #'
-#' fit = DataPartner.KParty(regression = "logistic",
+#' fit <- DataPartner.KParty(regression = "logistic",
 #'                          data = vdra_data[, 8:11],
 #'                          num_data_partners = 2,
 #'                          data_partner_id = 2,
@@ -694,7 +694,7 @@ DataPartner.KParty <- function(regression            = "linear",
 #' # The working directory should be the same as specified in the PopMedNet
 #' # requset for the analysis center.
 #'
-#' fit = AnalysisCenter.KParty(regression = "cox",
+#' fit <- AnalysisCenter.KParty(regression = "cox",
 #'                             num_data_partners = 2,
 #'                             monitor_folder = tempdir())
 #'
@@ -702,7 +702,7 @@ DataPartner.KParty <- function(regression            = "linear",
 #' # machine. The working directory should be the same as specified in the
 #' # PopMedNet request for the data partner.
 #'
-#' fit = DataPartner.KParty(regression = "cox",
+#' fit <- DataPartner.KParty(regression = "cox",
 #'                          data = vdra_data[, c(3:4, 5:7)],
 #'                          response = c("Time", "Status"),
 #'                          strata = c("Exposure", "Sex"),
@@ -714,7 +714,7 @@ DataPartner.KParty <- function(regression            = "linear",
 #' # machine. The working directory should be the same as specified in the
 #' # PopMedNet request for the data partner.
 #'
-#' fit = DataPartner.KParty(regression = "cox",
+#' fit <- DataPartner.KParty(regression = "cox",
 #'                          data = vdra_data[, 8:11],
 #'                          strata = c("Exposure", "Sex"),
 #'                          num_data_partners = 2,
@@ -741,7 +741,7 @@ AnalysisCenter.KParty <- function(regression            = "linear",
   } else if (is.null(num_data_partners)) {
     warning("num_data_partners must be specified.")
   } else if (regression == "cox") {
-    stats <- AnalysisCenterKCox(num_data_partners, monitor_folder, msreqid, tol,
+    stats <- analysis_center_k_cox(num_data_partners, monitor_folder, msreqid, tol,
                                max_iterations, sleep_time, max_waiting_time,
                                popmednet, trace, verbose)
   } else if (regression == "linear") {
@@ -756,7 +756,7 @@ AnalysisCenter.KParty <- function(regression            = "linear",
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp = GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
+  elp <- GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -4029,10 +4029,10 @@ print.summary.vdracox <- function(x, lion = FALSE, ...) {
 #' @seealso \code{\link{AnalysisCenter.2Party}},
 #'   \code{\link{AnalysisCenter.3Party}}, \code{\link{AnalysisCenter.KParty}}
 #' @examples
-#'  fit = differentModel(Change_BMI ~ Exposure + Age + NumRx, vdra_fit_linear_A)
+#'  fit <- differentModel(Change_BMI ~ Exposure + Age + NumRx, vdra_fit_linear_A)
 #'  summary(fit)
 #'
-#'  fit = differentModel(Age ~ Change_BMI + Exposure + NumRx, vdra_fit_linear_A)
+#'  fit <- differentModel(Age ~ Change_BMI + Exposure + NumRx, vdra_fit_linear_A)
 #'  summary(fit)
 #' @importFrom  stats pf pt
 #' @export
@@ -4451,18 +4451,18 @@ GetColors <- function(n) {
 #' @return No return value.
 #' @seealso \code{\link{survfitDistributed}}
 #' @examples
-#'  sfit = survfitDistributed(vdra_fit_cox_A)
+#'  sfit <- survfitDistributed(vdra_fit_cox_A)
 #'  plot(sfit)
 #'
 #'  # From Data Partner 1
-#'  sfit = survfitDistributed(vdra_fit_cox_A,
+#'  sfit <- survfitDistributed(vdra_fit_cox_A,
 #'                            ~Exposure,
 #'                            data = vdra_data[, c(3:4, 5:7)])
 #'  plot(sfit)
 #'  plot(sfit, merge = FALSE)
 #'
 #'  # From Data Partner 2
-#'  sfit = survfitDistributed(vdra_fit_cox_B,
+#'  sfit <- survfitDistributed(vdra_fit_cox_B,
 #'                            ~Race + Sex,
 #'                            data = vdra_data[, 8:11])
 #'  plot(sfit, merge = FALSE)
@@ -4697,13 +4697,13 @@ survfitDistributed.formula <- function(x, formula, data) {
 #' @seealso \code{\link{plot.survfitDistributed}}
 #' @examples
 #'
-#' sfit = survfitDistributed(vdra_fit_cox_A)
+#' sfit <- survfitDistributed(vdra_fit_cox_A)
 #' print(sfit)
 #' plot(sfit)
 #'
 #' # From Data Partner 1
 #'
-#' sfit = survfitDistributed(vdra_fit_cox_A,
+#' sfit <- survfitDistributed(vdra_fit_cox_A,
 #'                           ~Exposure,
 #'                           data = vdra_data[, c(3:4, 5:7)])
 #' print(sfit)
@@ -4711,7 +4711,7 @@ survfitDistributed.formula <- function(x, formula, data) {
 #'
 #' # From Data Partner 2
 #'
-#' sfit = survfitDistributed(vdra_fit_cox_B,
+#' sfit <- survfitDistributed(vdra_fit_cox_B,
 #'                           ~Race + Sex,
 #'                           data = vdra_data[, 8:11])
 #' print(sfit)
