@@ -81,6 +81,6 @@ This class of object is returned by the two party, three party,
   \code{print} and \code{summary}.
 }
 \seealso{
-\code{\link{survfitDistributed}} \code{\link{AnalysisCenter.2Party}}
+\code{\link{survfitDistributed}} \code{\link{analysis_center_2_party}}
   \code{\link{AnalysisCenter.3Party}}, \code{\link{AnalysisCenter.KParty}}
 }

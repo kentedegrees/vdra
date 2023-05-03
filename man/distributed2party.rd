@@ -2,11 +2,11 @@
 % Please edit documentation in R/vertical_utilities.R
 \name{distributed2party}
 \alias{distributed2party}
-\alias{AnalysisCenter.2Party}
+\alias{analysis_center_2_party}
 \alias{DataPartner.2Party}
 \title{Two Party Vertical Distributed Regression Analysis}
 \usage{
-AnalysisCenter.2Party(
+analysis_center_2_party(
   regression = "linear",
   data = NULL,
   response = NULL,
@@ -45,7 +45,7 @@ Alternatively, \code{"logistic"} returns a fitted logistic model, and
 
 \item{data}{a data.frame or matrix which contains the data to be used in the
 model.  For \code{DataPartner.2Party()}, all columns will be used as
-covariates in the regression.  For \code{AnalysisCenter.2Party()}, all
+covariates in the regression.  For \code{analysis_center_2_party()}, all
 columns, with the expection of the column specified by \code{response},
 will be used as covariates in the regression.}
 
@@ -87,12 +87,12 @@ and \code{"cox"} regression.}
 \code{"logistic"} or \code{"cox"} regression before non-convergence is
 declared.}
 
-\item{sleep_time}{the number of seconds to wait after writing the last file to
-disk before signalling the PMN Datamart Client that files are ready to be
-transferred.}
+\item{sleep_time}{the number of seconds to wait after writing the last file
+to disk before signalling the PMN Datamart Client that files are ready to
+be transferred.}
 
-\item{max_waiting_time}{the number of seconds to wait to receive files before a
-transfer error is declared and the program halts execution.}
+\item{max_waiting_time}{the number of seconds to wait to receive files before
+a transfer error is declared and the program halts execution.}
 
 \item{popmednet}{logical value:  if \code{TRUE}, assumes that PopMednet is
 being used to transfer the files and implements PopMedNet specific
@@ -111,8 +111,8 @@ Returns an object of \code{\link{class}} \code{\link{vdralinear}} for
   \code{\link{vdracox}} for cox regression.
 }
 \description{
-\code{AnalysisCenter.2Party} and \code{DataPartner.2Party} are
-  used in conjuction with PopMedNet to perform linear, logistic, or cox
+\code{analysis_center_2_party} and \code{DataPartner.2Party}
+  are used in conjuction with PopMedNet to perform linear, logistic, or cox
   regression on data that has been partitioned vertically between two data
   partners.  The data partner which holds the response variable(s) uses
   \code{AnalysisCener.2Party} and the other data partner uses
@@ -131,7 +131,7 @@ Returns an object of \code{\link{class}} \code{\link{vdralinear}} for
 # The working directory should be the same as specified in the PopMedNet
 # requset for the analysis center.
 
-fit = AnalysisCenter.2Party(regression = "linear",
+fit <- analysis_center_2_party(regression = "linear",
                             data = vdra_data[, c(1, 5:7)],
                             response = "Change_BMI",
                             monitor_folder = tempdir())
@@ -140,7 +140,7 @@ fit = AnalysisCenter.2Party(regression = "linear",
 # machine. The working directory should be the same as specified in the
 # PopMedNet request for the data partner.
 
-fit = DataPartner.2Party(regression = "linear", data = vdra_data[, 8:11],
+fit <- DataPartner.2Party(regression = "linear", data = vdra_data[, 8:11],
                             monitor_folder = tempdir())
 
 ## 2 party logistic regression
@@ -149,7 +149,7 @@ fit = DataPartner.2Party(regression = "linear", data = vdra_data[, 8:11],
 # The working directory should be the same as specified in the PopMedNet
 # requset for the analysis center.
 
-fit = AnalysisCenter.2Party(regression = "logistic",
+fit <- analysis_center_2_party(regression = "logistic",
                             data = vdra_data[, c(2, 5:7)],
                             response = "WtLost",
                             monitor_folder = tempdir())
@@ -158,7 +158,7 @@ fit = AnalysisCenter.2Party(regression = "logistic",
 # machine. The working directory should be the same as specified in the
 # PopMedNet request for the data partner.
 
-fit = DataPartner.2Party(regression = "logistic",
+fit <- DataPartner.2Party(regression = "logistic",
                          data = vdra_data[, 8:11],
                          monitor_folder = tempdir())
 
@@ -168,7 +168,7 @@ fit = DataPartner.2Party(regression = "logistic",
 # The working directory should be the same as specified in the PopMedNet
 # requset for the analysis center.
 
-fit = AnalysisCenter.2Party(regression = "cox",
+fit <- analysis_center_2_party(regression = "cox",
                             data = vdra_data[, c(3:4, 5:7)],
                             response = c("Time", "Status"),
                             strata = c("Exposure", "Sex"),
@@ -178,7 +178,7 @@ fit = AnalysisCenter.2Party(regression = "cox",
 # machine. The working directory should be the same as specified in the
 # PopMedNet request for the data partner.
 
-   fit = DataPartner.2Party(regression = "cox",
+   fit <- DataPartner.2Party(regression = "cox",
                             data = vdra_data[, 8:11],
                             strata = c("Exposure", "Sex"),
                             monitor_folder = tempdir())

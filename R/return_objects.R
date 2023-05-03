@@ -79,7 +79,7 @@ NULL
 #'   \code{\link{differentModel}}.}
 #'
 #'   }
-#' @seealso \code{\link{differentModel}} \code{\link{AnalysisCenter.2Party}}
+#' @seealso \code{\link{differentModel}} \code{\link{analysis_center_2_party}}
 #'   \code{\link{AnalysisCenter.3Party}} \code{\link{AnalysisCenter.KParty}}
 NULL
 
@@ -140,7 +140,7 @@ NULL
 #'
 #'   }
 #' @seealso \code{\link{HoslemTest}} \code{\link{RocTest}}
-#'   \code{\link{AnalysisCenter.2Party}} \code{\link{AnalysisCenter.3Party}},
+#'   \code{\link{analysis_center_2_party}} \code{\link{AnalysisCenter.3Party}},
 #'   \code{\link{AnalysisCenter.KParty}}
 NULL
 
@@ -218,6 +218,7 @@ NULL
 #'   \item{survival}{a matrix of values used to compute the surivival curve.}
 #'
 #'   \item{strata}{a data.frame of the strata used in the computation.} }
-#' @seealso \code{\link{survfitDistributed}} \code{\link{AnalysisCenter.2Party}}
-#'   \code{\link{AnalysisCenter.3Party}}, \code{\link{AnalysisCenter.KParty}}
+#' @seealso \code{\link{survfitDistributed}}
+#'   \code{\link{analysis_center_2_party}} \code{\link{AnalysisCenter.3Party}},
+#'   \code{\link{AnalysisCenter.KParty}}
 NULL

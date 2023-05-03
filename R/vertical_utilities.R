@@ -2,8 +2,8 @@
 
 #' @name distributed2party
 #' @title Two Party Vertical Distributed Regression Analysis
-#' @description  \code{AnalysisCenter.2Party} and \code{DataPartner.2Party} are
-#'   used in conjuction with PopMedNet to perform linear, logistic, or cox
+#' @description  \code{analysis_center_2_party} and \code{DataPartner.2Party}
+#'   are used in conjuction with PopMedNet to perform linear, logistic, or cox
 #'   regression on data that has been partitioned vertically between two data
 #'   partners.  The data partner which holds the response variable(s) uses
 #'   \code{AnalysisCener.2Party} and the other data partner uses
@@ -19,7 +19,7 @@
 #'   \code{"cox"} returns a fitted Cox proportional hazards model.
 #' @param data a data.frame or matrix which contains the data to be used in the
 #'   model.  For \code{DataPartner.2Party()}, all columns will be used as
-#'   covariates in the regression.  For \code{AnalysisCenter.2Party()}, all
+#'   covariates in the regression.  For \code{analysis_center_2_party()}, all
 #'   columns, with the expection of the column specified by \code{response},
 #'   will be used as covariates in the regression.
 #' @param response for \code{"linear"} and \code{"logistic"} regression, the
@@ -52,11 +52,11 @@
 #' @param max_iterations the maximum number of iterations to perform
 #'   \code{"logistic"} or \code{"cox"} regression before non-convergence is
 #'   declared.
-#' @param sleep_time the number of seconds to wait after writing the last file to
-#'   disk before signalling the PMN Datamart Client that files are ready to be
-#'   transferred.
-#' @param max_waiting_time the number of seconds to wait to receive files before a
-#'   transfer error is declared and the program halts execution.
+#' @param sleep_time the number of seconds to wait after writing the last file
+#'   to disk before signalling the PMN Datamart Client that files are ready to
+#'   be transferred.
+#' @param max_waiting_time the number of seconds to wait to receive files before
+#'   a transfer error is declared and the program halts execution.
 #' @param popmednet logical value:  if \code{TRUE}, assumes that PopMednet is
 #'   being used to transfer the files and implements PopMedNet specific
 #'   routines. In particular, a 15 second offset terminiation of routines that
@@ -79,7 +79,7 @@
 #' # The working directory should be the same as specified in the PopMedNet
 #' # requset for the analysis center.
 #'
-#' fit <- AnalysisCenter.2Party(regression = "linear",
+#' fit <- analysis_center_2_party(regression = "linear",
 #'                             data = vdra_data[, c(1, 5:7)],
 #'                             response = "Change_BMI",
 #'                             monitor_folder = tempdir())
@@ -97,7 +97,7 @@
 #' # The working directory should be the same as specified in the PopMedNet
 #' # requset for the analysis center.
 #'
-#' fit <- AnalysisCenter.2Party(regression = "logistic",
+#' fit <- analysis_center_2_party(regression = "logistic",
 #'                             data = vdra_data[, c(2, 5:7)],
 #'                             response = "WtLost",
 #'                             monitor_folder = tempdir())
@@ -116,7 +116,7 @@
 #' # The working directory should be the same as specified in the PopMedNet
 #' # requset for the analysis center.
 #'
-#' fit <- AnalysisCenter.2Party(regression = "cox",
+#' fit <- analysis_center_2_party(regression = "cox",
 #'                             data = vdra_data[, c(3:4, 5:7)],
 #'                             response = c("Time", "Status"),
 #'                             strata = c("Exposure", "Sex"),
@@ -132,7 +132,7 @@
 #'                             monitor_folder = tempdir())
 #' }
 #' @export
-AnalysisCenter.2Party <- function(regression            = "linear",
+analysis_center_2_party <- function(regression            = "linear",
                                   data                  = NULL,
                                   response              = NULL,
                                   strata                = NULL,
@@ -197,16 +197,19 @@ DataPartner.2Party <- function(regression          = "linear",
                               monitor_folder, sleep_time, max_waiting_time,
                               popmednet, trace, verbose)
   } else if (regression == "linear") {
-    stats <- party_b_process_2_linear(data, monitor_folder, sleep_time, max_waiting_time,
+    stats <- party_b_process_2_linear(data, monitor_folder,
+                                      sleep_time, max_waiting_time,
                                  popmednet, trace, verbose)
   } else if (regression == "logistic") {
-    stats <- party_b_process_2_logistic(data, monitor_folder, sleep_time, max_waiting_time,
+    stats <- party_b_process_2_logistic(data, monitor_folder,
+                                        sleep_time, max_waiting_time,
                                    popmednet, trace, verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp <- GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
+  elp <- GetElapsedTime(proc.time() - start_time, final = TRUE,
+                        timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -239,11 +242,13 @@ DataPartner1.3Party <- function(regression            = "linear",
                               verbose)
   } else if (regression == "linear") {
     stats <- party_a_process_3_linear(data, response, monitor_folder,
-                                     sleep_time, max_waiting_time, popmednet, trace,
+                                     sleep_time, max_waiting_time,
+                                     popmednet, trace,
                                      verbose)
   } else  if (regression == "logistic") {
     stats <- party_a_process_3_logistic(data, response, monitor_folder,
-                                   sleep_time, max_waiting_time, popmednet, trace,
+                                   sleep_time, max_waiting_time,
+                                   popmednet, trace,
                                    verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
@@ -374,7 +379,7 @@ DataPartner2.3Party <- function(regression          = "linear",
 #' @return Returns an object of \code{\link{class}} \code{\link{vdralinear}} for
 #'   linear regression, \code{\link{vdralogistic}} for logistic regression, or
 #'   \code{\link{vdracox}} for cox regression.
-#' @seealso \code{\link{AnalysisCenter.2Party}}
+#' @seealso \code{\link{analysis_center_2_party}}
 #' \code{\link{AnalysisCenter.KParty}}
 #'
 #' @examples
@@ -529,7 +534,7 @@ DataPartner.KParty <- function(regression            = "linear",
                             sleep_time, max_waiting_time, popmednet, trace,
                             verbose)
   } else if (regression == "linear") {
-    stats <- DataPartnerKLinear(data, response, num_data_partners,
+    stats <- data_partner_k_linear(data, response, num_data_partners,
                                data_partner_id, monitor_folder,
                                sleep_time, max_waiting_time, popmednet, trace,
                                verbose)
@@ -623,7 +628,7 @@ DataPartner.KParty <- function(regression            = "linear",
 #' @return Returns an object of \code{\link{class}} \code{\link{vdralinear}} for linear
 #'  regression, \code{\link{vdralogistic}} for logistic regression, or
 #'  \code{\link{vdracox}} for cox regression.
-#' @seealso \code{\link{AnalysisCenter.2Party}} \code{\link{AnalysisCenter.KParty}}
+#' @seealso \code{\link{analysis_center_2_party}} \code{\link{AnalysisCenter.KParty}}
 #' @examples
 #' \dontrun{
 #' ## 3 party linear regression
@@ -745,7 +750,7 @@ AnalysisCenter.KParty <- function(regression            = "linear",
                                max_iterations, sleep_time, max_waiting_time,
                                popmednet, trace, verbose)
   } else if (regression == "linear") {
-    stats <- AnalysisCenterKLinear(num_data_partners, monitor_folder, msreqid,
+    stats <- analysis_center_k_linear(num_data_partners, monitor_folder, msreqid,
                                   sleep_time, max_waiting_time, popmednet, trace,
                                   verbose)
   } else if (regression == "logistic") {
@@ -796,7 +801,7 @@ check_data_format <- function(params, data) {
     warning("The data is empty.")
     return(TRUE)
   }
-  badValue = rep(FALSE, nrow(data))
+  badValue <- rep(FALSE, nrow(data))
   for (i in seq_len(ncol(data))) {
     if (is.integer(data[, i]) || is.double(data[, i]) ||
         is.single(data[, i]) || is.numeric(data[, i])) {
@@ -806,7 +811,7 @@ check_data_format <- function(params, data) {
     }
   }
   idx <- data.frame(which(badValue))
-  colnames(idx) = "Observations with invalid entries"
+  colnames(idx) <- "Observations with invalid entries"
   if (nrow(idx) > 0) {
     warning(paste0("Some observations contain invalid values: NA, NaN, or Inf. ",
                    "A list of all such observations has been outputted to",
@@ -853,8 +858,8 @@ check_response <- function(params, data, y_name) {
               "(time and censor) for Cox regression.")
       return(NULL)
     }
-    responseColIndexTime   = c(which(colnames(data) %in% y_name[1]))
-    responseColIndexCensor = c(which(colnames(data) %in% y_name[2]))
+    responseColIndexTime   <- c(which(colnames(data) %in% y_name[1]))
+    responseColIndexCensor <- c(which(colnames(data) %in% y_name[2]))
     if (length(responseColIndexTime) == 0) {
       warning("Time variable not found.")
       return(NULL)
@@ -871,7 +876,7 @@ check_response <- function(params, data, y_name) {
       warning("Censor variable appears more than once.")
       return(NULL)
     }
-    responseColIndex = c(responseColIndexTime, responseColIndexCensor)
+    responseColIndex <- c(responseColIndexTime, responseColIndexCensor)
   }
   for (i in seq_along(y_name)) {
     if (!is.numeric(data[, responseColIndex[i]]) &&
@@ -901,16 +906,16 @@ create_model_matrix_tags <- function(data) {
   if (ncol(data) == 0) {
     return(c())
   }
-  num     = numeric(ncol(data))
-  classes = character(ncol(data))
+  num     <- numeric(ncol(data))
+  classes <- character(ncol(data))
   for (i in seq_len(ncol(data))) {
     if (is.integer(data[, i]) || is.double(data[, i]) ||
         is.single(data[, i]) || is.numeric(data[, i])) {
-      num[i] = 1
-      classes[i] = "numeric"
+      num[i] <- 1
+      classes[i] <- "numeric"
     } else {
-      num[i] = length(unique(data[, i])) - 1
-      classes[i] = "factor"
+      num[i] <- length(unique(data[, i])) - 1
+      classes[i] <- "factor"
     }
   }
   tags <- rep(names(data), times = num)
@@ -923,28 +928,28 @@ create_model_matrix_tags <- function(data) {
 prepare_params_2p <- function(analysis, party, msreqid = "v_default_00_000",
                               popmednet = TRUE, trace = FALSE, verbose = TRUE) {
   params                     <- list()
-  params$party_name           = party
-  params$analysis            = analysis
-  params$msreqid             = msreqid
-  params$popmednet           = popmednet
-  params$trace               = trace & verbose
-  params$verbose             = verbose
-  params$failed              = FALSE
-  params$errorMessage        = ""
-  params$pmn_step_counter      = 0
-  params$algIterationCounter = 0
-  params$completed           = FALSE
-  params$converged           = FALSE
-  params$maxIterExceeded     = FALSE
-  params$lastIteration       = FALSE
-  params$p1                  = 0
-  params$p2                  = 0
-  params$p1_old              = 0
-  params$p2_old              = 0
+  params$party_name           <- party
+  params$analysis            <- analysis
+  params$msreqid             <- msreqid
+  params$popmednet           <- popmednet
+  params$trace               <- trace & verbose
+  params$verbose             <- verbose
+  params$failed              <- FALSE
+  params$errorMessage        <- ""
+  params$pmn_step_counter      <- 0
+  params$algIterationCounter <- 0
+  params$completed           <- FALSE
+  params$converged           <- FALSE
+  params$maxIterExceeded     <- FALSE
+  params$lastIteration       <- FALSE
+  params$p1                  <- 0
+  params$p2                  <- 0
+  params$p1_old              <- 0
+  params$p2_old              <- 0
   params$stats               <- list()
-  class(params$stats)        = paste0("vdra", analysis)
-  params$stats$failed        = TRUE
-  params$stats$converged     = FALSE
+  class(params$stats)        <- paste0("vdra", analysis)
+  params$stats$failed        <- TRUE
+  params$stats$converged     <- FALSE
   return(params)
 }
 
@@ -953,28 +958,28 @@ prepare_params_2p <- function(analysis, party, msreqid = "v_default_00_000",
 prepare_params_3p <- function(analysis, party, msreqid = "v_default_00_000",
                               popmednet = TRUE, trace = FALSE, verbose = TRUE) {
   params                     <- list()
-  params$party_name           = party
-  params$analysis            = analysis
-  params$msreqid             = msreqid
-  params$popmednet           = popmednet
-  params$trace               = trace & verbose
-  params$verbose             = verbose
-  params$failed              = FALSE
-  params$errorMessage        = ""
-  params$pmn_step_counter      = 0
-  params$algIterationCounter = 0
-  params$completed           = FALSE
-  params$converged           = FALSE
-  params$maxIterExceeded     = FALSE
-  params$lastIteration       = FALSE
-  params$p1                  = 0
-  params$p2                  = 0
-  params$p1_old              = 0
-  params$p2_old              = 0
+  params$party_name           <- party
+  params$analysis            <- analysis
+  params$msreqid             <- msreqid
+  params$popmednet           <- popmednet
+  params$trace               <- trace & verbose
+  params$verbose             <- verbose
+  params$failed              <- FALSE
+  params$errorMessage        <- ""
+  params$pmn_step_counter      <- 0
+  params$algIterationCounter <- 0
+  params$completed           <- FALSE
+  params$converged           <- FALSE
+  params$maxIterExceeded     <- FALSE
+  params$lastIteration       <- FALSE
+  params$p1                  <- 0
+  params$p2                  <- 0
+  params$p1_old              <- 0
+  params$p2_old              <- 0
   params$stats               <- list()
-  class(params$stats)        = paste0("vdra", analysis)
-  params$stats$failed        = TRUE
-  params$stats$converged     = FALSE
+  class(params$stats)        <- paste0("vdra", analysis)
+  params$stats$failed        <- TRUE
+  params$stats$converged     <- FALSE
   return(params)
 }
 
@@ -985,27 +990,27 @@ prepare_params_kp <- function(analysis, data_partner_id, num_data_partners,
                               max_iterations = NULL, ac = FALSE, popmednet = TRUE,
                               trace = FALSE, verbose = TRUE) {
   params                     <- list()
-  params$data_partner_id       = data_partner_id
-  params$num_data_partners     = num_data_partners
-  params$analysis            = analysis
-  params$msreqid             = msreqid
-  params$popmednet           = popmednet
-  params$trace               = trace & verbose
-  params$verbose             = verbose
-  params$failed              = FALSE
-  params$errorMessage        = ""
-  params$pmn_step_counter      = 0
-  params$algIterationCounter = 0
-  params$max_iterations       = max_iterations
-  params$completed           = FALSE
-  params$converged           = FALSE
-  params$maxIterExceeded     = FALSE
-  params$lastIteration       = FALSE
-  params$cutoff              = cutoff
+  params$data_partner_id       <- data_partner_id
+  params$num_data_partners     <- num_data_partners
+  params$analysis            <- analysis
+  params$msreqid             <- msreqid
+  params$popmednet           <- popmednet
+  params$trace               <- trace & verbose
+  params$verbose             <- verbose
+  params$failed              <- FALSE
+  params$errorMessage        <- ""
+  params$pmn_step_counter      <- 0
+  params$algIterationCounter <- 0
+  params$max_iterations       <- max_iterations
+  params$completed           <- FALSE
+  params$converged           <- FALSE
+  params$maxIterExceeded     <- FALSE
+  params$lastIteration       <- FALSE
+  params$cutoff              <- cutoff
   params$stats               <- list()
-  class(params$stats)        = paste0("vdra", analysis)
-  params$stats$failed        = TRUE
-  params$stats$converged     = FALSE
+  class(params$stats)        <- paste0("vdra", analysis)
+  params$stats$failed        <- TRUE
+  params$stats$converged     <- FALSE
   if (((!is.integer(num_data_partners) && !is.numeric(num_data_partners)) ||
        num_data_partners <= 0 || is.infinite(num_data_partners) ||
        round(num_data_partners) != num_data_partners)) {
@@ -1031,79 +1036,91 @@ prepare_params_kp <- function(analysis, data_partner_id, num_data_partners,
 ########################### PRETTY OUTPUT FUNCTIONS ############################
 
 header <- function(params) {
-  large.cox = c("  ____ _____  __",
+  large.cox <-
+    c("  ____ _____  __",
                 " / ___/ _ \\ \\/ /",
                 "| |  | | | \\  / ",
                 "| |__| |_| /  \\ ",
                 " \\____\\___/_/\\_\\")
-  large.linear = c(" _     ___ _   _ _____    _    ____  ",
+  large.linear <-
+    c(" _     ___ _   _ _____    _    ____  ",
                    "| |   |_ _| \\ | | ____|  / \\  |  _ \\ ",
                    "| |    | ||  \\| |  _|   / _ \\ | |_) |",
                    "| |___ | || |\\  | |___ / ___ \\|  _ < ",
                    "|_____|___|_| \\_|_____/_/   \\_|_| \\_\\")
-  large.logistic = c(" _     ___   ____ ___ ____ _____ ___ ____ ",
+  large.logistic <-
+    c(" _     ___   ____ ___ ____ _____ ___ ____ ",
                      "| |   / _ \\ / ___|_ _/ ___|_   _|_ _/ ___|",
                      "| |  | | | | |  _ | |\\___ \\ | |  | | |    ",
                      "| |__| |_| | |_| || | ___) || |  | | |___ ",
                      "|_____\\___/ \\____|___|____/ |_| |___\\____|")
-  large.regression = c(" ____  _____ ____ ____  _____ ____ ____ ___ ___  _   _ ",
+  large.regression <-
+    c(" ____  _____ ____ ____  _____ ____ ____ ___ ___  _   _ ",
                        "|  _ \\| ____/ ___|  _ \\| ____/ ___/ ___|_ _/ _ \\| \\ | |",
                        "| |_) |  _|| |  _| |_) |  _| \\___ \\___ \\| | | | |  \\| |",
                        "|  _ <| |__| |_| |  _ <| |___ ___) ___) | | |_| | |\\  |",
                        "|_| \\_|_____\\____|_| \\_|_____|____|____|___\\___/|_| \\_|")
-  small.cox = c("  ___ _____  __",
+  small.cox <-
+    c("  ___ _____  __",
                 " / __/ _ \\ \\/ /",
                 "| (_| (_) >  < ",
                 " \\___\\___/_/\\_\\")
-  small.linear = c(" _    ___ _  _ ___   _   ___ ",
+  small.linear <-
+    c(" _    ___ _  _ ___   _   ___ ",
                    "| |  |_ _| \\| | __| /_\\ | _ \\",
                    "| |__ | || .` | _| / _ \\|   /",
                    "|____|___|_|\\_|___/_/ \\_\\_|_\\")
-  small.logistic = c(" _    ___   ___ ___ ___ _____ ___ ___ ",
+  small.logistic <-
+    c(" _    ___   ___ ___ ___ _____ ___ ___ ",
                      "| |  / _ \\ / __|_ _/ __|_   _|_ _/ __|",
                      "| |_| (_) | (_ || |\\__ \\ | |  | | (__ ",
                      "|____\\___/ \\___|___|___/ |_| |___\\___|")
-  small.regression = c(" ___ ___ ___ ___ ___ ___ ___ ___ ___  _  _ ",
+  small.regression <-
+    c(" ___ ___ ___ ___ ___ ___ ___ ___ ___  _  _ ",
                        "| _ \\ __/ __| _ \\ __/ __/ __|_ _/ _ \\| \\| |",
                        "|   / _| (_ |   / _|\\__ \\__ \\| | (_) | .` |",
                        "|_|_\\___\\___|_|_\\___|___/___/___\\___/|_|\\_|")
-  tiny.cox = c("+-+-+-+",
+  tiny.cox <-
+    c("+-+-+-+",
                "|C|O|X|")
-  tiny.linear = c("+-+-+-+-+-+-+",
+  tiny.linear <-
+    c("+-+-+-+-+-+-+",
                   "|L|I|N|E|A|R|")
-  tiny.logistic = c("+-+-+-+-+-+-+-+-+",
+  tiny.logistic <-
+    c("+-+-+-+-+-+-+-+-+",
                     "|L|O|G|I|S|T|I|C|")
-  tiny.regression = c("+-+-+-+-+-+-+-+-+-+-+",
+  tiny.regression <-
+    c("+-+-+-+-+-+-+-+-+-+-+",
                       "|R|E|G|R|E|S|S|I|O|N|",
                       "+-+-+-+-+-+-+-+-+-+-+")
 
   width = getOption("width")
   if (width > nchar(large.regression[1])) {
-    cox        = large.cox
-    linear     = large.linear
-    logistic   = large.logistic
-    regression = large.regression
+    cox        <- large.cox
+    linear     <- large.linear
+    logistic   <- large.logistic
+    regression <- large.regression
   } else if (width  > nchar(small.regression[1])) {
-    cox        = small.cox
-    linear     = small.linear
-    logistic   = small.logistic
-    regression = small.regression
+    cox        <- small.cox
+    linear     <- small.linear
+    logistic   <- small.logistic
+    regression <- small.regression
   } else {
-    cox        = tiny.cox
-    linear     = tiny.linear
-    logistic   = tiny.logistic
-    regression = tiny.regression
+    cox        <- tiny.cox
+    linear     <- tiny.linear
+    logistic   <- tiny.logistic
+    regression <- tiny.regression
   }
 
-  offset.cox        = floor((width - nchar(cox[1])) / 2)
-  offset.linear     = floor((width - nchar(linear[1])) / 2)
-  offset.logistic   = floor((width - nchar(logistic[1])) / 2)
-  offset.regression = floor((width - nchar(regression[1])) / 2)
+  offset.cox        <- floor((width - nchar(cox[1])) / 2)
+  offset.linear     <- floor((width - nchar(linear[1])) / 2)
+  offset.logistic   <- floor((width - nchar(logistic[1])) / 2)
+  offset.regression <- floor((width - nchar(regression[1])) / 2)
 
-  space.cox        = paste(rep(" ", offset.cox), collapse = "")
-  space.linear     = paste(rep(" ", offset.linear), collapse = "")
-  space.logistic   = paste(rep(" ", offset.logistic), collapse = "")
-  space.regression = paste(rep(" ", offset.regression), collapse = "")
+  space.cox        <- paste(rep(" ", offset.cox), collapse = "")
+  space.linear     <- paste(rep(" ", offset.linear), collapse = "")
+  space.logistic   <- paste(rep(" ", offset.logistic), collapse = "")
+  space.regression <- paste(rep(" ", offset.regression), collapse = "")
 
   if (params$analysis == "linear") {
     if (params$verbose) cat(paste0("\r", space.linear, linear, "\n"))
@@ -1122,66 +1139,66 @@ header <- function(params) {
 
 
 BeginningIteration <- function(params) {
-  width  = getOption("width")
-  msg    = paste("*** Beginning Iteration", params$algIterationCounter, "***")
-  offset = max(floor((width - nchar(msg)) / 2) - 1, 0)
-  space  = paste(rep(" ", offset), collapse = "")
+  width  <- getOption("width")
+  msg    <- paste("*** Beginning Iteration", params$algIterationCounter, "***")
+  offset <- max(floor((width - nchar(msg)) / 2) - 1, 0)
+  space  <- paste(rep(" ", offset), collapse = "")
   if (params$verbose) cat(space, msg, "\n\n")
 }
 
 
 EndingIteration <- function(params) {
-  width  = getOption("width")
-  msg    = paste("*** Ending Iteration", params$algIterationCounter, "***")
-  offset = floor((width - nchar(msg)) / 2) - 1
-  space  = paste(rep(" ", offset), collapse = "")
+  width  <- getOption("width")
+  msg    <- paste("*** Ending Iteration", params$algIterationCounter, "***")
+  offset <- floor((width - nchar(msg)) / 2) - 1
+  space  <- paste(rep(" ", offset), collapse = "")
   if (params$verbose) cat(space, msg, "\n\n")
 }
 
 
 GetLion <- function(p) {
-  lion1 = rep("", 5)
-  lion1[1] = "    (\"`-''-/\").___..--''\"`-._\"      "
-  lion1[2] = "    `6_ 6 ) `-. ( ).`-.__.`)        "
-  lion1[3] = "    (_Y_.)' ._ ) `._ `. ``-..-'     "
-  lion1[4] = "     _..`--'_..-_/ /--'_.' ,'       "
-  lion1[5] = "    (il),-'' (li),' ((!.-'          "
+  lion1 <- rep("", 5)
+  lion1[1] <- "    (\"`-''-/\").___..--''\"`-._\"      "
+  lion1[2] <- "    `6_ 6 ) `-. ( ).`-.__.`)        "
+  lion1[3] <- "    (_Y_.)' ._ ) `._ `. ``-..-'     "
+  lion1[4] <- "     _..`--'_..-_/ /--'_.' ,'       "
+  lion1[5] <- "    (il),-'' (li),' ((!.-'          "
 
   lion2 <- rep("", 8)
-  lion2[1] = "        ___  ___  _  _  _  _        "
-  lion2[2] = "       | -_>||__>|\\ |||\\ ||       "
-  lion2[3] = "       | |  ||__>| \\||| \\||       "
-  lion2[4] = "       |_|  ||__>|_\\_||_\\_|       "
-  lion2[5] = "     ___  _____  ___  _____  ___    "
-  lion2[6] = "    //__>|_   _|//_\\|_   _|||__>   "
-  lion2[7] = "    \\_\\  | |  | | |  | |  ||__>   "
-  lion2[8] = "    <__//  |_|  |_|_|  |_|  ||__>   "
+  lion2[1] <- "        ___  ___  _  _  _  _        "
+  lion2[2] <- "       | -_>||__>|\\ |||\\ ||       "
+  lion2[3] <- "       | |  ||__>| \\||| \\||       "
+  lion2[4] <- "       |_|  ||__>|_\\_||_\\_|       "
+  lion2[5] <- "     ___  _____  ___  _____  ___    "
+  lion2[6] <- "    //__>|_   _|//_\\|_   _|||__>   "
+  lion2[7] <- "    \\_\\  | |  | | |  | |  ||__>   "
+  lion2[8] <- "    <__//  |_|  |_|_|  |_|  ||__>   "
 
-  lion3 = rep("", 4)
-  lion3[1] = "        ___   ___   _   _           "
-  lion3[2] = "        | -_> //__> | | | |         "
-  lion3[3] = "        | |   \\_\\ | |_| |         "
-  lion3[4] = "        |_|   <__// \\___//         "
+  lion3 <- rep("", 4)
+  lion3[1] <- "        ___   ___   _   _           "
+  lion3[2] <- "        | -_> //__> | | | |         "
+  lion3[3] <- "        | |   \\_\\ | |_| |         "
+  lion3[4] <- "        |_|   <__// \\___//         "
 
-  lion4 =    "    (il),-'' (li),' ((!.-'      PSU "
+  lion4 <-    "    (il),-'' (li),' ((!.-'      PSU "
 
-  lion5 =    "              PSU    "
+  lion5 <-    "              PSU    "
 
   if (p >= 13) {
-    nittany = c(lion1, lion2)
+    nittany <- c(lion1, lion2)
   } else if (p >= 9) {
-    nittany = c(lion1, lion3)
+    nittany <- c(lion1, lion3)
   } else if (p >= 5) {
-    nittany    = lion1
-    nittany[5] = lion4
+    nittany    <- lion1
+    nittany[5] <- lion4
   } else {
-    nittany = lion5
+    nittany <- lion5
   }
 
-  diff = p - length(nittany)
-  top = floor(diff / 2)
-  bottom = diff - top
-  nittany = c(rep("", top), nittany, rep("", bottom))
+  diff <- p - length(nittany)
+  top <- floor(diff / 2)
+  bottom <- diff - top
+  nittany <- c(rep("", top), nittany, rep("", bottom))
   return(nittany)
 }
 
@@ -1189,21 +1206,21 @@ GetLion <- function(p) {
 #' @importFrom utils flush.console
 make_progress_bar_1 <- function(steps, message, verbose) {
   pb <- list()
-  messageLength    = 18
-  pb$numSteps      = steps
-  pb$numBlanks     = 20
-  pb$delimeter     = "|"
-  pb$filler        = "#"
-  pb$blank         = "."
-  pb$percent       = 0
-  pb$percentstr    = "  0%"
-  pb$prints = 0
+  messageLength    <- 18
+  pb$numSteps      <- steps
+  pb$numBlanks     <- 20
+  pb$delimeter     <- "|"
+  pb$filler        <- "#"
+  pb$blank         <- "."
+  pb$percent       <- 0
+  pb$percentstr    <- "  0%"
+  pb$prints <- 0
   message <- substr(message, 1, messageLength)
   message <- paste0(message,
                    paste(rep(" ", messageLength - nchar(message)),
                          collapse = ""))
-  pb$header = paste0("Processing ", message, ": ")
-  toPrint = paste0(pb$header, pb$percentstr, pb$delimeter,
+  pb$header <- paste0("Processing ", message, ": ")
+  toPrint <- paste0(pb$header, pb$percentstr, pb$delimeter,
                    paste(rep(pb$blank, pb$numBlanks), collapse = ""), pb$delimeter)
   if (verbose) cat(toPrint, "\r")
   if (verbose) flush.console()
@@ -4029,7 +4046,7 @@ print.summary.vdracox <- function(x, lion = FALSE, ...) {
 #'   interactions.
 #' @param x an object of class \code{\link{vdralinear}}.
 #' @return Returns an object of class \code{\link{vdralinear}}.
-#' @seealso \code{\link{AnalysisCenter.2Party}},
+#' @seealso \code{\link{analysis_center_2_party}},
 #'   \code{\link{AnalysisCenter.3Party}}, \code{\link{AnalysisCenter.KParty}}
 #' @examples
 #'  fit <- differentModel(Change_BMI ~ Exposure + Age + NumRx, vdra_fit_linear_A)

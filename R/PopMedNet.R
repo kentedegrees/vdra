@@ -19,7 +19,7 @@
 #' @param verbose logical value.  If \code{TRUE}, prints out information to
 #'   document the progression of the computation.
 #' @return \code{NULL}.
-#' @seealso \code{\link{AnalysisCenter.2Party}}
+#' @seealso \code{\link{analysis_center_2_party}}
 #'   \code{\link{AnalysisCenter.3Party}} \code{\link{AnalysisCenter.KParty}}
 #' @importFrom utils read.csv
 #' @export

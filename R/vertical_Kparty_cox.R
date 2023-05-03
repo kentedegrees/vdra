@@ -1668,7 +1668,7 @@ data_partner_k_cox <- function(data,
     return(params$stats)
   }
 
-  params <- SendBasicInfo.DP(params, data)
+  params <- send_basic_info_dp(params, data)
   files <- "n_analysis.rdata"
   params <- send_pause_continue_kp(params,
                                    filesAC = files,
@@ -1677,7 +1677,7 @@ data_partner_k_cox <- function(data,
                                    max_waiting_time = max_waiting_time,
                                    wait_for_turn = TRUE)
 
-  possible_error = ReceivedError.kp(params, from = "AC")
+  possible_error <- ReceivedError.kp(params, from = "AC")
   if (possible_error$error) {
     params$error_message <- possible_error$message
     warning(possible_error$message)
@@ -1726,21 +1726,21 @@ data_partner_k_cox <- function(data,
                                        max_waiting_time = max_waiting_time)
     }
     params <- prepare_strata_cox_dp(params, data)
-    data   = add_strata_to_data_cox_dp(params, data)
+    data   <- add_strata_to_data_cox_dp(params, data)
     params <- add_to_log(params, "add_strata_to_data_cox_dp", 0, 0, 0, 0)
   } else {
     params <- send_strata_names_cox_dp(params, data)
-    filesList = rep(list(list()), num_data_partners)
-    filesList[[1]] = "strata_names.rdata"
+    files_list <- rep(list(list()), num_data_partners)
+    files_list[[1]] <- "strata_names.rdata"
     params <- send_pause_continue_kp(params,
-                                     filesDP = filesList,
+                                     filesDP = files_list,
                                      from = "DP1",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time,
                                      wait_for_turn = TRUE)
 
 
-    possible_error = ReceivedError.kp(params, from = "DP1")
+    possible_error <- ReceivedError.kp(params, from = "DP1")
     if (possible_error$error) {
       params$error_message <- possible_error$message
       warning(possible_error$message)
@@ -1751,10 +1751,10 @@ data_partner_k_cox <- function(data,
     }
 
     params <- send_strata_cox_dp(params, data)
-    filesList = rep(list(list()), num_data_partners)
-    filesList[[1]] = "strata.rdata"
+    files_list <- rep(list(list()), num_data_partners)
+    files_list[[1]] <- "strata.rdata"
     params <- send_pause_continue_kp(params,
-                                     filesDP = filesList,
+                                     filesDP = files_list,
                                      from = "DP1",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time,
@@ -1781,7 +1781,7 @@ data_partner_k_cox <- function(data,
                                    max_waiting_time = max_waiting_time,
                                    wait_for_turn = TRUE)
 
-  possible_error = ReceivedError.kp(params, from = "AC")
+  possible_error <- ReceivedError.kp(params, from = "AC")
   if (possible_error$error) {
     params$error_message <- possible_error$message
     warning(possible_error$message)
@@ -1839,10 +1839,10 @@ data_partner_k_cox <- function(data,
 
       params <- do_nothing_acdp(params)
 
-      filesList = rep(list(list()), num_data_partners)
-      filesList[[1]] = "empty.rdata"
+      files_list <- rep(list(list()), num_data_partners)
+      files_list[[1]] <- "empty.rdata"
       params <- send_pause_continue_kp(params,
-                                       filesDP = filesList,
+                                       filesDP = files_list,
                                        from = "DP1",
                                        sleep_time = sleep_time,
                                        max_waiting_time = max_waiting_time,
@@ -1869,7 +1869,7 @@ data_partner_k_cox <- function(data,
                                      max_waiting_time = max_waiting_time,
                                      wait_for_turn = TRUE)
 
-    possible_error = ReceivedError.kp(params, from = "AC")
+    possible_error <- ReceivedError.kp(params, from = "AC")
     if (possible_error$error) {
       params$error_message <- possible_error$message
       warning(possible_error$message)
@@ -1896,7 +1896,7 @@ data_partner_k_cox <- function(data,
     EndingIteration(params)
     params$alg_iteration_counter <- params$alg_iteration_counter + 1
   }
-  params$lastIteration = TRUE
+  params$lastIteration <- TRUE
   params$completed <- TRUE
 
   params <- get_results_cox_dp(params)
@@ -1916,7 +1916,7 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
                                   trace           = FALSE,
                                   verbose         = TRUE) {
 
-  filesList = rep(list(list()), num_data_partners)
+  files_list <- rep(list(list()), num_data_partners)
 
   params <- prepare_params_kp("cox",
                               0,
@@ -1947,7 +1947,7 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
   params <- PauseContinue.kp(params, from = "DP",
                              max_waiting_time = max_waiting_time)
 
-  possible_error = ReceivedError.kp(params, from = "DP")
+  possible_error <- ReceivedError.kp(params, from = "DP")
   if (possible_error$error) {
     params$error_message <- possible_error$message
     warning(possible_error$message)
@@ -1965,7 +1965,7 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
     return(params$stats)
   }
 
-  params <- CheckAgreement.AC(params)
+  params <- check_agreement_ac(params)
 
   if (params$failed) {
     make_error_message(params$write_path, params$error_message)
@@ -1992,10 +1992,10 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
 
 
   params <- do_nothing_acdp(params)
-  filesList = rep(list(list()), num_data_partners)
-  filesList[[1]] = "empty.rdata"
+  files_list <- rep(list(list()), num_data_partners)
+  files_list[[1]] <- "empty.rdata"
   params <- send_pause_continue_kp(params,
-                                   filesDP = filesList,
+                                   filesDP = files_list,
                                    from = "DP",
                                    sleep_time = sleep_time,
                                    max_waiting_time = max_waiting_time)
@@ -2046,20 +2046,20 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
                                      max_waiting_time = max_waiting_time)
 
     params <- get_s_beta_cox_ac(params)
-    filesList <- rep(list(list()), num_data_partners)
-    filesList[[1]] <- "sbeta.rdata"
-    filesList[[2]] <- "empty.rdata"
+    files_list <- rep(list(list()), num_data_partners)
+    files_list[[1]] <- "sbeta.rdata"
+    files_list[[2]] <- "empty.rdata"
     params <- send_pause_continue_kp(params,
-                                     filesDP = filesList,
+                                     filesDP = files_list,
                                      from = "DP1",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
 
     params <- compute_s_del_l_cox_ac(params)
-    filesList <- rep(list(list()), num_data_partners)
-    filesList[[1]] <- "wsr1.rdata"
+    files_list <- rep(list(list()), num_data_partners)
+    files_list[[1]] <- "wsr1.rdata"
     params <- send_pause_continue_kp(params,
-                                     filesDP = filesList,
+                                     filesDP = files_list,
                                      from = "DP",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time,
@@ -2083,13 +2083,13 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
       return(params$stats)
     }
 
-    filesList <- rep(list(list()), num_data_partners)
+    files_list <- rep(list(list()), num_data_partners)
     for (id in 1:params$num_data_partners) {
-      filesList[[id]] <- c(paste0("update", id, ".rdata"),
+      files_list[[id]] <- c(paste0("update", id, ".rdata"),
                            "maxiterexceeded.rdata")
     }
     params <- send_pause_continue_kp(params,
-                                     filesDP = filesList,
+                                     filesDP = files_list,
                                      from = "DP",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)

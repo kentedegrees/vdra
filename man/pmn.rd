@@ -35,6 +35,6 @@ This function is intended to act as a proxy for PopMedNet when
   response.
 }
 \seealso{
-\code{\link{AnalysisCenter.2Party}}
+\code{\link{analysis_center_2_party}}
   \code{\link{AnalysisCenter.3Party}} \code{\link{AnalysisCenter.KParty}}
 }

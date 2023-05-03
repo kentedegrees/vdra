@@ -150,14 +150,14 @@ Returns an object of \code{\link{class}} \code{\link{vdralinear}} for
 # The working directory should be the same as specified in the PopMedNet
 # requset for the analysis center.
 
-fit = AnalysisCenter.3Party(regression = "linear",
+fit <- AnalysisCenter.3Party(regression = "linear",
                             monitor_folder = tempdir())
 
 # Data Partner 1 -- To be run in second instand of R, on perhaps a different
 # machine. The working directory should be the same as specified in the
 # PopMedNet request for the data partner.
 
-fit = DataPartner1.3Party(regression = "linear",
+fit <- DataPartner1.3Party(regression = "linear",
                           data = vdra_data[, c(1, 5:7)],
                           response = "Change_BMI",
                           monitor_folder = tempdir())
@@ -166,7 +166,7 @@ fit = DataPartner1.3Party(regression = "linear",
 # machine. The working directory should be the same as specified in the
 # PopMedNet request for the data partner.
 
-fit = DataPartner2.3Party(regression = "linear",
+fit <- DataPartner2.3Party(regression = "linear",
                           data = vdra_data[, 8:11],
                           monitor_folder = tempdir())
 
@@ -176,14 +176,14 @@ fit = DataPartner2.3Party(regression = "linear",
 # The working directory should be the same as specified in the PopMedNet
 # requset for the analysis center.
 
-fit = AnalysisCenter.3Party(regression = "logistic",
+fit <- AnalysisCenter.3Party(regression = "logistic",
                             monitor_folder = tempdir())
 
 # Data Partner 1 -- To be run in second instand of R, on perhaps a different
 # machine. The working directory should be the same as specified in the
 # PopMedNet request for the data partner.
 
-fit = DataPartner1.3Party(regression = "logistic",
+fit <- DataPartner1.3Party(regression = "logistic",
                           data = vdra_data[, c(2, 5:7)],
                           response = "WtLost",
                           monitor_folder = tempdir())
@@ -192,7 +192,7 @@ fit = DataPartner1.3Party(regression = "logistic",
 # machine. The working directory should be the same as specified in the
 # PopMedNet request for the data partner.
 
-fit = DataPartner2.3Party(regression = "logistic",
+fit <- DataPartner2.3Party(regression = "logistic",
                           data = vdra_data[, 8:11],
                           monitor_folder = tempdir())
 
@@ -202,14 +202,14 @@ fit = DataPartner2.3Party(regression = "logistic",
 # The working directory should be the same as specified in the PopMedNet
 # requset for the analysis center.
 
-fit = AnalysisCenter.3Party(regression = "cox",
+fit <- AnalysisCenter.3Party(regression = "cox",
                             monitor_folder = tempdir())
 
 # Data Partner 1 -- To be run in second instand of R, on perhaps a different
 # machine. The working directory should be the same as specified in the
 # PopMedNet request for the data partner.
 
-fit = DataPartner1.3Party(regression = "cox",
+fit <- DataPartner1.3Party(regression = "cox",
                           data = vdra_data[, c(3:4, 5:7)],
                           response = c("Time", "Status"),
                           strata = c("Exposure", "Sex"),
@@ -219,13 +219,13 @@ fit = DataPartner1.3Party(regression = "cox",
 # machine. The working directory should be the same as specified in the
 # PopMedNet request for the data partner.
 
-fit = DataPartner2.3Party(regression = "cox",
+fit <- DataPartner2.3Party(regression = "cox",
                           data = vdra_data[, 8:11],
                           strata = c("Exposure", "Sex"),
                           monitor_folder = tempdir())
 }
 }
 \seealso{
-\code{\link{AnalysisCenter.2Party}}
+\code{\link{analysis_center_2_party}}
 \code{\link{AnalysisCenter.KParty}}
 }

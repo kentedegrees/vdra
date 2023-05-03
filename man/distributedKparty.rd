@@ -137,7 +137,7 @@ Returns an object of \code{\link{class}} \code{\link{vdralinear}} for linear
 # The working directory should be the same as specified in the PopMedNet
 # requset for the analysis center.
 
-fit = AnalysisCenter.KParty(regression = "linear",
+fit <- AnalysisCenter.KParty(regression = "linear",
                             num_data_partners = 2,
                             monitor_folder = tempdir())
 
@@ -145,7 +145,7 @@ fit = AnalysisCenter.KParty(regression = "linear",
 # machine. The working directory should be the same as specified in the
 # PopMedNet request for the data partner.
 
-fit = DataPartner.KParty(regression = "linear",
+fit <- DataPartner.KParty(regression = "linear",
                          data = vdra_data[, c(1, 5:7)],
                          response = "Change_BMI",
                          num_data_partners = 2,
@@ -156,7 +156,7 @@ fit = DataPartner.KParty(regression = "linear",
 # machine. The working directory should be the same as specified in the
 # PopMedNet request for the data partner.
 
-fit = DataPartner.KParty(regression = "linear",
+fit <- DataPartner.KParty(regression = "linear",
                          data = vdra_data[, 8:11],
                          num_data_partners = 2,
                          data_partner_id = 2,
@@ -168,7 +168,7 @@ fit = DataPartner.KParty(regression = "linear",
 # The working directory should be the same as specified in the PopMedNet
 # requset for the analysis center.
 
-fit = AnalysisCenter.KParty(regression = "logistic",
+fit <- AnalysisCenter.KParty(regression = "logistic",
                             num_data_partners = 2,
                             monitor_folder = tempdir())
 
@@ -176,7 +176,7 @@ fit = AnalysisCenter.KParty(regression = "logistic",
 # machine. The working directory should be the same as specified in the
 # PopMedNet request for the data partner.
 
-fit = DataPartner.KParty(regression = "logistic",
+fit <- DataPartner.KParty(regression = "logistic",
                          data = vdra_data[, c(2, 5:7)],
                          response = "WtLost",
                          num_data_partners = 2,
@@ -187,7 +187,7 @@ fit = DataPartner.KParty(regression = "logistic",
 # machine. The working directory should be the same as specified in the
 # PopMedNet request for the data partner.
 
-fit = DataPartner.KParty(regression = "logistic",
+fit <- DataPartner.KParty(regression = "logistic",
                          data = vdra_data[, 8:11],
                          num_data_partners = 2,
                          data_partner_id = 2,
@@ -199,7 +199,7 @@ fit = DataPartner.KParty(regression = "logistic",
 # The working directory should be the same as specified in the PopMedNet
 # requset for the analysis center.
 
-fit = AnalysisCenter.KParty(regression = "cox",
+fit <- AnalysisCenter.KParty(regression = "cox",
                             num_data_partners = 2,
                             monitor_folder = tempdir())
 
@@ -207,7 +207,7 @@ fit = AnalysisCenter.KParty(regression = "cox",
 # machine. The working directory should be the same as specified in the
 # PopMedNet request for the data partner.
 
-fit = DataPartner.KParty(regression = "cox",
+fit <- DataPartner.KParty(regression = "cox",
                          data = vdra_data[, c(3:4, 5:7)],
                          response = c("Time", "Status"),
                          strata = c("Exposure", "Sex"),
@@ -219,7 +219,7 @@ fit = DataPartner.KParty(regression = "cox",
 # machine. The working directory should be the same as specified in the
 # PopMedNet request for the data partner.
 
-fit = DataPartner.KParty(regression = "cox",
+fit <- DataPartner.KParty(regression = "cox",
                          data = vdra_data[, 8:11],
                          strata = c("Exposure", "Sex"),
                          num_data_partners = 2,
@@ -228,5 +228,5 @@ fit = DataPartner.KParty(regression = "cox",
 }
 }
 \seealso{
-\code{\link{AnalysisCenter.2Party}} \code{\link{AnalysisCenter.KParty}}
+\code{\link{analysis_center_2_party}} \code{\link{AnalysisCenter.KParty}}
 }

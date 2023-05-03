@@ -183,7 +183,7 @@ prepare_data_linlog_dpk <- function(params, data) {
   return(workdata)
 }
 
-SendBasicInfo.DP <- function(params, data) {
+send_basic_info_dp <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "SendbasicInfo.DP\n\n")
   n <- data$n
   params$n <- n
@@ -194,17 +194,17 @@ SendBasicInfo.DP <- function(params, data) {
        file = file.path(params$write_path, "n_analysis.rdata"))
   write_size <- file.size(file.path(params$write_path, "n_analysis.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "SendBasicInfo.DP",
+  params <- add_to_log(params, "send_basic_info_dp",
                        0, 0, write_time, write_size)
   return(params)
 }
 
-CheckAgreement.AC <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "CheckAgreement.AC\n\n")
+check_agreement_ac <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "check_agreement_ac\n\n")
   read_time <- 0
   read_size <- 0
-  analysisAll <- rep("", params$num_data_partners)
-  nAll        <- rep(0, params$num_data_partners)
+  analysis_all <- rep("", params$num_data_partners)
+  n_all        <- rep(0, params$num_data_partners)
   ndata_partner_id <- rep(0, params$num_data_partners)
   message1    <- NULL
   message2    <- NULL
@@ -217,28 +217,28 @@ CheckAgreement.AC <- function(params) {
     read_size <- read_size +
       file.size(file.path(params$readPathDP[id], "n_analysis.rdata"))
     read_time <- read_time + proc.time()[3]
-    analysisAll[id] <- analysis
-    nAll[id]        <- n
+    analysis_all[id] <- analysis
+    n_all[id]        <- n
     ndata_partner_id[id] <- data_partner_id
   }
 
-  if (any(params$analysis != analysisAll)) {
+  if (any(params$analysis != analysis_all)) {
     params$failed <- TRUE
     message1 <- "Different regressions have been specified.\n"
     message1 <- paste(message1, "Analysis center specified",
                       params$analysis, "regression.\n")
     for (id in 1:params$num_data_partners) {
       message1 <- paste(message1, "Data partner", id, "specified",
-                        analysisAll[id], "regression.\n")
+                        analysis_all[id], "regression.\n")
     }
   }
 
-  if (min(nAll) < max(nAll)) {
+  if (min(n_all) < max(n_all)) {
     params$failed <- TRUE
     message2 <- "Data partners provided different numbers of observations.\n"
     for (id in 1:params$num_data_partners) {
       message2 <- paste(message2, "Data partner", id, "has",
-                        nAll[id], "observations.\n")
+                        n_all[id], "observations.\n")
     }
   }
 
@@ -260,15 +260,15 @@ CheckAgreement.AC <- function(params) {
     params$error_message <- paste0(message1, message2, message3)
   }
 
-  params <- add_to_log(params, "CheckAgreement.AC", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "check_agreement_ac", read_time, read_size, 0, 0)
   return(params)
 }
 
 
 #' @importFrom stats runif
-prepare_params_linear_DP <- function(params, data) {
+prepare_params_linear_dp <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "prepare_params_linear_DP\n\n")
+                        "prepare_params_linear_dp\n\n")
   params$n          <- nrow(data$x)
   params$p          <- ncol(data$x)
   temp <- as.numeric(Sys.time())
@@ -287,7 +287,7 @@ prepare_params_linear_DP <- function(params, data) {
                                     "p_scaler_seed.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "prepare_params_linear_DP",
+  params <- add_to_log(params, "prepare_params_linear_dp",
                        0, 0, write_time, write_size)
   return(params)
 }
@@ -508,7 +508,8 @@ compute_results_linear_ac <- function(params) {
     params$failed <- TRUE
     params$error_message <-
       paste0(params$error_message,
-             paste("After removing colinear covariates, no Data Partner > DP1 has a numeric covariate."))
+             paste("After removing colinear covariates,",
+                   "no Data Partner > DP1 has a numeric covariate."))
   }
 
   stats$failed    <- params$failed
@@ -603,8 +604,8 @@ compute_results_linear_ac <- function(params) {
 }
 
 
-get_results_linear_DP <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "get_results_linear_DP\n\n")
+get_results_linear_dp <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "get_results_linear_dp\n\n")
   params$converged <- TRUE
   stats <- NULL
   read_time <- proc.time()[3]
@@ -613,7 +614,7 @@ get_results_linear_DP <- function(params) {
   read_time <- proc.time()[3] - read_time
   params$stats <- stats
 
-  params <- add_to_log(params, "get_results_linear_DP",
+  params <- add_to_log(params, "get_results_linear_dp",
                        read_time, read_size, 0, 0)
   return(params)
 }
@@ -622,16 +623,16 @@ get_results_linear_DP <- function(params) {
 ############################## PARENT FUNCTIONS ###############################
 
 
-DataPartnerKLinear <- function(data,
-                               y_name           = NULL,
-                               num_data_partners = NULL,
-                               data_partner_id   = NULL,
-                               monitor_folder   = NULL,
-                               sleep_time       = 10,
-                               max_waiting_time  = 24 * 60 * 60,
-                               popmednet      = TRUE,
-                               trace          = FALSE,
-                               verbose        = TRUE) {
+data_partner_k_linear <- function(data,
+                                  y_name           = NULL,
+                                  num_data_partners = NULL,
+                                  data_partner_id   = NULL,
+                                  monitor_folder   = NULL,
+                                  sleep_time       = 10,
+                                  max_waiting_time  = 24 * 60 * 60,
+                                  popmednet      = TRUE,
+                                  trace          = FALSE,
+                                  verbose        = TRUE) {
 
   params <- prepare_params_kp("linear", data_partner_id,
                               num_data_partners,
@@ -683,7 +684,7 @@ DataPartnerKLinear <- function(data,
     return(params$stats)
   }
 
-  params <- SendBasicInfo.DP(params, data)
+  params <- send_basic_info_dp(params, data)
   files <- "n_analysis.rdata"
   params <- send_pause_continue_kp(params,
                                    filesAC = files,
@@ -692,7 +693,7 @@ DataPartnerKLinear <- function(data,
                                    max_waiting_time = max_waiting_time,
                                    wait_for_turn = TRUE)
 
-  possible_error = ReceivedError.kp(params, from = "AC")
+  possible_error <- ReceivedError.kp(params, from = "AC")
   if (possible_error$error) {
     params$error_message <- possible_error$message
     warning(possible_error$message)
@@ -702,7 +703,7 @@ DataPartnerKLinear <- function(data,
     return(params$stats)
   }
 
-  params <- prepare_params_linear_DP(params, data)
+  params <- prepare_params_linear_dp(params, data)
   files <- "p_scaler_seed.rdata"
   params <- send_pause_continue_kp(params,
                                    filesDP = files,
@@ -720,7 +721,7 @@ DataPartnerKLinear <- function(data,
                                    max_waiting_time = max_waiting_time,
                                    wait_for_turn = TRUE)
 
-  possible_error = ReceivedError.kp(params, from = "AC")
+  possible_error <- ReceivedError.kp(params, from = "AC")
   if (possible_error$error) {
     params$error_message <- possible_error$message
     warning(possible_error$message)
@@ -728,7 +729,7 @@ DataPartnerKLinear <- function(data,
                                  wait_for_turn = TRUE)
     return(params$stats)
   } else {
-    params <- get_results_linear_DP(params)
+    params <- get_results_linear_dp(params)
     params <- send_pause_quit_kp(params, sleep_time = sleep_time,
                                  wait_for_turn = TRUE)
     return(params$stats)
@@ -736,14 +737,14 @@ DataPartnerKLinear <- function(data,
 }
 
 
-AnalysisCenterKLinear <- function(num_data_partners = NULL,
-                                  monitor_folder   = NULL,
-                                  msreqid         = "v_default_0_000",
-                                  sleep_time       = 10,
-                                  max_waiting_time  = 24 * 60 * 60,
-                                  popmednet       = TRUE,
-                                  trace           = FALSE,
-                                  verbose         = TRUE) {
+analysis_center_k_linear <- function(num_data_partners = NULL,
+                                     monitor_folder   = NULL,
+                                     msreqid         = "v_default_0_000",
+                                     sleep_time       = 10,
+                                     max_waiting_time  = 24 * 60 * 60,
+                                     popmednet       = TRUE,
+                                     trace           = FALSE,
+                                     verbose         = TRUE) {
   params <- prepare_params_kp("linear",
                               0,
                               num_data_partners,
@@ -771,7 +772,7 @@ AnalysisCenterKLinear <- function(num_data_partners = NULL,
   params <- PauseContinue.kp(params, from = "DP",
                              max_waiting_time = max_waiting_time)
 
-  possible_error = ReceivedError.kp(params, from = "DP")
+  possible_error <- ReceivedError.kp(params, from = "DP")
   if (possible_error$error) {
     params$error_message <- possible_error$message
     warning(possible_error$message)
@@ -789,7 +790,7 @@ AnalysisCenterKLinear <- function(num_data_partners = NULL,
     return(params$stats)
   }
 
-  params <- CheckAgreement.AC(params)
+  params <- check_agreement_ac(params)
 
   if (params$failed) {
     make_error_message(params$write_path, params$error_message)

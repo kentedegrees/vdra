@@ -64,6 +64,6 @@ This class of object is returned by the two party, three party,
 }
 \seealso{
 \code{\link{HoslemTest}} \code{\link{RocTest}}
-  \code{\link{AnalysisCenter.2Party}} \code{\link{AnalysisCenter.3Party}},
+  \code{\link{analysis_center_2_party}} \code{\link{AnalysisCenter.3Party}},
   \code{\link{AnalysisCenter.KParty}}
 }
