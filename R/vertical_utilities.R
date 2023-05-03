@@ -798,7 +798,8 @@ check_data_format <- function(params, data) {
   }
   badValue = rep(FALSE, nrow(data))
   for (i in seq_len(ncol(data))) {
-    if (class(data[, i]) %in% c("integer", "single", "double", "numeric")) {
+    if (is.integer(data[, i]) || is.double(data[, i]) ||
+        is.single(data[, i]) || is.numeric(data[, i]))
       badValue = badValue | !is.finite(data[, i])
     } else {
       badValue = badValue | is.na(data[, i])
@@ -872,8 +873,8 @@ check_response <- function(params, data, y_name) {
     responseColIndex = c(responseColIndexTime, responseColIndexCensor)
   }
   for (i in seq_along(y_name)) {
-    if (!("numeric" %in% class(data[, responseColIndex[i]])) &&
-        !("integer" %in% class(data[, responseColIndex[i]]))) {
+    if (!is.numeric(data[, responseColIndex[i]]) &&
+        !is.integer(data[, responseColIndex[i]])) {
       warning(paste(y_name[i], "is not numeric."))
       return(NULL)
     }
@@ -900,7 +901,8 @@ create_model_matrix_tags <- function(data) {
   num     = numeric(ncol(data))
   classes = character(ncol(data))
   for (i in seq_len(ncol(data))) {
-    if (class(data[, i]) %in% c("integer", "single", "double", "numeric")) {
+    if (is.integer(data[, i]) || is.double(data[, i]) ||
+        is.single(data[, i]) || is.numeric(data[, i])) {
       num[i] = 1
       classes[i] = "numeric"
     } else {
@@ -1001,10 +1003,8 @@ prepare_params_kp <- function(analysis, data_partner_id, num_data_partners,
   class(params$stats)        = paste0("vdra", analysis)
   params$stats$failed        = TRUE
   params$stats$converged     = FALSE
-  if (((class(num_data_partners) != "integer" &&
-        class(num_data_partners) != "numeric") ||
-       num_data_partners <= 0 ||
-       is.infinite(num_data_partners) ||
+  if (((!is.integer(num_data_partners) && !is.numeric(num_data_partners)) ||
+       num_data_partners <= 0 || is.infinite(num_data_partners) ||
        round(num_data_partners) != num_data_partners)) {
     params$failed <- TRUE
     params$errormessage <- "num_data_partners must be a positive integer, and must equal the number of data partners providing data."
@@ -1836,7 +1836,7 @@ send_pause_continue_kp <- function(params,
                                    max_waiting_time = 24 * 60 * 60,
                                    job_started = FALSE,
                                    wait_for_turn = FALSE) {
-  if (class(filesDP) != "list") {
+  if (!is.list(filesDP)) {
     params <- StoreLogEntry.kp(params, c(filesAC, filesDP))
     params <- StoreTrackingTableEntry.kp(params)
     WriteLogCSV(params)

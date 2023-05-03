@@ -1632,14 +1632,14 @@ compute_cox_from_survival_b2 <- function(params, data) {
     }
   )
 
-  if ((class(error) == "logical" && error)) {
+  if (is.logical(error) && error) {
     params$converged <- FALSE
     params$failed    <- TRUE
     params$error_message <- "Coxph in the survival package failed to converge."
     warning(params$error_message)
   } else {
     params$converged <- TRUE
-    if (class(error) == "logical") {
+    if (is.logical(error)) {
       fit <- suppressWarnings(survival::coxph(
         as.formula(f),
         data <- data.frame(rank = data$survival$rank,
