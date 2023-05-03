@@ -863,8 +863,12 @@ compute_log_likelihood_cox_dp <- function(params, data) {
       if (params$survival$strata[[i]]$J > 0) {
         for (j in 1:params$survival$strata[[i]]$J) {
           nj <- params$survival$strata[[i]]$nfails[j]
-          y_index <- params$survival$strata[[i]]$start0[j]:params$survival$strata[[i]]$end
-          z_index <- params$survival$strata[[i]]$start1[j]:params$survival$strata[[i]]$stop1[j]
+          start1 <- params$survival$strata[[i]]$start0[j]
+          end1   <- params$survival$strata[[i]]$end
+          start2 <- params$survival$strata[[i]]$start1[j]
+          end2   <- params$survival$strata[[i]]$stop1[j]
+          y_index <- start1:end1
+          z_index <- start2:end2
           a_j1 <- sum(w[y_index])
           a_j2 <- sum(w[z_index]) / nj
           loglikelihood <- loglikelihood + sum(log(w[z_index]))
@@ -1045,15 +1049,18 @@ compute_products_cox_dp <- function(params, data) {
         halfshare_rl  <-
           matrix(rnorm(params$n * params$ps[id2], sd = 20),
                  nrow = params$n,
-                 ncol = params$ps[id2])  # needed to get randomization to right spot
+                 # needed to get randomization to right spot
+                 ncol = params$ps[id2])
         halfshare_rl  <-
           matrix(rnorm(params$n * params$ps[id2], sd = 20),
                  nrow = params$n,
-                 ncol = params$ps[id2])[, params$indicies[[id2]], drop = FALSE]
+                 ncol = params$ps[id2])[, params$indicies[[id2]],
+                                        drop = FALSE]
         e1[[id2]] <- solve(d) %*% t(data$x) %*%
           params$w_s_l[, params$idx[[id2]], drop = FALSE] +
           params$scaler / (params$scaler + params$scalers[id2]) *
-          t(params$scaled_w_s_l_l[, params$idx[[1]], drop = FALSE]) %*% halfshare_rl
+          t(params$scaled_w_s_l_l[, params$idx[[1]], drop = FALSE]) %*%
+          halfshare_rl
       }
     }
     e[[1]] <- e1
@@ -1076,9 +1083,11 @@ compute_products_cox_dp <- function(params, data) {
           matrix(rnorm(params$n * params$ps[id2], sd = 20),
                  nrow = params$n,
                  ncol = params$ps[id2])[, params$indicies[[id2]], drop = FALSE]
-        e1[[id2]] <- 0.5 * solve(d) %*% t(halfshare_l) %*% params$w_s_l[, params$idx[[id2]], drop = FALSE] +
+        e1[[id2]] <- 0.5 * solve(d) %*% t(halfshare_l) %*%
+          params$w_s_l[, params$idx[[id2]], drop = FALSE] +
           params$scaler / (params$scaler + params$scalers[id2]) *
-          t(params$scaled_w_s_l_l[, params$idx[[id1]], drop = FALSE]) %*% halfshare_rl
+          t(params$scaled_w_s_l_l[, params$idx[[id1]], drop = FALSE]) %*%
+          halfshare_rl
       }
       e[[id1]] <- e1
     }
@@ -1098,12 +1107,14 @@ compute_products_cox_dp <- function(params, data) {
     halfshare_l  <-
       matrix(rnorm(params$n * params$p, sd = 20),
              nrow = params$n,
-             ncol = params$p)[, params$indicies[[params$data_partner_id]], drop = FALSE]
+             ncol = params$p)[, params$indicies[[params$data_partner_id]],
+                              drop = FALSE]
     halfshare_r <- data$x - halfshare_l
     halfshare_r_l  <-
       matrix(rnorm(params$n * params$p, sd = 20),
              nrow = params$n,
-             ncol = params$p)[, params$indicies[[params$data_partner_id]], drop = FALSE]
+             ncol = params$p)[, params$indicies[[params$data_partner_id]],
+                              drop = FALSE]
     # This is halfshare_r_l and halfshare_r_r
     halfshare_r_r <- halfshare_r - halfshare_r_l
     for (id in 1:params$num_data_partners) {
@@ -1506,13 +1517,17 @@ compute_results_cox_ac <- function(params) {
     surv <- survival::Surv(params$survival$rank, params$survival$status)
     strat <- rep(0, length(surv))
     for (i in seq_along(params$survival$strata)) {
-      strat[params$survival$strata[[i]]$start:params$survival$strata[[i]]$end] <- i
+      start <- params$survival$strata[[i]]$start
+      end   <- params$survival$strata[[i]]$end
+      strat[start:end] <- i
     }
     results <- survival::concordance(surv ~ pred + strata(strat))
-    if (is.matrix(results$stats)) {  # more than one strata
+    if (is.matrix(results$stats)) {
+      # more than one strata
       stats$concordance <- c(apply(results$count, 2, sum)[1:4],
                              results$concordance, sqrt(results$var))
-    } else {                                 # only one strata, so a numeric vector
+    } else {
+      # only one strata, so a numeric vector
       stats$concordance <- c(results$count[1:4],
                              results$concordance, sqrt(results$var))
     }
@@ -1532,7 +1547,9 @@ compute_results_cox_ac <- function(params) {
   for (i in seq_along(params$survival$strata)) {
     stats$strata$start[i]  <- params$survival$strata[[i]]$start
     stats$strata$end[i]    <- params$survival$strata[[i]]$end
-    stats$strata$events[i] <- sum(params$survival$status[stats$strata$start[i]:stats$strata$end[i]])
+    start <- stats$strata$start[i]
+    end   <- stats$strata$end[i]
+    stats$strata$events[i] <- sum(params$survival$status[start:end])
     stats$strata$label[i]  <- params$survival$strata[[i]]$label
   }
 

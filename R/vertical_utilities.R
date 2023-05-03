@@ -849,7 +849,8 @@ check_response <- function(params, data, y_name) {
   }
   if (params$analysis == "cox") {
     if (length(y_name) != 2) {
-      warning("Specify exactly two variables (time and censor) for Cox regression.")
+      warning("Specify exactly two variables ",
+              "(time and censor) for Cox regression.")
       return(NULL)
     }
     responseColIndexTime   = c(which(colnames(data) %in% y_name[1]))
@@ -881,13 +882,15 @@ check_response <- function(params, data, y_name) {
   }
   if (params$analysis == "logistic") {
     if (sum(!(data[, responseColIndex] %in% c(0, 1))) > 0) {
-      warning("Response variable is not binary.  It should only be 0's and  1's.")
+      warning("Response variable is not binary. ",
+              "It should only be 0's and  1's.")
       return(NULL)
     }
   }
   if (params$analysis == "cox") {
     if (sum(!(data[, responseColIndex[2]] %in% c(0, 1))) > 0) {
-      warning("Censoring variable is not binary.  It should only be 0's and  1's.")
+      warning("Censoring variable is not binary. ",
+              "It should only be 0's and  1's.")
       return(NULL)
     }
   }
@@ -4038,15 +4041,18 @@ print.summary.vdracox <- function(x, lion = FALSE, ...) {
 #' @export
 differentModel <- function(formula = NULL, x = NULL) {
   if (!inherits(x, "vdralinear")) {
-    warning("This function can only be on objects of class vdralinear. Returning original model.")
+    warning("This function can only be on objects of class vdralinear. ",
+            "Returning original model.")
     return(invisible(x))
   }
   if (x$failed) {
-    warning("Distributed linear regression failed.  Cannot compute a different model.")
+    warning("Distributed linear regression failed. ",
+            "Cannot compute a different model.")
     return(invisible(x))
   }
   if (max(table(names(x$party))) > 1) {
-    warning("Duplicate variable names exist.  All variable names must be unique. Returning original model.")
+    warning("Duplicate variable names exist. ",
+            "All variable names must be unique. Returning original model.")
     return(invisible(x))
   }
   if (!validFormula(formula)) {
@@ -4079,7 +4085,8 @@ differentModel <- function(formula = NULL, x = NULL) {
   scramble = c(2, 1, 3:ncol(xytxy))
   xytxy[scramble, scramble] = xytxy
 
-  all_names = c(colnames(x$xty), colnames(x$xtx))[scramble] # Put (intercept) first
+  # Put (intercept) first
+  all_names = c(colnames(x$xty), colnames(x$xtx))[scramble]
   colnames(xytxy) = all_names
   rownames(xytxy) = all_names
 
@@ -4115,7 +4122,8 @@ differentModel <- function(formula = NULL, x = NULL) {
 
   num_covariates <- p - 1
 
-  sse     = max(drop(yty - 2 * t(xty) %*% betas + (t(betas) %*% xtx) %*% betas), 0)
+  sse     = max(drop(yty - 2 * t(xty) %*% betas +
+                       (t(betas) %*% xtx) %*% betas), 0)
   rstderr = drop(sqrt(sse / (n - num_covariates - 1)))
   sst     = drop(yty - means_y^2 * n)
   ssr     = sst - sse
@@ -4294,11 +4302,13 @@ HoslemTest <- function(x = NULL, nGroups = 10) {
     return(invisible(NULL))
   }
   if (!(x$converged)) {
-    warning("Process did not converge. Cannot perform Hosmer and Lemeshow goodness of fit test.")
+    warning("Process did not converge. ",
+            "Cannot perform Hosmer and Lemeshow goodness of fit test.")
     return(invisible(NULL))
   }
   if (is.null(x$Y) || is.null(x$final_fitted)) {
-    warning("HoslemTest can only be invoked by the party which holds the response.")
+    warning("HoslemTest can only be invoked by ",
+            "the party which holds the response.")
     return(invisible(NULL))
   } else if (is.numeric(nGroups)) {
     temp <- list()
@@ -4315,7 +4325,9 @@ roc_internal <- function(x, data = NULL, bins = 500) {
   #    thresholds:  how smooth the curve should be
   #
   #  Returns myRocObject (object$auc to get AUC)
-  #  Object size is roughly equal to a matrix with (thresholds)rows and 2 columns
+  #
+  #  Object size is roughly equal to a matrix with
+  # (thresholds) rows and 2 columns
 
   if (is.null(data)) {
     Y = x$Y
@@ -4397,7 +4409,8 @@ RocTest <- function(x = NULL, bins = 10) {
     return(invisible(NULL))
   }
   if (is.null(x$Y) || is.null(x$final_fitted)) {
-    warning("RocTest can only be invoked by the party which holds the response.")
+    warning("RocTest can only be invoked by ",
+            "the party which holds the response.")
     return(invisible(NULL))
   } else if (is.numeric(bins)) {
     temp <- list()

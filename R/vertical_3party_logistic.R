@@ -49,8 +49,9 @@ check_colinearity_logistic_t3 <- function(params) {
   write_time <- proc.time()[3]
   save(a_indicies, file = file.path(params$write_path, "Aindicies.rdata"))
   save(b_indicies, file = file.path(params$write_path, "Bindicies.rdata"))
-  write_size <- sum(file.size(file.path(params$write_path, c("Aindicies.rdata",
-                                                             "Bindicies.rdata"))))
+  write_size <- sum(file.size(file.path(params$write_path,
+                                        c("Aindicies.rdata",
+                                          "Bindicies.rdata"))))
   write_time <- proc.time()[3] - write_time
 
   b_tags <- params$b_tags[params$b_indicies_keep]
@@ -115,11 +116,12 @@ compute_initial_betas_logistic_t3 <- function(params) {
   save(b_xty,   file = file.path(params$write_path, "b_xty.rdata"))
   save(converged, max_iter_exceeded,
        file = file.path(params$write_path, "converged.rdata"))
-  write_size <- sum(file.size(file.path(params$write_path, c("betasA.rdata",
-                                                             "betasB.rdata",
-                                                             "a_xty.rdata",
-                                                             "b_xty.rdata",
-                                                             "converged.rdata"))))
+  write_size <- sum(file.size(file.path(params$write_path,
+                                        c("betasA.rdata",
+                                          "betasB.rdata",
+                                          "a_xty.rdata",
+                                          "b_xty.rdata",
+                                          "converged.rdata"))))
   write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "compute_initial_betas_logistic_t3",
@@ -920,7 +922,9 @@ party_a_process_3_logistic <- function(data,
                                        verbose        = TRUE) {
 
   params <- prepare_params_3p("logistic", "A",
-                              popmednet = popmednet, trace = trace, verbose = verbose)
+                              popmednet = popmednet,
+                              trace = trace,
+                              verbose = verbose)
   params <- initialize_log_3p(params)
   params <- initialize_time_stamps_3p(params)
   params <- initialize_tracking_table_3p(params)
