@@ -374,15 +374,15 @@ ComputeStWSLogistic.AC <- function(params) {
     }
   }
 
-  I = NULL
+  i_mat = NULL
   tryCatch({
-    I = solve(StWS)
+    i_mat = solve(StWS)
   },
   error = function(err) {
-    I = NULL
+    i_mat = NULL
   }
   )
-  if (is.null(I)) {
+  if (is.null(i_mat)) {
     params$failed <- TRUE
     params$singular_matrix = TRUE
     params$error_message <-
@@ -399,13 +399,13 @@ ComputeStWSLogistic.AC <- function(params) {
     params <- add_to_log(params, "ComputeStWSLogistic.AC", read_time, read_size, 0, 0)
     return(params)
   }
-  params$I = I
+  params$i_mat = i_mat
   halfshare <- params$halfshare[[1]]
   for (id in 2:params$num_data_partners) {
     halfshare <- cbind(halfshare, params$halfshare[[id]])
   }
-  IDt = I %*% (params$sty - t(halfshare) %*% params$pi_)
-  Itemp <- I
+  IDt = i_mat %*% (params$sty - t(halfshare) %*% params$pi_)
+  Itemp <- i_mat
   IDttemp <- IDt
 
   write_time <- 0
@@ -413,10 +413,10 @@ ComputeStWSLogistic.AC <- function(params) {
   start = 1
   stop  = params$p_reduct[1]
   for (id in 1:params$num_data_partners) {
-    I = Itemp[start:stop, , drop = FALSE]
+    i_mat = Itemp[start:stop, , drop = FALSE]
     IDt = IDttemp[start:stop, , drop = FALSE]
     write_time <- write_time - proc.time()[3]
-    save(I, IDt, file = file.path(params$write_path, paste0("ID", id, ".rdata")))
+    save(i_mat, IDt, file = file.path(params$write_path, paste0("ID", id, ".rdata")))
     write_size <- write_size + file.size(file.path(params$write_path, paste0("ID", id, ".rdata")))
     write_time <- write_time + proc.time()[3]
     start = stop + 1
@@ -431,7 +431,7 @@ ComputeStWSLogistic.AC <- function(params) {
 #' @importFrom stats rnorm runif
 update_beta_logistic_DP <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "update_beta_logistic_DP\n\n")
-  I = IDt = NULL
+  i_mat = IDt = NULL
   read_time <- proc.time()[3]
   load(file.path(params$readPathAC, paste0("ID", params$data_partner_id, ".rdata")))
   read_size <- file.size(file.path(params$readPathAC, paste0("ID", params$data_partner_id, ".rdata")))
@@ -451,7 +451,7 @@ update_beta_logistic_DP <- function(params) {
   }
 
   D0 = t(halfshareDP) %*% params$pi_
-  delta_beta = IDt - I %*% D0
+  delta_beta = IDt - i_mat %*% D0
   params$betas <- params$betas + delta_beta
   maxdifference = max(abs(delta_beta) / (abs(params$betas) + .1))
   u_temp <- sum(runif(length(delta_beta), min = 1, max = 5) * abs(params$betas))
@@ -598,9 +598,9 @@ compute_results_logistic_AC <- function(params) {
   coefficients[1] = coefficients[1] - sum(coefficients[2:p] * params$colmin[2:p])
 
   serror = rep(0, p)
-  serror[2:p] = sqrt(diag(params$I)[2:p]) / params$colran[2:p]
+  serror[2:p] = sqrt(diag(params$i_mat)[2:p]) / params$colran[2:p]
   d1 = diag(c(1, params$colmin[-1] / params$colran[-1]))
-  temp <- d1 %*% params$I %*% d1
+  temp <- d1 %*% params$i_mat %*% d1
   serror[1] = sqrt(temp[1, 1] - 2 * sum(temp[1, 2:p]) + sum(temp[2:p, 2:p]))
 
   stats <- params$stats

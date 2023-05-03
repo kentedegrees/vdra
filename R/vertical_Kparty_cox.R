@@ -142,7 +142,7 @@ check_strata_cox_dp <- function(params, data) {
         temp <- paste0(specified[[i]], collapse = ", ")
       }
       params$error_message <- paste0(params$error_message,
-                                   paste("Data Partner", i, "specified strata:", temp, "\n"))
+                                     paste("Data Partner", i, "specified strata:", temp, "\n"))
     }
     params <- add_to_log(params, "check_strata_cox_dp", read_time, read_size, 0, 0)
     return(params)
@@ -439,8 +439,8 @@ prepare_shares_cox_dp <- function(params, data) {
   save(halfshare_r, file = file.path(params$write_path, "halfshare.rdata"))
   save(colmin, colrange, colsum, colnames, tags, file = file.path(params$write_path, "colstats.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, c("products.rdata",
-                                                          "halfshare.rdata",
-                                                          "colstats.rdata"))))
+                                                             "halfshare.rdata",
+                                                             "colstats.rdata"))))
   write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "prepare_shares_cox_dp", read_time, read_size, write_time, write_size)
@@ -486,9 +486,9 @@ get_products_cox_ac <- function(params) {
     load(file.path(params$readPathDP[id], "halfshare.rdata"))
     load(file.path(params$readPathDP[id], "colstats.rdata"))
     read_size <- read_size + sum(file.size(file.path(params$readPathDP[id],
-                                                  c("products.rdata",
-                                                    "halfshare.rdata",
-                                                    "colstats.rdata"))))
+                                                     c("products.rdata",
+                                                       "halfshare.rdata",
+                                                       "colstats.rdata"))))
     read_time <- read_time + proc.time()[3]
 
     allproducts[[id]]  <- products
@@ -608,7 +608,7 @@ check_colinearity_cox_ac <- function(params) {
     if (length(unique(tags[[id]])) == 0) {
       params$failed <- TRUE
       params$error_message <- paste0(params$error_message,
-                                   paste("After removing colinear covariates, Data Partner", id, "has no covariates."))
+                                     paste("After removing colinear covariates, Data Partner", id, "has no covariates."))
     }
   }
 
@@ -934,8 +934,8 @@ compute_s_del_l_cox_dp <- function(params, data) {
   save(ts_delta_l_l, file = file.path(params$write_path, "tsdeltal.rdata"))
   save(scaled_w_s_l_l, file = file.path(params$write_path, "scaledwsll.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, "scaledwslr.rdata"),
-                            file.path(params$write_path, "tsdeltal.rdata"),
-                            file.path(params$write_path, "scaledwsll.rdata")))
+                              file.path(params$write_path, "tsdeltal.rdata"),
+                              file.path(params$write_path, "scaledwsll.rdata")))
   write_time <- proc.time()[3] - write_time
 
   params <- add_to_log(params, "compute_s_del_l_cox_dp", 0, 0, write_time, write_size)
@@ -966,9 +966,9 @@ compute_products_cox_dp <- function(params, data) {
       for (id2 in 2:params$num_data_partners) {
         set.seed(params$seeds[id2], kind = "Mersenne-Twister")
         halfshare_rl  <- matrix(rnorm(params$n * params$ps[id2], sd = 20),
-                              nrow = params$n, ncol = params$ps[id2])  # needed to get randomization to right spot
+                                nrow = params$n, ncol = params$ps[id2])  # needed to get randomization to right spot
         halfshare_rl  <- matrix(rnorm(params$n * params$ps[id2], sd = 20),
-                              nrow = params$n, ncol = params$ps[id2])[, params$indicies[[id2]], drop = FALSE]
+                                nrow = params$n, ncol = params$ps[id2])[, params$indicies[[id2]], drop = FALSE]
         e1[[id2]] <- solve(d) %*% t(data$x) %*% params$w_s_l[, params$idx[[id2]], drop = FALSE] +
           params$scaler / (params$scaler + params$scalers[id2]) *
           t(params$scaled_w_s_l_l[, params$idx[[1]], drop = FALSE]) %*% halfshare_rl
@@ -981,13 +981,13 @@ compute_products_cox_dp <- function(params, data) {
       d <- diag(params$colrange_w_s_l[params$idx[[id1]]], ncol = p, nrow = p)
       set.seed(params$seeds[id1], kind = "Mersenne-Twister")
       halfshare_l  <- matrix(rnorm(params$n * params$ps[id1], sd = 20),
-                           nrow = params$n, ncol = params$ps[id1])[, params$indicies[[id1]], drop = FALSE]
+                             nrow = params$n, ncol = params$ps[id1])[, params$indicies[[id1]], drop = FALSE]
       for (id2 in 2:params$num_data_partners) {
         set.seed(params$seeds[id2], kind = "Mersenne-Twister")
         halfshare_rl  <- matrix(rnorm(params$n * params$ps[id2], sd = 20),
-                              nrow = params$n, ncol = params$ps[id2])
+                                nrow = params$n, ncol = params$ps[id2])
         halfshare_rl  <- matrix(rnorm(params$n * params$ps[id2], sd = 20),
-                              nrow = params$n, ncol = params$ps[id2])[, params$indicies[[id2]], drop = FALSE]
+                                nrow = params$n, ncol = params$ps[id2])[, params$indicies[[id2]], drop = FALSE]
         e1[[id2]] <- 0.5 * solve(d) %*% t(halfshare_l) %*% params$w_s_l[, params$idx[[id2]], drop = FALSE] +
           params$scaler / (params$scaler + params$scalers[id2]) *
           t(params$scaled_w_s_l_l[, params$idx[[id1]], drop = FALSE]) %*% halfshare_rl
@@ -1079,7 +1079,7 @@ compute_st_w_s_cox_ac <- function(params) {
       } else if (id1 == id2) {
         idx <- params$idx[[id1]]
         g <- d %*% (e[[id1]][[id1]] + f1[[id1]][[id1]] + t(scaled_w_s_l_r[, idx, drop = FALSE]) %*%
-                     params$halfshare[, idx, drop = FALSE]) +
+                      params$halfshare[, idx, drop = FALSE]) +
           outer(colmin_w_s_l[idx], params$halfsharecolsum[idx])
         m[startrow:endrow, startcol:endcol] <- g + t(g) +
           t(params$halfshare[, idx, drop = FALSE]) %*%
@@ -1089,7 +1089,7 @@ compute_st_w_s_cox_ac <- function(params) {
         idx2 <- params$idx[[id2]]
         if (id1 == 1) {
           temp <- d %*% (e[[id1]][[id2]] + f1[[id2]][[id1]] + t(scaled_w_s_l_r[, idx1, drop = FALSE]) %*%
-                          params$halfshare[, idx2, drop = FALSE]) +
+                           params$halfshare[, idx2, drop = FALSE]) +
             t(params$halfshare[, idx1, drop = FALSE]) %*% params$w_s_r[, idx2, drop = FALSE] +
             outer(colmin_w_s_l[idx1], params$halfsharecolsum[idx2])
           m[startrow:endrow, startcol:endcol] <- temp
@@ -1098,10 +1098,10 @@ compute_st_w_s_cox_ac <- function(params) {
           p1 <- length(params$idx[[id2]])
           d2 <- diag(x = colrange_w_s_l[params$idx[[id2]]], nrow = p2, ncol = p2)
           g23 <- d %*% (e[[id1]][[id2]] + f1[[id2]][[id1]] + t(scaled_w_s_l_r[, idx1, drop = FALSE]) %*%
-                         params$halfshare[, idx2, drop = FALSE]) +
+                          params$halfshare[, idx2, drop = FALSE]) +
             outer(colmin_w_s_l[idx1], params$halfsharecolsum[idx2])
           g32 <- d2 %*% (e[[id2]][[id1]] + f1[[id1]][[id2]] + t(scaled_w_s_l_r[, idx2, drop = FALSE]) %*%
-                          params$halfshare[, idx1, drop = FALSE]) +
+                           params$halfshare[, idx1, drop = FALSE]) +
             outer(colmin_w_s_l[idx2], params$halfsharecolsum[idx1])
           temp <- g23 + t(g32) + t(params$halfshare[, idx1, drop = FALSE]) %*% params$w_s_r[, idx2, drop = FALSE]
           m[startrow:endrow, startcol:endcol] <- temp
@@ -1113,15 +1113,15 @@ compute_st_w_s_cox_ac <- function(params) {
     startrow <- endrow + 1
   }
 
-  I <- NULL
+  i_mat <- NULL
   tryCatch({
-    I <- solve(m)
+    i_mat <- solve(m)
   },
   error = function(err) {
-    I <- NULL
+    i_mat <- NULL
   }
   )
-  if (is.null(I)) {
+  if (is.null(i_mat)) {
     params$failed <- TRUE
     params$singular_matrix <- TRUE
     params$error_message <-
@@ -1139,12 +1139,12 @@ compute_st_w_s_cox_ac <- function(params) {
     return(params)
   }
 
-  params$I <- I
+  params$i_mat <- i_mat
 
-  i_dt <- I %*% params$ts_delta_l_r
+  i_dt <- i_mat %*% params$ts_delta_l_r
 
   if (params$alg_iteration_counter == 1) {
-    params$score <- t(params$ts_delta_l_r) %*% I %*% params$ts_delta_l_r
+    params$score <- t(params$ts_delta_l_r) %*% i_mat %*% params$ts_delta_l_r
   }
   params$max_iter_exceeded <- params$alg_iteration_counter > params$max_iterations
   max_iter_exceeded <- params$max_iter_exceeded
@@ -1152,10 +1152,10 @@ compute_st_w_s_cox_ac <- function(params) {
   write_time <- 0
   write_size <- 0
   for (id in 1:params$num_data_partners) {
-    I.part <- I[params$idx[[id]], , drop = FALSE]
+    i_mat.part <- i_mat[params$idx[[id]], , drop = FALSE]
     i_dt_part <- i_dt[params$idx[[id]], , drop = FALSE]
     write_time <- write_time - proc.time()[3]
-    save(I.part, i_dt_part, file = file.path(params$write_path, paste0("update", id, ".rdata")))
+    save(i_mat.part, i_dt_part, file = file.path(params$write_path, paste0("update", id, ".rdata")))
     save(max_iter_exceeded, file = file.path(params$write_path, "maxiterexceeded.rdata"))
     write_size <- write_size + file.size(file.path(params$write_path, paste0("update", id, ".rdata"))) +
       file.size(file.path(params$write_path, "maxiterexceeded.rdata"))
@@ -1193,7 +1193,7 @@ UpdateConvergeStatus.DP <- function(params) {
 #' @importFrom stats runif
 update_betas_cox_dp <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "update_betas_cox_dp\n\n")
-  I.part <- NULL
+  i_mat.part <- NULL
   i_dt_part <- NULL
   ts_delta_l_l <- NULL
   read_time <- proc.time()[3]
@@ -1206,23 +1206,23 @@ update_betas_cox_dp <- function(params) {
   read_time <- proc.time()[3] - read_time
 
   if (params$data_partner_id == 1) {
-    deltabeta <- i_dt_part + I.part %*% params$ts_delta_l_l
+    deltabeta <- i_dt_part + i_mat.part %*% params$ts_delta_l_l
     if (params$alg_iteration_counter == 1) {
       if (params$p_reduct[1] == 0) {
         params$score <- 0
       } else {
         idx <- 1:params$p_reduct[1]
         params$score <- 2 * t(i_dt_part) %*% params$ts_delta_l_l[idx, 1, drop = FALSE] +
-          t(I.part %*% params$ts_delta_l_l) %*% params$ts_delta_l_l[idx, 1, drop = FALSE]
+          t(i_mat.part %*% params$ts_delta_l_l) %*% params$ts_delta_l_l[idx, 1, drop = FALSE]
       }
     }
   } else {
-    deltabeta <- i_dt_part + I.part %*% ts_delta_l_l
+    deltabeta <- i_dt_part + i_mat.part %*% ts_delta_l_l
     if (params$alg_iteration_counter == 1) {
       temp <- sum(params$p_reduct[1:(params$data_partner_id - 1)])
       idx <- (temp + 1):(temp + params$p_reduct[params$data_partner_id])
       params$score <- 2 * t(i_dt_part) %*% ts_delta_l_l[idx, 1, drop = FALSE] +
-        t(I.part %*% ts_delta_l_l) %*% ts_delta_l_l[idx, 1, drop = FALSE]
+        t(i_mat.part %*% ts_delta_l_l) %*% ts_delta_l_l[idx, 1, drop = FALSE]
     }
   }
 
@@ -1264,36 +1264,36 @@ update_betas_cox_dp <- function(params) {
 survfit_cox_AC <- function(params, pred) {
   if (params$trace) cat(as.character(Sys.time()), "survfit_cox_AC\n\n")
   survival <- params$survival
-  surv = rep(1, length(survival$rank))
+  surv <- rep(1, length(survival$rank))
   for (i in seq_along(survival$strata)) {
     if (survival$strata[[i]]$J > 0) {
-      start   = survival$strata[[i]]$start
-      end     = survival$strata[[i]]$end
-      risk    = exp(pred[start:end])
-      dtime   = survival$rank[start:end]
-      status  = survival$status[start:end]
-      death   = status == 1                                  # times where death happened
-      time    = sort(unique(dtime))                          # (A) get unique event times
+      start   <- survival$strata[[i]]$start
+      end     <- survival$strata[[i]]$end
+      risk    <- exp(pred[start:end])
+      dtime   <- survival$rank[start:end]
+      status  <- survival$status[start:end]
+      death   <- status == 1                                  # times where death happened
+      time    <- sort(unique(dtime))                          # (A) get unique event times
       rcumsum <- function(x) rev(cumsum(rev(x)))
-      nevent  = as.vector(rowsum(as.numeric(death), dtime))  # (A) Count the number of deaths at each event time
-      ndeath  = rowsum(status, dtime)                        # (A) number of deaths at each unique event time
-      nrisk   = rcumsum(rowsum(risk, dtime))                 # (A) rowsum = sum of risk at each time, then reverse cum sum, sorted by time
-      erisk   = rowsum(risk * death, dtime)                  # (A) risk score sums of death at each unique event time
-      n       = length(nevent)
-      sum1 = double(n)   # a vector of 0's, length number of unique event times
+      nevent  <- as.vector(rowsum(as.numeric(death), dtime))  # (A) Count the number of deaths at each event time
+      ndeath  <- rowsum(status, dtime)                        # (A) number of deaths at each unique event time
+      nrisk   <- rcumsum(rowsum(risk, dtime))                 # (A) rowsum <- sum of risk at each time, then reverse cum sum, sorted by time
+      erisk   <- rowsum(risk * death, dtime)                  # (A) risk score sums of death at each unique event time
+      n       <- length(nevent)
+      sum1 <- double(n)   # a vector of 0's, length number of unique event times
       for (i in 1:n) {
-        d = ndeath[i]
+        d <- ndeath[i]
         if (d == 1) {
-          sum1[i] = 1 / nrisk[i]
+          sum1[i] <- 1 / nrisk[i]
         } else if (d > 1) {
           for (j in 0:(d - 1)) {
-            sum1[i] = sum1[i] + 1 / (d * nrisk[i] - erisk[i] * j)
+            sum1[i] <- sum1[i] + 1 / (d * nrisk[i] - erisk[i] * j)
           }
         }
       }
       temp <- exp(-cumsum(nevent * sum1))
       for (i in start:end) {
-        surv[i] = temp[which(time == survival$rank[i])]
+        surv[i] <- temp[which(time == survival$rank[i])]
       }
     }
   }
@@ -1314,28 +1314,28 @@ compute_results_cox_ac <- function(params) {
   for (id in 1:params$num_data_partners) {
     load(file.path(params$readPathDP[id], "betas.rdata"))
     betas <- rbind(betas, betasnew)
-    score = score + scorePart
+    score <- score + scorePart
     read_size <- read_size + file.size(file.path(params$readPathDP[id], "betas.rdata"))
   }
   read_time <- proc.time()[3] - read_time
 
   stats <- params$stats
-  stats$failed         = FALSE
-  stats$converged      = params$converged
-  names_old            = params$colnames[-(1:params$p_strata)]
-  idx                  = params$fullindicies - params$p_strata
-  stats$party          = params$party[-(1:params$p_strata)]
-  stats$coefficients   = rep(NA, length(stats$party))
-  stats$coefficients[idx] = betas / params$colrange
-  stats$expcoef      = exp(stats$coefficients)  # hazard ratios
-  stats$expncoef     = exp(-stats$coefficients)
+  stats$failed         <- FALSE
+  stats$converged      <- params$converged
+  names_old            <- params$colnames[-(1:params$p_strata)]
+  idx                  <- params$fullindicies - params$p_strata
+  stats$party          <- params$party[-(1:params$p_strata)]
+  stats$coefficients   <- rep(NA, length(stats$party))
+  stats$coefficients[idx] <- betas / params$colrange
+  stats$expcoef      <- exp(stats$coefficients)  # hazard ratios
+  stats$expncoef     <- exp(-stats$coefficients)
   stats$var           <- matrix(0, length(names_old), length(names_old))
-  stats$var[idx, idx] = params$I
-  stats$secoef       = rep(NA, length(names_old))
-  stats$secoef[idx]  = sqrt(diag(params$I)) / params$colrange  # standard error
+  stats$var[idx, idx] <- params$i_mat
+  stats$secoef       <- rep(NA, length(names_old))
+  stats$secoef[idx]  <- sqrt(diag(params$i_mat)) / params$colrange  # standard error
 
   stats$zvals        <- stats$coefficients / stats$secoef  # z values
-  stats$pvals        = 2 * pnorm(abs(stats$zvals), lower.tail = FALSE)   # pvals
+  stats$pvals        <- 2 * pnorm(abs(stats$zvals), lower.tail = FALSE)   # pvals
   stats$stars         <- matrix(sapply(stats$pvals, function(x) {
     if (is.na(x)) ""
     else if (x < 0.001) "***"
@@ -1344,77 +1344,78 @@ compute_results_cox_ac <- function(params) {
     else if (x < 0.1)  "."
     else " "
   }))
-  stats$lower95      = exp(stats$coefficients - qnorm(0.975) * stats$secoef)
-  stats$upper95      = exp(stats$coefficients + qnorm(0.975) * stats$secoef)
-  stats$loglik       = c(null_loglikelihood, loglikelihood)
-  stats$n            = params$n
-  stats$nevent       = sum(params$survival$status)
-  stats$df           = sum(params$p_reduct)
-  stats$iter         = params$alg_iteration_counter - 1
-  stats$score        = c(score, 1 - pchisq(score, stats$df))
-  stats$method       = "efron"
-  stats$lrt          = 2 * (stats$loglik[2] - stats$loglik[1])
-  stats$lrt          = c(stats$lrt, 1 - pchisq(stats$lrt, stats$df))
-  stats$rsquare      = c(1 - exp(-stats$lrt[1] / stats$n),
-                         1 - exp(2 * stats$loglik[1] / stats$n))
-  stats$wald.test    = t(betas) %*% solve(params$I) %*% betas
-  stats$wald.test    = c(stats$wald.test,
-                         1 - pchisq(stats$wald.test, stats$df))
-  pred = -params$s_beta[params$survival$sorted_idx]
+  stats$lower95      <- exp(stats$coefficients - qnorm(0.975) * stats$secoef)
+  stats$upper95      <- exp(stats$coefficients + qnorm(0.975) * stats$secoef)
+  stats$loglik       <- c(null_loglikelihood, loglikelihood)
+  stats$n            <- params$n
+  stats$nevent       <- sum(params$survival$status)
+  stats$df           <- sum(params$p_reduct)
+  stats$iter         <- params$alg_iteration_counter - 1
+  stats$score        <- c(score, 1 - pchisq(score, stats$df))
+  stats$method       <- "efron"
+  stats$lrt          <- 2 * (stats$loglik[2] - stats$loglik[1])
+  stats$lrt          <- c(stats$lrt, 1 - pchisq(stats$lrt, stats$df))
+  stats$rsquare      <- c(1 - exp(-stats$lrt[1] / stats$n),
+                          1 - exp(2 * stats$loglik[1] / stats$n))
+  stats$wald.test    <- t(betas) %*% solve(params$i_mat) %*% betas
+  stats$wald.test    <- c(stats$wald.test,
+                          1 - pchisq(stats$wald.test, stats$df))
+  pred <- -params$s_beta[params$survival$sorted_idx]
   if (requireNamespace("survival", quietly = TRUE)) {
     if (!("package:survival" %in% search())) {
       attachNamespace("survival")
     }
-    surv = survival::Surv(params$survival$rank, params$survival$status)
-    strat = rep(0, length(surv))
+    surv <- survival::Surv(params$survival$rank, params$survival$status)
+    strat <- rep(0, length(surv))
     for (i in seq_along(params$survival$strata)) {
-      strat[params$survival$strata[[i]]$start:params$survival$strata[[i]]$end] = i
+      strat[params$survival$strata[[i]]$start:params$survival$strata[[i]]$end] <- i
     }
-    results = survival::concordance(surv ~ pred + strata(strat))
+    results <- survival::concordance(surv ~ pred + strata(strat))
     if (is.matrix(results$stats)) {  # more than one strata
-      stats$concordance = c(apply(results$count, 2, sum)[1:4], results$concordance, sqrt(results$var))
+      stats$concordance <- c(apply(results$count, 2, sum)[1:4], results$concordance, sqrt(results$var))
     } else {                                 # only one strata, so a numeric vector
-      stats$concordance = c(results$count[1:4], results$concordance, sqrt(results$var))
+      stats$concordance <- c(results$count[1:4], results$concordance, sqrt(results$var))
     }
   } else {
-    stats$concordance = c(NA, NA, NA, NA, NA, NA)
+    stats$concordance <- c(NA, NA, NA, NA, NA, NA)
   }
 
   stats$survival <- data.frame(
-    rank   = params$survival$rank,
-    status = params$survival$status,
-    sorted = params$survival$sorted_idx,
-    surv   = survfit_cox_AC(params, pred)
+    rank   <- params$survival$rank,
+    status <- params$survival$status,
+    sorted <- params$survival$sorted_idx,
+    surv   <- survfit_cox_AC(params, pred)
   )
   stats$strata <- as.data.frame(matrix(0, length(params$survival$strata), 3))
   stats$strata$label <- ""
-  colnames(stats$strata) = c("start", "end", "events", "label")
+  colnames(stats$strata) <- c("start", "end", "events", "label")
   for (i in seq_along(params$survival$strata)) {
-    stats$strata$start[i]  = params$survival$strata[[i]]$start
-    stats$strata$end[i]    = params$survival$strata[[i]]$end
-    stats$strata$events[i] = sum(params$survival$status[stats$strata$start[i]:stats$strata$end[i]])
-    stats$strata$label[i]  = params$survival$strata[[i]]$label
+    stats$strata$start[i]  <- params$survival$strata[[i]]$start
+    stats$strata$end[i]    <- params$survival$strata[[i]]$end
+    stats$strata$events[i] <- sum(params$survival$status[stats$strata$start[i]:stats$strata$end[i]])
+    stats$strata$label[i]  <- params$survival$strata[[i]]$label
   }
 
-  names(stats$party)           = names_old
-  names(stats$coefficients)    = names_old
-  names(stats$expcoef)         = names_old
-  names(stats$expncoef)        = names_old
-  rownames(stats$var)          = names_old
-  colnames(stats$var)          = names_old
-  names(stats$secoef)          = names_old
-  names(stats$zvals)           = names_old
-  names(stats$pvals)           = names_old
-  names(stats$stars)           = names_old
-  names(stats$lower95)         = names_old
-  names(stats$upper95)         = names_old
-  names(stats$loglik)          = c("loglikelihood", "null loglikelihood")
-  names(stats$score)           = c("score", "p-value")
-  names(stats$lrt)             = c("likelihood ratio", "p-value")
-  names(stats$rsquare)         = c("r-square", "max possible")
-  names(stats$wald.test)       = c("wald", "p-value")
-  names(stats$concordance)     = c("concordant", "discordant", "tied.risk", "tied.time",
-                                   "concordance", "stderr")
+  names(stats$party)           <- names_old
+  names(stats$coefficients)    <- names_old
+  names(stats$expcoef)         <- names_old
+  names(stats$expncoef)        <- names_old
+  rownames(stats$var)          <- names_old
+  colnames(stats$var)          <- names_old
+  names(stats$secoef)          <- names_old
+  names(stats$zvals)           <- names_old
+  names(stats$pvals)           <- names_old
+  names(stats$stars)           <- names_old
+  names(stats$lower95)         <- names_old
+  names(stats$upper95)         <- names_old
+  names(stats$loglik)          <- c("loglikelihood", "null loglikelihood")
+  names(stats$score)           <- c("score", "p-value")
+  names(stats$lrt)             <- c("likelihood ratio", "p-value")
+  names(stats$rsquare)         <- c("r-square", "max possible")
+  names(stats$wald.test)       <- c("wald", "p-value")
+  names(stats$concordance)     <- c("concordant", "discordant",
+                                    "tied.risk", "tied.time",
+                                    "concordance", "stderr")
 
   params$stats <- stats
   write_time <- proc.time()[3]
@@ -1422,7 +1423,8 @@ compute_results_cox_ac <- function(params) {
   write_size <- file.size(file.path(params$write_path, "stats.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "compute_results_cox_ac", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "compute_results_cox_ac",
+                       read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -1436,7 +1438,8 @@ get_results_cox_DP <- function(params) {
   read_time <- proc.time()[3] - read_time
   params$stats <- stats
 
-  params <- add_to_log(params, "get_results_cox_DP", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "get_results_cox_DP",
+                       read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -1451,20 +1454,25 @@ DoNothing.ACDP <- function(params) {
 
 
 DataPartnerKCox <- function(data,
-                           y_name           = NULL,
-                           strata          = NULL,
-                           mask            = TRUE,
-                           num_data_partners = NULL,
-                           data_partner_id   = NULL,
-                           monitor_folder   = NULL,
-                           sleep_time       = 10,
-                           max_waiting_time  = 24 * 60 * 60,
-                           popmednet       = TRUE,
-                           trace           = FALSE,
-                           verbose         = TRUE) {
+                            y_name           = NULL,
+                            strata          = NULL,
+                            mask            = TRUE,
+                            num_data_partners = NULL,
+                            data_partner_id   = NULL,
+                            monitor_folder   = NULL,
+                            sleep_time       = 10,
+                            max_waiting_time  = 24 * 60 * 60,
+                            popmednet       = TRUE,
+                            trace           = FALSE,
+                            verbose         = TRUE) {
 
-  params <- prepare_params_kp("cox", data_partner_id, num_data_partners, ac = FALSE,
-                            popmednet = popmednet, trace = trace, verbose = verbose)
+  params <- prepare_params_kp("cox",
+                              data_partner_id,
+                              num_data_partners,
+                              ac = FALSE,
+                              popmednet = popmednet,
+                              trace = trace,
+                              verbose = verbose)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
@@ -1474,7 +1482,7 @@ DataPartnerKCox <- function(data,
   params <- initialize_tracking_table_kp(params)
   header(params)
 
-  params   = PrepareFolder.ACDP(params, monitor_folder)
+  params   <- PrepareFolder.ACDP(params, monitor_folder)
 
   if (params$failed) {
     warning(params$error_message)
@@ -1485,34 +1493,51 @@ DataPartnerKCox <- function(data,
   params <- add_to_log(params, "prepare_data_cox_dp", 0, 0, 0, 0)
 
   if (data$failed) {
-    params$error_message <- paste("Error processing data for data partner", params$data_partner_id)
+    params$error_message <- paste("Error processing data for data partner",
+                                  params$data_partner_id)
     make_error_message(params$write_path, params$error_message)
     files <- "error_message.rdata"
-    params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+    params <- send_pause_continue_kp(params,
+                                     filesAC = files,
+                                     from = "AC",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time,
+                                     wait_for_turn = TRUE)
     params$error_message <- read_error_message(params$readPathAC)
     warning(params$error_message)
-    params <- send_pause_quit_kp(params, sleep_time = sleep_time, wait_for_turn = TRUE)
+    params <- send_pause_quit_kp(params,
+                                 sleep_time = sleep_time,
+                                 wait_for_turn = TRUE)
     return(params$stats)
   }
 
   params <- SendBasicInfo.DP(params, data)
   files <- "n_analysis.rdata"
-  params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+  params <- send_pause_continue_kp(params,
+                                   filesAC = files,
+                                   from = "AC",
+                                   sleep_time = sleep_time,
+                                   max_waiting_time = max_waiting_time,
+                                   wait_for_turn = TRUE)
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
     params$error_message <- possibleError$message
     warning(possibleError$message)
-    params <- send_pause_quit_kp(params, sleep_time = sleep_time, wait_for_turn = TRUE)
+    params <- send_pause_quit_kp(params,
+                                 sleep_time = sleep_time,
+                                 wait_for_turn = TRUE)
     return(params$stats)
   }
 
   if (params$data_partner_id == 1) {
     params <- DoNothing.ACDP(params)
-    params <- send_pause_continue_kp(params, filesAC = "empty.rdata", from = "DP",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+    params <- send_pause_continue_kp(params,
+                                     filesAC = "empty.rdata",
+                                     from = "DP",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time,
+                                     wait_for_turn = TRUE)
 
     params <- check_strata_cox_dp(params, data)
 
@@ -1522,18 +1547,26 @@ DataPartnerKCox <- function(data,
     } else {
       files <- "empty.rdata"
     }
-    params <- send_pause_continue_kp(params, filesDP = files, from = "AC",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+    params <- send_pause_continue_kp(params,
+                                     filesDP = files,
+                                     from = "AC",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time,
+                                     wait_for_turn = TRUE)
 
     params <- DoNothing.ACDP(params)
 
     if (params$failed) {
       warning(params$error_message)
-      send_pause_quit_kp(params, filesAC = "error_message.rdata", sleep_time = sleep_time)
+      send_pause_quit_kp(params, filesAC = "error_message.rdata",
+                         sleep_time = sleep_time)
       return(params$stats)
     } else {
-      params <- send_pause_continue_kp(params, filesDP = "empty.rdata", from = "DP",
-                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+      params <- send_pause_continue_kp(params,
+                                       filesDP = "empty.rdata",
+                                       from = "DP",
+                                       sleep_time = sleep_time,
+                                       max_waiting_time = max_waiting_time)
     }
     params <- prepare_strata_cox_dp(params, data)
     data   = add_strata_to_data_cox_dp(params, data)
@@ -1542,42 +1575,62 @@ DataPartnerKCox <- function(data,
     params <- send_strata_names_cox_dp(params, data)
     filesList = rep(list(list()), num_data_partners)
     filesList[[1]] = "strata_names.rdata"
-    params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP1",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+    params <- send_pause_continue_kp(params,
+                                     filesDP = filesList,
+                                     from = "DP1",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time,
+                                     wait_for_turn = TRUE)
 
 
     possibleError = ReceivedError.kp(params, from = "DP1")
     if (possibleError$error) {
       params$error_message <- possibleError$message
       warning(possibleError$message)
-      params <- send_pause_quit_kp(params, sleep_time = sleep_time, wait_for_turn = TRUE)
+      params <- send_pause_quit_kp(params,
+                                   sleep_time = sleep_time,
+                                   wait_for_turn = TRUE)
       return(params$stats)
     }
 
     params <- send_strata_cox_dp(params, data)
     filesList = rep(list(list()), num_data_partners)
     filesList[[1]] = "strata.rdata"
-    params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP1",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+    params <- send_pause_continue_kp(params,
+                                     filesDP = filesList,
+                                     from = "DP1",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time,
+                                     wait_for_turn = TRUE)
   }
 
   params <- prepare_params_cox_dp(params, data)
-  params <- send_pause_continue_kp(params, filesDP = "p_scaler_seed.rdata", from = "DP",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+  params <- send_pause_continue_kp(params,
+                                   filesDP = "p_scaler_seed.rdata",
+                                   from = "DP",
+                                   sleep_time = sleep_time,
+                                   max_waiting_time = max_waiting_time,
+                                   wait_for_turn = TRUE)
 
   params <- prepare_shares_cox_dp(params, data)
   files <- c("products.rdata", "halfshare.rdata", "colstats.rdata")
   if (params$data_partner_id == 1) {
     files <- c(files, "survival.rdata")
   }
-  params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+  params <- send_pause_continue_kp(params,
+                                   filesAC = files,
+                                   from = "AC",
+                                   sleep_time = sleep_time,
+                                   max_waiting_time = max_waiting_time,
+                                   wait_for_turn = TRUE)
 
   possibleError = ReceivedError.kp(params, from = "AC")
   if (possibleError$error) {
     params$error_message <- possibleError$message
     warning(possibleError$message)
-    params <- send_pause_quit_kp(params, sleep_time = sleep_time, wait_for_turn = TRUE)
+    params <- send_pause_quit_kp(params,
+                                 sleep_time = sleep_time,
+                                 wait_for_turn = TRUE)
     return(params$stats)
   }
 
@@ -1592,35 +1645,58 @@ DataPartnerKCox <- function(data,
 
     if (params$data_partner_id == 1) {
       files <- "sbeta.rdata"
-      params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+      params <- send_pause_continue_kp(params,
+                                       filesAC = files,
+                                       from = "AC",
+                                       sleep_time = sleep_time,
+                                       max_waiting_time = max_waiting_time,
+                                       wait_for_turn = TRUE)
 
       params <- compute_log_likelihood_cox_dp(params, data)
 
       files <- "sbeta.rdata"
-      params <- send_pause_continue_kp(params, filesAC = files, from = "DP2",
-                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+      params <- send_pause_continue_kp(params,
+                                       filesAC = files,
+                                       from = "DP2",
+                                       sleep_time = sleep_time,
+                                       max_waiting_time = max_waiting_time,
+                                       wait_for_turn = TRUE)
 
       params <- compute_s_del_l_cox_dp(params, data)
 
       files <- c("tsdeltal.rdata", "scaledwsll.rdata", "converged.rdata")
-      params <- send_pause_continue_kp(params, filesDP = files, from = "AC",
-                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+      params <- send_pause_continue_kp(params,
+                                       filesDP = files,
+                                       from = "AC",
+                                       sleep_time = sleep_time,
+                                       max_waiting_time = max_waiting_time,
+                                       wait_for_turn = TRUE)
     } else if (params$data_partner_id == 2) {
       files <- "sbeta.rdata"
-      params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+      params <- send_pause_continue_kp(params,
+                                       filesAC = files,
+                                       from = "AC",
+                                       sleep_time = sleep_time,
+                                       max_waiting_time = max_waiting_time,
+                                       wait_for_turn = TRUE)
 
       params <- DoNothing.ACDP(params)
 
       filesList = rep(list(list()), num_data_partners)
       filesList[[1]] = "empty.rdata"
-      params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP1",
-                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+      params <- send_pause_continue_kp(params,
+                                       filesDP = filesList,
+                                       from = "DP1",
+                                       sleep_time = sleep_time,
+                                       max_waiting_time = max_waiting_time,
+                                       wait_for_turn = TRUE)
     } else {
       files <- "sbeta.rdata"
-      params <- send_pause_continue_kp(params, filesAC = files, from = "DP1",
-                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+      params <- send_pause_continue_kp(params,
+                                       filesAC = files,
+                                       from = "DP1",
+                                       sleep_time = sleep_time,
+                                       max_waiting_time = max_waiting_time)
     }
 
     params <- compute_products_cox_dp(params, data)
@@ -1629,14 +1705,20 @@ DataPartnerKCox <- function(data,
     } else {
       files <- c("products.rdata")
     }
-    params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+    params <- send_pause_continue_kp(params,
+                                     filesAC = files,
+                                     from = "AC",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time,
+                                     wait_for_turn = TRUE)
 
     possibleError = ReceivedError.kp(params, from = "AC")
     if (possibleError$error) {
       params$error_message <- possibleError$message
       warning(possibleError$message)
-      params <- send_pause_quit_kp(params, sleep_time = sleep_time, wait_for_turn = TRUE)
+      params <- send_pause_quit_kp(params,
+                                   sleep_time = sleep_time,
+                                   wait_for_turn = TRUE)
       return(params$stats)
     }
 
@@ -1648,8 +1730,12 @@ DataPartnerKCox <- function(data,
     } else {
       files <- "u.rdata"
     }
-    params <- send_pause_continue_kp(params, filesAC = files, from = "AC",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+    params <- send_pause_continue_kp(params,
+                                     filesAC = files,
+                                     from = "AC",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time,
+                                     wait_for_turn = TRUE)
     EndingIteration(params)
     params$alg_iteration_counter <- params$alg_iteration_counter + 1
   }
@@ -1663,20 +1749,28 @@ DataPartnerKCox <- function(data,
 
 
 AnalysisCenterKCox <- function(num_data_partners = NULL,
-                              monitor_folder   = NULL,
-                              msreqid         = "v_default_0_000",
-                              cutoff          = 1E-8,
-                              max_iterations   = 25,
-                              sleep_time       = 10,
-                              max_waiting_time  = 24 * 60 * 60,
-                              popmednet       = TRUE,
-                              trace           = FALSE,
-                              verbose         = TRUE) {
+                               monitor_folder   = NULL,
+                               msreqid         = "v_default_0_000",
+                               cutoff          = 1E-8,
+                               max_iterations   = 25,
+                               sleep_time       = 10,
+                               max_waiting_time  = 24 * 60 * 60,
+                               popmednet       = TRUE,
+                               trace           = FALSE,
+                               verbose         = TRUE) {
 
   filesList = rep(list(list()), num_data_partners)
 
-  params <- prepare_params_kp("cox", 0, num_data_partners, msreqid, cutoff, max_iterations, ac = TRUE,
-                            popmednet = popmednet, trace = trace, verbose = verbose)
+  params <- prepare_params_kp("cox",
+                              0,
+                              num_data_partners,
+                              msreqid,
+                              cutoff,
+                              max_iterations,
+                              ac = TRUE,
+                              popmednet = popmednet,
+                              trace = trace,
+                              verbose = verbose)
   if (params$failed) {
     warning(params$error_message)
     return(invisible(NULL))
@@ -1693,7 +1787,8 @@ AnalysisCenterKCox <- function(num_data_partners = NULL,
     return(invisible(NULL))
   }
 
-  params <- PauseContinue.kp(params, from = "DP", max_waiting_time = max_waiting_time)
+  params <- PauseContinue.kp(params, from = "DP",
+                             max_waiting_time = max_waiting_time)
 
   possibleError = ReceivedError.kp(params, from = "DP")
   if (possibleError$error) {
@@ -1701,9 +1796,14 @@ AnalysisCenterKCox <- function(num_data_partners = NULL,
     warning(possibleError$message)
     make_error_message(params$write_path, possibleError$message)
     files <- "error_message.rdata"
-    params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
-    params <- send_pause_quit_kp(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_kp(params,
+                                     filesDP = files,
+                                     from = "DP",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_kp(params,
+                                 sleep_time = sleep_time,
+                                 job_failed = TRUE)
     SummarizeLog.kp(params)
     return(params$stats)
   }
@@ -1714,29 +1814,41 @@ AnalysisCenterKCox <- function(num_data_partners = NULL,
     make_error_message(params$write_path, params$error_message)
     files <- "error_message.rdata"
     warning(params$error_message)
-    params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
-    params <- send_pause_quit_kp(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_kp(params,
+                                     filesDP = files,
+                                     from = "DP",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_kp(params,
+                                 sleep_time = sleep_time,
+                                 job_failed = TRUE)
     SummarizeLog.kp(params)
     return(params$stats)
   }
 
   files <- "empty.rdata"
-  params <- send_pause_continue_kp(params, filesDP = files, from = "DP1",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+  params <- send_pause_continue_kp(params,
+                                   filesDP = files,
+                                   from = "DP1",
+                                   sleep_time = sleep_time,
+                                   max_waiting_time = max_waiting_time)
 
 
   params <- DoNothing.ACDP(params)
   filesList = rep(list(list()), num_data_partners)
   filesList[[1]] = "empty.rdata"
-  params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+  params <- send_pause_continue_kp(params,
+                                   filesDP = filesList,
+                                   from = "DP",
+                                   sleep_time = sleep_time,
+                                   max_waiting_time = max_waiting_time)
 
-  possibleError = ReceivedError.kp(params, from = "DP")
+  possibleError <- ReceivedError.kp(params, from = "DP")
   if (possibleError$error) {
     params$error_message <- possibleError$message
     warning(possibleError$message)
-    params <- send_pause_quit_kp(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time,
+                                 job_failed = TRUE)
     SummarizeLog.kp(params)
     return(params$stats)
   }
@@ -1749,9 +1861,13 @@ AnalysisCenterKCox <- function(num_data_partners = NULL,
     make_error_message(params$write_path, params$error_message)
     files <- "error_message.rdata"
     warning(params$error_message)
-    params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
-    params <- send_pause_quit_kp(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_continue_kp(params,
+                                     filesDP = files,
+                                     from = "DP",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time)
+    params <- send_pause_quit_kp(params, sleep_time = sleep_time,
+                                 job_failed = TRUE)
     SummarizeLog.kp(params)
     return(params$stats)
   }
@@ -1766,21 +1882,31 @@ AnalysisCenterKCox <- function(num_data_partners = NULL,
     } else {
       files <- "u.rdata"
     }
-    params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_continue_kp(params,
+                                     filesDP = files,
+                                     from = "DP",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time)
 
     params <- get_s_beta_cox_ac(params)
-    filesList = rep(list(list()), num_data_partners)
-    filesList[[1]] = "sbeta.rdata"
-    filesList[[2]] = "empty.rdata"
-    params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP1",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    filesList <- rep(list(list()), num_data_partners)
+    filesList[[1]] <- "sbeta.rdata"
+    filesList[[2]] <- "empty.rdata"
+    params <- send_pause_continue_kp(params,
+                                     filesDP = filesList,
+                                     from = "DP1",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time)
 
     params <- compute_s_del_l_cox_ac(params)
-    filesList = rep(list(list()), num_data_partners)
-    filesList[[1]] = "wsr1.rdata"
-    params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time, wait_for_turn = TRUE)
+    filesList <- rep(list(list()), num_data_partners)
+    filesList[[1]] <- "wsr1.rdata"
+    params <- send_pause_continue_kp(params,
+                                     filesDP = filesList,
+                                     from = "DP",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time,
+                                     wait_for_turn = TRUE)
 
     params <- update_converge_status_ac(params)
     params <- compute_st_w_s_cox_ac(params)
@@ -1789,29 +1915,40 @@ AnalysisCenterKCox <- function(num_data_partners = NULL,
       make_error_message(params$write_path, params$error_message)
       files <- "error_message.rdata"
       warning(params$error_message)
-      params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
-                                    sleep_time = sleep_time, max_waiting_time = max_waiting_time)
-      params <- send_pause_quit_kp(params, sleep_time = sleep_time, job_failed = TRUE)
+      params <- send_pause_continue_kp(params,
+                                       filesDP = files,
+                                       from = "DP",
+                                       sleep_time = sleep_time,
+                                       max_waiting_time = max_waiting_time)
+      params <- send_pause_quit_kp(params, sleep_time = sleep_time,
+                                   job_failed = TRUE)
       SummarizeLog.kp(params)
       return(params$stats)
     }
 
-    filesList = rep(list(list()), num_data_partners)
+    filesList <- rep(list(list()), num_data_partners)
     for (id in 1:params$num_data_partners) {
-      filesList[[id]] = c(paste0("update", id, ".rdata"), "maxiterexceeded.rdata")
+      filesList[[id]] <- c(paste0("update", id, ".rdata"),
+                          "maxiterexceeded.rdata")
     }
-    params <- send_pause_continue_kp(params, filesDP = filesList, from = "DP",
-                                  sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+    params <- send_pause_continue_kp(params,
+                                     filesDP = filesList,
+                                     from = "DP",
+                                     sleep_time = sleep_time,
+                                     max_waiting_time = max_waiting_time)
     EndingIteration(params)
     params$alg_iteration_counter <- params$alg_iteration_counter + 1
   }
-  params$lastIteration = TRUE
+  params$lastIteration <- TRUE
   params$completed <- TRUE
 
   params <- compute_results_cox_ac(params)
   files <- "stats.rdata"
-  params <- send_pause_continue_kp(params, filesDP = files, from = "DP",
-                                sleep_time = sleep_time, max_waiting_time = max_waiting_time)
+  params <- send_pause_continue_kp(params,
+                                   filesDP = files,
+                                   from = "DP",
+                                   sleep_time = sleep_time,
+                                   max_waiting_time = max_waiting_time)
   send_pause_quit_kp(params, sleep_time = sleep_time)
   SummarizeLog.kp(params)
   return(params$stats)
