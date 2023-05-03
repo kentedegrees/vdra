@@ -1221,7 +1221,8 @@ compute_inverse_cox_a2 <- function(params, data) {
     betas[params$a_indicies_keep] <- params$beta_a
     betas <- data.frame(betas)
     rownames(betas) <- params$a_col_names_old
-    params <- add_to_log(params, "compute_inverse_cox_a2", read_time, read_size, write_time, write_size)
+    params <- add_to_log(params, "compute_inverse_cox_a2",
+                         read_time, read_size, write_time, write_size)
     return(params)
   }
   m3 <- m[(p1 + 1):(p1 + p2), 1:p1]
@@ -1230,9 +1231,11 @@ compute_inverse_cox_a2 <- function(params, data) {
   m3_txa_delta_l <- params$m3_txa_delta_l
   write_time <- write_time - proc.time()[3]
   save(m, m3_txa_delta_l, file = file.path(params$write_path, "M.rdata"))
-  write_size <- write_size + sum(file.size(file.path(params$write_path, "M.rdata")))
+  write_size <- write_size +
+    sum(file.size(file.path(params$write_path, "M.rdata")))
   write_time <- write_time + proc.time()[3]
-  params <- add_to_log(params, "compute_inverse_cox_a2", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "compute_inverse_cox_a2",
+                       read_time, read_size, write_time, write_size)
 
   return(params)
 }
@@ -1246,12 +1249,13 @@ compute_beta_cox_b2 <- function(params, data) {
   m3_txa_delta_l <- 0
 
   read_time <- proc.time()[3]
-  load(file.path(params$read_path, "M.rdata")) # load m, m3_txa_delta_l
+  load(file.path(params$read_path, "M.rdata"))
   read_size <- sum(file.size(file.path(params$read_path, "M.rdata")))
   read_time <- proc.time()[3] - read_time
 
   if (params$step_size < 1) {  # Is this in the wrong spot?
-    params$betas_b <- params$betas_b_old + (params$betas_b - params$betas_b_old) * params$step_size
+    params$betas_b <- params$betas_b_old +
+      (params$betas_b - params$betas_b_old) * params$step_size
   }
 
   params$betas_b_old <- params$betas_b
@@ -1266,12 +1270,16 @@ compute_beta_cox_b2 <- function(params, data) {
   m2_txb_deta_l <- params$m2_txb_deta_l
   xb_betas_b <- params$xb_betas_b
   write_time <- proc.time()[3]
-  save(m2_txb_deta_l, file = file.path(params$write_path, "M2_tXB_deltal.rdata"))
-  save(xb_betas_b, file = file.path(params$write_path, "XB_betasB.rdata"))
-  write_size <- sum(file.size(file.path(params$write_path, c("M2_tXB_deltal.rdata",
-                                                             "XB_betasB.rdata"))))
+  save(m2_txb_deta_l, file = file.path(params$write_path,
+                                       "M2_tXB_deltal.rdata"))
+  save(xb_betas_b, file = file.path(params$write_path,
+                                    "XB_betasB.rdata"))
+  write_size <- sum(file.size(file.path(params$write_path,
+                                        c("M2_tXB_deltal.rdata",
+                                          "XB_betasB.rdata"))))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "compute_beta_cox_b2", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "compute_beta_cox_b2",
+                       read_time, read_size, write_time, write_size)
 
   return(params)
 }
@@ -1283,16 +1291,19 @@ compute_beta_cox_a2 <- function(params, data) {
   m2_txb_deta_l <- 0
 
   read_time <- proc.time()[3]
-  load(file.path(params$read_path, "M2_tXB_deltal.rdata")) # load m2_txb_deta_l
-  read_size <- sum(file.size(file.path(params$read_path, "M2_tXB_deltal.rdata")))
+  load(file.path(params$read_path, "M2_tXB_deltal.rdata"))
+  read_size <- sum(file.size(file.path(params$read_path,
+                                       "M2_tXB_deltal.rdata")))
   read_time <- proc.time()[3] - read_time
 
   if (params$step_size < 1) { # Is this in the wrong spot?
-    params$betas_a <- params$betas_a_old + (params$betas_a - params$betas_a_old) * params$step_size
+    params$betas_a <- params$betas_a_old +
+      (params$betas_a - params$betas_a_old) * params$step_size
   }
 
   params$betas_a_old <- params$betas_a
-  params$betas_a <- params$betas_a + params$m[1:p1, 1:p1] %*% params$t_xa_delta_l + m2_txb_deta_l
+  params$betas_a <- params$betas_a +
+    params$m[1:p1, 1:p1] %*% params$t_xa_delta_l + m2_txb_deta_l
 
   converged <- abs(params$loglikelihood - params$loglikelihood_old) /
     (abs(params$loglikelihood) + 0.1) < params$cutoff
@@ -1302,7 +1313,8 @@ compute_beta_cox_a2 <- function(params, data) {
 
   if (params$alg_iteration_counter >= params$max_iterations) {
     params$halted <- TRUE
-    warning(paste("Failed to converged in", params$max_iterations, "iterations."))
+    warning(paste("Failed to converged in",
+                  params$max_iterations, "iterations."))
   }
 
   write_time <- proc.time()[3]
@@ -1310,13 +1322,15 @@ compute_beta_cox_a2 <- function(params, data) {
   write_size <- file.size(file.path(params$write_path, "converged.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "compute_beta_cox_a2", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "compute_beta_cox_a2",
+                       read_time, read_size, write_time, write_size)
   return(params)
 }
 
 
 get_converged_status_cox_b2 <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "get_converged_status_cox_b2\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "get_converged_status_cox_b2\n\n")
   converged <- NULL
 
   read_time <- proc.time()[3]
@@ -1326,7 +1340,8 @@ get_converged_status_cox_b2 <- function(params) {
   params$converged <- converged
   if (params$alg_iteration_counter > params$max_iterations) {
     params$halted <- TRUE
-    warning(paste("Failed to converged in", params$max_iterations, "iterations."))
+    warning(paste("Failed to converged in",
+                  params$max_iterations, "iterations."))
   }
   write_time <- 0
   write_size <- 0
@@ -1334,11 +1349,14 @@ get_converged_status_cox_b2 <- function(params) {
     betas_b <- params$betas_b
     null_score_b <- params$null_score
     write_time <- proc.time()[3]
-    save(betas_b, null_score_b, file = file.path(params$write_path, "B_betas_ns.rdata"))
-    write_size <- sum(file.size(file.path(params$write_path, "B_betas_ns.rdata")))
+    save(betas_b, null_score_b, file = file.path(params$write_path,
+                                                 "B_betas_ns.rdata"))
+    write_size <- sum(file.size(file.path(params$write_path,
+                                          "B_betas_ns.rdata")))
     write_time <- proc.time()[3] - write_time
   }
-  params <- add_to_log(params, "get_converged_status_cox_b2", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "get_converged_status_cox_b2",
+                       read_time, read_size, write_time, write_size)
   return(params)
 }
 
@@ -1353,15 +1371,23 @@ survfit_cox_a2 <- function(params, survival, pred) {
       risk    <- exp(pred[start:end])
       dtime   <- survival$rank[start:end]
       status  <- survival$status[start:end]
-      death   <- status == 1                                  # times where death happened
-      time    <- sort(unique(dtime))                          # (A) get unique event times
+      # times where death happened
+      death   <- status == 1
+      # (A) get unique event times
+      time    <- sort(unique(dtime))
       rcumsum <- function(x) rev(cumsum(rev(x)))
-      nevent  <- as.vector(rowsum(as.numeric(death), dtime))  # (A) Count the number of deaths at each event time
-      ndeath  <- rowsum(status, dtime)                        # (A) number of deaths at each unique event time
-      nrisk   <- rcumsum(rowsum(risk, dtime))                 # (A) rowsum = sum of risk at each time, then reverse cum sum, sorted by time
-      erisk   <- rowsum(risk * death, dtime)                  # (A) risk score sums of death at each unique event time
+      # (A) Count the number of deaths at each event time
+      nevent  <- as.vector(rowsum(as.numeric(death), dtime))
+      # (A) number of deaths at each unique event time
+      ndeath  <- rowsum(status, dtime)
+      # (A) rowsum = sum of risk at each time, then reverse cum sum, sorted by
+      # time
+      nrisk   <- rcumsum(rowsum(risk, dtime))
+      # (A) risk score sums of death at each unique event time
+      erisk   <- rowsum(risk * death, dtime)
       n       <- length(nevent)
-      sum1    <- double(n)   # a vector of 0's, length number of unique event times
+      # a vector of 0's, length number of unique event times
+      sum1    <- double(n)
       for (i in 1:n) {
         d <- ndeath[i]
         if (d == 1) {
@@ -1394,10 +1420,11 @@ compute_results_cox_a2 <- function(params, data) {
   xb_betas_b  <- NULL
 
   read_time <- proc.time()[3]
-  load(file.path(params$read_path, "B_betas_ns.rdata")) # load betas_b, nullscoreB
-  load(file.path(params$read_path, "XB_betasB.rdata")) # load xb_betas_b
-  read_size <- sum(file.size(file.path(params$read_path, c("B_betas_ns.rdata",
-                                                           "XB_betasB.rdata"))))
+  load(file.path(params$read_path, "B_betas_ns.rdata"))
+  load(file.path(params$read_path, "XB_betasB.rdata"))
+  read_size <- sum(file.size(file.path(params$read_path,
+                                       c("B_betas_ns.rdata",
+                                         "XB_betasB.rdata"))))
   read_time <- proc.time()[3] - read_time
   params$betas_b <- betas_b
   params$null_score <- rbind(params$null_score, null_score_b)
@@ -1418,10 +1445,10 @@ compute_results_cox_a2 <- function(params, data) {
   stats$var          <- matrix(0, length(names_old), length(names_old))
   stats$var[idx, idx] <- tempvar
   stats$secoef       <- rep(NA, length(names_old))
-  stats$secoef[idx]  <- sqrt(diag(tempvar))  # standard error
+  stats$secoef[idx]  <- sqrt(diag(tempvar))
 
-  stats$zvals        <- stats$coefficients / stats$secoef  # z values
-  stats$pvals        <- 2 * pnorm(abs(stats$zvals), lower.tail = FALSE)   # pvals
+  stats$zvals        <- stats$coefficients / stats$secoef
+  stats$pvals        <- 2 * pnorm(abs(stats$zvals), lower.tail = FALSE)
   stats$stars        <- matrix(sapply(stats$pvals, function(x) {
     if (is.na(x)) ""
     else if (x < 0.001) "***"
@@ -1459,10 +1486,12 @@ compute_results_cox_a2 <- function(params, data) {
     results <- survival::concordance(surv ~ pred + strata(strat))
     if (is.matrix(results$stats)) {
       # more than one strata
-      stats$concordance <- c(apply(results$count, 2, sum)[1:4], results$concordance, sqrt(results$var))
+      stats$concordance <- c(apply(results$count, 2, sum)[1:4],
+                             results$concordance, sqrt(results$var))
     } else {
       # only one strata, so a numeric vector
-      stats$concordance <- c(results$count[1:4], results$concordance, sqrt(results$var))
+      stats$concordance <- c(results$count[1:4], results$concordance,
+                             sqrt(results$var))
     }
   } else {
     stats$concordance <- c(NA, NA, NA, NA, NA, NA)
@@ -1481,7 +1510,9 @@ compute_results_cox_a2 <- function(params, data) {
   for (i in seq_along(data$survival$strata)) {
     stats$strata$start[i]  <- data$survival$strata[[i]]$start
     stats$strata$end[i]    <- data$survival$strata[[i]]$end
-    stats$strata$events[i] <- sum(data$survival$status[stats$strata$start[i]:stats$strata$end[i]])
+    start                  <- stats$strata$start[i]
+    end                    <- stats$strata$end[i]
+    stats$strata$events[i] <- sum(data$survival$status[start:end])
     stats$strata$label[i]  <- data$survival$strata[[i]]$label
   }
 

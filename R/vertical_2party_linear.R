@@ -9,12 +9,14 @@ prepare_folder_linear_a2 <- function(params, monitor_folder) {
   params$read_path       <- file.path(monitor_folder, "msoc1")
 
   if (is.null(monitor_folder)) {
-    warning("monitor_folder must be specified.  Please use the same monitor_folder as the DataMart Client.")
+    warning("monitor_folder must be specified.",
+            "Please use the same monitor_folder as the DataMart Client.")
     params$failed <- TRUE
     return(params)
   }
   if (!is.character(monitor_folder)) {
-    warning("monitor_folder directory is not valid.  Please use the same monitor_folder as the DataMart Client.")
+    warning("monitor_folder directory is not valid. ",
+            "Please use the same monitor_folder as the DataMart Client.")
     params$failed <- TRUE
     return(params)
   }
@@ -26,46 +28,49 @@ prepare_folder_linear_a2 <- function(params, monitor_folder) {
   if (!create_io_location(monitor_folder, "dplocal")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
-                                "Could not create directory",
-                                paste0(params$dp_local_path, "."),
-                                "Check the path and restart the program.")
+                                  "Could not create directory",
+                                  paste0(params$dp_local_path, "."),
+                                  "Check the path and restart the program.")
   }
   if (!create_io_location(monitor_folder, "rprograms")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
-                                "Could not create directory",
-                                paste0(params$r_programs_path, "."),
-                                "Check the path and restart the program.")
+                                  "Could not create directory",
+                                  paste0(params$r_programs_path, "."),
+                                  "Check the path and restart the program.")
   }
   if (!create_io_location(monitor_folder, "macros")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
-                                "Could not create directory",
-                                paste0(params$macros_path, "."),
-                                "Check the path and restart the program.")
+                                  "Could not create directory",
+                                  paste0(params$macros_path, "."),
+                                  "Check the path and restart the program.")
   }
   if (!create_io_location(monitor_folder, "inputfiles")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
-                                "Could not create directory",
-                                paste0(params$write_path, "."),
-                                "Check the path and restart the program.")
+                                  "Could not create directory",
+                                  paste0(params$write_path, "."),
+                                  "Check the path and restart the program.")
   }
   if (!create_io_location(monitor_folder, "msoc1")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
-                                "Could not create directory",
-                                paste0(params$read_path, "."),
-                                "Check the path and restart the program.")
+                                  "Could not create directory",
+                                  paste0(params$read_path, "."),
+                                  "Check the path and restart the program.")
   }
 
-  params <- add_to_log(params, "prepare_data_linear_a23, prepare_folder_linear_a2", 0, 0, 0, 0)
+  params <- add_to_log(params,
+                       "prepare_data_linear_a23, prepare_folder_linear_a2",
+                       0, 0, 0, 0)
   return(params)
 }
 
 
 prepare_folder_linear_b2 <- function(params, monitor_folder) {
-  if (params$trace) cat(as.character(Sys.time()), "prepare_folder_linear_b2\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "prepare_folder_linear_b2\n\n")
 
   params$dp_local_path   <- file.path(monitor_folder, "dplocal")
   params$r_programs_path <- file.path(monitor_folder, "rprograms")
@@ -74,12 +79,14 @@ prepare_folder_linear_b2 <- function(params, monitor_folder) {
   params$read_path       <- file.path(monitor_folder, "inputfiles")
 
   if (is.null(monitor_folder)) {
-    warning("monitor_folder must be specified.  Please use the same monitor_folder as the DataMart Client.")
+    warning("monitor_folder must be specified. " ,
+            "Please use the same monitor_folder as the DataMart Client.")
     params$failed <- TRUE
     return(params)
   }
   if (!is.character(monitor_folder)) {
-    warning("monitor_folder directory is not valid.  Please use the same monitor_folder as the DataMart Client.")
+    warning("monitor_folder directory is not valid. ",
+            "Please use the same monitor_folder as the DataMart Client.")
     params$failed <- TRUE
     return(params)
   }
@@ -91,43 +98,45 @@ prepare_folder_linear_b2 <- function(params, monitor_folder) {
   if (!create_io_location(monitor_folder, "dplocal")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
-                                "Could not create directory",
-                                paste0(params$dp_local_path, "."),
-                                "Check the path and restart the program.")
+                                  "Could not create directory",
+                                  paste0(params$dp_local_path, "."),
+                                  "Check the path and restart the program.")
   }
   if (!create_io_location(monitor_folder, "rprograms")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
-                                "Could not create directory",
-                                paste0(params$r_programs_path, "."),
-                                "Check the path and restart the program.")
+                                  "Could not create directory",
+                                  paste0(params$r_programs_path, "."),
+                                  "Check the path and restart the program.")
   }
   if (!create_io_location(monitor_folder, "macros")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
-                                "Could not create directory",
-                                paste0(params$macros_path, "."),
-                                "Check the path and restart the program.")
+                                  "Could not create directory",
+                                  paste0(params$macros_path, "."),
+                                  "Check the path and restart the program.")
   }
   if (!create_io_location(monitor_folder, "msoc")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
-                                "Could not create directory",
-                                paste0(params$write_path, "."),
-                                "Check the path and restart the program.")
+                                  "Could not create directory",
+                                  paste0(params$write_path, "."),
+                                  "Check the path and restart the program.")
   }
   if (!create_io_location(monitor_folder, "inputfiles")) {
     params$failed <- TRUE
     params$error_message <- paste(params$error_message,
-                                "Could not create directory",
-                                paste0(params$read_path, "."),
-                                "Check the path and restart the program.")
+                                  "Could not create directory",
+                                  paste0(params$read_path, "."),
+                                  "Check the path and restart the program.")
   }
 
   Sys.sleep(1)
   delete_trigger("files_done.ok", params$read_path)
 
-  params <- add_to_log(params, "prepare_data_linear_b23, prepare_folder_linear_b2", 0, 0, 0, 0)
+  params <- add_to_log(params,
+                       "prepare_data_linear_b23, prepare_folder_linear_b2",
+                       0, 0, 0, 0)
   return(params)
 }
 
@@ -153,10 +162,12 @@ prepare_data_linear_a23 <- function(params, data, y_name = NULL) {
     return(workdata)
   }
   covariate_index <- setdiff(seq_len(ncol(data)), response_index)
-  workdata$tags <- create_model_matrix_tags(data[, covariate_index, drop = FALSE])
+  workdata$tags <- create_model_matrix_tags(data[, covariate_index,
+                                                 drop = FALSE])
   workdata$tags <- c("(Intercept)", workdata$tags)
   names(workdata$tags)[1] <- "numeric"
-  x <- model.matrix(~ ., data[, c(response_index, covariate_index), drop = FALSE])
+  x <- model.matrix(~ ., data[, c(response_index, covariate_index),
+                              drop = FALSE])
   rownames(x) <- NULL
   covariate_index <- setdiff(seq_len(ncol(x)), 2)
   means <- apply(x, 2, mean)
@@ -184,7 +195,8 @@ prepare_data_linear_a23 <- function(params, data, y_name = NULL) {
 
 #' @importFrom stats model.matrix sd
 prepare_data_linear_b23 <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "prepare_data_linear_b23\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "prepare_data_linear_b23\n\n")
 
   workdata <- list()
   workdata$failed <- FALSE
@@ -201,7 +213,8 @@ prepare_data_linear_b23 <- function(params, data) {
   workdata$tags <- create_model_matrix_tags(data)
 
   if (ncol(data) < 2 || !("numeric" %in% names(workdata$tags))) {
-    warning("The data partner that does not have the response must have at least 2 covariates at least one of which must be numeric.")
+    warning("The data partner that does not have the response must have ",
+            "at least 2 covariates at least one of which must be numeric.")
     workdata$failed <- TRUE
     return(workdata)
   }
@@ -223,7 +236,8 @@ prepare_data_linear_b23 <- function(params, data) {
 }
 
 prepare_params_linear_b2 <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_b2\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "prepare_params_linear_b2\n\n")
   params$failed          <- FALSE
   params$halted          <- FALSE
   params$singular_matrix <- FALSE
@@ -260,13 +274,15 @@ prepare_params_linear_b2 <- function(params, data) {
   save(pb, file <- file.path(params$write_path, "pb.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, "pb.rdata")))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "prepare_params_linear_b2", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "prepare_params_linear_b2",
+                       0, 0, write_time, write_size)
   return(params)
 }
 
 
 prepare_params_linear_a2 <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "prepare_params_linear_a2\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "prepare_params_linear_a2\n\n")
 
   params$halted          <- FALSE
   params$singular_matrix  <- FALSE
@@ -274,13 +290,15 @@ prepare_params_linear_a2 <- function(params, data) {
   pb                     <- NULL
 
   read_time <- proc.time()[3]
-  load(file.path(params$read_path, "pb.rdata")) # load pb
+  load(file.path(params$read_path, "pb.rdata"))
   read_size <- sum(file.size(file.path(params$read_path, "pb.rdata")))
   read_time <- proc.time()[3] - read_time
 
   if (params$analysis != pb$analysis) {
     params$error_message <-
-      paste("Party A is running", params$analysis, "regression and Party B is running", pb$analysis, "regression.")
+      paste("Party A is running", params$analysis,
+            "regression and Party B is running", pb$analysis,
+            "regression.")
     warning(params$error_message)
     params$failed <- TRUE
     return(params)
@@ -289,7 +307,9 @@ prepare_params_linear_a2 <- function(params, data) {
   params$n <- nrow(data$x)
   if (pb$n != params$n) {
     params$error_message <-
-      paste("Party A has", params$n, "observations and Party B has", pb$n, "observations.")
+      paste("Party A has",
+            params$n, "observations and Party B has",
+            pb$n, "observations.")
     warning(params$error_message)
     params$failed <- TRUE
   }
@@ -328,14 +348,15 @@ prepare_params_linear_a2 <- function(params, data) {
   write_size <- sum(file.size(file.path(params$write_path, "pa.rdata")))
   write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "prepare_params_linear_a2", read_time, read_size,
-                    write_time, write_size)
+                       write_time, write_size)
 
   return(params)
 }
 
 
 prepare_blocks_linear_a2 <- function(params, blocksize) {
-  if (params$trace) cat(as.character(Sys.time()), "prepare_blocks_linear_a2\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "prepare_blocks_linear_a2\n\n")
   # For now, assuming that p1 > 0 and p2 > 0
   n <- params$n
   p1 <- params$p1
@@ -351,7 +372,8 @@ prepare_blocks_linear_a2 <- function(params, blocksize) {
             "Your options are:\n",
             "Increase the number of observations to at least",
             paste0(minimum_block_size, ".\n"),
-            "Decrease the number of A covariates to", max_a_covariates, "or less.")
+            "Decrease the number of A covariates to",
+            max_a_covariates, "or less.")
 
     b <- n - 2 * p1 - 2
     discrim <- b^2 - 4 * (p1 + 1)^2
@@ -360,7 +382,8 @@ prepare_blocks_linear_a2 <- function(params, blocksize) {
       max_b_covariates <- trunc((b + sqrt(discrim)) / 2)
       params$error_message <-
         paste0(params$error_message,
-               "\nSet the number of B covariates to be between ", min_b_covariates, "and",
+               "\nSet the number of B covariates to be between ",
+               min_b_covariates, "and",
                paste0(max_b_covariates, "."))
     }
     warning(params$error_message)
@@ -389,7 +412,8 @@ prepare_blocks_linear_a2 <- function(params, blocksize) {
   save(blocksize, file = file.path(params$write_path, "blocksize.rdata"))
   write_size <- file.size(file.path(params$write_path, "blocksize.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "prepare_blocks_linear_a2", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "prepare_blocks_linear_a2",
+                       0, 0, write_time, write_size)
   return(params)
 }
 
@@ -419,17 +443,20 @@ get_z_linear_a2 <- function(params, data) {
     write_time <- write_time + proc.time()[3]
     if ((i + 1) %in% params$container$file_break_z || i == num_blocks) {
       close(to_write)
-      write_size <- write_size + file.size(file.path(params$write_path, filename))
+      write_size <- write_size +
+        file.size(file.path(params$write_path, filename))
     }
     pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
-  params <- add_to_log(params, "get_z_linear_a2", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "get_z_linear_a2",
+                       0, 0, write_time, write_size)
   return(params)
 }
 
 
 finalize_params_linear_b2 <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "finalize_params_linear_b2\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "finalize_params_linear_b2\n\n")
   pa <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$read_path, "pa.rdata")) # read pa
@@ -444,13 +471,15 @@ finalize_params_linear_b2 <- function(params, data) {
   params$y_name  <- pa$y_name
 
   params$a_col_names <- pa$a_col_names
-  params <- add_to_log(params, "finalize_params_linear_b2", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "finalize_params_linear_b2",
+                       read_time, read_size, 0, 0)
   return(params)
 }
 
 
 prepare_blocks_linear_b2 <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "prepare_blocks_linear_b2\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "prepare_blocks_linear_b2\n\n")
   blocksize <- NULL
   # For now, assuming that p1 > 0 and p2 > 0
   read_time <- proc.time()[3]
@@ -459,7 +488,8 @@ prepare_blocks_linear_b2 <- function(params) {
   read_time <- proc.time()[3] - read_time
   params$blocks    <- create_blocks(params$p1, params$p2, params$n, blocksize)
   params$container <- create_containers(params$p1, params$p2, params$blocks)
-  params <- add_to_log(params, "prepare_blocks_linear_b2", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "prepare_blocks_linear_b2",
+                       read_time, read_size, 0, 0)
   return(params)
 }
 
@@ -471,7 +501,8 @@ get_w_linear_b2 <- function(params, data) {
   write_time <- 0
   write_size <- 0
 
-  pbar <- make_progress_bar_1(params$blocks$num_blocks, "(I-Z*Z')X", params$verbose)
+  pbar <- make_progress_bar_1(params$blocks$num_blocks,
+                              "(I-Z*Z')X", params$verbose)
 
   xb_t_xb <- t(data$x) %*% data$x
 
@@ -497,7 +528,7 @@ get_w_linear_b2 <- function(params, data) {
 
     read_time <- read_time - proc.time()[3]
     z <- matrix(readBin(con = to_read, what = numeric(), n = n2 * g1,
-                       endian = "little"), nrow = n2, ncol = g1)
+                        endian = "little"), nrow = n2, ncol = g1)
     read_time <- read_time + proc.time()[3]
 
     w <- data$x[strt:stp, ] - z %*% (t(z) %*% data$x[strt:stp, ])
@@ -506,12 +537,15 @@ get_w_linear_b2 <- function(params, data) {
     writeBin(as.vector(w), con = to_write, endian = "little")
     write_time <- write_time + proc.time()[3]
 
-    if ((i + 1) %in% params$container$file_break_z || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$file_break_z ||
+        i == params$blocks$num_blocks) {
       close(to_read)
     }
-    if ((i + 1) %in% params$container$filebreak_w || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_w ||
+        i == params$blocks$num_blocks) {
       close(to_write)
-      write_size <- write_size + file.size(file.path(params$write_path, filename2))
+      write_size <- write_size +
+        file.size(file.path(params$write_path, filename2))
     }
 
     pbar <- make_progress_bar_2(i, pbar, params$verbose)
@@ -519,17 +553,20 @@ get_w_linear_b2 <- function(params, data) {
 
   write_time <- write_time - proc.time()[3]
   save(xb_t_xb, file = file.path(params$write_path, "xbtxb.rdata"))
-  write_size <- write_size + file.size(file.path(params$write_path, "xbtxb.rdata"))
+  write_size <- write_size +
+    file.size(file.path(params$write_path, "xbtxb.rdata"))
   write_time <- write_time + proc.time()[3]
 
-  params <- add_to_log(params, "get_w_linear_b2", read_time, read_size, write_time, write_size)
+  params <- add_to_log(params, "get_w_linear_b2",
+                       read_time, read_size, write_time, write_size)
 
   return(params)
 }
 
 
 get_products_linear_a2 <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "get_products_linear_a2\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "get_products_linear_a2\n\n")
   n <- params$n
   p1 <- params$p1
   p2 <- params$p2
@@ -560,15 +597,17 @@ get_products_linear_a2 <- function(params, data) {
 
     read_time <- read_time - proc.time()[3]
     w  <- matrix(readBin(con = to_read, what = numeric(), n = n2 * p2,
-                       endian = "little"), nrow = n2, ncol = p2)
+                         endian = "little"), nrow = n2, ncol = p2)
     read_time <- read_time + proc.time()[3]
 
     xa_t_xb <- xa_t_xb + t(data$x[strt:stp, ]) %*% w
     y_t_xb  <- y_t_xb  + t(data$Y[strt:stp, ]) %*% w
 
-    if ((i + 1) %in% params$container$filebreak_w || i == params$blocks$num_blocks) {
+    if ((i + 1) %in% params$container$filebreak_w ||
+        i == params$blocks$num_blocks) {
       close(to_read)
-      read_size <- read_size + file.size(file.path(params$read_path, filename))
+      read_size <- read_size +
+        file.size(file.path(params$read_path, filename))
     }
     pbar <- make_progress_bar_2(i, pbar, params$verbose)
   }
@@ -588,13 +627,15 @@ get_products_linear_a2 <- function(params, data) {
 
   params$converged <- TRUE
 
-  params <- add_to_log(params, "get_products_linear_a2", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "get_products_linear_a2",
+                       read_time, read_size, 0, 0)
   return(params)
 }
 
 #' @importFrom  stats pf pt
 compute_results_linear_a2 <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_results_linear_a2\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "compute_results_linear_a2\n\n")
   stats    <- params$stats
   stats$converged <- params$converged
   stats$failed    <- FALSE
@@ -651,7 +692,8 @@ compute_results_linear_a2 <- function(params, data) {
   #   # If true sse is approximately 0, random variations could cause this
   #   # calculation to be less than 0
   #   # If calculated sse is less than 0, we set it equal to 0.
-  sse     <- max(drop(yty - 2 * t(xty) %*% betas + (t(betas) %*% xtx) %*% betas), 0)
+  sse     <- max(drop(yty - 2 * t(xty) %*% betas +
+                        (t(betas) %*% xtx) %*% betas), 0)
   rstderr <- drop(sqrt(sse / (n - num_covariates - 1)))
   sst     <- drop(yty - means_y^2 * n)
   ssr     <- sst - sse
@@ -677,7 +719,7 @@ compute_results_linear_a2 <- function(params, data) {
   secoef  <- tvals^-1 * betas
   pvals   <- 2 * pt(abs(tvals), n - num_covariates - 1, lower.tail = FALSE)
   stats$party                  <- c(rep("dp0", length(a_names)),
-                                   rep("dp1", length(b_names)))
+                                    rep("dp1", length(b_names)))
   stats$responseParty          <- "dp0"
   stats$coefficients           <- rep(NA, params$p)
   stats$tvals                  <- rep(NA, params$p)
@@ -720,7 +762,8 @@ compute_results_linear_a2 <- function(params, data) {
   write_size <- file.size(file.path(params$write_path, "stats.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "compute_results_linear_a2", 0, 0, write_time, write_size)
+  params <- add_to_log(params, "compute_results_linear_a2",
+                       0, 0, write_time, write_size)
   return(params)
 }
 
@@ -734,7 +777,8 @@ get_results_linear_b2 <- function(params) {
   read_size <- file.size(file.path(params$read_path, "stats.rdata"))
   read_time <- proc.time()[3] - read_time
   params$stats <- stats
-  params <- add_to_log(params, "get_results_linear_b2", read_time, read_size, 0, 0)
+  params <- add_to_log(params, "get_results_linear_b2", read_time,
+                       read_size, 0, 0)
   return(params)
 }
 
@@ -745,18 +789,19 @@ get_results_linear_b2 <- function(params) {
 ############################## PARENT FUNCTIONS ###############################
 
 party_a_process_2_linear <- function(data,
-                                y_name                 = NULL,
-                                monitor_folder         = NULL,
-                                msreqid               = "v_default_00_0000",
-                                blocksize             = NULL,
-                                sleep_time             = 10,
-                                max_waiting_time        = 24 * 60 * 60,
-                                popmednet             = TRUE,
-                                trace                 = FALSE,
-                                verbose               = TRUE) {
+                                     y_name                 = NULL,
+                                     monitor_folder         = NULL,
+                                     msreqid               = "v_default_00_0000",
+                                     blocksize             = NULL,
+                                     sleep_time             = 10,
+                                     max_waiting_time        = 24 * 60 * 60,
+                                     popmednet             = TRUE,
+                                     trace                 = FALSE,
+                                     verbose               = TRUE) {
 
   params <- prepare_params_2p("linear", "A", msreqid = msreqid,
-                            popmednet = popmednet, trace = trace, verbose = verbose)
+                              popmednet = popmednet, trace = trace,
+                              verbose = verbose)
   params <- initialize_log_2p(params)
   params <- initialize_time_stamps_2p(params)
   params <- initialize_tracking_table_2p(params)
@@ -774,7 +819,8 @@ party_a_process_2_linear <- function(data,
     params$completed <- TRUE
     warning(read_error_message(params$read_path))
     params$pmn_step_counter <- 1
-    params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_quit_2p(params, sleep_time = sleep_time,
+                                 job_failed = TRUE)
     SummarizeLog.2p(params)
     return(params$stats)
   }
@@ -786,7 +832,8 @@ party_a_process_2_linear <- function(data,
     files <- c("error_message.rdata")
     params$pmn_step_counter <- 1
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
-    params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_quit_2p(params, sleep_time = sleep_time,
+                                 job_failed = TRUE)
     SummarizeLog.2p(params)
     return(params$stats)
   }
@@ -798,7 +845,8 @@ party_a_process_2_linear <- function(data,
     make_error_message(params$write_path, params$error_message)
     files <- c("error_message.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
-    params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_quit_2p(params, sleep_time = sleep_time,
+                                 job_failed = TRUE)
     SummarizeLog.2p(params)
     return(params$stats)
   }
@@ -810,7 +858,8 @@ party_a_process_2_linear <- function(data,
     make_error_message(params$write_path, params$error_message)
     files <- c("error_message.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
-    params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_quit_2p(params, sleep_time = sleep_time,
+                                 job_failed = TRUE)
     SummarizeLog.2p(params)
     return(params$stats)
   }
@@ -818,7 +867,7 @@ party_a_process_2_linear <- function(data,
   params <- get_z_linear_a2(params, data)
 
   files <- c("pa.rdata", "blocksize.rdata",
-            seq_zw("cz_", length(params$container$file_break_z)))
+             seq_zw("cz_", length(params$container$file_break_z)))
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
   params$completed <- TRUE
@@ -832,15 +881,15 @@ party_a_process_2_linear <- function(data,
 }
 
 party_b_process_2_linear <- function(data,
-                                monitor_folder       = NULL,
-                                sleep_time           = 10,
-                                max_waiting_time      = 24 * 60 * 60,
-                                popmednet           = TRUE,
-                                trace               = FALSE,
-                                verbose             = TRUE) {
+                                     monitor_folder       = NULL,
+                                     sleep_time           = 10,
+                                     max_waiting_time      = 24 * 60 * 60,
+                                     popmednet           = TRUE,
+                                     trace               = FALSE,
+                                     verbose             = TRUE) {
   params <- prepare_params_2p("linear", "B",
-                            popmednet = popmednet, trace = trace,
-                            verbose = verbose)
+                              popmednet = popmednet, trace = trace,
+                              verbose = verbose)
   params <- initialize_log_2p(params)
   params <- initialize_time_stamps_2p(params)
   params <- initialize_tracking_table_2p(params)
@@ -858,7 +907,8 @@ party_b_process_2_linear <- function(data,
     message <- "Error in processing the data for Party B."
     make_error_message(params$write_path, message)
     files <- c("error_message.rdata")
-    params <- send_pause_quit_2p(params, files, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_quit_2p(params, files, sleep_time = sleep_time,
+                                 job_failed = TRUE)
     return(params$stats)
   }
 
@@ -870,7 +920,8 @@ party_b_process_2_linear <- function(data,
   if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
     params$completed <- TRUE
     warning(read_error_message(params$read_path))
-    params <- send_pause_quit_2p(params, sleep_time = sleep_time, job_failed = TRUE)
+    params <- send_pause_quit_2p(params, sleep_time = sleep_time,
+                                 job_failed = TRUE)
     return(params$stats)
   }
 
