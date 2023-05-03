@@ -799,10 +799,10 @@ check_data_format <- function(params, data) {
   badValue = rep(FALSE, nrow(data))
   for (i in seq_len(ncol(data))) {
     if (is.integer(data[, i]) || is.double(data[, i]) ||
-        is.single(data[, i]) || is.numeric(data[, i]))
-      badValue = badValue | !is.finite(data[, i])
+        is.single(data[, i]) || is.numeric(data[, i])) {
+      badValue <- badValue | !is.finite(data[, i])
     } else {
-      badValue = badValue | is.na(data[, i])
+      badValue <- badValue | is.na(data[, i])
     }
   }
   idx <- data.frame(which(badValue))
