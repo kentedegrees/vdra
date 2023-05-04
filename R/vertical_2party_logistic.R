@@ -700,9 +700,9 @@ update_data_logistic_a2 <- function(params, data) {
 }
 
 
-compute_init_betas_logistic_a2 <- function(params, data) {
+comp_init_betas_logistic_a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_init_betas_logistic_a2\n\n")
+                        "comp_init_betas_logistic_a2\n\n")
   # de-standardize xty
   p1     <- params$p1
   p2     <- params$p2
@@ -731,7 +731,7 @@ compute_init_betas_logistic_a2 <- function(params, data) {
   write_size <- sum(file.size(file.path(params$write_path, "Bbetas_xty.rdata")))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "compute_init_betas_logistic_a2",
+  params <- add_to_log(params, "comp_init_betas_logistic_a2",
                        0, 0, write_time, write_size)
 
   return(params)
@@ -1127,9 +1127,9 @@ get_final_coef_logistic_b2 <- function(params, data) {
 }
 
 #' @importFrom stats pnorm
-compute_results_logistic_a2 <- function(params, data) {
+comp_results_logistic_a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_results_logistic_a2\n\n")
+                        "comp_results_logistic_a2\n\n")
   stats <- params$stats
   stats$failed         <- FALSE
   stats$converged      <- params$converged
@@ -1220,7 +1220,7 @@ compute_results_logistic_a2 <- function(params, data) {
   stats$final_fitted <- final_fitted
   params$stats      <- stats
 
-  params <- add_to_log(params, "compute_results_logistic_b2",
+  params <- add_to_log(params, "comp_results_logistic_b2",
                        read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -1341,7 +1341,7 @@ party_a_process_2_logistic <- function(data,
   }
   data <- update_data_logistic_a2(params, data)
   params <- add_to_log(params, "update_data_logistic_a2", 0, 0, 0, 0)
-  params <- compute_init_betas_logistic_a2(params, data)
+  params <- comp_init_betas_logistic_a2(params, data)
 
   files <- c("indicies.rdata", "Bbetas_xty.rdata")
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
@@ -1378,7 +1378,7 @@ party_a_process_2_logistic <- function(data,
   }
   params$completed <- TRUE
 
-  params <- compute_results_logistic_a2(params, data)
+  params <- comp_results_logistic_a2(params, data)
 
   files <- c("stats.rdata")
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)

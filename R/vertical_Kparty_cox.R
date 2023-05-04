@@ -698,8 +698,8 @@ check_colinearity_cox_ac <- function(params) {
   return(params)
 }
 
-compute_u_cox_ac <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_u_cox_ac\n\n")
+comp_u_cox_ac <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "comp_u_cox_ac\n\n")
   read_time <- 0
   read_size <- 0
   if (params$alg_iteration_counter == 1) {
@@ -721,7 +721,7 @@ compute_u_cox_ac <- function(params) {
   save(u, file = file.path(params$write_path, "u.rdata"))
   write_size <- file.size(file.path(params$write_path, "u.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "compute_u_cox_ac",
+  params <- add_to_log(params, "comp_u_cox_ac",
                        read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -782,8 +782,8 @@ update_data_cox_dp <- function(params, data) {
 }
 
 #' @importFrom stats rnorm runif
-compute_s_beta_cox_dp <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_s_beta_cox_dp\n\n")
+comp_s_beta_cox_dp <- function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "comp_s_beta_cox_dp\n\n")
   u <- NULL
   n <- params$n
   read_time <- proc.time()[3]
@@ -809,7 +809,7 @@ compute_s_beta_cox_dp <- function(params, data) {
   save(s_beta_part, file = file.path(params$write_path, "sbeta.rdata"))
   write_size <- file.size(file.path(params$write_path, "sbeta.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "compute_s_beta_cox_dp",
+  params <- add_to_log(params, "comp_s_beta_cox_dp",
                        read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -839,9 +839,9 @@ get_s_beta_cox_ac <- function(params) {
   return(params)
 }
 
-compute_log_likelihood_cox_dp <- function(params, data) {
+comp_log_likelihood_cox_dp <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_log_likelihood_cox_dp\n\n")
+                        "comp_log_likelihood_cox_dp\n\n")
 
   s_beta <- 0
   read_time <- proc.time()[3]
@@ -908,13 +908,13 @@ compute_log_likelihood_cox_dp <- function(params, data) {
     file.size(file.path(params$write_path, "sbeta.rdata"))
   write_time <- proc.time()[3] - proc.time()[3]
 
-  params <- add_to_log(params, "compute_log_likelihood_cox_dp",
+  params <- add_to_log(params, "comp_log_likelihood_cox_dp",
                        read_time, read_size, write_time, write_size)
   return(params)
 }
 
 
-compute_s_del_l_cox_ac <- function(params) {
+comp_s_del_l_cox_ac <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeSDeltaCox.AC\n\n")
   s_beta <- 0
   read_time <- proc.time()[3]
@@ -933,7 +933,7 @@ compute_s_del_l_cox_ac <- function(params) {
   w_s_r  <- matrix(0, n, p)
   num_events <- params$survival$num_events
 
-  .Call("compute_cox", params$survival$strata, halfshare, w, deltal, w_s_r,
+  .Call("comp_cox", params$survival$strata, halfshare, w, deltal, w_s_r,
         as.integer(n), as.integer(p), as.integer(num_events),
         as.integer(params$verbose))
 
@@ -947,15 +947,15 @@ compute_s_del_l_cox_ac <- function(params) {
   save(w_s_r_1, file = file.path(params$write_path, "wsr1.rdata"))
   write_size <- file.size(file.path(params$write_path, "wsr1.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "compute_s_del_l_cox_ac",
+  params <- add_to_log(params, "comp_s_del_l_cox_ac",
                        read_time, read_size, write_time, write_size)
   return(params)
 }
 
 
 #' @importFrom stats rnorm
-compute_s_del_l_cox_dp <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_s_del_l_cox_dp\n\n")
+comp_s_del_l_cox_dp <- function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "comp_s_del_l_cox_dp\n\n")
   halfshare <- data$halfshare[params$survival$sorted_idx, , drop = FALSE]
   p <- ncol(halfshare)
   n <- params$n
@@ -968,7 +968,7 @@ compute_s_del_l_cox_dp <- function(params, data) {
   w_s_l  <- matrix(0, n, p)
   num_events <- params$survival$num_events
 
-  .Call("compute_cox", params$survival$strata, halfshare, w, deltal, w_s_l,
+  .Call("comp_cox", params$survival$strata, halfshare, w, deltal, w_s_l,
         as.integer(n), as.integer(p), as.integer(num_events),
         as.integer(params$verbose))
 
@@ -1016,7 +1016,7 @@ compute_s_del_l_cox_dp <- function(params, data) {
                               file.path(params$write_path, "scaledwsll.rdata")))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "compute_s_del_l_cox_dp",
+  params <- add_to_log(params, "comp_s_del_l_cox_dp",
                        0, 0, write_time, write_size)
 
   return(params)
@@ -1024,8 +1024,8 @@ compute_s_del_l_cox_dp <- function(params, data) {
 
 
 #' @importFrom stats rnorm
-compute_products_cox_dp <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_products_cox_dp\n\n")
+comp_products_cox_dp <- function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "comp_products_cox_dp\n\n")
   if (params$data_partner_id == 1) {
     w_s_r_1 <- NULL
     read_time <- proc.time()[3]
@@ -1127,7 +1127,7 @@ compute_products_cox_dp <- function(params, data) {
     write_size <- file.size(file.path(params$write_path, "products.rdata"))
     write_time <- proc.time()[3] - write_time
   }
-  params <- add_to_log(params, "compute_products_cox_dp",
+  params <- add_to_log(params, "comp_products_cox_dp",
                        read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -1147,8 +1147,8 @@ update_converge_status_ac <- function(params) {
 }
 
 
-compute_st_w_s_cox_ac <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_st_w_s_cox_ac\n\n")
+comp_st_w_s_cox_ac <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "comp_st_w_s_cox_ac\n\n")
   e <- NULL
   f1 <- NULL
   scaled_w_s_l_r <- NULL
@@ -1254,7 +1254,7 @@ compute_st_w_s_cox_ac <- function(params) {
         "          duplicates for both parties and / or reduce the\n",
         "          number of variables used. Once this is done,\n",
         "          rerun the data analysis.")
-    params <- add_to_log(params, "compute_st_w_s_cox_ac",
+    params <- add_to_log(params, "comp_st_w_s_cox_ac",
                          read_time, read_size, 0, 0)
     return(params)
   }
@@ -1285,7 +1285,7 @@ compute_st_w_s_cox_ac <- function(params) {
       file.size(file.path(params$write_path, "maxiterexceeded.rdata"))
     write_time <- write_time + proc.time()[3]
   }
-  params <- add_to_log(params, "compute_st_w_s_cox_ac",
+  params <- add_to_log(params, "comp_st_w_s_cox_ac",
                        read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -1448,8 +1448,8 @@ survfit_cox_ac <- function(params, pred) {
 }
 
 #' @importFrom  stats pchisq pnorm qnorm
-compute_results_cox_ac <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_results_cox_ac\n\n")
+comp_results_cox_ac <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()), "comp_results_cox_ac\n\n")
   read_size         <- 0
   betasnew          <- NULL
   score_part         <- NULL
@@ -1579,7 +1579,7 @@ compute_results_cox_ac <- function(params) {
   write_size <- file.size(file.path(params$write_path, "stats.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "compute_results_cox_ac",
+  params <- add_to_log(params, "comp_results_cox_ac",
                        read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -1797,7 +1797,7 @@ data_partner_k_cox <- function(data,
   params$alg_iteration_counter <- 1
   while (!params$converged && !params$max_iter_exceeded) {
     BeginningIteration(params)
-    params <- compute_s_beta_cox_dp(params, data)
+    params <- comp_s_beta_cox_dp(params, data)
 
     if (params$data_partner_id == 1) {
       files <- "sbeta.rdata"
@@ -1808,7 +1808,7 @@ data_partner_k_cox <- function(data,
                                        max_waiting_time = max_waiting_time,
                                        wait_for_turn = TRUE)
 
-      params <- compute_log_likelihood_cox_dp(params, data)
+      params <- comp_log_likelihood_cox_dp(params, data)
 
       files <- "sbeta.rdata"
       params <- send_pause_continue_kp(params,
@@ -1818,7 +1818,7 @@ data_partner_k_cox <- function(data,
                                        max_waiting_time = max_waiting_time,
                                        wait_for_turn = TRUE)
 
-      params <- compute_s_del_l_cox_dp(params, data)
+      params <- comp_s_del_l_cox_dp(params, data)
 
       files <- c("tsdeltal.rdata", "scaledwsll.rdata", "converged.rdata")
       params <- send_pause_continue_kp(params,
@@ -1855,7 +1855,7 @@ data_partner_k_cox <- function(data,
                                        max_waiting_time = max_waiting_time)
     }
 
-    params <- compute_products_cox_dp(params, data)
+    params <- comp_products_cox_dp(params, data)
     if (params$data_partner_id == 1) {
       files <- c("products.rdata", "scaledwslr.rdata", "converged.rdata")
     } else {
@@ -2031,7 +2031,7 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
   params$alg_iteration_counter <- 1
   while (!params$converged && !params$max_iter_exceeded) {
     BeginningIteration(params)
-    params <- compute_u_cox_ac(params)
+    params <- comp_u_cox_ac(params)
 
     if (params$alg_iteration_counter == 1) {
       files <- c("indicies.rdata", "u.rdata")
@@ -2054,7 +2054,7 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
 
-    params <- compute_s_del_l_cox_ac(params)
+    params <- comp_s_del_l_cox_ac(params)
     files_list <- rep(list(list()), num_data_partners)
     files_list[[1]] <- "wsr1.rdata"
     params <- send_pause_continue_kp(params,
@@ -2065,7 +2065,7 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
                                      wait_for_turn = TRUE)
 
     params <- update_converge_status_ac(params)
-    params <- compute_st_w_s_cox_ac(params)
+    params <- comp_st_w_s_cox_ac(params)
 
     if (params$failed) {
       make_error_message(params$write_path, params$error_message)
@@ -2098,7 +2098,7 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
   params$lastIteration <- TRUE
   params$completed <- TRUE
 
-  params <- compute_results_cox_ac(params)
+  params <- comp_results_cox_ac(params)
   files <- "stats.rdata"
   params <- send_pause_continue_kp(params,
                                    filesDP = files,

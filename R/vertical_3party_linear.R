@@ -846,9 +846,9 @@ get_products_linear_t3 <- function(params) {
 
 
 #' @importFrom  stats pf pt
-compute_results_linear_t3 <- function(params) {
+comp_results_linear_t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_results_linear_t3\n\n")
+                        "comp_results_linear_t3\n\n")
   stats    <- params$stats
   stats$converged <- params$converged
   stats$failed    <- FALSE
@@ -993,7 +993,7 @@ compute_results_linear_t3 <- function(params) {
   write_size <- file.size(file.path(params$write_path, "stats.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "compute_results_linear_t3",
+  params <- add_to_log(params, "comp_results_linear_t3",
                        0, 0, write_time, write_size)
   return(params)
 }
@@ -1278,7 +1278,7 @@ party_t_process_3_linear <- function(monitor_folder = NULL,
                                    max_waiting_time = max_waiting_time)
 
   params <- get_products_linear_t3(params)
-  params <- compute_results_linear_t3(params)
+  params <- comp_results_linear_t3(params)
 
   if (params$failed) {
     warning(params$error_message)

@@ -188,9 +188,9 @@ check_colinearity_logistic_ac <- function(params) {
 
 
 #' @importFrom stats runif
-compute_init_betas_logistic_ac <- function(params) {
+comp_init_betas_logistic_ac <- function(params) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_init_betas_logistic_ac\n\n")
+                        "comp_init_betas_logistic_ac\n\n")
   write_time <- 0
   write_size <- 0
   colsum_s <- (params$colsum - params$n * params$colmin) / params$colran
@@ -211,7 +211,7 @@ compute_init_betas_logistic_ac <- function(params) {
     write_time <- write_time + proc.time()[3]
     start <- end + 1
   }
-  params <- add_to_log(params, "compute_init_betas_logistic_ac",
+  params <- add_to_log(params, "comp_init_betas_logistic_ac",
                        0, 0, write_time, write_size)
   return(params)
 }
@@ -256,9 +256,9 @@ update_data_logistic_dp <- function(params, data) {
 
 
 #' @importFrom stats rnorm runif
-compute_s_beta_logistic_dp <- function(params, data) {
+comp_s_beta_logistic_dp <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_s_beta_logistic_dp\n\n")
+                        "comp_s_beta_logistic_dp\n\n")
   set.seed(params$seed +
              params$alg_iteration_counter, kind = "Mersenne-Twister")
   v <- matrix(rnorm(params$n,
@@ -279,15 +279,15 @@ compute_s_beta_logistic_dp <- function(params, data) {
   save(s_beta, file = file.path(params$write_path, "sbeta.rdata"))
   write_size <- file.size(file.path(params$write_path, "sbeta.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "compute_s_beta_logistic_dp",
+  params <- add_to_log(params, "comp_s_beta_logistic_dp",
                        0, 0, write_time, write_size)
   return(params)
 }
 
 
-compute_weights_logistic_ac <- function(params) {
+comp_weights_logistic_ac <- function(params) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_weights_logistic_ac\n\n")
+                        "comp_weights_logistic_ac\n\n")
   s_beta <- 0
   read_time <- 0
   read_size <- 0
@@ -315,9 +315,9 @@ compute_weights_logistic_ac <- function(params) {
 
 
 #' @importFrom stats rnorm
-compute_stws_logistic_dp <- function(params, data) {
+comp_stws_logistic_dp <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_stws_logistic_dp\n\n")
+                        "comp_stws_logistic_dp\n\n")
   pi_ <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$readPathAC, "pi.rdata"))
@@ -361,15 +361,15 @@ compute_stws_logistic_dp <- function(params, data) {
   save(c_mat, file = file.path(params$write_path, "stwsshare.rdata"))
   write_size <- file.size(file.path(params$write_path, "stwsshare.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "compute_stws_logistic_dp",
+  params <- add_to_log(params, "comp_stws_logistic_dp",
                        read_time, read_size, write_time, write_size)
   return(params)
 }
 
 
-compute_stws_logistic_ac <- function(params) {
+comp_stws_logistic_ac <- function(params) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_stws_logistic_ac\n\n")
+                        "comp_stws_logistic_ac\n\n")
   read_time <- 0
   read_size <- 0
   c_mat        <- NULL
@@ -434,7 +434,7 @@ compute_stws_logistic_ac <- function(params) {
              "          duplicates for both parties and / or reduce the\n",
              "          number of variables used. Once this is done,\n",
              "          rerun the data analysis.")
-    params <- add_to_log(params, "compute_stws_logistic_ac",
+    params <- add_to_log(params, "comp_stws_logistic_ac",
                          read_time, read_size, 0, 0)
     return(params)
   }
@@ -464,7 +464,7 @@ compute_stws_logistic_ac <- function(params) {
     stop <- stop + params$p_reduct[id + 1]
   }
 
-  params <- add_to_log(params, "compute_stws_logistic_ac",
+  params <- add_to_log(params, "comp_stws_logistic_ac",
                        read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -517,9 +517,9 @@ update_beta_logistic_dp <- function(params) {
 }
 
 
-compute_conv_status_logistic_ac <- function(params) {
+comp_conv_status_logistic_ac <- function(params) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_conv_status_logistic_ac\n\n")
+                        "comp_conv_status_logistic_ac\n\n")
   read_time <- 0
   read_size <- 0
   u <- 0
@@ -544,16 +544,16 @@ compute_conv_status_logistic_ac <- function(params) {
        file = file.path(params$write_path, "u_converge.rdata"))
   write_size <- file.size(file.path(params$write_path, "u_converge.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "compute_conv_status_logistic_ac",
+  params <- add_to_log(params, "comp_conv_status_logistic_ac",
                        read_time, read_size, write_time, write_size)
   return(params)
 }
 
 
-GetConvergeStatusLogistic.DP <- function(params) {
+get_conv_status_logistic_dp <- function(params) {
   converged <- NULL
   if (params$trace) cat(as.character(Sys.time()),
-                        "GetconvergeStatusLogistic.DP\n\n")
+                        "get_conv_status_logistic_dp\n\n")
   u <- maxIterExceeded <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$readPathAC, "u_converge.rdata"))
@@ -562,7 +562,7 @@ GetConvergeStatusLogistic.DP <- function(params) {
   params$u <- u
   params$converged <- converged
   params$maxIterExceeded <- maxIterExceeded
-  params <- add_to_log(params, "GetConvergeStatusLogistic.DP",
+  params <- add_to_log(params, "get_conv_status_logistic_dp",
                        read_time, read_size, 0, 0)
   return(params)
 }
@@ -607,9 +607,9 @@ ComputeFinalSBetaLogistic.AC <- function(params) {
 }
 
 
-compute_results_logistic_dp <- function(params, data) {
+comp_results_logistic_dp <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_results_logistic_dp\n\n")
+                        "comp_results_logistic_dp\n\n")
   sbeta <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$readPathAC, "sbeta.rdata"))
@@ -631,15 +631,15 @@ compute_results_logistic_dp <- function(params, data) {
   write_size <- file.size(file.path(params$write_path, "logisticstats.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "compute_results_logistic_dp",
+  params <- add_to_log(params, "comp_results_logistic_dp",
                        read_time, read_size, write_time, write_size)
   return(params)
 }
 
 #' @importFrom stats pnorm
-compute_results_logistic_ac <- function(params) {
+comp_results_logistic_ac <- function(params) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_results_logistic_ac\n\n")
+                        "comp_results_logistic_ac\n\n")
   nulldev <- NULL
   resdev  <- NULL
   hoslem  <- NULL
@@ -712,7 +712,7 @@ compute_results_logistic_ac <- function(params) {
 
   params$stats      <- stats
 
-  params <- add_to_log(params, "compute_results_logistic_ac",
+  params <- add_to_log(params, "comp_results_logistic_ac",
                        read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -856,7 +856,7 @@ data_partner_k_logistic <- function(data,
   while (!params$converged && !params$maxIterExceeded) {
     BeginningIteration(params)
 
-    params <- compute_s_beta_logistic_dp(params, data)
+    params <- comp_s_beta_logistic_dp(params, data)
     files <- "s_beta.rdata"
     params <- send_pause_continue_kp(params,
                                      filesAC = files,
@@ -865,7 +865,7 @@ data_partner_k_logistic <- function(data,
                                      max_waiting_time = max_waiting_time,
                                      wait_for_turn = TRUE)
 
-    params <- compute_stws_logistic_dp(params, data)
+    params <- comp_stws_logistic_dp(params, data)
     files <- "stwsshare.rdata"
     params <- send_pause_continue_kp(params,
                                      filesAC = files,
@@ -894,13 +894,13 @@ data_partner_k_logistic <- function(data,
                                      wait_for_turn = TRUE)
 
 
-    params <- GetConvergeStatusLogistic.DP(params)
+    params <- get_conv_status_logistic_dp(params)
 
     EndingIteration(params)
     params$alg_iteration_counter <- params$alg_iteration_counter + 1
   }
 
-  params <- compute_s_beta_logistic_dp(params, data)
+  params <- comp_s_beta_logistic_dp(params, data)
 
   params <- SendFinalBetasLogistic.DP(params)
 
@@ -913,7 +913,7 @@ data_partner_k_logistic <- function(data,
                                    wait_for_turn = TRUE)
 
   if (data_partner_id == 1) {
-    params <- compute_results_logistic_dp(params, data)
+    params <- comp_results_logistic_dp(params, data)
     files <- "logisticstats.rdata"
     params <- send_pause_continue_kp(params,
                                      filesAC = files,
@@ -1035,7 +1035,7 @@ analysis_center_k_logistic <- function(num_data_partners = NULL,
     return(params$stats)
   }
 
-  params <- compute_init_betas_logistic_ac(params)
+  params <- comp_init_betas_logistic_ac(params)
 
   for (id in 1:num_data_partners) {
     files_list[[id]] <- c(paste0("u_beta_", id, ".rdata"), "indicies.rdata")
@@ -1050,7 +1050,7 @@ analysis_center_k_logistic <- function(num_data_partners = NULL,
   params$alg_iteration_counter <- 1
   while (!params$converged && !params$maxIterExceeded) {
     BeginningIteration(params)
-    params <- compute_weights_logistic_ac(params)
+    params <- comp_weights_logistic_ac(params)
     files <- "pi.rdata"
     params <- send_pause_continue_kp(params,
                                      filesDP = files,
@@ -1058,7 +1058,7 @@ analysis_center_k_logistic <- function(num_data_partners = NULL,
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
 
-    params <- compute_stws_logistic_ac(params)
+    params <- comp_stws_logistic_ac(params)
 
     if (params$failed) {
       make_error_message(params$write_path, params$error_message)
@@ -1085,7 +1085,7 @@ analysis_center_k_logistic <- function(num_data_partners = NULL,
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
 
-    params <- compute_conv_status_logistic_ac(params)
+    params <- comp_conv_status_logistic_ac(params)
     files <- "u_converge.rdata"
     params <- send_pause_continue_kp(params,
                                      filesDP = files,
@@ -1105,7 +1105,7 @@ analysis_center_k_logistic <- function(num_data_partners = NULL,
                                    sleep_time = sleep_time,
                                    max_waiting_time = max_waiting_time)
 
-  params <- compute_results_logistic_ac(params)
+  params <- comp_results_logistic_ac(params)
   files <- "stats.rdata"
   params <- send_pause_continue_kp(params,
                                    filesDP = files,

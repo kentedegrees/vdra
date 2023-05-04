@@ -632,9 +632,9 @@ get_products_linear_a2 <- function(params, data) {
 }
 
 #' @importFrom  stats pf pt
-compute_results_linear_a2 <- function(params, data) {
+comp_results_linear_a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_results_linear_a2\n\n")
+                        "comp_results_linear_a2\n\n")
   stats    <- params$stats
   stats$converged <- params$converged
   stats$failed    <- FALSE
@@ -761,7 +761,7 @@ compute_results_linear_a2 <- function(params, data) {
   write_size <- file.size(file.path(params$write_path, "stats.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "compute_results_linear_a2",
+  params <- add_to_log(params, "comp_results_linear_a2",
                        0, 0, write_time, write_size)
   return(params)
 }
@@ -871,7 +871,7 @@ party_a_process_2_linear <- function(data,
 
   params$completed <- TRUE
   params <- get_products_linear_a2(params, data)
-  params <- compute_results_linear_a2(params, data)
+  params <- comp_results_linear_a2(params, data)
   files <- c("stats.rdata")
   params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
   params <- send_pause_quit_2p(params, sleep_time = sleep_time)

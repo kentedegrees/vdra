@@ -455,9 +455,9 @@ get_products_linear_ac <- function(params) {
 
 
 #' @importFrom  stats pf pt
-compute_results_linear_ac <- function(params) {
+comp_results_linear_ac <- function(params) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_results_linear_ac\n\n")
+                        "comp_results_linear_ac\n\n")
   stats           <- params$stats
   stats$converged <- params$converged
   n        <- params$n
@@ -598,7 +598,7 @@ compute_results_linear_ac <- function(params) {
   save(stats, file = file.path(params$write_path, "stats.rdata"))
   write_size <- file.size(file.path(params$write_path, "stats.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "compute_results_linear_ac",
+  params <- add_to_log(params, "comp_results_linear_ac",
                        0, 0, write_time, write_size)
   return(params)
 }
@@ -816,7 +816,7 @@ analysis_center_k_linear <- function(num_data_partners = NULL,
                                    max_waiting_time = max_waiting_time)
 
   params <- get_products_linear_ac(params)
-  params <- compute_results_linear_ac(params)
+  params <- comp_results_linear_ac(params)
 
   if (params$failed) {
     make_error_message(params$write_path, params$error_message)

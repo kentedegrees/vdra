@@ -80,9 +80,9 @@ check_colinearity_logistic_t3 <- function(params) {
 }
 
 
-compute_init_betas_logistic_t3 <- function(params) {
+comp_init_betas_logistic_t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_init_betas_logistic_t3\n\n")
+                        "comp_init_betas_logistic_t3\n\n")
   # de-standardize xty
   p1     <- params$p1
   p2     <- params$p2
@@ -124,7 +124,7 @@ compute_init_betas_logistic_t3 <- function(params) {
                                           "converged.rdata"))))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "compute_init_betas_logistic_t3",
+  params <- add_to_log(params, "comp_init_betas_logistic_t3",
                        0, 0, write_time, write_size)
 
   return(params)
@@ -769,9 +769,9 @@ get_final_fitted_logistic_t3 <- function(params) {
   return(params)
 }
 
-compute_results_logistic_a3 <- function(params, data) {
+comp_results_logistic_a3 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_results_logistic_a3\n\n")
+                        "comp_results_logistic_a3\n\n")
   final_fitted <- NULL
 
   read_time <- proc.time()[3]
@@ -794,15 +794,15 @@ compute_results_logistic_a3 <- function(params, data) {
   write_size <- file.size(file.path(params$write_path, "logisticstats.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "compute_results_logistic_a3",
+  params <- add_to_log(params, "comp_results_logistic_a3",
                        read_time, read_size, write_time, write_size)
   return(params)
 }
 
 #' @importFrom stats pnorm
-compute_results_logistic_t3 <- function(params) {
+comp_results_logistic_t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_results_logistic_t3\n\n")
+                        "comp_results_logistic_t3\n\n")
   nulldev <- NULL
   resdev  <- NULL
   hoslem  <- NULL
@@ -873,7 +873,7 @@ compute_results_logistic_t3 <- function(params) {
 
   params$stats      <- stats
 
-  params <- add_to_log(params, "compute_results_logistic_t3",
+  params <- add_to_log(params, "comp_results_logistic_t3",
                        read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -1054,7 +1054,7 @@ party_a_process_3_logistic <- function(data,
                                    max_waiting_time = max_waiting_time,
                                    wait_for_turn = TRUE)
 
-  params <- compute_results_logistic_a3(params, data)
+  params <- comp_results_logistic_a3(params, data)
   files <- c("logisticstats.rdata")
   params <- send_pause_continue_3p(params,
                                    files_t = files,
@@ -1349,7 +1349,7 @@ party_t_process_3_logistic <- function(monitor_folder   = NULL,
     return(params$stats)
   }
 
-  params <- compute_init_betas_logistic_t3(params)
+  params <- comp_init_betas_logistic_t3(params)
   files_a <-
     c("Aindicies.rdata", "betasA.rdata", "a_xty.rdata", "converged.rdata")
   files_b <-
@@ -1428,7 +1428,7 @@ party_t_process_3_logistic <- function(monitor_folder   = NULL,
                                    sleep_time = sleep_time,
                                    max_waiting_time = max_waiting_time)
 
-  params <- compute_results_logistic_t3(params)
+  params <- comp_results_logistic_t3(params)
   files <- "stats.rdata"
   params <- send_pause_continue_3p(params,
                                    files_a = files,

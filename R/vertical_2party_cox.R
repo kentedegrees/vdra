@@ -905,9 +905,9 @@ prepare_loop_cox_a2 <- function(params) {
 }
 
 
-compute_log_likelihood_cox_a2 <- function(params, data) {
+comp_log_likelihood_cox_a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_log_likelihood_cox_a2\n\n")
+                        "comp_log_likelihood_cox_a2\n\n")
   n <- params$n
   p1 <- params$p1
   read_time <- 0
@@ -940,9 +940,9 @@ compute_log_likelihood_cox_a2 <- function(params, data) {
     w <- exp(x_betas)
   }
 
-  compute_log_likelihood <- TRUE
+  comp_log_likelihood <- TRUE
 
-  while (compute_log_likelihood) {
+  while (comp_log_likelihood) {
     step_counter <- 0
     pbar <- make_progress_bar_1(num_events, "Loglikelihood", params$verbose)
     loglikelihood <- 0
@@ -969,7 +969,7 @@ compute_log_likelihood_cox_a2 <- function(params, data) {
       }
     }
     if (loglikelihood > params$loglikelihood_old || step_size < 0.5^6) {
-      compute_log_likelihood <- FALSE
+      comp_log_likelihood <- FALSE
     } else {
       if (params$verbose) cat("Step Halving\n\n")
       x_betas <- (x_betas + params$x_betas_old) * 0.5
@@ -985,7 +985,7 @@ compute_log_likelihood_cox_a2 <- function(params, data) {
   w_xa  <- matrix(0, n, p1)
   step_counter <- 0
 
-  .Call("compute_cox", data$survival$strata, data$x, w, deltal, w_xa,
+  .Call("comp_cox", data$survival$strata, data$x, w, deltal, w_xa,
         as.integer(n), as.integer(p1), as.integer(num_events),
         as.integer(params$verbose))
 
@@ -1007,7 +1007,7 @@ compute_log_likelihood_cox_a2 <- function(params, data) {
   write_size <- sum(file.size(file.path(params$write_path,
                                         "Xbetas_ss.rdata")))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "compute_log_likelihood_cox_a2",
+  params <- add_to_log(params, "comp_log_likelihood_cox_a2",
                        read_time, read_size,
                        write_time, write_size)
   return(params)
@@ -1050,9 +1050,9 @@ update_data_cox_b2 <- function(params, data) {
 }
 
 
-compute_log_likelihood_cox_b2 <- function(params, data) {
+comp_log_likelihood_cox_b2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_log_likelihood_cox_b2\n\n")
+                        "comp_log_likelihood_cox_b2\n\n")
   n <- params$n
   p2  <- params$p2
   step_size <- NULL
@@ -1079,7 +1079,7 @@ compute_log_likelihood_cox_b2 <- function(params, data) {
   num_events <- sum(data$survival$status)
   w_xb  <- matrix(0, n, p2)
 
-  .Call("compute_cox", data$survival$strata, data$x, w, deltal, w_xb,
+  .Call("comp_cox", data$survival$strata, data$x, w, deltal, w_xb,
         as.integer(n), as.integer(p2), as.integer(num_events),
         as.integer(params$verbose))
 
@@ -1144,15 +1144,15 @@ compute_log_likelihood_cox_b2 <- function(params, data) {
   write_size <- write_size + file.size(file.path(params$write_path,
                                                  "txb_w_xb.rdata"))
   write_time <- write_time + proc.time()[3]
-  params <- add_to_log(params, "compute_log_likelihood_cox_b2",
+  params <- add_to_log(params, "comp_log_likelihood_cox_b2",
                        read_time, read_size, write_time, write_size)
   return(params)
 }
 
 
-compute_inverse_cox_a2 <- function(params, data) {
+comp_inverse_cox_a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_inverse_cox_a2\n\n")
+                        "comp_inverse_cox_a2\n\n")
   p1 <- params$p1
   p2 <- params$p2
   read_time <- 0
@@ -1222,7 +1222,7 @@ compute_inverse_cox_a2 <- function(params, data) {
     betas[params$a_indicies_keep] <- params$beta_a
     betas <- data.frame(betas)
     rownames(betas) <- params$a_col_names_old
-    params <- add_to_log(params, "compute_inverse_cox_a2",
+    params <- add_to_log(params, "comp_inverse_cox_a2",
                          read_time, read_size, write_time, write_size)
     return(params)
   }
@@ -1235,15 +1235,15 @@ compute_inverse_cox_a2 <- function(params, data) {
   write_size <- write_size +
     sum(file.size(file.path(params$write_path, "M.rdata")))
   write_time <- write_time + proc.time()[3]
-  params <- add_to_log(params, "compute_inverse_cox_a2",
+  params <- add_to_log(params, "comp_inverse_cox_a2",
                        read_time, read_size, write_time, write_size)
 
   return(params)
 }
 
 
-compute_beta_cox_b2 <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_beta_cox_b2\n\n")
+comp_beta_cox_b2 <- function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "comp_beta_cox_b2\n\n")
   p1 <- params$p1
   p2 <- params$p2
   m  <- 0
@@ -1279,15 +1279,15 @@ compute_beta_cox_b2 <- function(params, data) {
                                         c("M2_tXB_deltal.rdata",
                                           "XB_betasB.rdata"))))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "compute_beta_cox_b2",
+  params <- add_to_log(params, "comp_beta_cox_b2",
                        read_time, read_size, write_time, write_size)
 
   return(params)
 }
 
 
-compute_beta_cox_a2 <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_beta_cox_a2\n\n")
+comp_beta_cox_a2 <- function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "comp_beta_cox_a2\n\n")
   p1 <- params$p1
   m2_txb_deta_l <- 0
 
@@ -1323,7 +1323,7 @@ compute_beta_cox_a2 <- function(params, data) {
   write_size <- file.size(file.path(params$write_path, "converged.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "compute_beta_cox_a2",
+  params <- add_to_log(params, "comp_beta_cox_a2",
                        read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -1409,8 +1409,8 @@ survfit_cox_a2 <- function(params, survival, pred) {
 }
 
 #' @importFrom  stats pchisq pnorm qnorm
-compute_results_cox_a2 <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_results_cox_a2\n\n")
+comp_results_cox_a2 <- function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "comp_results_cox_a2\n\n")
   stats <- params$stats
   stats$converged <- params$converged
   stats$failed    <- FALSE
@@ -1543,7 +1543,7 @@ compute_results_cox_a2 <- function(params, data) {
   write_size <- file.size(file.path(params$write_path, "stats.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "compute_results_cox_a2",
+  params <- add_to_log(params, "comp_results_cox_a2",
                        read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -1632,9 +1632,9 @@ check_colinearity_cox_b2 <- function(params, data) {
 }
 
 #' @importFrom stats as.formula
-compute_cox_from_survival_b2 <- function(params, data) {
+comp_cox_from_survival_b2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_cox_from_survival_b2\n\n")
+                        "comp_cox_from_survival_b2\n\n")
   # We have loaded survival previously
 
   strata <- rep(0, nrow(data$x))
@@ -1690,13 +1690,13 @@ compute_cox_from_survival_b2 <- function(params, data) {
     fit$means <- NULL
     params$fit <- fit
   }
-  params <- add_to_log(params, "compute_cox_from_survival_b2", 0, 0, 0, 0)
+  params <- add_to_log(params, "comp_cox_from_survival_b2", 0, 0, 0, 0)
   return(params)
 }
 
 
-compute_cox_b2 <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_cox_b2\n\n")
+comp_cox_b2 <- function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "comp_cox_b2\n\n")
   n           <- params$n
   p2          <- params$p2
   params$alg_iteration_counter <- 1
@@ -1719,8 +1719,8 @@ compute_cox_b2 <- function(params, data) {
       step_size <- step_size * 0.5
       w <- exp(x_betas)
     }
-    compute_log_likelihood <- TRUE
-    while (compute_log_likelihood) {
+    comp_log_likelihood <- TRUE
+    while (comp_log_likelihood) {
       num_events <- sum(data$survival$status)
       step_counter <- 0
       pbar <- make_progress_bar_1(num_events, "Loglikelihood", params$verbose)
@@ -1748,7 +1748,7 @@ compute_cox_b2 <- function(params, data) {
         }
       }
       if (loglikelihood > loglikelihood_old || step_size < 0.5^6) {
-        compute_log_likelihood <- FALSE
+        comp_log_likelihood <- FALSE
       } else {
         if (params$verbose) cat("Step Halving\n\n")
         x_betas <- (x_betas + x_betas_old) * 0.5
@@ -1763,7 +1763,7 @@ compute_cox_b2 <- function(params, data) {
     deltal[1] <- deltal[1]
     w_xb  <- matrix(0, n, p2)
 
-    .Call("compute_cox", data$survival$strata, data$x, w, deltal, w_xb,
+    .Call("comp_cox", data$survival$strata, data$x, w, deltal, w_xb,
           as.integer(n), as.integer(p2), as.integer(num_events),
           as.integer(params$verbose))
 
@@ -1793,7 +1793,7 @@ compute_cox_b2 <- function(params, data) {
       betas[params$b_indicies_keep] <- betas_b
       betas <- data.frame(betas)
       rownames(betas) <- params$b_col_names_old
-      params <- add_to_log(params, "compute_cox_b2", 0, 0, 0, 0)
+      params <- add_to_log(params, "comp_cox_b2", 0, 0, 0, 0)
       return(params)
     }
     delta_beta  <- m %*% t(data$x) %*% deltal
@@ -1823,13 +1823,13 @@ compute_cox_b2 <- function(params, data) {
       "Cox failed to converge in the specified number of iterations."
     warning(params$error_message)
   }
-  params <- add_to_log(params, "compute_cox_b2", 0, 0, 0, 0)
+  params <- add_to_log(params, "comp_cox_b2", 0, 0, 0, 0)
   return(params)
 }
 
 #' @importFrom  stats pchisq pnorm qnorm
-compute_results_cox_b2 <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_results_cox_b2\n\n")
+comp_results_cox_b2 <- function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "comp_results_cox_b2\n\n")
   stats <- params$stats
   stats$converged <- params$converged
   stats$party_name <- params$party_name
@@ -1942,7 +1942,7 @@ compute_results_cox_b2 <- function(params, data) {
   save(stats, file = file.path(params$write_path, "stats.rdata"))
   write_size <- file.size(file.path(params$write_path, "stats.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "compute_results_cox_b2", 0, 0,
+  params <- add_to_log(params, "comp_results_cox_b2", 0, 0,
                        write_time, write_size)
   return(params)
 }
@@ -2123,7 +2123,7 @@ party_a_process_2_cox <- function(data,
   while (!params$converged && !params$halted) {
     BeginningIteration(params)
 
-    params <- compute_log_likelihood_cox_a2(params, data)
+    params <- comp_log_likelihood_cox_a2(params, data)
 
     files <- c("Xbetas_ss.rdata")
     if (params$alg_iteration_counter == 1) {
@@ -2135,8 +2135,8 @@ party_a_process_2_cox <- function(data,
     params <- send_pause_continue_2p(params, files, sleep_time,
                                      max_waiting_time)
 
-    params <- compute_inverse_cox_a2(params, data)
-    # Check for failed from compute_inverse_cox_a2()
+    params <- comp_inverse_cox_a2(params, data)
+    # Check for failed from comp_inverse_cox_a2()
     if (params$failed) {
       params$complete <- TRUE
       make_error_message(params$write_path, params$error_message)
@@ -2152,7 +2152,7 @@ party_a_process_2_cox <- function(data,
     params <- send_pause_continue_2p(params, files, sleep_time,
                                      max_waiting_time)
 
-    params <- compute_beta_cox_a2(params, data)
+    params <- comp_beta_cox_a2(params, data)
 
     EndingIteration(params)
     params$alg_iteration_counter <- params$alg_iteration_counter + 1
@@ -2161,7 +2161,7 @@ party_a_process_2_cox <- function(data,
   files <- c("converged.rdata")
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
 
-  params <- compute_results_cox_a2(params, data)
+  params <- comp_results_cox_a2(params, data)
 
   files <- c("stats.rdata")
   params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
@@ -2249,9 +2249,9 @@ party_b_process_2_cox <- function(data,
     data <- update_data_cox_b2(params, data)
     params <- add_to_log(params, "update_data_cox_b2", 0, 0, 0, 0)
     if (params$survival_installed) {
-      params <- compute_cox_from_survival_b2(params, data)
+      params <- comp_cox_from_survival_b2(params, data)
     } else {
-      params <- compute_cox_b2(params, data)
+      params <- comp_cox_b2(params, data)
     }
     # We could get a job_failed here from coefficient explosion
     if (params$failed) {
@@ -2262,7 +2262,7 @@ party_b_process_2_cox <- function(data,
                                    job_failed = TRUE)
       return(params$stats)
     }
-    params <- compute_results_cox_b2(params, data)
+    params <- comp_results_cox_b2(params, data)
     stats <- params$stats
     save(stats, file = file.path(params$write_path, "stats.rdata"))
     files <- c("stats.rdata")
@@ -2282,9 +2282,9 @@ party_b_process_2_cox <- function(data,
     data <- update_data_cox_b2(params, data)
     params <- add_to_log(params, "update_data_cox_b2", 0, 0, 0, 0)
     if (params$survival_installed) {
-      params <- compute_cox_from_survival_b2(params, data)
+      params <- comp_cox_from_survival_b2(params, data)
     } else {
-      params <- compute_cox_b2(params, data)
+      params <- comp_cox_b2(params, data)
     }
 
     # We could get a job_failed here from coefficient explosion
@@ -2296,7 +2296,7 @@ party_b_process_2_cox <- function(data,
                                    job_failed = TRUE)
       return(params$stats)
     }
-    params <- compute_results_cox_b2(params, data)
+    params <- comp_results_cox_b2(params, data)
     stats <- params$stats
     save(stats, file = file.path(params$write_path, "stats.rdata"))
     files <- c("stats.rdata")
@@ -2326,7 +2326,7 @@ party_b_process_2_cox <- function(data,
 
     BeginningIteration(params)
 
-    params <- compute_log_likelihood_cox_b2(params, data)
+    params <- comp_log_likelihood_cox_b2(params, data)
 
     files <- c("txb_w_xb.rdata",
                seq_zw("cCox_", length(params$container$filebreak_cox)))
@@ -2341,7 +2341,7 @@ party_b_process_2_cox <- function(data,
       return(params$stats)
     }
 
-    params <- compute_beta_cox_b2(params, data)
+    params <- comp_beta_cox_b2(params, data)
 
     files <- c("XB_betasB.rdata", "M2_tXB_deltal.rdata")
     params <- send_pause_continue_2p(params, files,
