@@ -316,7 +316,8 @@ compute_weights_logistic_ac <- function(params) {
 
 #' @importFrom stats rnorm
 compute_stws_logistic_dp <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "compute_stws_logistic_dp\n\n")
+  if (params$trace) cat(as.character(Sys.time()),
+                        "compute_stws_logistic_dp\n\n")
   pi_ <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$readPathAC, "pi.rdata"))
@@ -366,13 +367,14 @@ compute_stws_logistic_dp <- function(params, data) {
 }
 
 
-ComputeStWSLogistic.AC <- function(params) {
-  if (params$trace) cat(as.character(Sys.time()), "ComputeStWSLogistic.AC\n\n")
+compute_stws_logistic_ac <- function(params) {
+  if (params$trace) cat(as.character(Sys.time()),
+                        "compute_stws_logistic_ac\n\n")
   read_time <- 0
   read_size <- 0
   c_mat        <- NULL
   w <- params$pi_ * (1 - params$pi_)
-  StWS <- matrix(0, sum(params$p_reduct), sum(params$p_reduct))
+  st_ws <- matrix(0, sum(params$p_reduct), sum(params$p_reduct))
 
   for (id1 in 1:params$num_data_partners) {
     end <- sum(params$p_reduct[1:id1])
@@ -388,13 +390,13 @@ ComputeStWSLogistic.AC <- function(params) {
       start <- end - params$p_reduct[id2] + 1
       idx2 <- start:end
       if (id1 < id2) {
-        StWS[idx1, idx2] <- StWS[idx1, idx2] + c_mat[[id2]]
-        StWS[idx2, idx1] <- StWS[idx2, idx1] + t(c_mat[[id2]])
+        st_ws[idx1, idx2] <- st_ws[idx1, idx2] + c_mat[[id2]]
+        st_ws[idx2, idx1] <- st_ws[idx2, idx1] + t(c_mat[[id2]])
       } else if (id1 == id2) {
-        StWS[idx1, idx1] <- c_mat[[id1]]
+        st_ws[idx1, idx1] <- c_mat[[id1]]
       } else {
-        StWS[idx2, idx1] <- StWS[idx2, idx1] + c_mat[[id2]]
-        StWS[idx1, idx2] <- StWS[idx1, idx2] + t(c_mat[[id2]])
+        st_ws[idx2, idx1] <- st_ws[idx2, idx1] + c_mat[[id2]]
+        st_ws[idx1, idx2] <- st_ws[idx1, idx2] + t(c_mat[[id2]])
       }
     }
     if (id1 < params$num_data_partners) {
@@ -404,15 +406,15 @@ ComputeStWSLogistic.AC <- function(params) {
         idx2 <- start:end
         temp <- t(params$halfshare[[id1]]) %*%
           MultiplyDiagonalWTimesX(w, params$halfshare[[id2]])
-        StWS[idx1, idx2] <- StWS[idx1, idx2] + temp
-        StWS[idx2, idx1] <- StWS[idx2, idx1] + t(temp)
+        st_ws[idx1, idx2] <- st_ws[idx1, idx2] + temp
+        st_ws[idx2, idx1] <- st_ws[idx2, idx1] + t(temp)
       }
     }
   }
 
   i_mat <- NULL
   tryCatch({
-    i_mat <- solve(StWS)
+    i_mat <- solve(st_ws)
   },
   error = function(err) {
     i_mat <- NULL
@@ -432,7 +434,7 @@ ComputeStWSLogistic.AC <- function(params) {
              "          duplicates for both parties and / or reduce the\n",
              "          number of variables used. Once this is done,\n",
              "          rerun the data analysis.")
-    params <- add_to_log(params, "ComputeStWSLogistic.AC",
+    params <- add_to_log(params, "compute_stws_logistic_ac",
                          read_time, read_size, 0, 0)
     return(params)
   }
@@ -462,7 +464,7 @@ ComputeStWSLogistic.AC <- function(params) {
     stop <- stop + params$p_reduct[id + 1]
   }
 
-  params <- add_to_log(params, "ComputeStWSLogistic.AC",
+  params <- add_to_log(params, "compute_stws_logistic_ac",
                        read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -735,7 +737,7 @@ get_results_logistic_dp <- function(params, data) {
 
 ############################## PARENT FUNCTIONS ###############################
 
-DataPartnerKLogistic <- function(data,
+data_partner_k_logistic <- function(data,
                                  y_name           = NULL,
                                  num_data_partners = NULL,
                                  data_partner_id   = NULL,
@@ -928,7 +930,7 @@ DataPartnerKLogistic <- function(data,
 }
 
 
-AnalysisCenterKLogistic <- function(num_data_partners = NULL,
+analysis_center_k_logistic <- function(num_data_partners = NULL,
                                     monitor_folder   = NULL,
                                     msreqid         = "v_default_0_000",
                                     cutoff          = 1E-8,
@@ -1056,7 +1058,7 @@ AnalysisCenterKLogistic <- function(num_data_partners = NULL,
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
 
-    params <- ComputeStWSLogistic.AC(params)
+    params <- compute_stws_logistic_ac(params)
 
     if (params$failed) {
       make_error_message(params$write_path, params$error_message)

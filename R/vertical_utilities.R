@@ -545,10 +545,10 @@ DataPartner.KParty <- function(regression            = "linear",
                                    sleep_time, max_waiting_time, popmednet,
                                    trace, verbose)
   } else  if (regression == "logistic") {
-    stats <- DataPartnerKLogistic(data, response, num_data_partners,
-                                  data_partner_id, monitor_folder,
-                                  sleep_time, max_waiting_time, popmednet,
-                                  trace, verbose)
+    stats <- data_partner_k_logistic(data, response, num_data_partners,
+                                     data_partner_id, monitor_folder,
+                                     sleep_time, max_waiting_time, popmednet,
+                                     trace, verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
@@ -762,10 +762,10 @@ AnalysisCenter.KParty <- function(regression          = "linear",
                                       msreqid, sleep_time, max_waiting_time,
                                       popmednet, trace, verbose)
   } else if (regression == "logistic") {
-    stats <- AnalysisCenterKLogistic(num_data_partners, monitor_folder, msreqid,
-                                     tol, max_iterations, sleep_time,
-                                     max_waiting_time, popmednet, trace,
-                                     verbose)
+    stats <- analysis_center_k_logistic(num_data_partners, monitor_folder, msreqid,
+                                        tol, max_iterations, sleep_time,
+                                        max_waiting_time, popmednet, trace,
+                                        verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
@@ -825,9 +825,9 @@ check_data_format <- function(params, data) {
   if (nrow(idx) > 0) {
     warning(
       paste0("Some observations contain invalid values: NA, NaN, or Inf. ",
-                   "A list of all such observations has been outputted to",
-                   file.path(params$write_path, "invalidEntries.csv"),
-                   ". Terminating program."))
+             "A list of all such observations has been outputted to",
+             file.path(params$write_path, "invalidEntries.csv"),
+             ". Terminating program."))
     write.csv(idx, file.path(params$write_path, "invalidEntries.csv"))
     return(TRUE)
   }
@@ -1466,8 +1466,8 @@ send_pause_quit_2p <- function(params,
                               "Trigger File Created")
   params <- store_stamp_entry(
     params,
-                              "R program execution complete, output files written",
-                              "Tracking Table")
+    "R program execution complete, output files written",
+    "Tracking Table")
   WriteStampsCSV(params)
   WriteStampsRaw(params)
   if (job_failed)  {
@@ -1646,8 +1646,8 @@ send_pause_quit_3p <- function(params,
                               "Trigger File Created")
   params <- store_stamp_entry(
     params,
-                              "R program execution complete, output files written",
-                              "Tracking Table")
+    "R program execution complete, output files written",
+    "Tracking Table")
   if (wait_for_turn) {
     params <- store_stamp_entry(params,
                                 "R program execution delayed",
@@ -1886,8 +1886,8 @@ send_pause_quit_kp <- function(params,
                               "Trigger File Created")
   params <- store_stamp_entry(
     params,
-                              "R program execution complete, output files written",
-                              "Tracking Table")
+    "R program execution complete, output files written",
+    "Tracking Table")
   if (wait_for_turn) {
     params <- store_stamp_entry(params,
                                 "R program execution delayed",
@@ -2756,9 +2756,9 @@ StoreLogEntry.2p <- function(params, files) {
   params$log$current$End.Time <- GetUTCTime()
   params$log$current$Computation.Time <-
     round(as.numeric(difftime(
-    params$log$current$End.Time,
-    params$log$current$Start.Time, units = "secs")) -
-      params$log$current$Read.Time - params$log$current$Write.Time, 2)
+      params$log$current$End.Time,
+      params$log$current$Start.Time, units = "secs")) -
+        params$log$current$Read.Time - params$log$current$Write.Time, 2)
   params$log$current$Files.Sent <- paste(files, collapse = ", ")
   params$log$current$Bytes.Sent <-
     sum(file.size(file.path(params$write_path, files)))
@@ -3492,20 +3492,32 @@ SummarizeLog.kp <- function(params) {
   KB.Per.Second <-
     round(Total.Bytes.Transferred / (Total.Transfer.Time * 1024), digits = 2)
 
-  WriteToLogSummary(c1 = "Total Reading Time", c2 = Total.Reading.Time,
-                    c3 = Total.Reading.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Total Writing Time", c2 = Total.Writing.Time,
-                    c3 = Total.Writing.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Total Computing Time", c2 = Total.Computing.Time,
-                    c3 = Total.Computing.Time.HMS,  write_path = write_path)
-  WriteToLogSummary(c1 = "Elapsed Computing Time", c2 = Elapsed.Computing.Time,
-                    c3 = Elapsed.Computing.Time.HMS,  write_path = write_path)
-  WriteToLogSummary(c1 = "Total Transfer Time", c2 = Total.Transfer.Time,
-                    c3 = Total.Transfer.Time.HMS, write_path = write_path)
+  WriteToLogSummary(c1 = "Total Reading Time",
+                    c2 = Total.Reading.Time,
+                    c3 = Total.Reading.Time.HMS,
+                    write_path = write_path)
+  WriteToLogSummary(c1 = "Total Writing Time",
+                    c2 = Total.Writing.Time,
+                    c3 = Total.Writing.Time.HMS,
+                    write_path = write_path)
+  WriteToLogSummary(c1 = "Total Computing Time",
+                    c2 = Total.Computing.Time,
+                    c3 = Total.Computing.Time.HMS,
+                    write_path = write_path)
+  WriteToLogSummary(c1 = "Elapsed Computing Time",
+                    c2 = Elapsed.Computing.Time,
+                    c3 = Elapsed.Computing.Time.HMS,
+                    write_path = write_path)
+  WriteToLogSummary(c1 = "Total Transfer Time",
+                    c2 = Total.Transfer.Time,
+                    c3 = Total.Transfer.Time.HMS,
+                    write_path = write_path)
   WriteToLogSummary(c1 = "Total Bytes Transferred",
-                    c2 = Total.Bytes.Transferred, write_path = write_path)
+                    c2 = Total.Bytes.Transferred,
+                    write_path = write_path)
   WriteToLogSummary(c1 = "KB / Sec Transfer Rate",
-                    c2 = KB.Per.Second, write_path = write_path)
+                    c2 = KB.Per.Second,
+                    write_path = write_path)
 }
 
 ####################### SHARED TRACKING TABLE FUNCTIONS ########################
@@ -3575,9 +3587,11 @@ StoreTrackingTableEntry.2p <- function(params) {
   }
   params$trackingTable$current$REG_CONV_IN <- ifelse(params$completed, 1, 0)
   if (params$completed) {
-    params$trackingTable$current$REG_CONV_MSG <- ifelse(params$converged, "Success", "Failed")
+    params$trackingTable$current$REG_CONV_MSG <-
+      ifelse(params$converged, "Success", "Failed")
   }
-  params$trackingTable$current$LAST_ITER_IN <- ifelse(params$lastIteration, 1, 0)
+  params$trackingTable$current$LAST_ITER_IN <-
+    ifelse(params$lastIteration, 1, 0)
 
   if (params$party_name == "A") {
     if (is.data.frame(params$trackingTable$history)) {
@@ -3586,11 +3600,13 @@ StoreTrackingTableEntry.2p <- function(params) {
     } else {
       params$trackingTable$history <- params$trackingTable$current
     }
-    write.csv(params$trackingTable$history, file.path(params$write_path, "dl_track_tbl.csv"),
+    write.csv(params$trackingTable$history,
+              file.path(params$write_path, "dl_track_tbl.csv"),
               row.names = FALSE)
   } else {
     trackingTableEntry <- params$trackingTable$current
-    save(trackingTableEntry, file = file.path(params$write_path, "tr_tb_updt.rdata"))
+    save(trackingTableEntry,
+         file = file.path(params$write_path, "tr_tb_updt.rdata"))
   }
   return(params)
 }
@@ -3612,25 +3628,26 @@ read_tracking_table_update_2p <- function(params) {
 
 initialize_tracking_table_3p <- function(params) {
   trackingTable <- list()
-  trackingTable$current <- data.frame(DP_CD              = ifelse(params$party_name == "T", 0,
-                                                                  ifelse(params$party_name == "A", 1, 2)),
-                                      MSREQID            = params$msreqid,
-                                      RUNID              = "dl",
-                                      ITER_NB            = 0,  # params$pmnIterationCounter
-                                      STEP_NB            = 0,
-                                      START_DTM          = GetUTCTime(), # from log$Start.Time
-                                      END_DTM            = GetUTCTime(), # from log$End.Time
-                                      CURR_STEP_IN       = 0,
-                                      STEP_RETURN_CD     = 0,
-                                      STEP_RETURN_MSG    = "PASS", # copy errorMessage.rdata here if exists
-                                      REG_CONV_IN        = 0,  # 1 = converge, 0 = no converge
-                                      REG_CONV_MSG       = "", # Success or Failed when decided
-                                      LAST_ITER_IN       = 0,  # 1 at last iteration, so right before quit
-                                      LAST_RUNID_IN      = 0,
-                                      UTC_OFFSET_DISPLAY = GetUTCOffset(),
-                                      UTC_OFFSET_SEC     = GetUTCOffsetSeconds(),
-                                      REGR_TYPE_CD       = params$analysis
-  )
+  trackingTable$current <-
+    data.frame(DP_CD              = ifelse(params$party_name == "T", 0,
+                                           ifelse(params$party_name == "A", 1, 2)),
+               MSREQID            = params$msreqid,
+               RUNID              = "dl",
+               ITER_NB            = 0,  # params$pmnIterationCounter
+               STEP_NB            = 0,
+               START_DTM          = GetUTCTime(), # from log$Start.Time
+               END_DTM            = GetUTCTime(), # from log$End.Time
+               CURR_STEP_IN       = 0,
+               STEP_RETURN_CD     = 0,
+               STEP_RETURN_MSG    = "PASS", # copy errorMessage.rdata here if exists
+               REG_CONV_IN        = 0,  # 1 = converge, 0 = no converge
+               REG_CONV_MSG       = "", # Success or Failed when decided
+               LAST_ITER_IN       = 0,  # 1 at last iteration, so right before quit
+               LAST_RUNID_IN      = 0,
+               UTC_OFFSET_DISPLAY = GetUTCOffset(),
+               UTC_OFFSET_SEC     = GetUTCOffsetSeconds(),
+               REGR_TYPE_CD       = params$analysis
+    )
   trackingTable$history <- NA
   params$trackingTable <- trackingTable
   return(params)
@@ -3647,7 +3664,8 @@ StoreTrackingTableEntry.3p <- function(params) {
     msg <- ""
     for (party in c("A", "B", "T")) {
       if (!is.na(params$read_path[[party]]) &&
-          file.exists(file.path(params$read_path[[party]], "errorMessage.rdata"))) {
+          file.exists(file.path(params$read_path[[party]],
+                                "errorMessage.rdata"))) {
         load(file.path(params$read_path[[party]], "errorMessage.rdata"))
         msg <- paste0(msg, message)
       }
@@ -3656,9 +3674,11 @@ StoreTrackingTableEntry.3p <- function(params) {
   }
   params$trackingTable$current$REG_CONV_IN <- ifelse(params$completed, 1, 0)
   if (params$completed) {
-    params$trackingTable$current$REG_CONV_MSG <- ifelse(params$converged, "Success", "Failed")
+    params$trackingTable$current$REG_CONV_MSG <-
+      ifelse(params$converged, "Success", "Failed")
   }
-  params$trackingTable$current$LAST_ITER_IN <- ifelse(params$lastIteration, 1, 0)
+  params$trackingTable$current$LAST_ITER_IN <-
+    ifelse(params$lastIteration, 1, 0)
   if (params$pmn_step_counter == 0) {
     params$trackingTable$history <- params$trackingTable$current
   } else {
@@ -4340,10 +4360,12 @@ print.summary.vdracox <- function(x, lion = FALSE, ...) {
 #' @seealso \code{\link{analysis_center_2_party}},
 #'   \code{\link{AnalysisCenter.3Party}}, \code{\link{AnalysisCenter.KParty}}
 #' @examples
-#'  fit <- differentModel(Change_BMI ~ Exposure + Age + NumRx, vdra_fit_linear_A)
+#'  fit <- differentModel(Change_BMI ~ Exposure + Age +
+#'                        NumRx, vdra_fit_linear_A)
 #'  summary(fit)
 #'
-#'  fit <- differentModel(Age ~ Change_BMI + Exposure + NumRx, vdra_fit_linear_A)
+#'  fit <- differentModel(Age ~ Change_BMI + Exposure +
+#'                        NumRx, vdra_fit_linear_A)
 #'  summary(fit)
 #' @importFrom  stats pf pt
 #' @export
