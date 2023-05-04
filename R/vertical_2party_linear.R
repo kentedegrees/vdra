@@ -435,7 +435,6 @@ get_z_linear_a2 <- function(params, data) {
     }
     strt <- params$blocks$starts[i]
     stp <- params$blocks$stops[i]
-    n <- stp - strt + 1
     g <- params$blocks$g[i]
     z <- FindOrthogonalVectors(cbind(data$Y[strt:stp, ], data$x[strt:stp, ]), g)
 
@@ -569,7 +568,6 @@ get_products_linear_a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()),
                         "get_products_linear_a2\n\n")
   n <- params$n
-  p1 <- params$p1
   p2 <- params$p2
   xb_t_xb <- NULL
 

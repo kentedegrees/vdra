@@ -763,7 +763,6 @@ update_data_cox_dp <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "update_data_cox_dp\n\n")
   idx <- params$indicies[[params$data_partner_id]]
   data$x <- data$x[, idx, drop = FALSE]
-  x <- data$x
   data$colmin <- data$colmin[idx]
   data$colmax <- data$colmax[idx]
   data$colsum <- data$colsum[idx]

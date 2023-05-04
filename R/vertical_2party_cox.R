@@ -1430,7 +1430,6 @@ compute_results_cox_a2 <- function(params, data) {
   params$betas_b <- betas_b
   params$null_score <- rbind(params$null_score, null_score_b)
 
-  names_new          <- c(params$a_col_names, params$b_col_names)
   names_old          <- c(params$a_col_names_old, params$b_col_names_old)
   idx_a               <- params$a_indicies_keep
   idx_b               <- params$b_indicies_keep

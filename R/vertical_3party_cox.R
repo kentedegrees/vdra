@@ -1265,7 +1265,6 @@ compute_results_cox_t3 <- function(params) {
   stats <- params$stats
   stats$failed         <- FALSE
   stats$converged      <- params$converged
-  names_new          <- c(params$colnamesA, params$colnamesB)
   names_old          <- c(params$colnames_a_old, params$colnamesB_old)
   idx                <- params$indicies
   stats$party        <- c(rep("dp1", params$p1_old), rep("dp2", params$p2_old))

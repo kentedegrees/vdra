@@ -762,10 +762,10 @@ AnalysisCenter.KParty <- function(regression          = "linear",
                                       msreqid, sleep_time, max_waiting_time,
                                       popmednet, trace, verbose)
   } else if (regression == "logistic") {
-    stats <- analysis_center_k_logistic(num_data_partners, monitor_folder, msreqid,
-                                        tol, max_iterations, sleep_time,
-                                        max_waiting_time, popmednet, trace,
-                                        verbose)
+    stats <- analysis_center_k_logistic(num_data_partners, monitor_folder,
+                                        msreqid, tol, max_iterations,
+                                        sleep_time, max_waiting_time, popmednet,
+                                        trace, verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
@@ -2270,7 +2270,8 @@ create_blocks <- function(pA, pB, n, blocksize) {
     blocks$starts <- c(1, 1 + blocks$stops)[1:num_blocks]
   }
 
-  blocks$g <- c(rep(gBigBlock, numBigBlocks), rep(gLittleBlock, numLittleBlocks))
+  blocks$g <- c(rep(gBigBlock, numBigBlocks),
+                rep(gLittleBlock, numLittleBlocks))
 
   return(blocks)
 }
@@ -3629,24 +3630,28 @@ read_tracking_table_update_2p <- function(params) {
 initialize_tracking_table_3p <- function(params) {
   trackingTable <- list()
   trackingTable$current <-
-    data.frame(DP_CD              = ifelse(params$party_name == "T", 0,
-                                           ifelse(params$party_name == "A", 1, 2)),
-               MSREQID            = params$msreqid,
-               RUNID              = "dl",
-               ITER_NB            = 0,  # params$pmnIterationCounter
-               STEP_NB            = 0,
-               START_DTM          = GetUTCTime(), # from log$Start.Time
-               END_DTM            = GetUTCTime(), # from log$End.Time
-               CURR_STEP_IN       = 0,
-               STEP_RETURN_CD     = 0,
-               STEP_RETURN_MSG    = "PASS", # copy errorMessage.rdata here if exists
-               REG_CONV_IN        = 0,  # 1 = converge, 0 = no converge
-               REG_CONV_MSG       = "", # Success or Failed when decided
-               LAST_ITER_IN       = 0,  # 1 at last iteration, so right before quit
-               LAST_RUNID_IN      = 0,
+    data.frame(DP_CD           = ifelse(params$party_name == "T", 0,
+                                        ifelse(params$party_name == "A", 1, 2)),
+               MSREQID         = params$msreqid,
+               RUNID           = "dl",
+               ITER_NB         = 0,  # params$pmnIterationCounter
+               STEP_NB         = 0,
+               START_DTM       = GetUTCTime(), # from log$Start.Time
+               END_DTM         = GetUTCTime(), # from log$End.Time
+               CURR_STEP_IN    = 0,
+               STEP_RETURN_CD  = 0,
+               # copy errorMessage.rdata here if exists
+               STEP_RETURN_MSG = "PASS",
+               # 1 = converge, 0 = no converge
+               REG_CONV_IN     = 0,
+               # Success or Failed when decided
+               REG_CONV_MSG    = "",
+               # 1 at last iteration, so right before quit
+               LAST_ITER_IN    = 0,
+               LAST_RUNID_IN   = 0,
                UTC_OFFSET_DISPLAY = GetUTCOffset(),
-               UTC_OFFSET_SEC     = GetUTCOffsetSeconds(),
-               REGR_TYPE_CD       = params$analysis
+               UTC_OFFSET_SEC  = GetUTCOffsetSeconds(),
+               REGR_TYPE_CD    = params$analysis
     )
   trackingTable$history <- NA
   params$trackingTable <- trackingTable
