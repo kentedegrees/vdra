@@ -263,20 +263,20 @@ compute_s_beta_logistic_dp <- function(params, data) {
              params$alg_iteration_counter, kind = "Mersenne-Twister")
   v <- matrix(rnorm(params$n,
                     mean = runif(n = 1, min = -1, max = 1), sd = 10), ncol = 1)
-  Vsum <- 0
+  v_sum <- 0
   for (id in 1:params$num_data_partners) {
     set.seed(params$seeds[id] +
                params$alg_iteration_counter, kind = "Mersenne-Twister")
-    Vsum <- Vsum + matrix(rnorm(params$n,
+    v_sum <- v_sum + matrix(rnorm(params$n,
                                 mean = runif(n = 1, min = -1, max = 1),
                                 sd = 10), ncol = 1)
   }
 
-  Sbeta <- (data$x %*% params$betas + params$u) /
-    (2 * params$u) + v - params$scaler / sum(params$scalers) * Vsum
+  s_beta <- (data$x %*% params$betas + params$u) /
+    (2 * params$u) + v - params$scaler / sum(params$scalers) * v_sum
 
   write_time <- proc.time()[3]
-  save(Sbeta, file = file.path(params$write_path, "sbeta.rdata"))
+  save(s_beta, file = file.path(params$write_path, "sbeta.rdata"))
   write_size <- file.size(file.path(params$write_path, "sbeta.rdata"))
   write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "compute_s_beta_logistic_dp",
@@ -285,10 +285,10 @@ compute_s_beta_logistic_dp <- function(params, data) {
 }
 
 
-ComputeWeightsLogistic.AC <- function(params) {
+compute_weights_logistic_ac <- function(params) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "ComputeWeightsLogistic.AC\n\n")
-  Sbeta <- 0
+                        "compute_weights_logistic_ac\n\n")
+  s_beta <- 0
   read_time <- 0
   read_size <- 0
   sbeta <- 0
@@ -298,7 +298,7 @@ ComputeWeightsLogistic.AC <- function(params) {
     read_size <- read_size +
       file.size(file.path(params$readPathDP[id], "sbeta.rdata"))
     read_time <- read_time + proc.time()[3]
-    sbeta <- sbeta + Sbeta
+    sbeta <- sbeta + s_beta
   }
   sbeta <- 2 * params$u * sbeta - params$num_data_partners * params$u
   pi_ <- 1 / (1 + exp(-sbeta))
@@ -315,8 +315,8 @@ ComputeWeightsLogistic.AC <- function(params) {
 
 
 #' @importFrom stats rnorm
-ComputeStWSLogistic.DP <- function(params, data) {
-  if (params$trace) cat(as.character(Sys.time()), "ComputeStWSLogistic.DP\n\n")
+compute_stws_logistic_dp <- function(params, data) {
+  if (params$trace) cat(as.character(Sys.time()), "compute_stws_logistic_dp\n\n")
   pi_ <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$readPathAC, "pi.rdata"))
@@ -325,7 +325,7 @@ ComputeStWSLogistic.DP <- function(params, data) {
   params$pi_ <- pi_
 
   w <- pi_ * (1 - pi_)
-  C <- rep(list(list()), params$num_data_partners)
+  c_mat <- rep(list(list()), params$num_data_partners)
 
   idx <- params$indicies[[params$data_partner_id]]
   set.seed(params$seed, kind = "Mersenne-Twister")
@@ -336,31 +336,31 @@ ComputeStWSLogistic.DP <- function(params, data) {
     if (id < params$data_partner_id) {
       set.seed(params$seeds[id], kind = "Mersenne-Twister")
       idx <- params$indicies[[id]]
-      halfshareDP <- matrix(rnorm(params$n * params$ps[id], sd = 20),
+      halfshare_dp <- matrix(rnorm(params$n * params$ps[id], sd = 20),
                             nrow = params$n,
                             ncol = params$ps[id])[, idx, drop = FALSE]
-      C[[id]] <- params$scaler / (params$scaler + params$scalers[id]) *
-        t(halfshareDP) %*% MultiplyDiagonalWTimesX(w, halfshare) +
-        t(halfshareDP) %*% MultiplyDiagonalWTimesX(w, data$x - halfshare)
+      c_mat[[id]] <- params$scaler / (params$scaler + params$scalers[id]) *
+        t(halfshare_dp) %*% MultiplyDiagonalWTimesX(w, halfshare) +
+        t(halfshare_dp) %*% MultiplyDiagonalWTimesX(w, data$x - halfshare)
     } else if (id == params$data_partner_id) {
-      C[[id]] <- t(data$x) %*% MultiplyDiagonalWTimesX(w, data$x)
+      c_mat[[id]] <- t(data$x) %*% MultiplyDiagonalWTimesX(w, data$x)
     } else {
       set.seed(params$seeds[id], kind = "Mersenne-Twister")
       idx <- params$indicies[[id]]
-      halfshareDP <- matrix(rnorm(params$n * params$ps[id], sd = 20),
+      halfshare_dp <- matrix(rnorm(params$n * params$ps[id], sd = 20),
                             nrow = params$n,
                             ncol = params$ps[id])[, idx, drop = FALSE]
-      C[[id]] <- params$scaler / (params$scaler + params$scalers[id]) *
-        t(halfshare) %*% MultiplyDiagonalWTimesX(w, halfshareDP) +
-        t(data$x - halfshare) %*% MultiplyDiagonalWTimesX(w, halfshareDP)
+      c_mat[[id]] <- params$scaler / (params$scaler + params$scalers[id]) *
+        t(halfshare) %*% MultiplyDiagonalWTimesX(w, halfshare_dp) +
+        t(data$x - halfshare) %*% MultiplyDiagonalWTimesX(w, halfshare_dp)
     }
   }
 
   write_time <- proc.time()[3]
-  save(C, file = file.path(params$write_path, "stwsshare.rdata"))
+  save(c_mat, file = file.path(params$write_path, "stwsshare.rdata"))
   write_size <- file.size(file.path(params$write_path, "stwsshare.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "ComputeStWSLogistic.DP",
+  params <- add_to_log(params, "compute_stws_logistic_dp",
                        read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -370,7 +370,7 @@ ComputeStWSLogistic.AC <- function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeStWSLogistic.AC\n\n")
   read_time <- 0
   read_size <- 0
-  C        <- NULL
+  c_mat        <- NULL
   w <- params$pi_ * (1 - params$pi_)
   StWS <- matrix(0, sum(params$p_reduct), sum(params$p_reduct))
 
@@ -388,13 +388,13 @@ ComputeStWSLogistic.AC <- function(params) {
       start <- end - params$p_reduct[id2] + 1
       idx2 <- start:end
       if (id1 < id2) {
-        StWS[idx1, idx2] <- StWS[idx1, idx2] + C[[id2]]
-        StWS[idx2, idx1] <- StWS[idx2, idx1] + t(C[[id2]])
+        StWS[idx1, idx2] <- StWS[idx1, idx2] + c_mat[[id2]]
+        StWS[idx2, idx1] <- StWS[idx2, idx1] + t(c_mat[[id2]])
       } else if (id1 == id2) {
-        StWS[idx1, idx1] <- C[[id1]]
+        StWS[idx1, idx1] <- c_mat[[id1]]
       } else {
-        StWS[idx2, idx1] <- StWS[idx2, idx1] + C[[id2]]
-        StWS[idx1, idx2] <- StWS[idx1, idx2] + t(C[[id2]])
+        StWS[idx2, idx1] <- StWS[idx2, idx1] + c_mat[[id2]]
+        StWS[idx1, idx2] <- StWS[idx1, idx2] + t(c_mat[[id2]])
       }
     }
     if (id1 < params$num_data_partners) {
@@ -484,19 +484,19 @@ update_beta_logistic_dp <- function(params) {
   id <- 1
   set.seed(params$seeds[id], kind = "Mersenne-Twister")
   idx <- params$indicies[[id]]
-  halfshareDP <- matrix(rnorm(params$n * params$ps[id], sd = 20),
+  halfshare_dp <- matrix(rnorm(params$n * params$ps[id], sd = 20),
                         nrow = params$n,
                         ncol = params$ps[id])[, idx, drop = FALSE]
   for (id in 2:params$num_data_partners) {
     set.seed(params$seeds[id], kind = "Mersenne-Twister")
     idx <- params$indicies[[id]]
-    halfshareDP <- cbind(halfshareDP,
+    halfshare_dp <- cbind(halfshare_dp,
                          matrix(rnorm(params$n * params$ps[id], sd = 20),
                                 nrow = params$n,
                                 ncol = params$ps[id])[, idx, drop = FALSE])
   }
 
-  D0 <- t(halfshareDP) %*% params$pi_
+  D0 <- t(halfshare_dp) %*% params$pi_
   delta_beta <- IDt - i_mat %*% D0
   params$betas <- params$betas + delta_beta
   maxdifference <- max(abs(delta_beta) / (abs(params$betas) + .1))
@@ -581,7 +581,7 @@ SendFinalBetasLogistic.DP <- function(params) {
 ComputeFinalSBetaLogistic.AC <- function(params) {
   if (params$trace) cat(as.character(Sys.time()),
                         "ComputeFinalSBetaLogistic.AC\n\n")
-  Sbeta <- 0
+  s_beta <- 0
   read_time <- 0
   read_size <- 0
   sbeta <- 0
@@ -591,7 +591,7 @@ ComputeFinalSBetaLogistic.AC <- function(params) {
     read_size <- read_size +
       file.size(file.path(params$readPathDP[id], "sbeta.rdata"))
     read_time <- read_time + proc.time()[3]
-    sbeta <- sbeta + Sbeta
+    sbeta <- sbeta + s_beta
   }
   sbeta <- 2 * params$u * sbeta - params$num_data_partners * params$u
 
@@ -855,7 +855,7 @@ DataPartnerKLogistic <- function(data,
     BeginningIteration(params)
 
     params <- compute_s_beta_logistic_dp(params, data)
-    files <- "Sbeta.rdata"
+    files <- "s_beta.rdata"
     params <- send_pause_continue_kp(params,
                                      filesAC = files,
                                      from = "AC",
@@ -863,7 +863,7 @@ DataPartnerKLogistic <- function(data,
                                      max_waiting_time = max_waiting_time,
                                      wait_for_turn = TRUE)
 
-    params <- ComputeStWSLogistic.DP(params, data)
+    params <- compute_stws_logistic_dp(params, data)
     files <- "stwsshare.rdata"
     params <- send_pause_continue_kp(params,
                                      filesAC = files,
@@ -966,7 +966,8 @@ AnalysisCenterKLogistic <- function(num_data_partners = NULL,
     return(invisible(NULL))
   }
 
-  params <- PauseContinue.kp(params, from = "DP", max_waiting_time = max_waiting_time)
+  params <- PauseContinue.kp(params, from = "DP",
+                             max_waiting_time = max_waiting_time)
 
   possible_error <- ReceivedError.kp(params, from = "DP")
   if (possible_error$error) {
@@ -1047,7 +1048,7 @@ AnalysisCenterKLogistic <- function(num_data_partners = NULL,
   params$alg_iteration_counter <- 1
   while (!params$converged && !params$maxIterExceeded) {
     BeginningIteration(params)
-    params <- ComputeWeightsLogistic.AC(params)
+    params <- compute_weights_logistic_ac(params)
     files <- "pi.rdata"
     params <- send_pause_continue_kp(params,
                                      filesDP = files,

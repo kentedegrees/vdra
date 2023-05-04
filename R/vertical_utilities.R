@@ -764,12 +764,14 @@ AnalysisCenter.KParty <- function(regression          = "linear",
   } else if (regression == "logistic") {
     stats <- AnalysisCenterKLogistic(num_data_partners, monitor_folder, msreqid,
                                      tol, max_iterations, sleep_time,
-                                     max_waiting_time, popmednet, trace, verbose)
+                                     max_waiting_time, popmednet, trace,
+                                     verbose)
   } else {
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp <- GetElapsedTime(proc.time() - start_time, final = TRUE, timeOnly = FALSE)
+  elp <- GetElapsedTime(proc.time() - start_time,
+                        final = TRUE, timeOnly = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -821,7 +823,8 @@ check_data_format <- function(params, data) {
   idx <- data.frame(which(badValue))
   colnames(idx) <- "Observations with invalid entries"
   if (nrow(idx) > 0) {
-    warning(paste0("Some observations contain invalid values: NA, NaN, or Inf. ",
+    warning(
+      paste0("Some observations contain invalid values: NA, NaN, or Inf. ",
                    "A list of all such observations has been outputted to",
                    file.path(params$write_path, "invalidEntries.csv"),
                    ". Terminating program."))
@@ -847,7 +850,8 @@ check_response <- function(params, data, y_name) {
   y_name <- unique(y_name)
   if (params$analysis == "linear" || params$analysis == "logistic") {
     if (length(y_name) != 1) {
-      warning(paste("Specify only one reponse for", params$analysis, "regression."))
+      warning(paste("Specify only one reponse for",
+                    params$analysis, "regression."))
       return(NULL)
     }
     responseColIndex <- which(colnames(data) %in% y_name)
@@ -995,7 +999,8 @@ prepare_params_3p <- function(analysis, party, msreqid = "v_default_00_000",
 
 prepare_params_kp <- function(analysis, data_partner_id, num_data_partners,
                               msreqid = "v_default_00_000", cutoff = NULL,
-                              max_iterations = NULL, ac = FALSE, popmednet = TRUE,
+                              max_iterations = NULL, ac = FALSE,
+                              popmednet = TRUE,
                               trace = FALSE, verbose = TRUE) {
   params                     <- list()
   params$data_partner_id       <- data_partner_id
@@ -1023,18 +1028,22 @@ prepare_params_kp <- function(analysis, data_partner_id, num_data_partners,
        num_data_partners <= 0 || is.infinite(num_data_partners) ||
        round(num_data_partners) != num_data_partners)) {
     params$failed <- TRUE
-    params$errormessage <- "num_data_partners must be a positive integer, and must equal the number of data partners providing data."
+    params$errormessage <-
+      paste("num_data_partners must be a positive integer,",
+            "and must equal the number of data partners providing data.")
   }
   if (!params$failed) {
     if (ac) {
       if (data_partner_id != 0) {
         params$failed <- TRUE
-        params$errormessage <- "data_partner_id for Analysis Center must be 0.\n\n"
+        params$errormessage <-
+          "data_partner_id for Analysis Center must be 0.\n\n"
       }
     } else {
       if (data_partner_id <= 0 || data_partner_id > num_data_partners) {
         params$failed <- TRUE
-        params$errormessage <- paste0("data_partner_id must be between 1 and ", num_data_partners, " inclusive.\n\n")
+        params$errormessage <- paste0("data_partner_id must be between 1 and ",
+                                      num_data_partners, " inclusive.\n\n")
       }
     }
   }
@@ -1229,7 +1238,8 @@ make_progress_bar_1 <- function(steps, message, verbose) {
                           collapse = ""))
   pb$header <- paste0("Processing ", message, ": ")
   toPrint <- paste0(pb$header, pb$percentstr, pb$delimeter,
-                    paste(rep(pb$blank, pb$numBlanks), collapse = ""), pb$delimeter)
+                    paste(rep(pb$blank, pb$numBlanks), collapse = ""),
+                    pb$delimeter)
   if (verbose) cat(toPrint, "\r")
   if (verbose) flush.console()
   return(pb)
@@ -1243,11 +1253,13 @@ make_progress_bar_2 <- function(i, pb, verbose) {
     return(pb)
   }
   pb$percent <- percent
-  pb$percentstr <- paste0(paste(rep(" ", 3 - nchar(percent)), collapse = ""), percent, "%")
+  pb$percentstr <- paste0(paste(rep(" ", 3 - nchar(percent)), collapse = ""),
+                          percent, "%")
   numFiller <- floor(pb$numBlanks * i / pb$numSteps)
   toPrint <- paste0(pb$header, pb$percentstr, pb$delimeter,
                     paste(rep(pb$filler, numFiller), collapse = ""),
-                    paste(rep(pb$blank, pb$numBlanks - numFiller), collapse = ""),
+                    paste(rep(pb$blank, pb$numBlanks - numFiller),
+                          collapse = ""),
                     pb$delimeter)
 
   if (i == pb$numSteps) {
@@ -1412,7 +1424,7 @@ read_error_message <- function(read_path) {
   return(message)
 }
 
-###################### 2 PARTY PMN COMMUNICATION FUNCTIONS ######################
+###################### 2 PARTY PMN COMMUNICATION FUNCTIONS #####################
 
 send_pause_quit_2p <- function(params,
                                files = c(),
@@ -1429,10 +1441,12 @@ send_pause_quit_2p <- function(params,
   if (params$party_name == "A") {
     if (job_failed) {
       files <- c(files, "job_fail.ok")
-      params <- store_stamp_entry(params, "Job failed trigger file", "Trigger File created")
+      params <- store_stamp_entry(params, "Job failed trigger file",
+                                  "Trigger File created")
     } else {
       files <- c(files, "job_done.ok")
-      params <- store_stamp_entry(params, "Job done trigger file", "Trigger File created")
+      params <- store_stamp_entry(params, "Job done trigger file",
+                                  "Trigger File created")
     }
     transfer <- c(transfer, 10)
   }
@@ -1448,8 +1462,11 @@ send_pause_quit_2p <- function(params,
     destination[transfer == 10] <- 10
   }
   MakeCSV(files, transfer, destination, params$write_path)
-  params <- store_stamp_entry(params, "Files done trigger file", "Trigger File Created")
-  params <- store_stamp_entry(params, "R program execution complete, output files written",
+  params <- store_stamp_entry(params, "Files done trigger file",
+                              "Trigger File Created")
+  params <- store_stamp_entry(
+    params,
+                              "R program execution complete, output files written",
                               "Tracking Table")
   WriteStampsCSV(params)
   WriteStampsRaw(params)
@@ -1485,7 +1502,9 @@ send_pause_continue_2p <- function(params,
     destination[transfer == 10] <- 10
   }
   MakeCSV(files, transfer, destination, params$write_path)
-  params <- store_stamp_entry(params, "Files done trigger file", "Trigger File created")
+  params <- store_stamp_entry(params,
+                              "Files done trigger file",
+                              "Trigger File created")
   WriteStampsCSV(params)
   WriteStampsRaw(params)
   params$pmn_step_counter      <- params$pmn_step_counter + 2
@@ -1507,7 +1526,9 @@ send_pause_continue_2p <- function(params,
   params <- read_log_raw_2p(params)
   params <- new_log_entry_2p(params)
   params <- read_stamps_raw_2p(params)
-  params <- store_stamp_entry(params, "R program execution begins", "Tracking Table")
+  params <- store_stamp_entry(params,
+                              "R program execution begins",
+                              "Tracking Table")
   if (params$party_name == "A") {
     params <- read_tracking_table_update_2p(params)
   }
@@ -1536,7 +1557,7 @@ PauseContinue.2p <- function(params, max_waiting_time) {
   return(params)
 }
 
-###################### 3 PARTY PMN COMMUNICATION FUNCTIONS ######################
+###################### 3 PARTY PMN COMMUNICATION FUNCTIONS #####################
 
 wait_for_turn.3p <- function(params, sleep_time) {
   Sys.sleep(sleep_time)
@@ -1591,10 +1612,14 @@ send_pause_quit_3p <- function(params,
   if (params$party == "T") {
     if (job_failed) {
       files <- c(files, "job_fail.ok")
-      params <- store_stamp_entry(params, "Job failed trigger file", "Trigger File created")
+      params <- store_stamp_entry(params,
+                                  "Job failed trigger file",
+                                  "Trigger File created")
     } else {
       files <- c(files, "job_done.ok")
-      params <- store_stamp_entry(params, "Job done trigger file", "Trigger File created")
+      params <- store_stamp_entry(params,
+                                  "Job done trigger file",
+                                  "Trigger File created")
     }
     transfer <- c(transfer, 10)
     destination <- c(destination, 10)
@@ -1616,13 +1641,21 @@ send_pause_quit_3p <- function(params,
     destination <- c(destination, 0)
   }
   MakeCSV(files, transfer, destination, params$write_path)
-  params <- store_stamp_entry(params, "Files done trigger file", "Trigger File Created")
-  params <- store_stamp_entry(params, "R program execution complete, output files written",
+  params <- store_stamp_entry(params,
+                              "Files done trigger file",
+                              "Trigger File Created")
+  params <- store_stamp_entry(
+    params,
+                              "R program execution complete, output files written",
                               "Tracking Table")
   if (wait_for_turn) {
-    params <- store_stamp_entry(params, "R program execution delayed", "Tracking Table")
+    params <- store_stamp_entry(params,
+                                "R program execution delayed",
+                                "Tracking Table")
     wait_for_turn.3p(params, sleep_time)
-    params <- store_stamp_entry(params, "R program execution restarted", "Tracking Table")
+    params <- store_stamp_entry(params,
+                                "R program execution restarted",
+                                "Tracking Table")
   }
   WriteStampsCSV(params)
   WriteStampsRaw(params)
@@ -1681,11 +1714,17 @@ send_pause_continue_3p <- function(params,
     destination <- c(destination, 10)
   }
   MakeCSV(files, transfer, destination, params$write_path)
-  params <- store_stamp_entry(params, "Files done trigger file", "Trigger File created")
+  params <- store_stamp_entry(params,
+                              "Files done trigger file",
+                              "Trigger File created")
   if (wait_for_turn) {
-    params <- store_stamp_entry(params, "R program execution delayed", "Tracking Table")
+    params <- store_stamp_entry(params,
+                                "R program execution delayed",
+                                "Tracking Table")
     wait_for_turn.3p(params, sleep_time)
-    params <- store_stamp_entry(params, "R program execution restarted", "Tracking Table")
+    params <- store_stamp_entry(params,
+                                "R program execution restarted",
+                                "Tracking Table")
   }
   WriteStampsCSV(params)
   WriteStampsRaw(params)
@@ -1714,13 +1753,16 @@ send_pause_continue_3p <- function(params,
   params <- UpdateCounters.3p(params)
   params <- new_log_entry_3p(params)
   params <- MergeStampsRaw.3p(params, from)
-  params <- store_stamp_entry(params, "R program execution begins", "Tracking Table")
+  params <- store_stamp_entry(params,
+                              "R program execution begins",
+                              "Tracking Table")
   params <- MergeTrackingTableRAW.3p(params, from)
   return(params)
 }
 
 
-PauseContinue.3p <- function(params, from = NULL, max_waiting_time = 24 * 60 * 60) {
+PauseContinue.3p <- function(params, from = NULL,
+                             max_waiting_time = 24 * 60 * 60) {
   params <- StoreLogEntry.3p(params, "")
   params <- StoreTrackingTableEntry.3p(params)
   WriteLogCSV(params)
@@ -1755,7 +1797,7 @@ UpdateCounters.3p <- function(params) {
   return(params)
 }
 
-###################### K PARTY PMN COMMUNICATION FUNCTIONS ######################
+###################### K PARTY PMN COMMUNICATION FUNCTIONS #####################
 
 wait_for_turn.kp <- function(params, sleep_time) {
   Sys.sleep(sleep_time)
@@ -1793,7 +1835,8 @@ send_pause_quit_kp <- function(params,
                                job_failed = FALSE,
                                wait_for_turn = FALSE) {
 
-  # Assumes that upon quitting, same thing is sent to everyone, so filesDP cannot be a list
+  # Assumes that upon quitting, same thing is sent to everyone, so filesDP
+  # cannot be a list
 
   params$lastIteration <- TRUE
   params$completed     <- TRUE
@@ -1812,7 +1855,8 @@ send_pause_quit_kp <- function(params,
 
     dataPartnerTarget <- 1:params$num_data_partners
     dataPartnerTarget <- dataPartnerTarget[-params$data_partner_id]
-    files <- c(filesAC, rep(filesDP, length(dataPartnerTarget)), "file_list.csv")
+    files <- c(filesAC, rep(filesDP, length(dataPartnerTarget)),
+               "file_list.csv")
     transfer <- c(rep(1, length(files) - 1), 10)
     destination <- c(rep(0, length(filesAC)),
                      rep(dataPartnerTarget, each = length(filesDP)),
@@ -1824,23 +1868,34 @@ send_pause_quit_kp <- function(params,
     files       <- c("dl_track_tbl.csv", "file_list.csv")
     if (job_failed) {
       files <- c(files, "job_fail.ok")
-      params <- store_stamp_entry(params, "Job failed trigger file", "Trigger File created")
+      params <- store_stamp_entry(params,
+                                  "Job failed trigger file",
+                                  "Trigger File created")
     } else {
       files <- c(files, "job_done.ok")
-      params <- store_stamp_entry(params, "Job done trigger file", "Trigger File created")
+      params <- store_stamp_entry(params,
+                                  "Job done trigger file",
+                                  "Trigger File created")
     }
     transfer <- c(10, 10, 10)
     destination <- c(10, 10, 10)
   }
 
   MakeCSV(files, transfer, destination, params$write_path)
-  params <- store_stamp_entry(params, "Files done trigger file", "Trigger File Created")
-  params <- store_stamp_entry(params, "R program execution complete, output files written",
+  params <- store_stamp_entry(params, "Files done trigger file",
+                              "Trigger File Created")
+  params <- store_stamp_entry(
+    params,
+                              "R program execution complete, output files written",
                               "Tracking Table")
   if (wait_for_turn) {
-    params <- store_stamp_entry(params, "R program execution delayed", "Tracking Table")
+    params <- store_stamp_entry(params,
+                                "R program execution delayed",
+                                "Tracking Table")
     wait_for_turn.kp(params, sleep_time)
-    params <- store_stamp_entry(params, "R program execution restarted", "Tracking Table")
+    params <- store_stamp_entry(params,
+                                "R program execution restarted",
+                                "Tracking Table")
   }
   WriteStampsCSV(params)
   WriteStampsRaw(params)
@@ -1874,17 +1929,22 @@ send_pause_continue_kp <- function(params,
     }
 
     if (!is.null(filesAC)) {
-      filesAC <- c(filesAC, "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
+      filesAC <- c(filesAC, "stamps.rdata",
+                   "log.rdata",
+                   "tr_tb_updt.rdata")
     }
     if (!is.null(filesDP)) {
-      filesDP <- c(filesDP, "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
+      filesDP <- c(filesDP, "stamps.rdata",
+                   "log.rdata",
+                   "tr_tb_updt.rdata")
     }
     dataPartnerTarget <- 1:params$num_data_partners
     if (params$data_partner_id != 0) {
       dataPartnerTarget <- dataPartnerTarget[-params$data_partner_id]
     }
 
-    files <- c(filesAC, rep(filesDP, length(dataPartnerTarget)), "file_list.csv")
+    files <- c(filesAC, rep(filesDP, length(dataPartnerTarget)),
+               "file_list.csv")
     transfer <- c(rep(1, length(files) - 1), 10)
     destination <- c(rep(0, length(filesAC)),
                      rep(dataPartnerTarget, each = length(filesDP)),
@@ -1902,14 +1962,18 @@ send_pause_continue_kp <- function(params,
       WriteTrackingTableRaw(params)
     }
     if (!is.null(filesAC)) {
-      filesAC <- c(filesAC, "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
+      filesAC <- c(filesAC, "stamps.rdata",
+                   "log.rdata",
+                   "tr_tb_updt.rdata")
     }
     files <- filesAC
     transfer <- rep(1, length(files))
     destination <- rep(0, length(filesAC))
     for (dp in 1:params$num_data_partners) {
       if (length(filesDP[[dp]]) > 0 && dp != params$data_partner_id) {
-        files <- c(files, filesDP[[dp]], "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
+        files <- c(files, filesDP[[dp]], "stamps.rdata",
+                   "log.rdata",
+                   "tr_tb_updt.rdata")
         transfer <- c(transfer, rep(1, length(filesDP[[dp]]) + 3))
         destination <- c(destination, rep(dp, length(filesDP[[dp]]) + 3))
       }
@@ -1925,11 +1989,17 @@ send_pause_continue_kp <- function(params,
     destination <- c(destination, 10)
   }
   MakeCSV(files, transfer, destination, params$write_path)
-  params <- store_stamp_entry(params, "Files done trigger file", "Trigger File created")
+  params <- store_stamp_entry(params,
+                              "Files done trigger file",
+                              "Trigger File created")
   if (wait_for_turn) {
-    params <- store_stamp_entry(params, "R program execution delayed", "Tracking Table")
+    params <- store_stamp_entry(params,
+                                "R program execution delayed",
+                                "Tracking Table")
     wait_for_turn.kp(params, sleep_time)
-    params <- store_stamp_entry(params, "R program execution restarted", "Tracking Table")
+    params <- store_stamp_entry(params,
+                                "R program execution restarted",
+                                "Tracking Table")
   }
   WriteStampsCSV(params)
   WriteStampsRaw(params)
@@ -1956,7 +2026,8 @@ send_pause_continue_kp <- function(params,
               params$readPathDP[-params$data_partner_id],
               max_waiting_time = max_waiting_time,
               verbose = params$verbose)
-      delete_trigger("files_done.ok", params$readPathDP[-params$data_partner_id])
+      delete_trigger("files_done.ok",
+                     params$readPathDP[-params$data_partner_id])
     }
   } else if (from == "DP1") {
     if (params$verbose) cat("Waiting for data partner 1\n")
@@ -1978,17 +2049,22 @@ send_pause_continue_kp <- function(params,
   params <- UpdateCounters.kp(params)
   params <- new_log_entry_kp(params)
   params <- MergeStampsRaw.kp(params, from)
-  params <- store_stamp_entry(params, "R program execution begins", "Tracking Table")
+  params <- store_stamp_entry(params,
+                              "R program execution begins",
+                              "Tracking Table")
   params <- MergeTrackingTableRAW.kp(params, from)
   return(params)
 }
 
 
-PauseContinue.kp <- function(params, from = NULL, max_waiting_time = 24 * 60 * 60) {
+PauseContinue.kp <- function(params, from = NULL,
+                             max_waiting_time = 24 * 60 * 60) {
   params <- StoreLogEntry.kp(params, "")
   params <- StoreTrackingTableEntry.kp(params)
   WriteLogCSV(params)
-  params <- store_stamp_entry(params, "R program execution paused", "Tracking Table")
+  params <- store_stamp_entry(params,
+                              "R program execution paused",
+                              "Tracking Table")
   if (from == "AC") {
     if (params$verbose) cat("Waiting for analysis center\n")
     Standby("files_done.ok",
@@ -2009,7 +2085,8 @@ PauseContinue.kp <- function(params, from = NULL, max_waiting_time = 24 * 60 * 6
               params$readPathDP[-params$data_partner_id],
               max_waiting_time = max_waiting_time,
               verbose = params$verbose)
-      delete_trigger("files_done.ok", params$readPathDP[-params$data_partner_id])
+      delete_trigger("files_done.ok",
+                     params$readPathDP[-params$data_partner_id])
     }
   }
   if (params$verbose) cat("Resuming local processing\n\n")
@@ -2017,7 +2094,9 @@ PauseContinue.kp <- function(params, from = NULL, max_waiting_time = 24 * 60 * 6
   params <- UpdateCounters.kp(params)
   params <- new_log_entry_kp(params)
   params <- MergeStampsRaw.kp(params, from)
-  params <- store_stamp_entry(params, "R program execution begins", "Tracking Table")
+  params <- store_stamp_entry(params,
+                              "R program execution begins",
+                              "Tracking Table")
   params <- MergeTrackingTableRAW.kp(params, from)
   WriteLogCSV(params)
   return(params)
@@ -2033,15 +2112,18 @@ ReceivedError.kp <- function(params, from) {
   result <- list()
   message <- ""
   if (from == "AC") {
-    messageExists <- file.exists(file.path(params$readPathAC, "errorMessage.rdata"))
+    messageExists <- file.exists(file.path(params$readPathAC,
+                                           "errorMessage.rdata"))
     if (messageExists) {
       message <- read_error_message(params$readPathAC)
     }
   } else {
-    messageExists <- file.exists(file.path(params$readPathDP, "errorMessage.rdata"))
+    messageExists <- file.exists(file.path(params$readPathDP,
+                                           "errorMessage.rdata"))
     for (id in 1:params$num_data_partners) {
       if (messageExists[id]) {
-        message <- paste0(message, read_error_message(params$readPathDP[id]), " ")
+        message <- paste0(message,
+                          read_error_message(params$readPathDP[id]), " ")
       }
     }
   }
@@ -2205,9 +2287,11 @@ create_containers <- function(pA, pB, blocks) {
   little_block_g <- blocks$gLittleBlock
 
   little_filesize_z   <- 8 * little_blocksize * little_block_g
-  little_filesize_w   <- 8 * little_blocksize * pB # used for w, v, RW, wr, rv, Cox
+  # used for w, v, RW, wr, rv, Cox
+  little_filesize_w   <- 8 * little_blocksize * pB
   little_filesize_rz  <- 8 * little_blocksize^2
-  little_filesize_pr  <- 8 * (pA + 1) * pB        # I think this is not used anymore
+  # I think this is not used anymore
+  little_filesize_pr  <- 8 * (pA + 1) * pB
   little_filesize_xr <- 8 * pA * pB
 
   num_containers_z <- ceiling(num_blocks * little_filesize_z / maximum_filesize)
@@ -2222,73 +2306,92 @@ create_containers <- function(pA, pB, blocks) {
   num_large_container_w <- num_blocks %% num_containers_w
   num_small_container_w <- num_containers_w - num_large_container_w
 
-  num_containers_rz <- ceiling(num_blocks * little_filesize_rz / maximum_filesize)
+  num_containers_rz <- ceiling(num_blocks * little_filesize_rz /
+                                 maximum_filesize)
   num_blocks_small_containers_rz <- trunc(num_blocks / num_containers_rz)
   num_blocks_large_container_rz <- num_blocks_small_containers_rz + 1
   num_large_container_rz <- num_blocks %% num_containers_rz
   num_small_container_rz <- num_containers_rz - num_large_container_rz
 
-  num_containers_pr <- ceiling(num_blocks * little_filesize_pr / maximum_filesize)
+  num_containers_pr <- ceiling(num_blocks * little_filesize_pr /
+                                 maximum_filesize)
   num_blocks_small_container_pr <- trunc(num_blocks / num_containers_pr)
   num_blocks_large_container_pr <- num_blocks_small_container_pr + 1
   num_large_container_pr <- num_blocks %% num_containers_pr
   num_small_container_pr <- num_containers_pr - num_large_container_pr
 
-  num_containers_xr <- ceiling(num_blocks * little_filesize_xr / maximum_filesize)
+  num_containers_xr <- ceiling(num_blocks * little_filesize_xr /
+                                 maximum_filesize)
   num_blocks_small_containers_xr <- trunc(num_blocks / num_containers_xr)
   num_blocks_large_container_xr <- num_blocks_small_containers_xr + 1
   num_large_container_xr <- num_blocks %% num_containers_xr
   num_small_container_xr <- num_containers_xr - num_large_container_xr
 
   if (num_large_container_z > 0) {
-    file_break_z <- c(0:(num_large_container_z - 1) * num_blocks_large_container_z + 1,
-                      0:(num_small_container_z - 1) * num_blocks_small_container_z + 1 +
+    file_break_z <- c(0:(num_large_container_z - 1) *
+                        num_blocks_large_container_z + 1,
+                      0:(num_small_container_z - 1) *
+                        num_blocks_small_container_z + 1 +
                         num_large_container_z * num_blocks_large_container_z)
   } else {
-    file_break_z <- c(0:(num_small_container_z - 1) * num_blocks_small_container_z + 1 +
+    file_break_z <- c(0:(num_small_container_z - 1) *
+                        num_blocks_small_container_z + 1 +
                         num_large_container_z * num_blocks_large_container_z)
   }
 
   if (num_large_container_w > 0) {
-    filebreak_w <- c(0:(num_large_container_w - 1) * num_blocks_large_container_w + 1,
-                     0:(num_small_container_w - 1) * num_blocks_small_container_w + 1 +
+    filebreak_w <- c(0:(num_large_container_w - 1) *
+                       num_blocks_large_container_w + 1,
+                     0:(num_small_container_w - 1) *
+                       num_blocks_small_container_w + 1 +
                        num_large_container_w * num_blocks_large_container_w)
   } else {
-    filebreak_w <- c(0:(num_small_container_w - 1) * num_blocks_small_container_w + 1 +
+    filebreak_w <- c(0:(num_small_container_w - 1) *
+                       num_blocks_small_container_w + 1 +
                        num_large_container_w * num_blocks_large_container_w)
   }
 
   if (num_large_container_rz > 0) {
-    filebreak_rz <- c(0:(num_large_container_rz - 1) * num_blocks_large_container_rz + 1,
-                      0:(num_small_container_rz - 1) * num_blocks_small_containers_rz + 1 +
+    filebreak_rz <- c(0:(num_large_container_rz - 1) *
+                        num_blocks_large_container_rz + 1,
+                      0:(num_small_container_rz - 1) *
+                        num_blocks_small_containers_rz + 1 +
                         num_large_container_rz * num_blocks_large_container_rz)
   } else {
-    filebreak_rz <- c(0:(num_small_container_rz - 1) * num_blocks_small_containers_rz + 1 +
+    filebreak_rz <- c(0:(num_small_container_rz - 1) *
+                        num_blocks_small_containers_rz + 1 +
                         num_large_container_rz * num_blocks_large_container_rz)
   }
 
   if (num_large_container_pr > 0) {
-    filebreak_pr <- c(0:(num_large_container_pr - 1) * num_blocks_large_container_pr + 1,
-                      0:(num_small_container_pr - 1) * num_blocks_small_container_pr + 1 +
+    filebreak_pr <- c(0:(num_large_container_pr - 1) *
+                        num_blocks_large_container_pr + 1,
+                      0:(num_small_container_pr - 1) *
+                        num_blocks_small_container_pr + 1 +
                         num_large_container_pr * num_blocks_large_container_pr)
   } else {
-    filebreak_pr <- c(0:(num_small_container_pr - 1) * num_blocks_small_container_pr + 1 +
+    filebreak_pr <- c(0:(num_small_container_pr - 1) *
+                        num_blocks_small_container_pr + 1 +
                         num_large_container_pr * num_blocks_large_container_pr)
   }
 
   if (num_large_container_xr > 0) {
-    filebreak_xr <- c(0:(num_large_container_xr - 1) * num_blocks_large_container_xr + 1,
-                      0:(num_small_container_xr - 1) * num_blocks_small_containers_xr + 1 +
+    filebreak_xr <- c(0:(num_large_container_xr - 1) *
+                        num_blocks_large_container_xr + 1,
+                      0:(num_small_container_xr - 1) *
+                        num_blocks_small_containers_xr + 1 +
                         num_large_container_xr * num_blocks_large_container_xr)
   } else {
-    filebreak_xr <- c(0:(num_small_container_xr - 1) * num_blocks_small_containers_xr + 1 +
+    filebreak_xr <- c(0:(num_small_container_xr - 1) *
+                        num_blocks_small_containers_xr + 1 +
                         num_large_container_xr * num_blocks_large_container_xr)
   }
 
   containers$file_break_z  <- file_break_z
   containers$filebreak_w   <- filebreak_w
   containers$filebreak_rz  <- filebreak_rz
-  containers$filebreak_pr  <- filebreak_pr # I think we are not using this anymore
+  # I think we are not using this anymore
+  containers$filebreak_pr  <- filebreak_pr
   containers$filebreak_v   <- filebreak_w
   containers$filebreak_RW  <- filebreak_w
   containers$filebreak_wr  <- filebreak_w
@@ -2344,7 +2447,8 @@ formatStat <- function(x) {
 
 formatStatList <- function(vals) {
   # Assumes that x is non-empty set of numeric or NA and there are no NaN's
-  # width = 10, justify = right => standard output, so no worries about justify nor width
+  # width = 10, justify = right => standard output, so no worries about justify
+  # nor width
   notNA <- which(!is.na(vals))
   notZero <- which(vals != 0)
   keep <- intersect(notNA, notZero)
@@ -2500,7 +2604,9 @@ MergeStampsRaw.3p <- function(params, from) {
 initialize_time_stamps_kp <- function(params) {
   stamps <- list()
   stamps$blank <- data.frame(Step        = params$pmn_step_counter,
-                             Source      = paste0("Org dp", params$data_partner_id, " Dist Reg"),
+                             Source      = paste0("Org dp",
+                                                  params$data_partner_id,
+                                                  " Dist Reg"),
                              Description = "R program execution begins",
                              Time        = GetRoundTripTime(),
                              Type        = "Tracking Table")
@@ -2565,7 +2671,8 @@ MergeStampsRaw.kp <- function(params, from) {
 
 ############################# SHARED LOG FUNCTIONS #############################
 
-add_to_log <- function(params, functionName, readTime, readSize, writeTime, writeSize) {
+add_to_log <- function(params, functionName, readTime, readSize,
+                       writeTime, writeSize) {
   readTime  <- round(as.numeric(readTime),  digits = 2)
   writeTime <- round(as.numeric(writeTime), digits = 2)
   readSize  <- round(as.numeric(readSize),  digits = 0)
@@ -2604,7 +2711,8 @@ WriteToLogSummary <- function(c1 = "", c2 = "", c3 = "",
     c2 <- round(c2, 2)
   }
   write.table(data.frame(c1, c2, c3),
-              file.path(write_path, "log_summary.csv"), sep = ",", col.names = FALSE,
+              file.path(write_path, "log_summary.csv"), sep = ",",
+              col.names = FALSE,
               row.names = FALSE, append = append)
 }
 
@@ -2646,11 +2754,14 @@ StoreLogEntry.2p <- function(params, files) {
   params$log$current$Iteration.alg <- params$algIterationCounter
   params$log$current$Party <- params$party_name
   params$log$current$End.Time <- GetUTCTime()
-  params$log$current$Computation.Time <- round(as.numeric(difftime(
-    params$log$current$End.Time, params$log$current$Start.Time, units = "secs")) -
+  params$log$current$Computation.Time <-
+    round(as.numeric(difftime(
+    params$log$current$End.Time,
+    params$log$current$Start.Time, units = "secs")) -
       params$log$current$Read.Time - params$log$current$Write.Time, 2)
   params$log$current$Files.Sent <- paste(files, collapse = ", ")
-  params$log$current$Bytes.Sent <- sum(file.size(file.path(params$write_path, files)))
+  params$log$current$Bytes.Sent <-
+    sum(file.size(file.path(params$write_path, files)))
   if (is.na(params$log$current$Bytes.Sent)) {
     params$log$current$Bytes.Sent <- 0
   }
@@ -2703,11 +2814,16 @@ SummarizeLog.2p <- function(params) {
   Party.A.Writing.Time <- sum(log$Write.Time[indexA])
   Party.A.Computing.Time <- sum(log$Computation.Time[indexA])
   Party.A.Waiting.Time <- sum(log$Wait.Time[indexA])
-  Party.A.Total.Time.HMS <- ConvertSecsToHMS(Party.A.Total.Time, timeOnly = TRUE)
-  Party.A.Reading.Time.HMS <- ConvertSecsToHMS(Party.A.Reading.Time, timeOnly = TRUE)
-  Party.A.Writing.Time.HMS <- ConvertSecsToHMS(Party.A.Writing.Time, timeOnly = TRUE)
-  Party.A.Computing.Time.HMS <- ConvertSecsToHMS(Party.A.Computing.Time, timeOnly = TRUE)
-  Party.A.Waiting.Time.HMS <- ConvertSecsToHMS(Party.A.Waiting.Time, timeOnly = TRUE)
+  Party.A.Total.Time.HMS <-
+    ConvertSecsToHMS(Party.A.Total.Time, timeOnly = TRUE)
+  Party.A.Reading.Time.HMS <-
+    ConvertSecsToHMS(Party.A.Reading.Time, timeOnly = TRUE)
+  Party.A.Writing.Time.HMS <-
+    ConvertSecsToHMS(Party.A.Writing.Time, timeOnly = TRUE)
+  Party.A.Computing.Time.HMS <-
+    ConvertSecsToHMS(Party.A.Computing.Time, timeOnly = TRUE)
+  Party.A.Waiting.Time.HMS <-
+    ConvertSecsToHMS(Party.A.Waiting.Time, timeOnly = TRUE)
   Party.A.Bytes.Read <- sum(log$Read.Size[indexA])
   Party.A.Bytes.Written <- sum(log$Write.Size[indexA])
 
@@ -2720,11 +2836,16 @@ SummarizeLog.2p <- function(params) {
   Party.B.Computing.Time <- sum(log$Computation.Time[indexB])
   Party.B.Waiting.Time <- Party.B.Total.Time - Party.B.Reading.Time -
     Party.B.Writing.Time - Party.B.Computing.Time
-  Party.B.Total.Time.HMS <- ConvertSecsToHMS(Party.B.Total.Time, timeOnly = TRUE)
-  Party.B.Reading.Time.HMS <- ConvertSecsToHMS(Party.B.Reading.Time, timeOnly = TRUE)
-  Party.B.Writing.Time.HMS <- ConvertSecsToHMS(Party.B.Writing.Time, timeOnly = TRUE)
-  Party.B.Computing.Time.HMS <- ConvertSecsToHMS(Party.B.Computing.Time, timeOnly = TRUE)
-  Party.B.Waiting.Time.HMS <- ConvertSecsToHMS(Party.B.Waiting.Time, timeOnly = TRUE)
+  Party.B.Total.Time.HMS <-
+    ConvertSecsToHMS(Party.B.Total.Time, timeOnly = TRUE)
+  Party.B.Reading.Time.HMS <-
+    ConvertSecsToHMS(Party.B.Reading.Time, timeOnly = TRUE)
+  Party.B.Writing.Time.HMS <-
+    ConvertSecsToHMS(Party.B.Writing.Time, timeOnly = TRUE)
+  Party.B.Computing.Time.HMS <-
+    ConvertSecsToHMS(Party.B.Computing.Time, timeOnly = TRUE)
+  Party.B.Waiting.Time.HMS <-
+    ConvertSecsToHMS(Party.B.Waiting.Time, timeOnly = TRUE)
   Party.B.Bytes.Read <- sum(log$Read.Size[indexB])
   Party.B.Bytes.Written <- sum(log$Write.Size[indexB])
 
