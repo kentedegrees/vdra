@@ -5,8 +5,6 @@
 \title{Plotting Survival Curves for Vertical Distributed Cox Regression}
 \usage{
 \method{plot}{survfitDistributed}(x, merge = FALSE, ...)
-
-\method{plot}{survfitDistributed}(x, merge = FALSE, ...)
 }
 \arguments{
 \item{x}{A \code{survfitDistributed} object.}
@@ -18,13 +16,8 @@ on one plot.  If \code{FALSE}, plots all strata in different plots.}
 }
 \value{
 No return value.
-
-No return value.
 }
 \description{
-Plots a survivial curve as specified by
-  \code{survfitDistributed} object.
-
 Plots a survivial curve as specified by
   \code{survfitDistributed} object.
 }
@@ -44,24 +37,7 @@ Plots a survivial curve as specified by
                            ~Race + Sex,
                            data = vdra_data[, 8:11])
  plot(sfit, merge = FALSE)
- sfit <- survfitDistributed(vdra_fit_cox_A)
- plot(sfit)
-
- # From Data Partner 1
- sfit <- survfitDistributed(vdra_fit_cox_A,
-                           ~Exposure,
-                           data = vdra_data[, c(3:4, 5:7)])
- plot(sfit)
- plot(sfit, merge = FALSE)
-
- # From Data Partner 2
- sfit <- survfitDistributed(vdra_fit_cox_B,
-                           ~Race + Sex,
-                           data = vdra_data[, 8:11])
- plot(sfit, merge = FALSE)
 }
 \seealso{
-\code{\link{survfitDistributed}}
-
 \code{\link{survfitDistributed}}
 }

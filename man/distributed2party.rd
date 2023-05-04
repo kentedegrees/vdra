@@ -4,42 +4,8 @@
 \alias{distributed2party}
 \alias{analysis_center_2_party}
 \alias{DataPartner.2Party}
-\alias{survfitDistributed}
-\alias{survfitDistributed.object}
-\alias{print.survfitDistributed}
 \title{Two Party Vertical Distributed Regression Analysis}
 \usage{
-analysis_center_2_party(
-  regression = "linear",
-  data = NULL,
-  response = NULL,
-  strata = NULL,
-  mask = TRUE,
-  monitor_folder = NULL,
-  msreqid = "v_default_00_000",
-  blocksize = 500,
-  tol = 1e-08,
-  max_iterations = 25,
-  sleep_time = 10,
-  max_waiting_time = 86400,
-  popmednet = TRUE,
-  trace = FALSE,
-  verbose = TRUE
-)
-
-DataPartner.2Party(
-  regression = "linear",
-  data = NULL,
-  strata = NULL,
-  mask = TRUE,
-  monitor_folder = NULL,
-  sleep_time = 10,
-  max_waiting_time = 86400,
-  popmednet = TRUE,
-  trace = FALSE,
-  verbose = TRUE
-)
-
 analysis_center_2_party(
   regression = "linear",
   data = NULL,
@@ -138,62 +104,13 @@ every function called during execution. Used for debugging.}
 
 \item{verbose}{logical value.  If \code{TRUE}, prints out information to
 document the progression of the computation.}
-
-\item{x}{an object of type \code{\link{vdracox}}.}
-
-\item{formula}{a formula which defines alternative strata for the survival
-curve.}
 }
 \value{
 Returns an object of \code{\link{class}} \code{\link{vdralinear}} for
   linear regression, \code{\link{vdralogistic}} for logistic regression, or
   \code{\link{vdracox}} for cox regression.
-
-Returns an object of class \code{survfitDistributed}. Objects of this
-  class have methods for the functions \code{print} and \code{plot}. The
-  following components must be included in a legitimate
-  \code{survfitDistributed} object.
-
-  \item{n}{the total number of subjects in each curve.}
-
-  \item{time}{the time points at which the curve has a step.}
-
-  \item{n.risk}{the number of subjects at risk at each time point.}
-
-  \item{n.event}{the number of events that occour at each time point.}
-
-  \item{n.censor}{the number of subjects who are censored at each time
-  point.}
-
-  \item{strata}{the number of points in each strata.}
-
-  \item{surv}{the estimate of the survival time at each time step.}
-
-  \item{type}{the type of censoring.  Currently, always "right".}
-
-Returns an object of \code{\link{class}} \code{\link{vdralinear}} for
-  linear regression, \code{\link{vdralogistic}} for logistic regression, or
-  \code{\link{vdracox}} for cox regression.
 }
 \description{
-\code{analysis_center_2_party} and \code{DataPartner.2Party}
-  are used in conjuction with PopMedNet to perform linear, logistic, or cox
-  regression on data that has been partitioned vertically between two data
-  partners.  The data partner which holds the response variable(s) uses
-  \code{AnalysisCener.2Party} and the other data partner uses
-  \code{DataPartner.2Party}.  While both data partners share information with
-  each other in order to perform the regression, data is kept secure and not
-  shared, nor is any information shared that would allow one data partner to
-  reconstruct part of the other data partners data. Final coefficients and
-  other regression statistics are computed by the analysis center and shared
-  with the other data partner.
-
-This function creates survival curves for a previously defined
-  \code{\link{vdracox}} object.  The function also accepts a formula and the
-  original data supplied by the calling party allowing exploration of other
-  potential strata.  Both \code{formula} and \code{data} must be NULL or both
-  must be specified.
-
 \code{analysis_center_2_party} and \code{DataPartner.2Party}
   are used in conjuction with PopMedNet to perform linear, logistic, or cox
   regression on data that has been partitioned vertically between two data
@@ -266,84 +183,8 @@ fit <- analysis_center_2_party(regression = "cox",
                             strata = c("Exposure", "Sex"),
                             monitor_folder = tempdir())
 }
-
-sfit <- survfitDistributed(vdra_fit_cox_A)
-print(sfit)
-plot(sfit)
-
-# From Data Partner 1
-
-sfit <- survfitDistributed(vdra_fit_cox_A,
-                          ~Exposure,
-                          data = vdra_data[, c(3:4, 5:7)])
-print(sfit)
-plot(sfit)########################### 2 PARTY GLOBAL FUNCTIONS ###########################
-\dontrun{
-## 2 party linear regression
-
-# Analysis Center -- To be run in one instance of R.
-# The working directory should be the same as specified in the PopMedNet
-# requset for the analysis center.
-
-fit <- analysis_center_2_party(regression = "linear",
-                            data = vdra_data[, c(1, 5:7)],
-                            response = "Change_BMI",
-                            monitor_folder = tempdir())
-
-# Data Partner -- To be run in second instand of R, on perhaps a different
-# machine. The working directory should be the same as specified in the
-# PopMedNet request for the data partner.
-
-fit <- DataPartner.2Party(regression = "linear", data = vdra_data[, 8:11],
-                            monitor_folder = tempdir())
-
-## 2 party logistic regression
-
-# Analysis Center -- To be run in one instance of R.
-# The working directory should be the same as specified in the PopMedNet
-# requset for the analysis center.
-
-fit <- analysis_center_2_party(regression = "logistic",
-                            data = vdra_data[, c(2, 5:7)],
-                            response = "WtLost",
-                            monitor_folder = tempdir())
-
-# Data Partner -- To be run in second instand of R, on perhaps a different
-# machine. The working directory should be the same as specified in the
-# PopMedNet request for the data partner.
-
-fit <- DataPartner.2Party(regression = "logistic",
-                         data = vdra_data[, 8:11],
-                         monitor_folder = tempdir())
-
-## 2 party cox regression
-
-# Analysis Center -- To be run in one instance of R.
-# The working directory should be the same as specified in the PopMedNet
-# requset for the analysis center.
-
-fit <- analysis_center_2_party(regression = "cox",
-                            data = vdra_data[, c(3:4, 5:7)],
-                            response = c("Time", "Status"),
-                            strata = c("Exposure", "Sex"),
-                            monitor_folder = tempdir())
-
-# Data Partner -- To be run in second instand of R, on perhaps a different
-# machine. The working directory should be the same as specified in the
-# PopMedNet request for the data partner.
-
-   fit <- DataPartner.2Party(regression = "cox",
-                            data = vdra_data[, 8:11],
-                            strata = c("Exposure", "Sex"),
-                            monitor_folder = tempdir())
-}
 }
 \seealso{
-\code{\link{AnalysisCenter.3Party}}
-  \code{\link{AnalysisCenter.KParty}}
-
-\code{\link{plot.survfitDistributed}}
-
 \code{\link{AnalysisCenter.3Party}}
   \code{\link{AnalysisCenter.KParty}}
 }

@@ -7,8 +7,6 @@
 \title{Hosmer-Lemeshow Test for Vertical Distributed Logistic Regression}
 \usage{
 HoslemTest(x = NULL, nGroups = 10)
-
-HoslemTest(x = NULL, nGroups = 10)
 }
 \arguments{
 \item{x}{an object of type \code{\link{vdralogistic}}.}
@@ -27,32 +25,13 @@ Returns an object of class \code{hoslemdistributed}. Objects of this
   test, in that order.}
 
 }
-
-Returns an object of class \code{hoslemdistributed}. Objects of this
-  class have a method for the function \code{print}.   The following
-  component must be included in a \code{hoslemdistributed} object.
-
-\describe{
-
-\item{hoslem}{a vector containing three numeric quantities: the chi-square
-  value of the test, the degrees of freedom of the test, and p-value of the
-  test, in that order.}
-
-}
 }
 \description{
 Run the Hosmer-Lemeshow test for an object created by 2-party,
   3-party, or K-party vdra logistic regression.  Only the party that holds
   the response may invoke this function.
-
-Run the Hosmer-Lemeshow test for an object created by 2-party,
-  3-party, or K-party vdra logistic regression.  Only the party that holds
-  the response may invoke this function.
 }
 \examples{
- HoslemTest(vdra_fit_logistic_A)
-
- HoslemTest(vdra_fit_logistic_A, 20)
  HoslemTest(vdra_fit_logistic_A)
 
  HoslemTest(vdra_fit_logistic_A, 20)
