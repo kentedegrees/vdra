@@ -854,7 +854,7 @@ summary(fit4)
 
 ## Logistic Regression
 
-For logistic regression, we can perform both the Hosmer-Lemeshow goodness of fit test for logistic regression and plot the receiver operating curve (ROC).  We run these tests on `vdra_fit_logistic_A`, which is the results of the distributed logistic regression (either [2-party](#twoparty-logistic), [$2^T$-party](#twoTparty-logistic), or [$k^T$-party](#kTparty-logistic)) as seen by the data partner which holds the response.  Only the data partner which holds the response can run these functions.  In both cases, the second argument is optional and is the number or groups, or bins, on which to perform the analysis.
+For logistic regression, we can perform both the Hosmer-Lemeshow goodness of fit test for logistic regression and plot the receiver operating curve (roc).  We run these tests on `vdra_fit_logistic_A`, which is the results of the distributed logistic regression (either [2-party](#twoparty-logistic), [$2^T$-party](#twoTparty-logistic), or [$k^T$-party](#kTparty-logistic)) as seen by the data partner which holds the response.  Only the data partner which holds the response can run these functions.  In both cases, the second argument is optional and is the number or groups, or bins, on which to perform the analysis.
 
 
 ```r

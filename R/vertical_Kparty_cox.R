@@ -1654,7 +1654,7 @@ data_partner_k_cox <- function(data,
     make_error_message(params$write_path, params$error_message)
     files <- "error_message.rdata"
     params <- send_pause_continue_kp(params,
-                                     filesAC = files,
+                                     files_ac = files,
                                      from = "AC",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time,
@@ -1670,7 +1670,7 @@ data_partner_k_cox <- function(data,
   params <- send_basic_info_dp(params, data)
   files <- "n_analysis.rdata"
   params <- send_pause_continue_kp(params,
-                                   filesAC = files,
+                                   files_ac = files,
                                    from = "AC",
                                    sleep_time = sleep_time,
                                    max_waiting_time = max_waiting_time,
@@ -1689,7 +1689,7 @@ data_partner_k_cox <- function(data,
   if (params$data_partner_id == 1) {
     params <- do_nothing_acdp(params)
     params <- send_pause_continue_kp(params,
-                                     filesAC = "empty.rdata",
+                                     files_ac = "empty.rdata",
                                      from = "DP",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time,
@@ -1704,7 +1704,7 @@ data_partner_k_cox <- function(data,
       files <- "empty.rdata"
     }
     params <- send_pause_continue_kp(params,
-                                     filesDP = files,
+                                     files_dp = files,
                                      from = "AC",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time,
@@ -1714,12 +1714,12 @@ data_partner_k_cox <- function(data,
 
     if (params$failed) {
       warning(params$error_message)
-      send_pause_quit_kp(params, filesAC = "error_message.rdata",
+      send_pause_quit_kp(params, files_ac = "error_message.rdata",
                          sleep_time = sleep_time)
       return(params$stats)
     } else {
       params <- send_pause_continue_kp(params,
-                                       filesDP = "empty.rdata",
+                                       files_dp = "empty.rdata",
                                        from = "DP",
                                        sleep_time = sleep_time,
                                        max_waiting_time = max_waiting_time)
@@ -1732,7 +1732,7 @@ data_partner_k_cox <- function(data,
     files_list <- rep(list(list()), num_data_partners)
     files_list[[1]] <- "strata_names.rdata"
     params <- send_pause_continue_kp(params,
-                                     filesDP = files_list,
+                                     files_dp = files_list,
                                      from = "DP1",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time,
@@ -1753,7 +1753,7 @@ data_partner_k_cox <- function(data,
     files_list <- rep(list(list()), num_data_partners)
     files_list[[1]] <- "strata.rdata"
     params <- send_pause_continue_kp(params,
-                                     filesDP = files_list,
+                                     files_dp = files_list,
                                      from = "DP1",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time,
@@ -1762,7 +1762,7 @@ data_partner_k_cox <- function(data,
 
   params <- prepare_params_cox_dp(params, data)
   params <- send_pause_continue_kp(params,
-                                   filesDP = "p_scaler_seed.rdata",
+                                   files_dp = "p_scaler_seed.rdata",
                                    from = "DP",
                                    sleep_time = sleep_time,
                                    max_waiting_time = max_waiting_time,
@@ -1774,7 +1774,7 @@ data_partner_k_cox <- function(data,
     files <- c(files, "survival.rdata")
   }
   params <- send_pause_continue_kp(params,
-                                   filesAC = files,
+                                   files_ac = files,
                                    from = "AC",
                                    sleep_time = sleep_time,
                                    max_waiting_time = max_waiting_time,
@@ -1802,7 +1802,7 @@ data_partner_k_cox <- function(data,
     if (params$data_partner_id == 1) {
       files <- "sbeta.rdata"
       params <- send_pause_continue_kp(params,
-                                       filesAC = files,
+                                       files_ac = files,
                                        from = "AC",
                                        sleep_time = sleep_time,
                                        max_waiting_time = max_waiting_time,
@@ -1812,7 +1812,7 @@ data_partner_k_cox <- function(data,
 
       files <- "sbeta.rdata"
       params <- send_pause_continue_kp(params,
-                                       filesAC = files,
+                                       files_ac = files,
                                        from = "DP2",
                                        sleep_time = sleep_time,
                                        max_waiting_time = max_waiting_time,
@@ -1822,7 +1822,7 @@ data_partner_k_cox <- function(data,
 
       files <- c("tsdeltal.rdata", "scaledwsll.rdata", "converged.rdata")
       params <- send_pause_continue_kp(params,
-                                       filesDP = files,
+                                       files_dp = files,
                                        from = "AC",
                                        sleep_time = sleep_time,
                                        max_waiting_time = max_waiting_time,
@@ -1830,7 +1830,7 @@ data_partner_k_cox <- function(data,
     } else if (params$data_partner_id == 2) {
       files <- "sbeta.rdata"
       params <- send_pause_continue_kp(params,
-                                       filesAC = files,
+                                       files_ac = files,
                                        from = "AC",
                                        sleep_time = sleep_time,
                                        max_waiting_time = max_waiting_time,
@@ -1841,7 +1841,7 @@ data_partner_k_cox <- function(data,
       files_list <- rep(list(list()), num_data_partners)
       files_list[[1]] <- "empty.rdata"
       params <- send_pause_continue_kp(params,
-                                       filesDP = files_list,
+                                       files_dp = files_list,
                                        from = "DP1",
                                        sleep_time = sleep_time,
                                        max_waiting_time = max_waiting_time,
@@ -1849,7 +1849,7 @@ data_partner_k_cox <- function(data,
     } else {
       files <- "sbeta.rdata"
       params <- send_pause_continue_kp(params,
-                                       filesAC = files,
+                                       files_ac = files,
                                        from = "DP1",
                                        sleep_time = sleep_time,
                                        max_waiting_time = max_waiting_time)
@@ -1862,7 +1862,7 @@ data_partner_k_cox <- function(data,
       files <- c("products.rdata")
     }
     params <- send_pause_continue_kp(params,
-                                     filesAC = files,
+                                     files_ac = files,
                                      from = "AC",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time,
@@ -1887,7 +1887,7 @@ data_partner_k_cox <- function(data,
       files <- "u.rdata"
     }
     params <- send_pause_continue_kp(params,
-                                     filesAC = files,
+                                     files_ac = files,
                                      from = "AC",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time,
@@ -1943,7 +1943,7 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
     return(invisible(NULL))
   }
 
-  params <- PauseContinue.kp(params, from = "DP",
+  params <- pause_continue_kp(params, from = "DP",
                              max_waiting_time = max_waiting_time)
 
   possible_error <- ReceivedError.kp(params, from = "DP")
@@ -1953,14 +1953,14 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
     make_error_message(params$write_path, possible_error$message)
     files <- "error_message.rdata"
     params <- send_pause_continue_kp(params,
-                                     filesDP = files,
+                                     files_dp = files,
                                      from = "DP",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
     params <- send_pause_quit_kp(params,
                                  sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.kp(params)
+    summarize_log_kp(params)
     return(params$stats)
   }
 
@@ -1971,20 +1971,20 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
     files <- "error_message.rdata"
     warning(params$error_message)
     params <- send_pause_continue_kp(params,
-                                     filesDP = files,
+                                     files_dp = files,
                                      from = "DP",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
     params <- send_pause_quit_kp(params,
                                  sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.kp(params)
+    summarize_log_kp(params)
     return(params$stats)
   }
 
   files <- "empty.rdata"
   params <- send_pause_continue_kp(params,
-                                   filesDP = files,
+                                   files_dp = files,
                                    from = "DP1",
                                    sleep_time = sleep_time,
                                    max_waiting_time = max_waiting_time)
@@ -1994,7 +1994,7 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
   files_list <- rep(list(list()), num_data_partners)
   files_list[[1]] <- "empty.rdata"
   params <- send_pause_continue_kp(params,
-                                   filesDP = files_list,
+                                   files_dp = files_list,
                                    from = "DP",
                                    sleep_time = sleep_time,
                                    max_waiting_time = max_waiting_time)
@@ -2005,7 +2005,7 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
     warning(possible_error$message)
     params <- send_pause_quit_kp(params, sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.kp(params)
+    summarize_log_kp(params)
     return(params$stats)
   }
 
@@ -2018,13 +2018,13 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
     files <- "error_message.rdata"
     warning(params$error_message)
     params <- send_pause_continue_kp(params,
-                                     filesDP = files,
+                                     files_dp = files,
                                      from = "DP",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
     params <- send_pause_quit_kp(params, sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.kp(params)
+    summarize_log_kp(params)
     return(params$stats)
   }
 
@@ -2039,7 +2039,7 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
       files <- "u.rdata"
     }
     params <- send_pause_continue_kp(params,
-                                     filesDP = files,
+                                     files_dp = files,
                                      from = "DP",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
@@ -2049,7 +2049,7 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
     files_list[[1]] <- "sbeta.rdata"
     files_list[[2]] <- "empty.rdata"
     params <- send_pause_continue_kp(params,
-                                     filesDP = files_list,
+                                     files_dp = files_list,
                                      from = "DP1",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
@@ -2058,7 +2058,7 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
     files_list <- rep(list(list()), num_data_partners)
     files_list[[1]] <- "wsr1.rdata"
     params <- send_pause_continue_kp(params,
-                                     filesDP = files_list,
+                                     files_dp = files_list,
                                      from = "DP",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time,
@@ -2072,13 +2072,13 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
       files <- "error_message.rdata"
       warning(params$error_message)
       params <- send_pause_continue_kp(params,
-                                       filesDP = files,
+                                       files_dp = files,
                                        from = "DP",
                                        sleep_time = sleep_time,
                                        max_waiting_time = max_waiting_time)
       params <- send_pause_quit_kp(params, sleep_time = sleep_time,
                                    job_failed = TRUE)
-      SummarizeLog.kp(params)
+      summarize_log_kp(params)
       return(params$stats)
     }
 
@@ -2088,7 +2088,7 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
                            "maxiterexceeded.rdata")
     }
     params <- send_pause_continue_kp(params,
-                                     filesDP = files_list,
+                                     files_dp = files_list,
                                      from = "DP",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
@@ -2101,11 +2101,11 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
   params <- comp_results_cox_ac(params)
   files <- "stats.rdata"
   params <- send_pause_continue_kp(params,
-                                   filesDP = files,
+                                   files_dp = files,
                                    from = "DP",
                                    sleep_time = sleep_time,
                                    max_waiting_time = max_waiting_time)
   send_pause_quit_kp(params, sleep_time = sleep_time)
-  SummarizeLog.kp(params)
+  summarize_log_kp(params)
   return(params$stats)
 }

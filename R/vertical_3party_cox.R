@@ -2205,7 +2205,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
                    read_error_message(params$read_path[["B"]])))
     params <- send_pause_quit_3p(params, sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.3p(params)
+    summarize_log_3p(params)
     return(params$stats)
   }
   if (file.exists(file.path(params$read_path[["A"]], "error_message.rdata"))) {
@@ -2218,7 +2218,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
                                      max_waiting_time = max_waiting_time)
     params <- send_pause_quit_3p(params, sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.3p(params)
+    summarize_log_3p(params)
     return(params$stats)
   }
   if (file.exists(file.path(params$read_path[["B"]], "error_message.rdata"))) {
@@ -2231,7 +2231,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
                                      max_waiting_time = max_waiting_time)
     params <- send_pause_quit_3p(params, sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.3p(params)
+    summarize_log_3p(params)
     return(params$stats)
   }
 
@@ -2249,7 +2249,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
                                      max_waiting_time = max_waiting_time)
     params <- send_pause_quit_3p(params, sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.3p(params)
+    summarize_log_3p(params)
     return(params$stats)
   }
 
@@ -2280,7 +2280,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
                                        max_waiting_time = max_waiting_time)
       params <- send_pause_quit_3p(params, sleep_time = sleep_time,
                                    job_failed = TRUE)
-      SummarizeLog.3p(params)
+      summarize_log_3p(params)
       return(params$stats)
     }
     params <- transfer_results_cox_t3(params)
@@ -2290,7 +2290,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
     params <- send_pause_quit_3p(params, sleep_time = sleep_time)
-    SummarizeLog.3p(params)
+    summarize_log_3p(params)
     return(params$stats)
   }
 
@@ -2306,7 +2306,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
                                      max_waiting_time = max_waiting_time)
     params <- send_pause_quit_3p(params, sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.3p(params)
+    summarize_log_3p(params)
     return(params$stats)
   }
 
@@ -2341,7 +2341,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
                                      max_waiting_time = max_waiting_time)
     params <- send_pause_quit_3p(params, sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.3p(params)
+    summarize_log_3p(params)
     return(params$stats)
   }
 
@@ -2364,7 +2364,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
                                        max_waiting_time = max_waiting_time)
       params <- send_pause_quit_3p(params, sleep_time = sleep_time,
                                    job_failed = TRUE)
-      SummarizeLog.3p(params)
+      summarize_log_3p(params)
       return(params$stats)
     }
     params <- transfer_results_cox_t3(params)
@@ -2374,7 +2374,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
     params <- send_pause_quit_3p(params, sleep_time = sleep_time)
-    SummarizeLog.3p(params)
+    summarize_log_3p(params)
     return(params$stats)
   }
 
@@ -2425,7 +2425,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
                                        max_waiting_time = max_waiting_time)
       params <- send_pause_quit_3p(params, sleep_time = sleep_time,
                                    job_failed = TRUE)
-      SummarizeLog.3p(params)
+      summarize_log_3p(params)
       return(params$stats)
     }
     EndingIteration(params)
@@ -2443,7 +2443,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
                                    max_waiting_time = max_waiting_time)
 
   params <- send_pause_quit_3p(params, sleep_time = sleep_time)
-  SummarizeLog.3p(params)
+  summarize_log_3p(params)
 
   return(invisible(params$stats))
 }

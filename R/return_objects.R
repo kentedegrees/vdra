@@ -127,7 +127,7 @@ NULL
 #'
 #'   \item{hoslem}{the Hosmer Lemshow Test statistics.}
 #'
-#'   \item{ROC}{a list containing the coordinates for an ROC curve.}
+#'   \item{roc}{a list containing the coordinates for an roc curve.}
 #'
 #'   \item{iter}{the number of iterations of the cox algorithm before
 #'   convergence.}

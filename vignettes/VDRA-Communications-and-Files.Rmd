@@ -19,7 +19,7 @@ library(knitr)
 
 While the `VDRA` package was specifically designed to work with PopMedNet, the intent of this project was to produce a package that could be modified, with some effort, to be used with other automated file transfer programs.  With that end in mind, the purpose of this vignette is to explain how the `VDRA` package and PopMedNet communicate with each other, and also to outline certain design considerations that had to be implemented in the VDRA package due how PopMedNet itself is designed.
 
-The functions that handle the actual communication side of the `VDRA` package can be found in the file `vertical_utilities.R` in the four code sections that contain the phrase "PMN Communication Functions."  Ideally, with the aid of this vignette, modifying those functions appropriately will allow one to interface with different protocols.
+The functions that handle the actual communication side of the `VDRA` package can be found in the file `vertical_utilities.R` in the four code sections that contain the phrase "PMN Communication functions."  Ideally, with the aid of this vignette, modifying those functions appropriately will allow one to interface with different protocols.
 
 # Data Partners and Trusted Third Parties
 

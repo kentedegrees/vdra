@@ -171,7 +171,7 @@ analysis_center_2_party <- function(regression            = "linear",
   }
 
   elp <- GetElapsedTime(proc.time() - start_time,
-                        final = TRUE, timeOnly = FALSE)
+                        final = TRUE, time_only = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -211,7 +211,7 @@ DataPartner.2Party <- function(regression          = "linear",
   }
 
   elp <- GetElapsedTime(proc.time() - start_time, final = TRUE,
-                        timeOnly = FALSE)
+                        time_only = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -257,7 +257,7 @@ DataPartner1.3Party <- function(regression            = "linear",
   }
 
   elp <- GetElapsedTime(proc.time() - start_time,
-                        final = TRUE, timeOnly = FALSE)
+                        final = TRUE, time_only = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -298,7 +298,7 @@ DataPartner2.3Party <- function(regression          = "linear",
   }
 
   elp <- GetElapsedTime(proc.time() - start_time,
-                        final = TRUE, timeOnly = FALSE)
+                        final = TRUE, time_only = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -502,7 +502,7 @@ AnalysisCenter.3Party <- function(regression            = "linear",
   }
 
   elp <- GetElapsedTime(proc.time() - start_time,
-                        final = TRUE, timeOnly = FALSE)
+                        final = TRUE, time_only = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -554,7 +554,7 @@ DataPartner.KParty <- function(regression            = "linear",
   }
 
   elp <- GetElapsedTime(proc.time() - start_time,
-                        final = TRUE, timeOnly = FALSE)
+                        final = TRUE, time_only = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -771,7 +771,7 @@ AnalysisCenter.KParty <- function(regression          = "linear",
   }
 
   elp <- GetElapsedTime(proc.time() - start_time,
-                        final = TRUE, timeOnly = FALSE)
+                        final = TRUE, time_only = FALSE)
   if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
@@ -1338,21 +1338,21 @@ Standby <- function(triggerName, triggerLocation,
 
   fpath <- file.path(triggerLocation, triggerName)
   start_time <- proc.time()[3]
-  elapsedTime <- 0
+  elapsed_time <- 0
 
   while (!found) {
     found <- all(file.exists(fpath))
 
-    if (elapsedTime > max_waiting_time) {
+    if (elapsed_time > max_waiting_time) {
       break
     }
 
     if (!found) {
       Sys.sleep(sleep_time)
-      elapsedTime <- round(proc.time()[3] - start_time, 0)
+      elapsed_time <- round(proc.time()[3] - start_time, 0)
     }
 
-    if (verbose) cat("Elapsed Time:", HMS(elapsedTime), "\r")
+    if (verbose) cat("Elapsed Time:", HMS(elapsed_time), "\r")
   }
   if (verbose) cat("\n")
   if (!found) {
@@ -1431,7 +1431,7 @@ send_pause_quit_2p <- function(params,
                                sleep_time = 10,
                                job_failed = FALSE) {
 
-  params <- StoreLogEntry.2p(params, files)
+  params <- store_log_entry_2p(params, files)
   params <- StoreTrackingTableEntry.2p(params)
   WriteLogCSV(params)
   write_log_raw(params)
@@ -1484,7 +1484,7 @@ send_pause_continue_2p <- function(params,
                                    sleep_time = 10,
                                    max_waiting_time = NULL,
                                    job_started = FALSE) {
-  params <- StoreLogEntry.2p(params, files)
+  params <- store_log_entry_2p(params, files)
   params <- StoreTrackingTableEntry.2p(params)
   WriteLogCSV(params)
   write_log_raw(params)
@@ -1537,7 +1537,7 @@ send_pause_continue_2p <- function(params,
 
 
 PauseContinue.2p <- function(params, max_waiting_time) {
-  params <- StoreLogEntry.2p(params, "")
+  params <- store_log_entry_2p(params, "")
   WriteLogCSV(params)
   if (params$party_name == "A") {
     if (params$verbose) cat("Waiting for data partner\n")
@@ -1549,7 +1549,7 @@ PauseContinue.2p <- function(params, max_waiting_time) {
           verbose = params$verbose)
   if (params$verbose) cat("Resuming local processing\n\n")
   delete_trigger("files_done.ok", params$read_path)
-  params <- MergeLogRaw.2p(params)
+  params <- merge_log_raw_2p(params)
   params <- new_log_entry_2p(params)
   params <- MergeStampsRaw.2p(params)
   params <- read_tracking_table_update_2p(params)
@@ -1580,8 +1580,8 @@ wait_for_turn.3p <- function(params, sleep_time) {
 
 
   while (as.integer(Sys.time()) %% modulus != targetTime) {
-    elapsedTime <- round(proc.time()[3] - start_time, 0)
-    if (params$verbose) cat("Elapsed Time:", HMS(elapsedTime), "\r")
+    elapsed_time <- round(proc.time()[3] - start_time, 0)
+    if (params$verbose) cat("Elapsed Time:", HMS(elapsed_time), "\r")
     Sys.sleep(0.1)
   }
   if (params$verbose) cat("\n\n")
@@ -1624,7 +1624,7 @@ send_pause_quit_3p <- function(params,
     transfer <- c(transfer, 10)
     destination <- c(destination, 10)
   }
-  params <- StoreLogEntry.3p(params, c(files_a, files_b, files_t))
+  params <- store_log_entry_3p(params, c(files_a, files_b, files_t))
   params <- StoreTrackingTableEntry.3p(params)
   WriteLogCSV(params)
   write_log_raw(params)
@@ -1679,7 +1679,7 @@ send_pause_continue_3p <- function(params,
                                    max_waiting_time = 24 * 60 * 60,
                                    job_started = FALSE,
                                    wait_for_turn = FALSE) {
-  params <- StoreLogEntry.3p(params, c(files_a, files_b, files_t))
+  params <- store_log_entry_3p(params, c(files_a, files_b, files_t))
   params <- StoreTrackingTableEntry.3p(params)
   WriteLogCSV(params)
   write_log_raw(params)
@@ -1749,7 +1749,7 @@ send_pause_continue_3p <- function(params,
           verbose = params$verbose)
   if (params$verbose) cat("Resuming local processing\n\n")
   delete_trigger("files_done.ok", params$read_path[from])
-  params <- MergeLogRaw.3p(params, from)
+  params <- merge_log_raw_3p(params, from)
   params <- UpdateCounters.3p(params)
   params <- new_log_entry_3p(params)
   params <- MergeStampsRaw.3p(params, from)
@@ -1763,7 +1763,7 @@ send_pause_continue_3p <- function(params,
 
 PauseContinue.3p <- function(params, from = NULL,
                              max_waiting_time = 24 * 60 * 60) {
-  params <- StoreLogEntry.3p(params, "")
+  params <- store_log_entry_3p(params, "")
   params <- StoreTrackingTableEntry.3p(params)
   WriteLogCSV(params)
   if (length(from) == 1) {
@@ -1782,7 +1782,7 @@ PauseContinue.3p <- function(params, from = NULL,
           verbose = params$verbose)
   if (params$verbose) cat("Resuming local processing\n\n")
   delete_trigger("files_done.ok", params$read_path[from])
-  params <- MergeLogRaw.3p(params, from)
+  params <- merge_log_raw_3p(params, from)
   params <- UpdateCounters.3p(params)
   params <- new_log_entry_3p(params)
   params <- MergeStampsRaw.3p(params, from)
@@ -1820,8 +1820,8 @@ wait_for_turn.kp <- function(params, sleep_time) {
 
   if (params$verbose) cat("Elapsed Time:", HMS(0), "\r")
   while (as.integer(Sys.time()) %% modulus != targetTime) {
-    elapsedTime <- round(proc.time()[3] - start_time, 0)
-    if (params$verbose) cat("Elapsed Time:", HMS(elapsedTime), "\r")
+    elapsed_time <- round(proc.time()[3] - start_time, 0)
+    if (params$verbose) cat("Elapsed Time:", HMS(elapsed_time), "\r")
     Sys.sleep(0.1)
   }
   if (params$verbose) cat("\n\n")
@@ -1829,18 +1829,18 @@ wait_for_turn.kp <- function(params, sleep_time) {
 
 
 send_pause_quit_kp <- function(params,
-                               filesAC = NULL,
-                               filesDP = NULL,
+                               files_ac = NULL,
+                               files_dp = NULL,
                                sleep_time = 10,
                                job_failed = FALSE,
                                wait_for_turn = FALSE) {
 
-  # Assumes that upon quitting, same thing is sent to everyone, so filesDP
+  # Assumes that upon quitting, same thing is sent to everyone, so files_dp
   # cannot be a list
 
   params$lastIteration <- TRUE
   params$completed     <- TRUE
-  params <- StoreLogEntry.kp(params, c(filesAC, filesDP))
+  params <- store_log_entry_kp(params, c(files_ac, files_dp))
   params <- StoreTrackingTableEntry.kp(params)
   WriteLogCSV(params)
   write_log_raw(params)
@@ -1848,18 +1848,18 @@ send_pause_quit_kp <- function(params,
   if (params$data_partner_id != 0) {
     WriteTrackingTableRaw(params)
 
-    filesAC <- c(filesAC, "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
-    if (!is.null(filesDP)) {
-      filesDP <- c(filesDP, "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
+    files_ac <- c(files_ac, "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
+    if (!is.null(files_dp)) {
+      files_dp <- c(files_dp, "stamps.rdata", "log.rdata", "tr_tb_updt.rdata")
     }
 
     dataPartnerTarget <- 1:params$num_data_partners
     dataPartnerTarget <- dataPartnerTarget[-params$data_partner_id]
-    files <- c(filesAC, rep(filesDP, length(dataPartnerTarget)),
+    files <- c(files_ac, rep(files_dp, length(dataPartnerTarget)),
                "file_list.csv")
     transfer <- c(rep(1, length(files) - 1), 10)
-    destination <- c(rep(0, length(filesAC)),
-                     rep(dataPartnerTarget, each = length(filesDP)),
+    destination <- c(rep(0, length(files_ac)),
+                     rep(dataPartnerTarget, each = length(files_dp)),
                      10)
   }
 
@@ -1912,29 +1912,29 @@ send_pause_quit_kp <- function(params,
 
 
 send_pause_continue_kp <- function(params,
-                                   filesAC = NULL,
-                                   filesDP = NULL,
+                                   files_ac = NULL,
+                                   files_dp = NULL,
                                    from   = NULL,
                                    sleep_time = 10,
                                    max_waiting_time = 24 * 60 * 60,
                                    job_started = FALSE,
                                    wait_for_turn = FALSE) {
-  if (!is.list(filesDP)) {
-    params <- StoreLogEntry.kp(params, c(filesAC, filesDP))
+  if (!is.list(files_dp)) {
+    params <- store_log_entry_kp(params, c(files_ac, files_dp))
     params <- StoreTrackingTableEntry.kp(params)
     WriteLogCSV(params)
     write_log_raw(params)
-    if (length(filesAC) + length(filesDP) > 0) {
+    if (length(files_ac) + length(files_dp) > 0) {
       WriteTrackingTableRaw(params)
     }
 
-    if (!is.null(filesAC)) {
-      filesAC <- c(filesAC, "stamps.rdata",
+    if (!is.null(files_ac)) {
+      files_ac <- c(files_ac, "stamps.rdata",
                    "log.rdata",
                    "tr_tb_updt.rdata")
     }
-    if (!is.null(filesDP)) {
-      filesDP <- c(filesDP, "stamps.rdata",
+    if (!is.null(files_dp)) {
+      files_dp <- c(files_dp, "stamps.rdata",
                    "log.rdata",
                    "tr_tb_updt.rdata")
     }
@@ -1943,39 +1943,39 @@ send_pause_continue_kp <- function(params,
       dataPartnerTarget <- dataPartnerTarget[-params$data_partner_id]
     }
 
-    files <- c(filesAC, rep(filesDP, length(dataPartnerTarget)),
+    files <- c(files_ac, rep(files_dp, length(dataPartnerTarget)),
                "file_list.csv")
     transfer <- c(rep(1, length(files) - 1), 10)
-    destination <- c(rep(0, length(filesAC)),
-                     rep(dataPartnerTarget, each = length(filesDP)),
+    destination <- c(rep(0, length(files_ac)),
+                     rep(dataPartnerTarget, each = length(files_dp)),
                      10)
   } else {
-    files <- filesAC
+    files <- files_ac
     for (dp in 1:params$num_data_partners) {
-      files <- c(files, filesDP[[dp]])
+      files <- c(files, files_dp[[dp]])
     }
-    params <- StoreLogEntry.kp(params, files)
+    params <- store_log_entry_kp(params, files)
     params <- StoreTrackingTableEntry.kp(params)
     WriteLogCSV(params)
     write_log_raw(params)
     if (length(files) > 0) {
       WriteTrackingTableRaw(params)
     }
-    if (!is.null(filesAC)) {
-      filesAC <- c(filesAC, "stamps.rdata",
+    if (!is.null(files_ac)) {
+      files_ac <- c(files_ac, "stamps.rdata",
                    "log.rdata",
                    "tr_tb_updt.rdata")
     }
-    files <- filesAC
+    files <- files_ac
     transfer <- rep(1, length(files))
-    destination <- rep(0, length(filesAC))
+    destination <- rep(0, length(files_ac))
     for (dp in 1:params$num_data_partners) {
-      if (length(filesDP[[dp]]) > 0 && dp != params$data_partner_id) {
-        files <- c(files, filesDP[[dp]], "stamps.rdata",
+      if (length(files_dp[[dp]]) > 0 && dp != params$data_partner_id) {
+        files <- c(files, files_dp[[dp]], "stamps.rdata",
                    "log.rdata",
                    "tr_tb_updt.rdata")
-        transfer <- c(transfer, rep(1, length(filesDP[[dp]]) + 3))
-        destination <- c(destination, rep(dp, length(filesDP[[dp]]) + 3))
+        transfer <- c(transfer, rep(1, length(files_dp[[dp]]) + 3))
+        destination <- c(destination, rep(dp, length(files_dp[[dp]]) + 3))
       }
     }
     files <- c(files, "file_list.csv")
@@ -2045,7 +2045,7 @@ send_pause_continue_kp <- function(params,
     delete_trigger("files_done.ok", params$readPathDP[2])
   }
   if (params$verbose) cat("Resuming local processing\n\n")
-  params <- MergeLogRaw.kp(params, from)
+  params <- merge_log_raw_kp(params, from)
   params <- UpdateCounters.kp(params)
   params <- new_log_entry_kp(params)
   params <- MergeStampsRaw.kp(params, from)
@@ -2057,9 +2057,9 @@ send_pause_continue_kp <- function(params,
 }
 
 
-PauseContinue.kp <- function(params, from = NULL,
+pause_continue_kp <- function(params, from = NULL,
                              max_waiting_time = 24 * 60 * 60) {
-  params <- StoreLogEntry.kp(params, "")
+  params <- store_log_entry_kp(params, "")
   params <- StoreTrackingTableEntry.kp(params)
   WriteLogCSV(params)
   params <- store_stamp_entry(params,
@@ -2090,7 +2090,7 @@ PauseContinue.kp <- function(params, from = NULL,
     }
   }
   if (params$verbose) cat("Resuming local processing\n\n")
-  params <- MergeLogRaw.kp(params, from)
+  params <- merge_log_raw_kp(params, from)
   params <- UpdateCounters.kp(params)
   params <- new_log_entry_kp(params)
   params <- MergeStampsRaw.kp(params, from)
@@ -2172,7 +2172,7 @@ GetRoundTripTime <- function() {
 }
 
 
-GetElapsedTime <- function(time1, final = FALSE, timeOnly = FALSE) {
+GetElapsedTime <- function(time1, final = FALSE, time_only = FALSE) {
   etime <- floor(time1[3])
   hrs <- floor(etime / 3600)
   mins <- floor((etime %% 3600) / 60)
@@ -2184,14 +2184,14 @@ GetElapsedTime <- function(time1, final = FALSE, timeOnly = FALSE) {
   if (final) {
     return(paste0("(Total time elapsed: ", hr1, "hr ", min1, "min ",
                   sec1, "sec)"))
-  } else if (timeOnly) {
+  } else if (time_only) {
     return(paste0("(", hr1, "hr  ", min1, "min  ", sec1, "sec)"))
   }
   return(paste0("(Time elapsed: ", hr1, "hr ", min1, "min ", sec1, "sec)"))
 }
 
 
-ConvertSecsToHMS <- function(secs, final = FALSE, timeOnly = FALSE) {
+convert_secs_to_hms <- function(secs, final = FALSE, time_only = FALSE) {
   if (length(secs) != 1) {
     secs <- 0
   }
@@ -2206,7 +2206,7 @@ ConvertSecsToHMS <- function(secs, final = FALSE, timeOnly = FALSE) {
   if (final) {
     return(paste0("(Total time elapsed: ", hr1, ":", min1, ":", sec1, ")"))
   }
-  if (timeOnly) {
+  if (time_only) {
     return(paste0("(", hr1, ":", min1, ":", sec1, ")"))
   }
   return(paste0("(Time elapsed: ", hr1, ":", min1, ":", sec1, ")"))
@@ -2222,17 +2222,17 @@ HMS <- function(t) {
 
 ############################### BLOCK FUNCTIONS ################################
 
-get_block_size <- function(pA, pB) {
+get_block_size <- function(p_a, p_b) {
   # This minimium is set up based on our current encryption scheme
-  # We need to guarentee that pA + pB + g <= blocksize
-  # where g = (pA + 1) / (pA + pB + 1) * blocksize
+  # We need to guarentee that p_a + p_b + g <= blocksize
+  # where g = (p_a + 1) / (p_a + p_b + 1) * blocksize
   # May change in the future.
-  min_blocksize <- max(25, trunc(1 + (pA + pB + 1)^2 / pB))
+  min_blocksize <- max(25, trunc(1 + (p_a + p_b + 1)^2 / p_b))
   return(min_blocksize)
 }
 
 
-create_blocks <- function(pA, pB, n, blocksize) {
+create_blocks <- function(p_a, p_b, n, blocksize) {
 
   # Divides the matrix with ncol(n) into submatrices of approximately
   # equal size. minimum size is blocksize.
@@ -2244,8 +2244,8 @@ create_blocks <- function(pA, pB, n, blocksize) {
   numBigBlocks    <- n %% newBlocksize
   numLittleBlocks <- num_blocks - numBigBlocks
   bigBlocksize    <- newBlocksize + 1
-  gLittleBlock    <- trunc(newBlocksize * (pA + 1) / (pA + pB + 1))
-  gBigBlock       <- trunc(bigBlocksize * (pA + 1) / (pA + pB + 1))
+  gLittleBlock    <- trunc(newBlocksize * (p_a + 1) / (p_a + p_b + 1))
+  gBigBlock       <- trunc(bigBlocksize * (p_a + 1) / (p_a + p_b + 1))
 
   blocks$num_blocks       <- num_blocks
   blocks$little_blocksize <- newBlocksize
@@ -2277,7 +2277,7 @@ create_blocks <- function(pA, pB, n, blocksize) {
 }
 
 
-create_containers <- function(pA, pB, blocks) {
+create_containers <- function(p_a, p_b, blocks) {
   containers <- list()
 
   maximum_filesize <- 25 * 1024^2
@@ -2289,11 +2289,11 @@ create_containers <- function(pA, pB, blocks) {
 
   little_filesize_z   <- 8 * little_blocksize * little_block_g
   # used for w, v, RW, wr, rv, Cox
-  little_filesize_w   <- 8 * little_blocksize * pB
+  little_filesize_w   <- 8 * little_blocksize * p_b
   little_filesize_rz  <- 8 * little_blocksize^2
   # I think this is not used anymore
-  little_filesize_pr  <- 8 * (pA + 1) * pB
-  little_filesize_xr <- 8 * pA * pB
+  little_filesize_pr  <- 8 * (p_a + 1) * p_b
+  little_filesize_xr <- 8 * p_a * p_b
 
   num_containers_z <- ceiling(num_blocks * little_filesize_z / maximum_filesize)
   num_blocks_small_container_z <- trunc(num_blocks / num_containers_z)
@@ -2678,16 +2678,16 @@ add_to_log <- function(params, functionName, readTime, readSize,
   writeTime <- round(as.numeric(writeTime), digits = 2)
   readSize  <- round(as.numeric(readSize),  digits = 0)
   writeSize <- round(as.numeric(writeSize), digits = 0)
-  if (params$log$current$Functions == "") {
-    params$log$current$Functions <- functionName
+  if (params$log$current$functions == "") {
+    params$log$current$functions <- functionName
   } else {
-    params$log$current$Functions <- paste0(params$log$current$Functions,
+    params$log$current$functions <- paste0(params$log$current$functions,
                                            ", ", functionName)
   }
-  params$log$current$Read.Time  <- params$log$current$Read.Time + readTime
-  params$log$current$Read.Size  <- params$log$current$Read.Size + readSize
-  params$log$current$Write.Time <- params$log$current$Write.Time + writeTime
-  params$log$current$Write.Size <- params$log$current$Write.Size + writeSize
+  params$log$current$read_time  <- params$log$current$read_time + readTime
+  params$log$current$read_Size  <- params$log$current$read_Size + readSize
+  params$log$current$write_time <- params$log$current$write_time + writeTime
+  params$log$current$write_Size <- params$log$current$write_Size + writeSize
   return(params)
 }
 
@@ -2706,7 +2706,7 @@ WriteLogCSV <- function(params) {
 
 
 #' @importFrom utils write.table
-WriteToLogSummary <- function(c1 = "", c2 = "", c3 = "",
+write_to_log_summary <- function(c1 = "", c2 = "", c3 = "",
                               write_path = NULL, append = TRUE) {
   if (is.numeric(c2)) {
     c2 <- round(c2, 2)
@@ -2722,19 +2722,19 @@ WriteToLogSummary <- function(c1 = "", c2 = "", c3 = "",
 initialize_log_2p <- function(params) {
   log <- list()
   log$blank <- data.frame(Step             = 0,
-                          Iteration.alg    = 0,
+                          iteration_alg    = 0,
                           Party            = "",
-                          Functions        = "",
-                          Wait.Time        = 0,
-                          Start.Time       = GetUTCTime(),
-                          End.Time         = GetUTCTime(),
-                          Read.Time        = 0,
-                          Read.Size        = 0,
-                          Write.Time       = 0,
-                          Write.Size       = 0,
-                          Computation.Time = 0,
-                          Files.Sent       = "",
-                          Bytes.Sent       = 0)
+                          functions        = "",
+                          wait_time        = 0,
+                          start_time       = GetUTCTime(),
+                          end_time         = GetUTCTime(),
+                          read_time        = 0,
+                          read_Size        = 0,
+                          write_time       = 0,
+                          write_Size       = 0,
+                          computetation_time = 0,
+                          files_sent       = "",
+                          bytes_sent       = 0)
   log$current <- log$blank
   log$history <- log$blank
   params$log <- log
@@ -2745,33 +2745,33 @@ initialize_log_2p <- function(params) {
 new_log_entry_2p <- function(params) {
   params$log$current <- params$log$blank
   params$log$current$Party         <- params$party_name
-  params$log$current$Start.Time    <- GetUTCTime()
+  params$log$current$start_time    <- GetUTCTime()
   return(params)
 }
 
 
-StoreLogEntry.2p <- function(params, files) {
+store_log_entry_2p <- function(params, files) {
   params$log$current$Step          <- params$pmn_step_counter
-  params$log$current$Iteration.alg <- params$algIterationCounter
+  params$log$current$iteration_alg <- params$algIterationCounter
   params$log$current$Party <- params$party_name
-  params$log$current$End.Time <- GetUTCTime()
-  params$log$current$Computation.Time <-
+  params$log$current$end_time <- GetUTCTime()
+  params$log$current$computetation_time <-
     round(as.numeric(difftime(
-      params$log$current$End.Time,
-      params$log$current$Start.Time, units = "secs")) -
-        params$log$current$Read.Time - params$log$current$Write.Time, 2)
-  params$log$current$Files.Sent <- paste(files, collapse = ", ")
-  params$log$current$Bytes.Sent <-
+      params$log$current$end_time,
+      params$log$current$start_time, units = "secs")) -
+        params$log$current$read_time - params$log$current$write_time, 2)
+  params$log$current$files_sent <- paste(files, collapse = ", ")
+  params$log$current$bytes_sent <-
     sum(file.size(file.path(params$write_path, files)))
-  if (is.na(params$log$current$Bytes.Sent)) {
-    params$log$current$Bytes.Sent <- 0
+  if (is.na(params$log$current$bytes_sent)) {
+    params$log$current$bytes_sent <- 0
   }
   nrows <- nrow(params$log$history)
   if (nrows >= 2) {
-    params$log$current$Wait.Time <-
+    params$log$current$wait_time <-
       round(as.numeric(difftime(
-        params$log$current$Start.Time,
-        max(params$log$history$End.Time[which(params$log$history$Party ==
+        params$log$current$start_time,
+        max(params$log$history$end_time[which(params$log$history$Party ==
                                                 params$log$current$Party)]),
         units = "secs")), 2)
   }
@@ -2791,7 +2791,7 @@ read_log_raw_2p <- function(params) {
 }
 
 
-MergeLogRaw.2p <- function(params) {
+merge_log_raw_2p <- function(params) {
   # This function will only be used in the function Pause Continue
   # When party A and party B run simultaneously, but Party A can run first
   # even if Party B starts the whole thing.  We append party B's log
@@ -2802,173 +2802,173 @@ MergeLogRaw.2p <- function(params) {
 }
 
 
-SummarizeLog.2p <- function(params) {
+summarize_log_2p <- function(params) {
   write_path <- params$write_path
   log    <- params$log$history
   indexA <- which(log$Party == "A")
   indexB <- which(log$Party == "B")
-  Party.A.Start.Time <- log$Start.Time[indexA[1]]
-  Party.A.End.Time   <- log$End.Time[indexA[length(indexA)]]
-  Party.A.Total.Time <- round(as.numeric(difftime(
-    Party.A.End.Time, Party.A.Start.Time, units = "secs")), digits = 2)
-  Party.A.Reading.Time <- sum(log$Read.Time[indexA])
-  Party.A.Writing.Time <- sum(log$Write.Time[indexA])
-  Party.A.Computing.Time <- sum(log$Computation.Time[indexA])
-  Party.A.Waiting.Time <- sum(log$Wait.Time[indexA])
-  Party.A.Total.Time.HMS <-
-    ConvertSecsToHMS(Party.A.Total.Time, timeOnly = TRUE)
-  Party.A.Reading.Time.HMS <-
-    ConvertSecsToHMS(Party.A.Reading.Time, timeOnly = TRUE)
-  Party.A.Writing.Time.HMS <-
-    ConvertSecsToHMS(Party.A.Writing.Time, timeOnly = TRUE)
-  Party.A.Computing.Time.HMS <-
-    ConvertSecsToHMS(Party.A.Computing.Time, timeOnly = TRUE)
-  Party.A.Waiting.Time.HMS <-
-    ConvertSecsToHMS(Party.A.Waiting.Time, timeOnly = TRUE)
-  Party.A.Bytes.Read <- sum(log$Read.Size[indexA])
-  Party.A.Bytes.Written <- sum(log$Write.Size[indexA])
+  party_a_start_time <- log$start_time[indexA[1]]
+  party_a_end_time   <- log$end_time[indexA[length(indexA)]]
+  party_a_total_time <- round(as.numeric(difftime(
+    party_a_end_time, party_a_start_time, units = "secs")), digits = 2)
+  party_a_reading_time <- sum(log$read_time[indexA])
+  party_a_writing_time <- sum(log$write_time[indexA])
+  party_a_computing_time <- sum(log$computetation_time[indexA])
+  party_a_waiting_time <- sum(log$wait_time[indexA])
+  party_a_total_time_hms <-
+    convert_secs_to_hms(party_a_total_time, time_only = TRUE)
+  party_a_reading_time_hms <-
+    convert_secs_to_hms(party_a_reading_time, time_only = TRUE)
+  party_a_writing_time_hms <-
+    convert_secs_to_hms(party_a_writing_time, time_only = TRUE)
+  party_a_computing_time_hms <-
+    convert_secs_to_hms(party_a_computing_time, time_only = TRUE)
+  party_a_waiting_time_hms <-
+    convert_secs_to_hms(party_a_waiting_time, time_only = TRUE)
+  party_a_Bytes_read <- sum(log$read_Size[indexA])
+  party_a_Bytes_written <- sum(log$write_Size[indexA])
 
-  Party.B.Start.Time <- log$Start.Time[indexB[1]]
-  Party.B.End.Time   <- log$End.Time[indexB[length(indexB)]]
-  Party.B.Total.Time <- round(as.numeric(difftime(
-    Party.B.End.Time, Party.B.Start.Time, units = "secs")), digits = 2)
-  Party.B.Reading.Time <- sum(log$Read.Time[indexB])
-  Party.B.Writing.Time <- sum(log$Write.Time[indexB])
-  Party.B.Computing.Time <- sum(log$Computation.Time[indexB])
-  Party.B.Waiting.Time <- Party.B.Total.Time - Party.B.Reading.Time -
-    Party.B.Writing.Time - Party.B.Computing.Time
-  Party.B.Total.Time.HMS <-
-    ConvertSecsToHMS(Party.B.Total.Time, timeOnly = TRUE)
-  Party.B.Reading.Time.HMS <-
-    ConvertSecsToHMS(Party.B.Reading.Time, timeOnly = TRUE)
-  Party.B.Writing.Time.HMS <-
-    ConvertSecsToHMS(Party.B.Writing.Time, timeOnly = TRUE)
-  Party.B.Computing.Time.HMS <-
-    ConvertSecsToHMS(Party.B.Computing.Time, timeOnly = TRUE)
-  Party.B.Waiting.Time.HMS <-
-    ConvertSecsToHMS(Party.B.Waiting.Time, timeOnly = TRUE)
-  Party.B.Bytes.Read <- sum(log$Read.Size[indexB])
-  Party.B.Bytes.Written <- sum(log$Write.Size[indexB])
+  party_b_start_time <- log$start_time[indexB[1]]
+  party_b_end_time   <- log$end_time[indexB[length(indexB)]]
+  party_b_total_time <- round(as.numeric(difftime(
+    party_b_end_time, party_b_start_time, units = "secs")), digits = 2)
+  party_b_reading_time <- sum(log$read_time[indexB])
+  party_b_writing_time <- sum(log$write_time[indexB])
+  party_b_computing_time <- sum(log$computetation_time[indexB])
+  party_b_waiting_time <- party_b_total_time - party_b_reading_time -
+    party_b_writing_time - party_b_computing_time
+  party_b_total_time_hms <-
+    convert_secs_to_hms(party_b_total_time, time_only = TRUE)
+  party_b_reading_time_hms <-
+    convert_secs_to_hms(party_b_reading_time, time_only = TRUE)
+  party_b_writing_time_hms <-
+    convert_secs_to_hms(party_b_writing_time, time_only = TRUE)
+  party_b_computing_time_hms <-
+    convert_secs_to_hms(party_b_computing_time, time_only = TRUE)
+  party_b_waiting_time_hms <-
+    convert_secs_to_hms(party_b_waiting_time, time_only = TRUE)
+  party_b_Bytes_read <- sum(log$read_Size[indexB])
+  party_b_Bytes_written <- sum(log$write_Size[indexB])
 
-  Total.Transfer.Time <- 0
+  total_transfer_time <- 0
   if (max(log$Step) > 1) {
     for (i in 2:max(log$Step)) {
       idx1 <- which(log$Step == i - 1)
       idx2 <- which(log$Step == i)
-      Total.Transfer.Time <- Total.Transfer.Time +
-        as.numeric(difftime(min(log$Start.Time[idx2]),
-                            max(log$End.Time[idx1]), units = "secs"))
+      total_transfer_time <- total_transfer_time +
+        as.numeric(difftime(min(log$start_time[idx2]),
+                            max(log$end_time[idx1]), units = "secs"))
     }
   }
-  Total.Transfer.Time <- round(Total.Transfer.Time, 2)
+  total_transfer_time <- round(total_transfer_time, 2)
 
-  Total.Reading.Time <- sum(log$Read.Time)
-  Total.Writing.Time <- sum(log$Write.Time)
-  Total.Computing.Time <- sum(log$Computation.Time)
-  Elapsed.Computing.Time <-
-    Party.A.Total.Time - Total.Transfer.Time
-  Total.Reading.Time.HMS <-
-    ConvertSecsToHMS(Total.Reading.Time, timeOnly = TRUE)
-  Total.Writing.Time.HMS <-
-    ConvertSecsToHMS(Total.Writing.Time, timeOnly = TRUE)
-  Total.Computing.Time.HMS <-
-    ConvertSecsToHMS(Total.Computing.Time, timeOnly = TRUE)
-  Elapsed.Computing.Time.HMS <-
-    ConvertSecsToHMS(Elapsed.Computing.Time, timeOnly = TRUE)
-  Total.Transfer.Time.HMS <-
-    ConvertSecsToHMS(Total.Transfer.Time, timeOnly = TRUE)
-  Total.Bytes.Transferred <- sum(log$Bytes.Sent)
-  KB.Per.Second <- round(Total.Bytes.Transferred /
-                           (Total.Transfer.Time * 1024), digits = 2)
-  WriteToLogSummary(c1 = "Analysis",
+  total_reading_time <- sum(log$read_time)
+  total_writing_time <- sum(log$write_time)
+  total_computing_time <- sum(log$computetation_time)
+  elapsed_computing_time <-
+    party_a_total_time - total_transfer_time
+  total_reading_time_hms <-
+    convert_secs_to_hms(total_reading_time, time_only = TRUE)
+  total_writing_time_hms <-
+    convert_secs_to_hms(total_writing_time, time_only = TRUE)
+  total_computing_time_hms <-
+    convert_secs_to_hms(total_computing_time, time_only = TRUE)
+  elapsed_computing_time_hms <-
+    convert_secs_to_hms(elapsed_computing_time, time_only = TRUE)
+  total_transfer_time_hms <-
+    convert_secs_to_hms(total_transfer_time, time_only = TRUE)
+  total_Bytes_transferred <- sum(log$bytes_sent)
+  kb_per_second <- round(total_Bytes_transferred /
+                           (total_transfer_time * 1024), digits = 2)
+  write_to_log_summary(c1 = "Analysis",
                     c2 = params$analysis,
                     write_path = write_path, append = FALSE)
   if (!is.null(params$blocks)) {
-    WriteToLogSummary(c1 = "Blocksize",
+    write_to_log_summary(c1 = "Blocksize",
                       c2 = params$blocks$little_blocksize,
                       write_path = write_path)
-    WriteToLogSummary(c1 = "Number of Blocks",
+    write_to_log_summary(c1 = "Number of Blocks",
                       c2 = params$blocks$numLittleBlocks +
                         params$blocks$numBigBlocks,
                       write_path = write_path)
   }
-  if (!is.null(params$n))   WriteToLogSummary(c1 = "N",
+  if (!is.null(params$n))   write_to_log_summary(c1 = "N",
                                               c2 = params$n,
                                               write_path = write_path)
 
   p <- max(0, params$p1_old - (params$analysis != "cox"))
-  WriteToLogSummary(c1 = "pA", c2 = p, write_path = write_path)
+  write_to_log_summary(c1 = "p_a", c2 = p, write_path = write_path)
   p <- params$p2_old
-  WriteToLogSummary(c1 = "pB", c2 = p, write_path = write_path)
+  write_to_log_summary(c1 = "p_b", c2 = p, write_path = write_path)
 
-  WriteToLogSummary(write_path = write_path)
-  WriteToLogSummary(c1 = "Party A Start Time",
-                    c2 = Party.A.Start.Time, write_path = write_path)
-  WriteToLogSummary(c1 = "Party A End Time",
-                    c2 = Party.A.End.Time, write_path = write_path)
-  WriteToLogSummary(c1 = "Party A Total Run Time",
-                    c2 = Party.A.Total.Time,
-                    c3 = Party.A.Total.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Party A Total Reading Time",
-                    c2 = Party.A.Reading.Time,
-                    c3 = Party.A.Reading.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Party A Total Bytes Read",
-                    c2 = Party.A.Bytes.Read, write_path = write_path)
-  WriteToLogSummary(c1 = "Party A Total Writing Time",
-                    c2 = Party.A.Writing.Time,
-                    c3 = Party.A.Writing.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Party A Total Bytes Written",
-                    c2 = Party.A.Bytes.Written, write_path = write_path)
-  WriteToLogSummary(c1 = "Party A Total Computing Time",
-                    c2 = Party.A.Computing.Time,
-                    c3 = Party.A.Computing.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Party A Total Waiting Time",
-                    c2 = Party.A.Waiting.Time,
-                    c3 = Party.A.Waiting.Time.HMS, write_path = write_path)
-  WriteToLogSummary(write_path = write_path)
-  WriteToLogSummary(c1 = "Party B Start Time",
-                    c2 = Party.B.Start.Time, write_path = write_path)
-  WriteToLogSummary(c1 = "Party B End Time",
-                    c2 = Party.B.End.Time, write_path = write_path)
-  WriteToLogSummary(c1 = "Party B Total Run Time",
-                    c2 = Party.B.Total.Time,
-                    c3 = Party.B.Total.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Party B Total Reading Time",
-                    c2 = Party.B.Reading.Time,
-                    c3 = Party.B.Reading.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Party B Total Bytes Read",
-                    c2 = Party.B.Bytes.Read, write_path = write_path)
-  WriteToLogSummary(c1 = "Party B Total Writing Time",
-                    c2 = Party.B.Writing.Time,
-                    c3 = Party.B.Writing.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Party B Total Bytes Written",
-                    c2 = Party.B.Bytes.Written, write_path = write_path)
-  WriteToLogSummary(c1 = "Party B Total Computing Time",
-                    c2 = Party.B.Computing.Time,
-                    c3 = Party.B.Computing.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Party B Total Waiting Time",
-                    c2 = Party.B.Waiting.Time,
-                    c3 = Party.B.Waiting.Time.HMS, write_path = write_path)
-  WriteToLogSummary(write_path = write_path)
-  WriteToLogSummary(c1 = "Total Reading Time",
-                    c2 = Total.Reading.Time,
-                    c3 = Total.Reading.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Total Writing Time",
-                    c2 = Total.Writing.Time,
-                    c3 = Total.Writing.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Total Computing Time",
-                    c2 = Total.Computing.Time,
-                    c3 = Total.Computing.Time.HMS,  write_path = write_path)
-  WriteToLogSummary(c1 = "Elapsed Computing Time",
-                    c2 = Elapsed.Computing.Time,
-                    c3 = Elapsed.Computing.Time.HMS,  write_path = write_path)
-  WriteToLogSummary(c1 = "Total Transfer Time",
-                    c2 = Total.Transfer.Time,
-                    c3 = Total.Transfer.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Total Bytes Transferred",
-                    c2 = Total.Bytes.Transferred, write_path = write_path)
-  WriteToLogSummary(c1 = "KB / Sec Transfer Rate",
-                    c2 = KB.Per.Second, write_path = write_path)
+  write_to_log_summary(write_path = write_path)
+  write_to_log_summary(c1 = "Party A Start Time",
+                    c2 = party_a_start_time, write_path = write_path)
+  write_to_log_summary(c1 = "Party A End Time",
+                    c2 = party_a_end_time, write_path = write_path)
+  write_to_log_summary(c1 = "Party A Total Run Time",
+                    c2 = party_a_total_time,
+                    c3 = party_a_total_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Party A Total Reading Time",
+                    c2 = party_a_reading_time,
+                    c3 = party_a_reading_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Party A Total Bytes Read",
+                    c2 = party_a_Bytes_read, write_path = write_path)
+  write_to_log_summary(c1 = "Party A Total Writing Time",
+                    c2 = party_a_writing_time,
+                    c3 = party_a_writing_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Party A Total Bytes Written",
+                    c2 = party_a_Bytes_written, write_path = write_path)
+  write_to_log_summary(c1 = "Party A Total Computing Time",
+                    c2 = party_a_computing_time,
+                    c3 = party_a_computing_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Party A Total Waiting Time",
+                    c2 = party_a_waiting_time,
+                    c3 = party_a_waiting_time_hms, write_path = write_path)
+  write_to_log_summary(write_path = write_path)
+  write_to_log_summary(c1 = "Party B Start Time",
+                    c2 = party_b_start_time, write_path = write_path)
+  write_to_log_summary(c1 = "Party B End Time",
+                    c2 = party_b_end_time, write_path = write_path)
+  write_to_log_summary(c1 = "Party B Total Run Time",
+                    c2 = party_b_total_time,
+                    c3 = party_b_total_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Party B Total Reading Time",
+                    c2 = party_b_reading_time,
+                    c3 = party_b_reading_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Party B Total Bytes Read",
+                    c2 = party_b_Bytes_read, write_path = write_path)
+  write_to_log_summary(c1 = "Party B Total Writing Time",
+                    c2 = party_b_writing_time,
+                    c3 = party_b_writing_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Party B Total Bytes Written",
+                    c2 = party_b_Bytes_written, write_path = write_path)
+  write_to_log_summary(c1 = "Party B Total Computing Time",
+                    c2 = party_b_computing_time,
+                    c3 = party_b_computing_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Party B Total Waiting Time",
+                    c2 = party_b_waiting_time,
+                    c3 = party_b_waiting_time_hms, write_path = write_path)
+  write_to_log_summary(write_path = write_path)
+  write_to_log_summary(c1 = "Total Reading Time",
+                    c2 = total_reading_time,
+                    c3 = total_reading_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Total Writing Time",
+                    c2 = total_writing_time,
+                    c3 = total_writing_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Total Computing Time",
+                    c2 = total_computing_time,
+                    c3 = total_computing_time_hms,  write_path = write_path)
+  write_to_log_summary(c1 = "Elapsed Computing Time",
+                    c2 = elapsed_computing_time,
+                    c3 = elapsed_computing_time_hms,  write_path = write_path)
+  write_to_log_summary(c1 = "Total Transfer Time",
+                    c2 = total_transfer_time,
+                    c3 = total_transfer_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Total Bytes Transferred",
+                    c2 = total_Bytes_transferred, write_path = write_path)
+  write_to_log_summary(c1 = "KB / Sec Transfer Rate",
+                    c2 = kb_per_second, write_path = write_path)
 
 }
 
@@ -2977,19 +2977,19 @@ SummarizeLog.2p <- function(params) {
 initialize_log_3p <- function(params) {
   log <- list()
   log$blank <- data.frame(Step             = 0,
-                          Iteration.alg    = 0,
+                          iteration_alg    = 0,
                           Party            = "",
-                          Functions        = "",
-                          Wait.Time        = 0,
-                          Start.Time       = GetUTCTime(),
-                          End.Time         = GetUTCTime(),
-                          Read.Time        = 0,
-                          Read.Size        = 0,
-                          Write.Time       = 0,
-                          Write.Size       = 0,
-                          Computation.Time = 0,
-                          Files.Sent       = "",
-                          Bytes.Sent       = 0)
+                          functions        = "",
+                          wait_time        = 0,
+                          start_time       = GetUTCTime(),
+                          end_time         = GetUTCTime(),
+                          read_time        = 0,
+                          read_Size        = 0,
+                          write_time       = 0,
+                          write_Size       = 0,
+                          computetation_time = 0,
+                          files_sent       = "",
+                          bytes_sent       = 0)
   log$current <- log$blank
   log$history <- log$blank
   params$log <- log
@@ -3000,32 +3000,32 @@ initialize_log_3p <- function(params) {
 new_log_entry_3p <- function(params) {
   params$log$current <- params$log$blank
   params$log$current$Party         <- params$party_name
-  params$log$current$Start.Time    <- GetUTCTime()
+  params$log$current$start_time    <- GetUTCTime()
   return(params)
 }
 
 
-StoreLogEntry.3p <- function(params, files) {
+store_log_entry_3p <- function(params, files) {
   params$log$current$Step          <- params$pmn_step_counter
-  params$log$current$Iteration.alg <- params$algIterationCounter
+  params$log$current$iteration_alg <- params$algIterationCounter
   params$log$current$Party <- params$party_name
-  params$log$current$End.Time <- GetUTCTime()
-  params$log$current$Computation.Time <- round(as.numeric(difftime(
-    params$log$current$End.Time,
-    params$log$current$Start.Time, units = "secs")) -
-      params$log$current$Read.Time - params$log$current$Write.Time, 2)
-  params$log$current$Files.Sent <- paste(files, collapse = ", ")
-  params$log$current$Bytes.Sent <-
+  params$log$current$end_time <- GetUTCTime()
+  params$log$current$computetation_time <- round(as.numeric(difftime(
+    params$log$current$end_time,
+    params$log$current$start_time, units = "secs")) -
+      params$log$current$read_time - params$log$current$write_time, 2)
+  params$log$current$files_sent <- paste(files, collapse = ", ")
+  params$log$current$bytes_sent <-
     sum(file.size(file.path(params$write_path, files)))
-  if (is.na(params$log$current$Bytes.Sent)) {
-    params$log$current$Bytes.Sent <- 0
+  if (is.na(params$log$current$bytes_sent)) {
+    params$log$current$bytes_sent <- 0
   }
   nrows <- nrow(params$log$history)
   if (nrows >= 3) {
-    params$log$current$Wait.Time <-
+    params$log$current$wait_time <-
       round(as.numeric(difftime(
-        params$log$current$Start.Time,
-        max(params$log$history$End.Time[which(params$log$history$Party ==
+        params$log$current$start_time,
+        max(params$log$history$end_time[which(params$log$history$Party ==
                                                 params$log$current$Party)]),
         units = "secs")), 2)
   }
@@ -3038,7 +3038,7 @@ StoreLogEntry.3p <- function(params, files) {
 }
 
 
-MergeLogRaw.3p <- function(params, from) {
+merge_log_raw_3p <- function(params, from) {
   # This function will only be used in the function Pause Continue
   # When party A and party B run simultaneously, but Party A can run first
   # even if Party B starts the whole thing.  We append party B's log
@@ -3061,220 +3061,220 @@ MergeLogRaw.3p <- function(params, from) {
 }
 
 
-SummarizeLog.3p <- function(params) {
+summarize_log_3p <- function(params) {
   write_path <- params$write_path
 
   log    <- params$log$history
   indexA <- which(log$Party == "A")
   indexB <- which(log$Party == "B")
   indexT <- which(log$Party == "T")
-  Party.A.Start.Time <- log$Start.Time[indexA[1]]
-  Party.A.End.Time   <- log$End.Time[indexA[length(indexA)]]
-  Party.A.Total.Time <- round(as.numeric(difftime(
-    Party.A.End.Time, Party.A.Start.Time, units = "secs")), digits = 2)
-  Party.A.Reading.Time <- sum(log$Read.Time[indexA])
-  Party.A.Writing.Time <- sum(log$Write.Time[indexA])
-  Party.A.Computing.Time <- sum(log$Computation.Time[indexA])
-  Party.A.Waiting.Time <- sum(log$Wait.Time[indexA])
-  Party.A.Total.Time.HMS <-
-    ConvertSecsToHMS(Party.A.Total.Time, timeOnly = TRUE)
-  Party.A.Reading.Time.HMS <-
-    ConvertSecsToHMS(Party.A.Reading.Time, timeOnly = TRUE)
-  Party.A.Writing.Time.HMS <-
-    ConvertSecsToHMS(Party.A.Writing.Time, timeOnly = TRUE)
-  Party.A.Computing.Time.HMS <-
-    ConvertSecsToHMS(Party.A.Computing.Time, timeOnly = TRUE)
-  Party.A.Waiting.Time.HMS <-
-    ConvertSecsToHMS(Party.A.Waiting.Time, timeOnly = TRUE)
-  Party.A.Bytes.Read <- sum(log$Read.Size[indexA])
-  Party.A.Bytes.Written <- sum(log$Write.Size[indexA])
+  party_a_start_time <- log$start_time[indexA[1]]
+  party_a_end_time   <- log$end_time[indexA[length(indexA)]]
+  party_a_total_time <- round(as.numeric(difftime(
+    party_a_end_time, party_a_start_time, units = "secs")), digits = 2)
+  party_a_reading_time <- sum(log$read_time[indexA])
+  party_a_writing_time <- sum(log$write_time[indexA])
+  party_a_computing_time <- sum(log$computetation_time[indexA])
+  party_a_waiting_time <- sum(log$wait_time[indexA])
+  party_a_total_time_hms <-
+    convert_secs_to_hms(party_a_total_time, time_only = TRUE)
+  party_a_reading_time_hms <-
+    convert_secs_to_hms(party_a_reading_time, time_only = TRUE)
+  party_a_writing_time_hms <-
+    convert_secs_to_hms(party_a_writing_time, time_only = TRUE)
+  party_a_computing_time_hms <-
+    convert_secs_to_hms(party_a_computing_time, time_only = TRUE)
+  party_a_waiting_time_hms <-
+    convert_secs_to_hms(party_a_waiting_time, time_only = TRUE)
+  party_a_Bytes_read <- sum(log$read_Size[indexA])
+  party_a_Bytes_written <- sum(log$write_Size[indexA])
 
-  Party.B.Start.Time <- log$Start.Time[indexB[1]]
-  Party.B.End.Time   <- log$End.Time[indexB[length(indexB)]]
-  Party.B.Total.Time <- round(as.numeric(difftime(
-    Party.B.End.Time, Party.B.Start.Time, units = "secs")), digits = 2)
-  Party.B.Reading.Time <- sum(log$Read.Time[indexB])
-  Party.B.Writing.Time <- sum(log$Write.Time[indexB])
-  Party.B.Computing.Time <- sum(log$Computation.Time[indexB])
-  Party.B.Waiting.Time <- sum(log$Wait.Time[indexB])
-  Party.B.Total.Time.HMS <-
-    ConvertSecsToHMS(Party.B.Total.Time, timeOnly = TRUE)
-  Party.B.Reading.Time.HMS <-
-    ConvertSecsToHMS(Party.B.Reading.Time, timeOnly = TRUE)
-  Party.B.Writing.Time.HMS <-
-    ConvertSecsToHMS(Party.B.Writing.Time, timeOnly = TRUE)
-  Party.B.Computing.Time.HMS <-
-    ConvertSecsToHMS(Party.B.Computing.Time, timeOnly = TRUE)
-  Party.B.Waiting.Time.HMS <-
-    ConvertSecsToHMS(Party.B.Waiting.Time, timeOnly = TRUE)
-  Party.B.Bytes.Read <- sum(log$Read.Size[indexB])
-  Party.B.Bytes.Written <- sum(log$Write.Size[indexB])
+  party_b_start_time <- log$start_time[indexB[1]]
+  party_b_end_time   <- log$end_time[indexB[length(indexB)]]
+  party_b_total_time <- round(as.numeric(difftime(
+    party_b_end_time, party_b_start_time, units = "secs")), digits = 2)
+  party_b_reading_time <- sum(log$read_time[indexB])
+  party_b_writing_time <- sum(log$write_time[indexB])
+  party_b_computing_time <- sum(log$computetation_time[indexB])
+  party_b_waiting_time <- sum(log$wait_time[indexB])
+  party_b_total_time_hms <-
+    convert_secs_to_hms(party_b_total_time, time_only = TRUE)
+  party_b_reading_time_hms <-
+    convert_secs_to_hms(party_b_reading_time, time_only = TRUE)
+  party_b_writing_time_hms <-
+    convert_secs_to_hms(party_b_writing_time, time_only = TRUE)
+  party_b_computing_time_hms <-
+    convert_secs_to_hms(party_b_computing_time, time_only = TRUE)
+  party_b_waiting_time_hms <-
+    convert_secs_to_hms(party_b_waiting_time, time_only = TRUE)
+  party_b_Bytes_read <- sum(log$read_Size[indexB])
+  party_b_Bytes_written <- sum(log$write_Size[indexB])
 
-  Party.T.Start.Time <- log$Start.Time[indexT[1]]
-  Party.T.End.Time   <- log$End.Time[indexT[length(indexT)]]
-  Party.T.Total.Time <- round(as.numeric(difftime(
-    Party.T.End.Time, Party.T.Start.Time, units = "secs")), digits = 2)
-  Party.T.Reading.Time <- sum(log$Read.Time[indexT])
-  Party.T.Writing.Time <- sum(log$Write.Time[indexT])
-  Party.T.Computing.Time <- sum(log$Computation.Time[indexT])
-  Party.T.Waiting.Time <- sum(log$Wait.Time[indexT])
-  Party.T.Total.Time.HMS <-
-    ConvertSecsToHMS(Party.T.Total.Time, timeOnly = TRUE)
-  Party.T.Reading.Time.HMS <-
-    ConvertSecsToHMS(Party.T.Reading.Time, timeOnly = TRUE)
-  Party.T.Writing.Time.HMS <-
-    ConvertSecsToHMS(Party.T.Writing.Time, timeOnly = TRUE)
-  Party.T.Computing.Time.HMS <-
-    ConvertSecsToHMS(Party.T.Computing.Time, timeOnly = TRUE)
-  Party.T.Waiting.Time.HMS <-
-    ConvertSecsToHMS(Party.T.Waiting.Time, timeOnly = TRUE)
-  Party.T.Bytes.Read <- sum(log$Read.Size[indexT])
-  Party.T.Bytes.Written <- sum(log$Write.Size[indexT])
+  party_t_start_time <- log$start_time[indexT[1]]
+  party_t_end_time   <- log$end_time[indexT[length(indexT)]]
+  party_t_total_time <- round(as.numeric(difftime(
+    party_t_end_time, party_t_start_time, units = "secs")), digits = 2)
+  party_t_reading_time <- sum(log$read_time[indexT])
+  party_t_writing_time <- sum(log$write_time[indexT])
+  party_t_computing_time <- sum(log$computetation_time[indexT])
+  party_t_waiting_time <- sum(log$wait_time[indexT])
+  party_t_total_time_hms <-
+    convert_secs_to_hms(party_t_total_time, time_only = TRUE)
+  party_t_reading_time_hms <-
+    convert_secs_to_hms(party_t_reading_time, time_only = TRUE)
+  party_t_writing_time_hms <-
+    convert_secs_to_hms(party_t_writing_time, time_only = TRUE)
+  party_t_computing_time_hms <-
+    convert_secs_to_hms(party_t_computing_time, time_only = TRUE)
+  party_t_waiting_time_hms <-
+    convert_secs_to_hms(party_t_waiting_time, time_only = TRUE)
+  party_t_Bytes_read <- sum(log$read_Size[indexT])
+  party_t_Bytes_written <- sum(log$write_Size[indexT])
 
-  Total.Transfer.Time <- 0
+  total_transfer_time <- 0
   if (max(log$Step) > 1) {
     for (i in 2:max(log$Step)) {
       idx1 <- which(log$Step == i - 1)
       idx2 <- which(log$Step == i)
-      Total.Transfer.Time <- Total.Transfer.Time +
-        as.numeric(difftime(min(log$Start.Time[idx2]),
-                            max(log$End.Time[idx1]), units = "secs"))
+      total_transfer_time <- total_transfer_time +
+        as.numeric(difftime(min(log$start_time[idx2]),
+                            max(log$end_time[idx1]), units = "secs"))
     }
   }
-  Total.Transfer.Time <- round(Total.Transfer.Time, 2)
-  Elapsed.Computing.Time <- Party.T.Total.Time - Total.Transfer.Time
+  total_transfer_time <- round(total_transfer_time, 2)
+  elapsed_computing_time <- party_t_total_time - total_transfer_time
 
-  Total.Reading.Time <- sum(log$Read.Time)
-  Total.Writing.Time <- sum(log$Write.Time)
-  Total.Computing.Time <- sum(log$Computation.Time)
-  Total.Reading.Time.HMS <-
-    ConvertSecsToHMS(Total.Reading.Time, timeOnly = TRUE)
-  Total.Writing.Time.HMS <-
-    ConvertSecsToHMS(Total.Writing.Time, timeOnly = TRUE)
-  Total.Transfer.Time.HMS <-
-    ConvertSecsToHMS(Total.Transfer.Time, timeOnly = TRUE)
-  Total.Computing.Time.HMS <-
-    ConvertSecsToHMS(Total.Computing.Time, timeOnly = TRUE)
-  Elapsed.Computing.Time.HMS <-
-    ConvertSecsToHMS(Elapsed.Computing.Time, timeOnly = TRUE)
-  Total.Bytes.Transferred <- sum(log$Bytes.Sent)
-  KB.Per.Second <- round(Total.Bytes.Transferred /
-                           (Total.Transfer.Time * 1024), digits = 2)
+  total_reading_time <- sum(log$read_time)
+  total_writing_time <- sum(log$write_time)
+  total_computing_time <- sum(log$computetation_time)
+  total_reading_time_hms <-
+    convert_secs_to_hms(total_reading_time, time_only = TRUE)
+  total_writing_time_hms <-
+    convert_secs_to_hms(total_writing_time, time_only = TRUE)
+  total_transfer_time_hms <-
+    convert_secs_to_hms(total_transfer_time, time_only = TRUE)
+  total_computing_time_hms <-
+    convert_secs_to_hms(total_computing_time, time_only = TRUE)
+  elapsed_computing_time_hms <-
+    convert_secs_to_hms(elapsed_computing_time, time_only = TRUE)
+  total_Bytes_transferred <- sum(log$bytes_sent)
+  kb_per_second <- round(total_Bytes_transferred /
+                           (total_transfer_time * 1024), digits = 2)
 
-  WriteToLogSummary(c1 = "Analysis",
+  write_to_log_summary(c1 = "Analysis",
                     c2 = params$analysis,
                     write_path = write_path,
                     append = FALSE)
   if (!is.null(params$blocks)) {
-    WriteToLogSummary(c1 = "Blocksize",
+    write_to_log_summary(c1 = "Blocksize",
                       c2 = params$blocks$little_blocksize,
                       write_path = write_path)
-    WriteToLogSummary(c1 = "Number of Blocks",
+    write_to_log_summary(c1 = "Number of Blocks",
                       c2 = params$blocks$numLittleBlocks +
                         params$blocks$numBigBlocks,
                       write_path = write_path)
   }
-  if (!is.null(params$n))   WriteToLogSummary(c1 = "N",
+  if (!is.null(params$n))   write_to_log_summary(c1 = "N",
                                               c2 = params$n,
                                               write_path = write_path)
 
   p <- max(0, params$p1_old - (params$analysis != "cox"))
-  WriteToLogSummary(c1 = "pA", c2 = p, write_path = write_path)
+  write_to_log_summary(c1 = "p_a", c2 = p, write_path = write_path)
   p <- params$p2_old
-  WriteToLogSummary(c1 = "pB", c2 = p, write_path = write_path)
+  write_to_log_summary(c1 = "p_b", c2 = p, write_path = write_path)
 
-  WriteToLogSummary(write_path = write_path)
-  WriteToLogSummary(c1 = "Party A Start Time",
-                    c2 = Party.A.Start.Time, write_path = write_path)
-  WriteToLogSummary(c1 = "Party A End Time",
-                    c2 = Party.A.End.Time, write_path = write_path)
-  WriteToLogSummary(c1 = "Party A Total Run Time",
-                    c2 = Party.A.Total.Time,
-                    c3 = Party.A.Total.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Party A Total Reading Time",
-                    c2 = Party.A.Reading.Time,
-                    c3 = Party.A.Reading.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Party A Total Bytes Read",
-                    c2 = Party.A.Bytes.Read, write_path = write_path)
-  WriteToLogSummary(c1 = "Party A Total Writing Time",
-                    c2 = Party.A.Writing.Time,
-                    c3 = Party.A.Writing.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Party A Total Bytes Written",
-                    c2 = Party.A.Bytes.Written, write_path = write_path)
-  WriteToLogSummary(c1 = "Party A Total Computing Time",
-                    c2 = Party.A.Computing.Time,
-                    c3 = Party.A.Computing.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Party A Total Waiting Time",
-                    c2 = Party.A.Waiting.Time,
-                    c3 = Party.A.Waiting.Time.HMS, write_path = write_path)
-  WriteToLogSummary(write_path = write_path)
-  WriteToLogSummary(c1 = "Party B Start Time",
-                    c2 = Party.B.Start.Time, write_path = write_path)
-  WriteToLogSummary(c1 = "Party B End Time",
-                    c2 = Party.B.End.Time, write_path = write_path)
-  WriteToLogSummary(c1 = "Party B Total Run Time",
-                    c2 = Party.B.Total.Time,
-                    c3 = Party.B.Total.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Party B Total Reading Time",
-                    c2 = Party.B.Reading.Time,
-                    c3 = Party.B.Reading.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Party B Total Bytes Read",
-                    c2 = Party.B.Bytes.Read, write_path = write_path)
-  WriteToLogSummary(c1 = "Party B Total Writing Time",
-                    c2 = Party.B.Writing.Time,
-                    c3 = Party.B.Writing.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Party B Total Bytes Written",
-                    c2 = Party.B.Bytes.Written, write_path = write_path)
-  WriteToLogSummary(c1 = "Party B Total Computing Time",
-                    c2 = Party.B.Computing.Time,
-                    c3 = Party.B.Computing.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Party B Total Waiting Time",
-                    c2 = Party.B.Waiting.Time,
-                    c3 = Party.B.Waiting.Time.HMS, write_path = write_path)
-  WriteToLogSummary(write_path = write_path)
-  WriteToLogSummary(c1 = "Party T Start Time",
-                    c2 = Party.T.Start.Time, write_path = write_path)
-  WriteToLogSummary(c1 = "Party T End Time",
-                    c2 = Party.T.End.Time, write_path = write_path)
-  WriteToLogSummary(c1 = "Party T Total Run Time",
-                    c2 = Party.T.Total.Time,
-                    c3 = Party.T.Total.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Party T Total Reading Time",
-                    c2 = Party.T.Reading.Time,
-                    c3 = Party.T.Reading.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Party T Total Bytes Read",
-                    c2 = Party.T.Bytes.Read, write_path = write_path)
-  WriteToLogSummary(c1 = "Party T Total Writing Time",
-                    c2 = Party.T.Writing.Time,
-                    c3 = Party.T.Writing.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Party T Total Bytes Written",
-                    c2 = Party.T.Bytes.Written, write_path = write_path)
-  WriteToLogSummary(c1 = "Party T Total Computing Time",
-                    c2 = Party.T.Computing.Time,
-                    c3 = Party.T.Computing.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Party T Total Waiting Time",
-                    c2 = Party.T.Waiting.Time,
-                    c3 = Party.T.Waiting.Time.HMS, write_path = write_path)
-  WriteToLogSummary(write_path = write_path)
-  WriteToLogSummary(c1 = "Total Reading Time",
-                    c2 = Total.Reading.Time,
-                    c3 = Total.Reading.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Total Writing Time",
-                    c2 = Total.Writing.Time,
-                    c3 = Total.Writing.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Total Computing Time",
-                    c2 = Total.Computing.Time,
-                    c3 = Total.Computing.Time.HMS,  write_path = write_path)
-  WriteToLogSummary(c1 = "Elapsed Computing Time",
-                    c2 = Elapsed.Computing.Time,
-                    c3 = Elapsed.Computing.Time.HMS,  write_path = write_path)
-  WriteToLogSummary(c1 = "Total Transfer Time",
-                    c2 = Total.Transfer.Time,
-                    c3 = Total.Transfer.Time.HMS, write_path = write_path)
-  WriteToLogSummary(c1 = "Total Bytes Transferred",
-                    c2 = Total.Bytes.Transferred, write_path = write_path)
-  WriteToLogSummary(c1 = "KB / Sec Transfer Rate",
-                    c2 = KB.Per.Second, write_path = write_path)
+  write_to_log_summary(write_path = write_path)
+  write_to_log_summary(c1 = "Party A Start Time",
+                    c2 = party_a_start_time, write_path = write_path)
+  write_to_log_summary(c1 = "Party A End Time",
+                    c2 = party_a_end_time, write_path = write_path)
+  write_to_log_summary(c1 = "Party A Total Run Time",
+                    c2 = party_a_total_time,
+                    c3 = party_a_total_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Party A Total Reading Time",
+                    c2 = party_a_reading_time,
+                    c3 = party_a_reading_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Party A Total Bytes Read",
+                    c2 = party_a_Bytes_read, write_path = write_path)
+  write_to_log_summary(c1 = "Party A Total Writing Time",
+                    c2 = party_a_writing_time,
+                    c3 = party_a_writing_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Party A Total Bytes Written",
+                    c2 = party_a_Bytes_written, write_path = write_path)
+  write_to_log_summary(c1 = "Party A Total Computing Time",
+                    c2 = party_a_computing_time,
+                    c3 = party_a_computing_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Party A Total Waiting Time",
+                    c2 = party_a_waiting_time,
+                    c3 = party_a_waiting_time_hms, write_path = write_path)
+  write_to_log_summary(write_path = write_path)
+  write_to_log_summary(c1 = "Party B Start Time",
+                    c2 = party_b_start_time, write_path = write_path)
+  write_to_log_summary(c1 = "Party B End Time",
+                    c2 = party_b_end_time, write_path = write_path)
+  write_to_log_summary(c1 = "Party B Total Run Time",
+                    c2 = party_b_total_time,
+                    c3 = party_b_total_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Party B Total Reading Time",
+                    c2 = party_b_reading_time,
+                    c3 = party_b_reading_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Party B Total Bytes Read",
+                    c2 = party_b_Bytes_read, write_path = write_path)
+  write_to_log_summary(c1 = "Party B Total Writing Time",
+                    c2 = party_b_writing_time,
+                    c3 = party_b_writing_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Party B Total Bytes Written",
+                    c2 = party_b_Bytes_written, write_path = write_path)
+  write_to_log_summary(c1 = "Party B Total Computing Time",
+                    c2 = party_b_computing_time,
+                    c3 = party_b_computing_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Party B Total Waiting Time",
+                    c2 = party_b_waiting_time,
+                    c3 = party_b_waiting_time_hms, write_path = write_path)
+  write_to_log_summary(write_path = write_path)
+  write_to_log_summary(c1 = "Party T Start Time",
+                    c2 = party_t_start_time, write_path = write_path)
+  write_to_log_summary(c1 = "Party T End Time",
+                    c2 = party_t_end_time, write_path = write_path)
+  write_to_log_summary(c1 = "Party T Total Run Time",
+                    c2 = party_t_total_time,
+                    c3 = party_t_total_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Party T Total Reading Time",
+                    c2 = party_t_reading_time,
+                    c3 = party_t_reading_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Party T Total Bytes Read",
+                    c2 = party_t_Bytes_read, write_path = write_path)
+  write_to_log_summary(c1 = "Party T Total Writing Time",
+                    c2 = party_t_writing_time,
+                    c3 = party_t_writing_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Party T Total Bytes Written",
+                    c2 = party_t_Bytes_written, write_path = write_path)
+  write_to_log_summary(c1 = "Party T Total Computing Time",
+                    c2 = party_t_computing_time,
+                    c3 = party_t_computing_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Party T Total Waiting Time",
+                    c2 = party_t_waiting_time,
+                    c3 = party_t_waiting_time_hms, write_path = write_path)
+  write_to_log_summary(write_path = write_path)
+  write_to_log_summary(c1 = "Total Reading Time",
+                    c2 = total_reading_time,
+                    c3 = total_reading_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Total Writing Time",
+                    c2 = total_writing_time,
+                    c3 = total_writing_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Total Computing Time",
+                    c2 = total_computing_time,
+                    c3 = total_computing_time_hms,  write_path = write_path)
+  write_to_log_summary(c1 = "Elapsed Computing Time",
+                    c2 = elapsed_computing_time,
+                    c3 = elapsed_computing_time_hms,  write_path = write_path)
+  write_to_log_summary(c1 = "Total Transfer Time",
+                    c2 = total_transfer_time,
+                    c3 = total_transfer_time_hms, write_path = write_path)
+  write_to_log_summary(c1 = "Total Bytes Transferred",
+                    c2 = total_Bytes_transferred, write_path = write_path)
+  write_to_log_summary(c1 = "KB / Sec Transfer Rate",
+                    c2 = kb_per_second, write_path = write_path)
 
 }
 
@@ -3283,19 +3283,19 @@ SummarizeLog.3p <- function(params) {
 initialize_log_kp <- function(params) {
   log <- list()
   log$blank <- data.frame(Step             = 0,
-                          Iteration.alg    = 0,
+                          iteration_alg    = 0,
                           Party            = "",
-                          Functions        = "",
-                          Wait.Time        = 0,
-                          Start.Time       = GetUTCTime(),
-                          End.Time         = GetUTCTime(),
-                          Read.Time        = 0,
-                          Read.Size        = 0,
-                          Write.Time       = 0,
-                          Write.Size       = 0,
-                          Computation.Time = 0,
-                          Files.Sent       = "",
-                          Bytes.Sent       = 0)
+                          functions        = "",
+                          wait_time        = 0,
+                          start_time       = GetUTCTime(),
+                          end_time         = GetUTCTime(),
+                          read_time        = 0,
+                          read_Size        = 0,
+                          write_time       = 0,
+                          write_Size       = 0,
+                          computetation_time = 0,
+                          files_sent       = "",
+                          bytes_sent       = 0)
   log$current <- log$blank
   log$history <- log$blank
   params$log <- log
@@ -3306,32 +3306,32 @@ initialize_log_kp <- function(params) {
 new_log_entry_kp <- function(params) {
   params$log$current <- params$log$blank
   params$log$current$Party         <- paste0("dp", params$data_partner_id)
-  params$log$current$Start.Time    <- GetUTCTime()
+  params$log$current$start_time    <- GetUTCTime()
   return(params)
 }
 
 
-StoreLogEntry.kp <- function(params, files) {
+store_log_entry_kp <- function(params, files) {
   params$log$current$Step          <- params$pmn_step_counter
-  params$log$current$Iteration.alg <- params$algIterationCounter
+  params$log$current$iteration_alg <- params$algIterationCounter
   params$log$current$Party <- paste0("dp", params$data_partner_id)
-  params$log$current$End.Time <- GetUTCTime()
-  params$log$current$Computation.Time <- round(as.numeric(difftime(
-    params$log$current$End.Time,
-    params$log$current$Start.Time, units = "secs")) -
-      params$log$current$Read.Time - params$log$current$Write.Time, 2)
-  params$log$current$Files.Sent <- paste(files, collapse = ", ")
-  params$log$current$Bytes.Sent <-
+  params$log$current$end_time <- GetUTCTime()
+  params$log$current$computetation_time <- round(as.numeric(difftime(
+    params$log$current$end_time,
+    params$log$current$start_time, units = "secs")) -
+      params$log$current$read_time - params$log$current$write_time, 2)
+  params$log$current$files_sent <- paste(files, collapse = ", ")
+  params$log$current$bytes_sent <-
     sum(file.size(file.path(params$write_path, files)))
-  if (is.na(params$log$current$Bytes.Sent)) {
-    params$log$current$Bytes.Sent <- 0
+  if (is.na(params$log$current$bytes_sent)) {
+    params$log$current$bytes_sent <- 0
   }
   nrows <- nrow(params$log$history)
   if (nrows >= 3) {
-    params$log$current$Wait.Time <-
+    params$log$current$wait_time <-
       round(as.numeric(difftime(
-        params$log$current$Start.Time,
-        max(params$log$history$End.Time[which(params$log$history$Party ==
+        params$log$current$start_time,
+        max(params$log$history$end_time[which(params$log$history$Party ==
                                                 params$log$current$Party)]),
         units = "secs")), 2)
   }
@@ -3344,7 +3344,7 @@ StoreLogEntry.kp <- function(params, files) {
 }
 
 
-MergeLogRaw.kp <- function(params, from) {
+merge_log_raw_kp <- function(params, from) {
   # This function will only be used in the function Pause Continue
   # When party A and party B run simultaneously, but Party A can run first
   # even if Party B starts the whole thing.  We append party B's log
@@ -3389,14 +3389,14 @@ MergeLogRaw.kp <- function(params, from) {
 }
 
 
-SummarizeLog.kp <- function(params) {
+summarize_log_kp <- function(params) {
   write_path <- params$write_path
   log       <- params$log$history
 
-  WriteToLogSummary(c1 = "Analysis",
+  write_to_log_summary(c1 = "Analysis",
                     c2 = params$analysis,
                     write_path = write_path, append = FALSE)
-  if (!is.null(params$n))   WriteToLogSummary(c1 = "N",
+  if (!is.null(params$n))   write_to_log_summary(c1 = "N",
                                               c2 = params$n,
                                               write_path = write_path)
 
@@ -3406,118 +3406,118 @@ SummarizeLog.kp <- function(params) {
     } else {
       p <- params$pi[i] - (i == 1) * (2 + (params$analysis == "cox"))
     }
-    WriteToLogSummary(c1 = paste0("p", i), c2 = p, write_path = write_path)
+    write_to_log_summary(c1 = paste0("p", i), c2 = p, write_path = write_path)
   }
 
-  WriteToLogSummary(write_path = write_path)
+  write_to_log_summary(write_path = write_path)
 
   total.time.0 <- 0
   for (party in 0:params$num_data_partners) {
     party_name <- paste0("dp", party)
     index <- which(log$Party == party_name)
     if (length(index) > 0) {
-      Start.Time <- log$Start.Time[index[1]]
-      End.Time   <- log$End.Time[index[length(index)]]
-      Total.Time <- round(as.numeric(difftime(End.Time,
-                                              Start.Time,
+      start_time <- log$start_time[index[1]]
+      end_time   <- log$end_time[index[length(index)]]
+      total_time <- round(as.numeric(difftime(end_time,
+                                              start_time,
                                               units = "secs")), digits = 2)
       if (party == 0) {
-        total.time.0 <- Total.Time
+        total.time.0 <- total_time
       }
-      Reading.Time <- sum(log$Read.Time[index])
-      Writing.Time <- sum(log$Write.Time[index])
-      Computing.Time <- sum(log$Computation.Time[index])
-      Waiting.Time <- sum(log$Wait.Time[index])
-      Total.Time.HMS <- ConvertSecsToHMS(Total.Time, timeOnly = TRUE)
-      Reading.Time.HMS <- ConvertSecsToHMS(Reading.Time, timeOnly = TRUE)
-      Writing.Time.HMS <- ConvertSecsToHMS(Writing.Time, timeOnly = TRUE)
-      Computing.Time.HMS <- ConvertSecsToHMS(Computing.Time, timeOnly = TRUE)
-      Waiting.Time.HMS <- ConvertSecsToHMS(Waiting.Time, timeOnly = TRUE)
-      Bytes.Read <- sum(log$Read.Size[index])
-      Bytes.Written <- sum(log$Write.Size[index])
-      WriteToLogSummary(c1 = paste(party_name, "Start Time"),
-                        c2 = Start.Time, write_path = write_path)
-      WriteToLogSummary(c1 = paste(party_name, "End Time"),
-                        c2 = End.Time, write_path = write_path)
-      WriteToLogSummary(c1 = paste(party_name, "Total Run Time"),
-                        c2 = Total.Time,
-                        c3 = Total.Time.HMS, write_path = write_path)
-      WriteToLogSummary(c1 = paste(party_name, "Total Reading Time"),
-                        c2 = Reading.Time,
-                        c3 = Reading.Time.HMS, write_path = write_path)
-      WriteToLogSummary(c1 = paste(party_name, "Total Bytes Read"),
-                        c2 = Bytes.Read, write_path = write_path)
-      WriteToLogSummary(c1 = paste(party_name, "Total Writing Time"),
-                        c2 = Writing.Time,
-                        c3 = Writing.Time.HMS, write_path = write_path)
-      WriteToLogSummary(c1 = paste(party_name, "Total Bytes Written"),
-                        c2 = Bytes.Written, write_path = write_path)
-      WriteToLogSummary(c1 = paste(party_name, "Total Computing Time"),
-                        c2 = Computing.Time,
-                        c3 = Computing.Time.HMS, write_path = write_path)
-      WriteToLogSummary(c1 = paste(party_name, "Total Waiting Time"),
-                        c2 = Waiting.Time,
-                        c3 = Waiting.Time.HMS, write_path = write_path)
-      WriteToLogSummary(write_path = write_path)
+      reading_time <- sum(log$read_time[index])
+      writing_time <- sum(log$write_time[index])
+      computing_time <- sum(log$computetation_time[index])
+      waiting_time <- sum(log$wait_time[index])
+      total_time_hms <- convert_secs_to_hms(total_time, time_only = TRUE)
+      reading_time_hms <- convert_secs_to_hms(reading_time, time_only = TRUE)
+      writing_time_hms <- convert_secs_to_hms(writing_time, time_only = TRUE)
+      computing_time_hms <- convert_secs_to_hms(computing_time, time_only = TRUE)
+      waiting_time_hms <- convert_secs_to_hms(waiting_time, time_only = TRUE)
+      Bytes_read <- sum(log$read_Size[index])
+      Bytes_written <- sum(log$write_Size[index])
+      write_to_log_summary(c1 = paste(party_name, "Start Time"),
+                        c2 = start_time, write_path = write_path)
+      write_to_log_summary(c1 = paste(party_name, "End Time"),
+                        c2 = end_time, write_path = write_path)
+      write_to_log_summary(c1 = paste(party_name, "Total Run Time"),
+                        c2 = total_time,
+                        c3 = total_time_hms, write_path = write_path)
+      write_to_log_summary(c1 = paste(party_name, "Total Reading Time"),
+                        c2 = reading_time,
+                        c3 = reading_time_hms, write_path = write_path)
+      write_to_log_summary(c1 = paste(party_name, "Total Bytes Read"),
+                        c2 = Bytes_read, write_path = write_path)
+      write_to_log_summary(c1 = paste(party_name, "Total Writing Time"),
+                        c2 = writing_time,
+                        c3 = writing_time_hms, write_path = write_path)
+      write_to_log_summary(c1 = paste(party_name, "Total Bytes Written"),
+                        c2 = Bytes_written, write_path = write_path)
+      write_to_log_summary(c1 = paste(party_name, "Total Computing Time"),
+                        c2 = computing_time,
+                        c3 = computing_time_hms, write_path = write_path)
+      write_to_log_summary(c1 = paste(party_name, "Total Waiting Time"),
+                        c2 = waiting_time,
+                        c3 = waiting_time_hms, write_path = write_path)
+      write_to_log_summary(write_path = write_path)
     }
   }
 
-  Total.Transfer.Time <- 0
+  total_transfer_time <- 0
   if (max(log$Step) > 1) {
     for (i in 2:max(log$Step)) {
       idx1 <- which(log$Step == i - 1)
       idx2 <- which(log$Step == i)
-      Total.Transfer.Time <- Total.Transfer.Time +
-        as.numeric(difftime(min(log$Start.Time[idx2]),
-                            max(log$End.Time[idx1]), units = "secs"))
+      total_transfer_time <- total_transfer_time +
+        as.numeric(difftime(min(log$start_time[idx2]),
+                            max(log$end_time[idx1]), units = "secs"))
     }
   }
-  Total.Transfer.Time <- round(Total.Transfer.Time, 2)
-  Elapsed.Computing.Time <- total.time.0 - Total.Transfer.Time
+  total_transfer_time <- round(total_transfer_time, 2)
+  elapsed_computing_time <- total.time.0 - total_transfer_time
 
-  Total.Reading.Time <- sum(log$Read.Time)
-  Total.Writing.Time <- sum(log$Write.Time)
-  Total.Computing.Time <- sum(log$Computation.Time)
-  Total.Reading.Time.HMS <-
-    ConvertSecsToHMS(Total.Reading.Time, timeOnly = TRUE)
-  Total.Writing.Time.HMS <-
-    ConvertSecsToHMS(Total.Writing.Time, timeOnly = TRUE)
-  Total.Transfer.Time.HMS <-
-    ConvertSecsToHMS(Total.Transfer.Time, timeOnly = TRUE)
-  Total.Computing.Time.HMS <-
-    ConvertSecsToHMS(Total.Computing.Time, timeOnly = TRUE)
-  Elapsed.Computing.Time.HMS <-
-    ConvertSecsToHMS(Elapsed.Computing.Time, timeOnly = TRUE)
-  Total.Bytes.Transferred <-
-    sum(log$Bytes.Sent)
-  KB.Per.Second <-
-    round(Total.Bytes.Transferred / (Total.Transfer.Time * 1024), digits = 2)
+  total_reading_time <- sum(log$read_time)
+  total_writing_time <- sum(log$write_time)
+  total_computing_time <- sum(log$computetation_time)
+  total_reading_time_hms <-
+    convert_secs_to_hms(total_reading_time, time_only = TRUE)
+  total_writing_time_hms <-
+    convert_secs_to_hms(total_writing_time, time_only = TRUE)
+  total_transfer_time_hms <-
+    convert_secs_to_hms(total_transfer_time, time_only = TRUE)
+  total_computing_time_hms <-
+    convert_secs_to_hms(total_computing_time, time_only = TRUE)
+  elapsed_computing_time_hms <-
+    convert_secs_to_hms(elapsed_computing_time, time_only = TRUE)
+  total_Bytes_transferred <-
+    sum(log$bytes_sent)
+  kb_per_second <-
+    round(total_Bytes_transferred / (total_transfer_time * 1024), digits = 2)
 
-  WriteToLogSummary(c1 = "Total Reading Time",
-                    c2 = Total.Reading.Time,
-                    c3 = Total.Reading.Time.HMS,
+  write_to_log_summary(c1 = "Total Reading Time",
+                    c2 = total_reading_time,
+                    c3 = total_reading_time_hms,
                     write_path = write_path)
-  WriteToLogSummary(c1 = "Total Writing Time",
-                    c2 = Total.Writing.Time,
-                    c3 = Total.Writing.Time.HMS,
+  write_to_log_summary(c1 = "Total Writing Time",
+                    c2 = total_writing_time,
+                    c3 = total_writing_time_hms,
                     write_path = write_path)
-  WriteToLogSummary(c1 = "Total Computing Time",
-                    c2 = Total.Computing.Time,
-                    c3 = Total.Computing.Time.HMS,
+  write_to_log_summary(c1 = "Total Computing Time",
+                    c2 = total_computing_time,
+                    c3 = total_computing_time_hms,
                     write_path = write_path)
-  WriteToLogSummary(c1 = "Elapsed Computing Time",
-                    c2 = Elapsed.Computing.Time,
-                    c3 = Elapsed.Computing.Time.HMS,
+  write_to_log_summary(c1 = "Elapsed Computing Time",
+                    c2 = elapsed_computing_time,
+                    c3 = elapsed_computing_time_hms,
                     write_path = write_path)
-  WriteToLogSummary(c1 = "Total Transfer Time",
-                    c2 = Total.Transfer.Time,
-                    c3 = Total.Transfer.Time.HMS,
+  write_to_log_summary(c1 = "Total Transfer Time",
+                    c2 = total_transfer_time,
+                    c3 = total_transfer_time_hms,
                     write_path = write_path)
-  WriteToLogSummary(c1 = "Total Bytes Transferred",
-                    c2 = Total.Bytes.Transferred,
+  write_to_log_summary(c1 = "Total Bytes Transferred",
+                    c2 = total_Bytes_transferred,
                     write_path = write_path)
-  WriteToLogSummary(c1 = "KB / Sec Transfer Rate",
-                    c2 = KB.Per.Second,
+  write_to_log_summary(c1 = "KB / Sec Transfer Rate",
+                    c2 = kb_per_second,
                     write_path = write_path)
 }
 
@@ -3550,9 +3550,9 @@ initialize_tracking_table_2p <- function(params) {
                ITER_NB            = 0,
                # if params$party_name is "A" then 2 else 1
                STEP_NB            = 0,
-               # from log$Start.Time
+               # from log$start_time
                START_DTM          = GetUTCTime(),
-               # from log$End.Time
+               # from log$end_time
                END_DTM            = GetUTCTime(),
                CURR_STEP_IN       = 0,
                STEP_RETURN_CD     = 0,
@@ -3577,8 +3577,8 @@ initialize_tracking_table_2p <- function(params) {
 #' @importFrom utils write.csv
 StoreTrackingTableEntry.2p <- function(params) {
   params$trackingTable$current$ITER_NB <- params$pmn_step_counter
-  params$trackingTable$current$START_DTM <- params$log$current$Start.Time
-  params$trackingTable$current$END_DTM <- params$log$current$End.Time
+  params$trackingTable$current$START_DTM <- params$log$current$start_time
+  params$trackingTable$current$END_DTM <- params$log$current$end_time
   if (file.exists(file.path(params$read_path, "errorMessage.rdata"))) {
     load(file.path(params$read_path, "errorMessage.rdata"))
     params$trackingTable$current$STEP_RETURN_MSG <- message
@@ -3636,8 +3636,8 @@ initialize_tracking_table_3p <- function(params) {
                RUNID           = "dl",
                ITER_NB         = 0,  # params$pmnIterationCounter
                STEP_NB         = 0,
-               START_DTM       = GetUTCTime(), # from log$Start.Time
-               END_DTM         = GetUTCTime(), # from log$End.Time
+               START_DTM       = GetUTCTime(), # from log$start_time
+               END_DTM         = GetUTCTime(), # from log$end_time
                CURR_STEP_IN    = 0,
                STEP_RETURN_CD  = 0,
                # copy errorMessage.rdata here if exists
@@ -3660,8 +3660,8 @@ initialize_tracking_table_3p <- function(params) {
 
 StoreTrackingTableEntry.3p <- function(params) {
   params$trackingTable$current$ITER_NB <- params$pmn_step_counter
-  params$trackingTable$current$START_DTM <- params$log$current$Start.Time
-  params$trackingTable$current$END_DTM <- params$log$current$End.Time
+  params$trackingTable$current$START_DTM <- params$log$current$start_time
+  params$trackingTable$current$END_DTM <- params$log$current$end_time
   if (file.exists(file.path(params$write_path, "errorMessage.rdata"))) {
     load(file.path(params$write_path, "errorMessage.rdata"))
     params$trackingTable$current$STEP_RETURN_MSG <- message
@@ -3729,9 +3729,9 @@ initialize_tracking_table_kp <- function(params) {
     # params$pmnIterationCounter
     ITER_NB            = 0,
     STEP_NB            = 0,
-    # from log$Start.Time
+    # from log$start_time
     START_DTM          = GetUTCTime(),
-    # from log$End.Time
+    # from log$end_time
     END_DTM            = GetUTCTime(),
     CURR_STEP_IN       = 0,
     STEP_RETURN_CD     = 0,
@@ -3755,8 +3755,8 @@ initialize_tracking_table_kp <- function(params) {
 
 StoreTrackingTableEntry.kp <- function(params) {
   params$trackingTable$current$ITER_NB <- params$pmn_step_counter
-  params$trackingTable$current$START_DTM <- params$log$current$Start.Time
-  params$trackingTable$current$END_DTM <- params$log$current$End.Time
+  params$trackingTable$current$START_DTM <- params$log$current$start_time
+  params$trackingTable$current$END_DTM <- params$log$current$end_time
   if (file.exists(file.path(params$write_path, "errorMessage.rdata"))) {
     load(file.path(params$write_path, "errorMessage.rdata"))
     params$trackingTable$current$STEP_RETURN_MSG <- message
@@ -4536,14 +4536,14 @@ differentModel <- function(formula = NULL, x = NULL) {
   return(invisible(y))
 }
 
-###################### LOGISTIC ROC AND HOSLEM FUNCTIONS #######################
+###################### LOGISTIC roc AND HOSLEM FUNCTIONS #######################
 
 
 #' @importFrom  stats pchisq quantile
 HoslemInternal <- function(x, data = NULL, nGroups = 10) {
   #            y:  response (vector, length n)
   #  final_fitted:  final_fitted from getFinalCoefA(...)  (vector, length n)
-  #            p:  number of covariates pA + pB
+  #            p:  number of covariates p_a + p_b
   #      nGroups:  number of groups, specified by user
   #                or chosen automatically if unspecified.
   #                Common to choose ngroups = 10, as long as nGroups > p + 1.
@@ -4704,7 +4704,7 @@ print.rocdistributed <- function(x, ...) {
   plot(rtrn[, 1], rtrn[, 2], xaxt = "n", yaxt = "n",
        xlim = c(-0.2, 1.2), ylim = c(0, 1),
        type = "s", ylab = "Sensitivity", xlab = "1 - Specificity", col = "blue",
-       main = "ROC Curve")
+       main = "roc Curve")
   axis(side = 1, at = seq(0, 1, 0.2))
   axis(side = 2, at = seq(0, 1, 0.2))
   lines(x = c(0, 1), y = c(0, 1), col = "limegreen")
@@ -4714,7 +4714,7 @@ print.rocdistributed <- function(x, ...) {
 
 
 #' @aliases RocTest rocdistributed.object print.rocdistributed
-#' @title Create the ROC for Vertical Distributed Logistic Regression
+#' @title Create the roc for Vertical Distributed Logistic Regression
 #' @description Generate the receiver operator curve on an object created by
 #'   2-party, 3-party, or K-party vdra logistic regression.  Only the party that
 #'   holds the response may invoke this function.
@@ -4735,11 +4735,11 @@ print.rocdistributed <- function(x, ...) {
 #' @export
 RocTest <- function(x = NULL, bins = 10) {
   if (!inherits(x, "vdralogistic")) {
-    warning("Cannot create ROC on non vdralogistic object.")
+    warning("Cannot create roc on non vdralogistic object.")
     return(invisible(NULL))
   }
   if (!x$converged) {
-    warning("Process did not converge.  Cannot generate ROC.")
+    warning("Process did not converge.  Cannot generate roc.")
     return(invisible(NULL))
   }
   if (is.null(x$Y) || is.null(x$final_fitted)) {

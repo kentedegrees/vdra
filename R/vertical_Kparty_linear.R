@@ -671,7 +671,7 @@ data_partner_k_linear <- function(data,
     make_error_message(params$write_path, params$error_message)
     files <- "error_message.rdata"
     params <- send_pause_continue_kp(params,
-                                     filesAC = files,
+                                     files_ac = files,
                                      from = "AC",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time,
@@ -687,7 +687,7 @@ data_partner_k_linear <- function(data,
   params <- send_basic_info_dp(params, data)
   files <- "n_analysis.rdata"
   params <- send_pause_continue_kp(params,
-                                   filesAC = files,
+                                   files_ac = files,
                                    from = "AC",
                                    sleep_time = sleep_time,
                                    max_waiting_time = max_waiting_time,
@@ -706,7 +706,7 @@ data_partner_k_linear <- function(data,
   params <- prepare_params_linear_dp(params, data)
   files <- "p_scaler_seed.rdata"
   params <- send_pause_continue_kp(params,
-                                   filesDP = files,
+                                   files_dp = files,
                                    from = "DP",
                                    sleep_time = sleep_time,
                                    max_waiting_time = max_waiting_time,
@@ -715,7 +715,7 @@ data_partner_k_linear <- function(data,
   params <- prepare_shares_linear_dp(params, data)
   files <- c("products.rdata", "halfshare.rdata", "colstats.rdata")
   params <- send_pause_continue_kp(params,
-                                   filesAC = files,
+                                   files_ac = files,
                                    from = "AC",
                                    sleep_time = sleep_time,
                                    max_waiting_time = max_waiting_time,
@@ -769,7 +769,7 @@ analysis_center_k_linear <- function(num_data_partners = NULL,
     return(invisible(NULL))
   }
 
-  params <- PauseContinue.kp(params, from = "DP",
+  params <- pause_continue_kp(params, from = "DP",
                              max_waiting_time = max_waiting_time)
 
   possible_error <- ReceivedError.kp(params, from = "DP")
@@ -779,14 +779,14 @@ analysis_center_k_linear <- function(num_data_partners = NULL,
     make_error_message(params$write_path, possible_error$message)
     files <- "error_message.rdata"
     params <- send_pause_continue_kp(params,
-                                     filesDP = files,
+                                     files_dp = files,
                                      from = "DP",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
     params <- send_pause_quit_kp(params,
                                  sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.kp(params)
+    summarize_log_kp(params)
     return(params$stats)
   }
 
@@ -797,20 +797,20 @@ analysis_center_k_linear <- function(num_data_partners = NULL,
     files <- "error_message.rdata"
     warning(params$error_message)
     params <- send_pause_continue_kp(params,
-                                     filesDP = files
+                                     files_dp = files
                                      , from = "DP",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
     params <- send_pause_quit_kp(params,
                                  sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.kp(params)
+    summarize_log_kp(params)
     return(params$stats)
   }
 
   files <- "empty.rdata"
   params <- send_pause_continue_kp(params,
-                                   filesDP = files,
+                                   files_dp = files,
                                    from = "DP",
                                    sleep_time = sleep_time,
                                    max_waiting_time = max_waiting_time)
@@ -823,24 +823,24 @@ analysis_center_k_linear <- function(num_data_partners = NULL,
     files <- "error_message.rdata"
     warning(params$error_message)
     params <- send_pause_continue_kp(params,
-                                     filesDP = files,
+                                     files_dp = files,
                                      from = "DP",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
     params <- send_pause_quit_kp(params,
                                  sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.kp(params)
+    summarize_log_kp(params)
     return(params$stats)
   } else {
     files <- "stats.rdata"
     params <- send_pause_continue_kp(params,
-                                     filesDP = files,
+                                     files_dp = files,
                                      from = "DP",
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
     params <- send_pause_quit_kp(params, sleep_time = sleep_time)
-    SummarizeLog.kp(params)
+    summarize_log_kp(params)
     return(params$stats)
   }
 }

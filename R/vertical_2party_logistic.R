@@ -1201,7 +1201,7 @@ comp_results_logistic_a2 <- function(params, data) {
   stats$nulldev <- nulldev
   stats$resdev  <- resdev
   stats$hoslem  <- HoslemInternal(params, data)
-  stats$ROC     <- roc_internal(params, data)
+  stats$roc     <- roc_internal(params, data)
   stats$iter    <- params$alg_iteration_counter - 1
 
   names_old <- c(a_names, b_names)
@@ -1216,7 +1216,7 @@ comp_results_logistic_a2 <- function(params, data) {
   write_size <- file.size(file.path(params$write_path, "stats.rdata"))
   write_time <- proc.time()[3] - write_time
 
-  stats$Y           <- data$Y # For Hoslem and ROC
+  stats$Y           <- data$Y # For Hoslem and roc
   stats$final_fitted <- final_fitted
   params$stats      <- stats
 
@@ -1277,7 +1277,7 @@ party_a_process_2_logistic <- function(data,
     params$pmn_step_counter <- 1
     params <- send_pause_quit_2p(params, sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.2p(params)
+    summarize_log_2p(params)
     return(params$stats)
   }
 
@@ -1290,7 +1290,7 @@ party_a_process_2_logistic <- function(data,
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
     params <- send_pause_quit_2p(params, sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.2p(params)
+    summarize_log_2p(params)
     return(params$stats)
   }
 
@@ -1303,7 +1303,7 @@ party_a_process_2_logistic <- function(data,
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
     params <- send_pause_quit_2p(params, sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.2p(params)
+    summarize_log_2p(params)
     return(params$stats)
   }
 
@@ -1316,7 +1316,7 @@ party_a_process_2_logistic <- function(data,
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
     params <- send_pause_quit_2p(params, sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.2p(params)
+    summarize_log_2p(params)
     return(params$stats)
   }
 
@@ -1336,7 +1336,7 @@ party_a_process_2_logistic <- function(data,
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
     params <- send_pause_quit_2p(params, sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.2p(params)
+    summarize_log_2p(params)
     return(params$stats)
   }
   data <- update_data_logistic_a2(params, data)
@@ -1361,7 +1361,7 @@ party_a_process_2_logistic <- function(data,
       params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
       params <- send_pause_quit_2p(params, sleep_time = sleep_time,
                                    job_failed = TRUE)
-      SummarizeLog.2p(params)
+      summarize_log_2p(params)
       return(params$stats)
     }
     files <- c("a21i1_xtwx.rdata")
@@ -1383,7 +1383,7 @@ party_a_process_2_logistic <- function(data,
   files <- c("stats.rdata")
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
   params <- send_pause_quit_2p(params, sleep_time = sleep_time)
-  SummarizeLog.2p(params)
+  summarize_log_2p(params)
   return(invisible(params$stats))
 }
 

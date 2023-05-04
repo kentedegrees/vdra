@@ -820,7 +820,7 @@ party_a_process_2_linear <- function(data,
     params$pmn_step_counter <- 1
     params <- send_pause_quit_2p(params, sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.2p(params)
+    summarize_log_2p(params)
     return(params$stats)
   }
 
@@ -833,7 +833,7 @@ party_a_process_2_linear <- function(data,
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
     params <- send_pause_quit_2p(params, sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.2p(params)
+    summarize_log_2p(params)
     return(params$stats)
   }
 
@@ -846,7 +846,7 @@ party_a_process_2_linear <- function(data,
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
     params <- send_pause_quit_2p(params, sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.2p(params)
+    summarize_log_2p(params)
     return(params$stats)
   }
 
@@ -859,7 +859,7 @@ party_a_process_2_linear <- function(data,
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
     params <- send_pause_quit_2p(params, sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.2p(params)
+    summarize_log_2p(params)
     return(params$stats)
   }
 
@@ -875,7 +875,7 @@ party_a_process_2_linear <- function(data,
   files <- c("stats.rdata")
   params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
   params <- send_pause_quit_2p(params, sleep_time = sleep_time)
-  SummarizeLog.2p(params)
+  summarize_log_2p(params)
   return(params$stats)
 }
 

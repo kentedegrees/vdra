@@ -886,7 +886,7 @@ get_results_logistic_a3 <- function(params, data) {
   load(file.path(params$read_path[["T"]], "stats.rdata"))
   read_size <- file.size(file.path(params$read_path[["T"]], "stats.rdata"))
   read_time <- proc.time()[3] - read_time
-  stats$Y           <- data$Y # For Hoslem and ROC
+  stats$Y           <- data$Y # For Hoslem and roc
   stats$final_fitted <- params$final_fitted
   params$stats      <- stats
   params <- add_to_log(params, "get_results_logistic_a3",
@@ -1250,7 +1250,7 @@ party_t_process_3_logistic <- function(monitor_folder   = NULL,
     params <- send_pause_quit_3p(params,
                                  sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.3p(params)
+    summarize_log_3p(params)
     return(params$stats)
   }
   if (file.exists(file.path(params$read_path[["A"]], "error_message.rdata"))) {
@@ -1266,7 +1266,7 @@ party_t_process_3_logistic <- function(monitor_folder   = NULL,
     params <- send_pause_quit_3p(params,
                                  sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.3p(params)
+    summarize_log_3p(params)
     return(params$stats)
   }
   if (file.exists(file.path(params$read_path[["B"]], "error_message.rdata"))) {
@@ -1282,7 +1282,7 @@ party_t_process_3_logistic <- function(monitor_folder   = NULL,
     params <- send_pause_quit_3p(params,
                                  sleep_time = sleep_time,
                                  job_failed = TRUE)
-    SummarizeLog.3p(params)
+    summarize_log_3p(params)
     return(params$stats)
   }
 
@@ -1301,7 +1301,7 @@ party_t_process_3_logistic <- function(monitor_folder   = NULL,
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
     params <- send_pause_quit_3p(params, sleep_time = sleep_time)
-    SummarizeLog.3p(params)
+    summarize_log_3p(params)
     return(params$stats)
   }
 
@@ -1345,7 +1345,7 @@ party_t_process_3_logistic <- function(monitor_folder   = NULL,
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
     params <- send_pause_quit_3p(params, sleep_time = sleep_time)
-    SummarizeLog.3p(params)
+    summarize_log_3p(params)
     return(params$stats)
   }
 
@@ -1395,7 +1395,7 @@ party_t_process_3_logistic <- function(monitor_folder   = NULL,
                                        sleep_time = sleep_time,
                                        max_waiting_time = max_waiting_time)
       params <- send_pause_quit_3p(params, sleep_time = sleep_time)
-      SummarizeLog.3p(params)
+      summarize_log_3p(params)
       return(params$stats)
     }
     files_a <- c("IIA.rdata")
@@ -1438,6 +1438,6 @@ party_t_process_3_logistic <- function(monitor_folder   = NULL,
                                    max_waiting_time = max_waiting_time)
 
   params <- send_pause_quit_3p(params, sleep_time = sleep_time)
-  SummarizeLog.3p(params)
+  summarize_log_3p(params)
   return(params$stats)
 }
