@@ -913,11 +913,11 @@ compute_results_linear_t3 <- function(params) {
   df1     <- num_covariates
   df2     <- n - num_covariates - 1
   if (sse == 0) {
-    f_stat <- Inf
+    Fstat <- Inf
   } else {
-    f_stat <- (ssr / df1) / (sse / df2)
+    Fstat <- (ssr / df1) / (sse / df2)
   }
-  f_pval <- pf(f_stat, df1, df2, lower.tail = FALSE)
+  Fpval <- pf(Fstat, df1, df2, lower.tail = FALSE)
   if (sse == 0) {
     r_sq <- 1
   } else {
@@ -948,8 +948,8 @@ compute_results_linear_t3 <- function(params) {
   stats$rstderr                <- rstderr
   stats$rsquare                <- r_sq
   stats$adjrsquare             <- adj_r_sq
-  stats$f_stat                  <- f_stat
-  stats$f_pval <- f_pval
+  stats$Fstat                  <- Fstat
+  stats$Fpval <- Fpval
   stats$df1                    <- df1
   stats$df2                    <- df2
   stats$n                      <- params$n

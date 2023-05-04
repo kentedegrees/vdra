@@ -25,10 +25,12 @@ Models are specified symbolically.  A typical model is of the
   all variables in the original model have to be used.
 }
 \examples{
- fit <- differentModel(Change_BMI ~ Exposure + Age + NumRx, vdra_fit_linear_A)
+ fit <- differentModel(Change_BMI ~ Exposure + Age +
+                       NumRx, vdra_fit_linear_A)
  summary(fit)
 
- fit <- differentModel(Age ~ Change_BMI + Exposure + NumRx, vdra_fit_linear_A)
+ fit <- differentModel(Age ~ Change_BMI + Exposure +
+                       NumRx, vdra_fit_linear_A)
  summary(fit)
 }
 \seealso{

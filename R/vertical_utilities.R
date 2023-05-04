@@ -3951,13 +3951,13 @@ print.vdralinear <- function(x, ...) {
 #'
 #'   \item{adjrsquare}{adjusted r squared.}
 #'
-#'   \item{f_stat}{the F-statistic for the linear regression.}
+#'   \item{Fstat}{the F-statistic for the linear regression.}
 #'
 #'   \item{df1}{the numerator degrees of freedom for the F-statistic.}
 #'
 #'   \item{df2}{the denominator degrees of freedom for the F-statistic.}
 #'
-#'   \item{f_pval}{the p-value of the F-statistic for the linear regression.}
+#'   \item{Fpval}{the p-value of the F-statistic for the linear regression.}
 #'
 #'   }
 #'
@@ -3981,15 +3981,14 @@ summary.vdralinear <- function(object, ...) {
   temp$df2            <- object$df2
   temp$rsquare        <- object$rsquare
   temp$adjrsquare     <- object$adjrsquare
-  temp$f_stat          <- object$f_stat
+  temp$Fstat         <- object$Fstat
   temp$df1            <- object$df1
-  temp$f_pval <- object$f_pval
+  temp$Fpval         <- object$Fpval
   return(temp)
 }
 
 #' @export
 print.summary.vdralinear <- function(x, lion = FALSE, ...) {
-
   if (x$failed) {
     warning("Distributed linear regression failed.  No results to print.")
     return(invisible(NULL))
@@ -4024,8 +4023,8 @@ print.summary.vdralinear <- function(x, lion = FALSE, ...) {
       "on", x$df2, "degrees of freedom\n")
   cat("Multiple R-squared: ", formatStat(x$rsquare),
       ", Adjusted R-squared: ", formatStat(x$adjrsquare), "\n")
-  cat("F-statistic:", formatStat(x$f_stat), "on", x$df1,
-      "and", x$df2, "DF, p-value:", format.pval(x$f_pval), "\n\n")
+  cat("F-statistic:", formatStat(x$Fstat), "on", x$df1,
+      "and", x$df2, "DF, p-value:", format.pval(x$Fpval), "\n\n")
 }
 
 #' @export
@@ -4460,11 +4459,11 @@ differentModel <- function(formula = NULL, x = NULL) {
   df1     <- num_covariates
   df2     <- n - num_covariates - 1
   if (sse == 0) {
-    f_stat <- Inf
+    Fstat <- Inf
   } else {
-    f_stat <- (ssr / df1) / (sse / df2)
+    Fstat <- (ssr / df1) / (sse / df2)
   }
-  f_pval <- pf(f_stat, df1, df2, lower.tail = FALSE)
+  Fpval <- pf(Fstat, df1, df2, lower.tail = FALSE)
   if (sse == 0) {
     r_sq <- 1
   } else {
@@ -4508,8 +4507,8 @@ differentModel <- function(formula = NULL, x = NULL) {
   y$rstderr                <- rstderr
   y$rsquare                <- r_sq
   y$adjrsquare             <- adj_r_sq
-  y$f_stat                  <- f_stat
-  y$f_pval <- f_pval
+  y$Fstat                  <- Fstat
+  y$Fpval <- Fpval
   y$df1                    <- df1
   y$df2                    <- df2
   y$n                      <- x$n

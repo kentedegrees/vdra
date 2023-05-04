@@ -35,9 +35,9 @@ The following components must be included in a legitimate
 
   \item{adjrsquare}{adjusted r squared.}
 
-  \item{f_stat}{the F-statistic for the linear regression.}
+  \item{Fstat}{the F-statistic for the linear regression.}
 
-  \item{f_pval}{the p-value of the F-statistic for the linear regression.}
+  \item{Fpval}{the p-value of the F-statistic for the linear regression.}
 
   \item{df1}{The numerator degrees of freedom for the F-statistic.}
 
