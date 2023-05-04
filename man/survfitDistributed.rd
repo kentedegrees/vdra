@@ -14,6 +14,14 @@ survfitDistributed.stats(x)
 
 survfitDistributed.formula(x, formula, data)
 
+\method{print}{survfitDistributed}(x, ...)
+
+survfitDistributed.stats(x)
+
+survfitDistributed.formula(x, formula, data)
+
+survfitDistributed(x = NULL, formula = NULL, data = NULL)
+
 survfitDistributed(x = NULL, formula = NULL, data = NULL)
 }
 \arguments{
@@ -54,6 +62,12 @@ This function creates survival curves for a previously defined
   original data supplied by the calling party allowing exploration of other
   potential strata.  Both \code{formula} and \code{data} must be NULL or both
   must be specified.
+
+sfit <- survfitDistributed(vdra_fit_cox_B,
+                          ~Race + Sex,
+                          data = vdra_data[, 8:11])
+print(sfit)
+plot(sfit, merge = TRUE)
 }
 \examples{
 

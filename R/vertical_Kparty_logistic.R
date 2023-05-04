@@ -188,9 +188,9 @@ check_colinearity_logistic_ac <- function(params) {
 
 
 #' @importFrom stats runif
-compute_initial_betas_logistic_ac <- function(params) {
+compute_init_betas_logistic_ac <- function(params) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_initial_betas_logistic_ac\n\n")
+                        "compute_init_betas_logistic_ac\n\n")
   write_time <- 0
   write_size <- 0
   colsum_s <- (params$colsum - params$n * params$colmin) / params$colran
@@ -211,7 +211,7 @@ compute_initial_betas_logistic_ac <- function(params) {
     write_time <- write_time + proc.time()[3]
     start <- end + 1
   }
-  params <- add_to_log(params, "compute_initial_betas_logistic_ac",
+  params <- add_to_log(params, "compute_init_betas_logistic_ac",
                        0, 0, write_time, write_size)
   return(params)
 }
@@ -515,9 +515,9 @@ update_beta_logistic_dp <- function(params) {
 }
 
 
-compute_converged_status_logistic_ac <- function(params) {
+compute_conv_status_logistic_ac <- function(params) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_converged_status_logistic_ac\n\n")
+                        "compute_conv_status_logistic_ac\n\n")
   read_time <- 0
   read_size <- 0
   u <- 0
@@ -542,7 +542,7 @@ compute_converged_status_logistic_ac <- function(params) {
        file = file.path(params$write_path, "u_converge.rdata"))
   write_size <- file.size(file.path(params$write_path, "u_converge.rdata"))
   write_time <- proc.time()[3] - write_time
-  params <- add_to_log(params, "compute_converged_status_logistic_ac",
+  params <- add_to_log(params, "compute_conv_status_logistic_ac",
                        read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -552,7 +552,7 @@ GetConvergeStatusLogistic.DP <- function(params) {
   converged <- NULL
   if (params$trace) cat(as.character(Sys.time()),
                         "GetconvergeStatusLogistic.DP\n\n")
-  u <- converge <- maxIterExceeded <- NULL
+  u <- maxIterExceeded <- NULL
   read_time <- proc.time()[3]
   load(file.path(params$readPathAC, "u_converge.rdata"))
   read_size <- file.size(file.path(params$readPathAC, "u_converge.rdata"))
@@ -1032,7 +1032,7 @@ AnalysisCenterKLogistic <- function(num_data_partners = NULL,
     return(params$stats)
   }
 
-  params <- compute_initial_betas_logistic_ac(params)
+  params <- compute_init_betas_logistic_ac(params)
 
   for (id in 1:num_data_partners) {
     files_list[[id]] <- c(paste0("u_beta_", id, ".rdata"), "indicies.rdata")
@@ -1082,7 +1082,7 @@ AnalysisCenterKLogistic <- function(num_data_partners = NULL,
                                      sleep_time = sleep_time,
                                      max_waiting_time = max_waiting_time)
 
-    params <- compute_converged_status_logistic_ac(params)
+    params <- compute_conv_status_logistic_ac(params)
     files <- "u_converge.rdata"
     params <- send_pause_continue_kp(params,
                                      filesDP = files,

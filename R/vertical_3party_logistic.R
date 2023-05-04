@@ -80,9 +80,9 @@ check_colinearity_logistic_t3 <- function(params) {
 }
 
 
-compute_initial_betas_logistic_t3 <- function(params) {
+compute_init_betas_logistic_t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_initial_betas_logistic_t3\n\n")
+                        "compute_init_betas_logistic_t3\n\n")
   # de-standardize xty
   p1     <- params$p1
   p2     <- params$p2
@@ -124,7 +124,7 @@ compute_initial_betas_logistic_t3 <- function(params) {
                                           "converged.rdata"))))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "compute_initial_betas_logistic_t3",
+  params <- add_to_log(params, "compute_init_betas_logistic_t3",
                        0, 0, write_time, write_size)
 
   return(params)
@@ -1349,7 +1349,7 @@ party_t_process_3_logistic <- function(monitor_folder   = NULL,
     return(params$stats)
   }
 
-  params <- compute_initial_betas_logistic_t3(params)
+  params <- compute_init_betas_logistic_t3(params)
   files_a <-
     c("Aindicies.rdata", "betasA.rdata", "a_xty.rdata", "converged.rdata")
   files_b <-

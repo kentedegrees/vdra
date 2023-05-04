@@ -700,9 +700,9 @@ update_data_logistic_a2 <- function(params, data) {
 }
 
 
-compute_initial_betas_logistic_a2 <- function(params, data) {
+compute_init_betas_logistic_a2 <- function(params, data) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_initial_betas_logistic_a2\n\n")
+                        "compute_init_betas_logistic_a2\n\n")
   # de-standardize xty
   p1     <- params$p1
   p2     <- params$p2
@@ -731,7 +731,7 @@ compute_initial_betas_logistic_a2 <- function(params, data) {
   write_size <- sum(file.size(file.path(params$write_path, "Bbetas_xty.rdata")))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "compute_initial_betas_logistic_a2",
+  params <- add_to_log(params, "compute_init_betas_logistic_a2",
                        0, 0, write_time, write_size)
 
   return(params)
@@ -1086,7 +1086,7 @@ get_coef_logistic_a2 <- function(params, data) {
 }
 
 
-get_converged_status_logistic_b2 <- function(params) {
+get_conv_status_logistic_b2 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()),
                         "GetconvergedStatusLogistic.b2\n\n")
   deltabeta <- NULL
@@ -1104,7 +1104,7 @@ get_converged_status_logistic_b2 <- function(params) {
                   params$max_iterations, "iterations."))
   }
 
-  params <- add_to_log(params, "get_converged_status_logistic_b2",
+  params <- add_to_log(params, "get_conv_status_logistic_b2",
                        read_time, read_size, 0, 0)
   return(params)
 }
@@ -1341,7 +1341,7 @@ party_a_process_2_logistic <- function(data,
   }
   data <- update_data_logistic_a2(params, data)
   params <- add_to_log(params, "update_data_logistic_a2", 0, 0, 0, 0)
-  params <- compute_initial_betas_logistic_a2(params, data)
+  params <- compute_init_betas_logistic_a2(params, data)
 
   files <- c("indicies.rdata", "Bbetas_xty.rdata")
   params <- send_pause_continue_2p(params, files, sleep_time, max_waiting_time)
@@ -1478,7 +1478,7 @@ party_b_process_2_logistic <- function(data,
     params <- send_pause_continue_2p(params, files, sleep_time,
                                      max_waiting_time)
 
-    params <- get_converged_status_logistic_b2(params)
+    params <- get_conv_status_logistic_b2(params)
 
     EndingIteration(params)
     params$alg_iteration_counter <- params$alg_iteration_counter + 1

@@ -1536,10 +1536,10 @@ compute_results_cox_ac <- function(params) {
   }
 
   stats$survival <- data.frame(
-    rank   <- params$survival$rank,
-    status <- params$survival$status,
-    sorted <- params$survival$sorted_idx,
-    surv   <- survfit_cox_ac(params, pred)
+    rank   = params$survival$rank,
+    status = params$survival$status,
+    sorted = params$survival$sorted_idx,
+    surv   = survfit_cox_ac(params, pred)
   )
   stats$strata <- as.data.frame(matrix(0, length(params$survival$strata), 3))
   stats$strata$label <- ""

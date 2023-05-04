@@ -35,6 +35,36 @@ AnalysisCenter.KParty(
   trace = FALSE,
   verbose = TRUE
 )
+
+DataPartner.KParty(
+  regression = "linear",
+  data = NULL,
+  response = NULL,
+  strata = NULL,
+  mask = TRUE,
+  num_data_partners = NULL,
+  data_partner_id = NULL,
+  monitor_folder = NULL,
+  sleep_time = 10,
+  max_waiting_time = 86400,
+  popmednet = TRUE,
+  trace = FALSE,
+  verbose = TRUE
+)
+
+AnalysisCenter.KParty(
+  regression = "linear",
+  num_data_partners = NULL,
+  monitor_folder = NULL,
+  msreqid = "v_default_00_000",
+  tol = 1e-08,
+  max_iterations = 25,
+  sleep_time = 10,
+  max_waiting_time = 86400,
+  popmednet = TRUE,
+  trace = FALSE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{regression}{the model to be used to fit the data.  The default
@@ -44,19 +74,19 @@ Alternatively, \code{"logistic"} returns a fitted logistic model, and
 
 \item{data}{a data.frame or matrix which contains the data to be used in the
 model.  All columns will be used as covariates in the regression with the
-exception of the data partner which has \code{data_partner_id = 1}.  For this
-data partner, all columns, with the exception of the column specified by
-\code{response}, will be used as covariates in the regression.}
+exception of the data partner which has \code{data_partner_id = 1}.  For
+this data partner, all columns, with the exception of the column specified
+by \code{response}, will be used as covariates in the regression.}
 
-\item{response}{only used for data partner with \code{data_partner_id = 1}. For
-\code{"linear"} and \code{"logistic"} regression, the name of the column in
-\code{data} which holds the response variable.  If \code{reponse = NULL},
-then the first column of \code{data} will be used as the response variable.
-For \code{"cox"} regression response hold the name of the column which is
-time to event and the name of the column which is the event type (0 =
-censored, 1 = event).  If \code{response = NULL}, then the first column of
-\code{data} is assumed to be the time to even and the second column is
-assumed to be the event type.}
+\item{response}{only used for data partner with \code{data_partner_id = 1}.
+For \code{"linear"} and \code{"logistic"} regression, the name of the
+column in \code{data} which holds the response variable.  If \code{reponse
+= NULL}, then the first column of \code{data} will be used as the response
+variable. For \code{"cox"} regression response hold the name of the column
+which is time to event and the name of the column which is the event type
+(0 = censored, 1 = event).  If \code{response = NULL}, then the first
+column of \code{data} is assumed to be the time to even and the second
+column is assumed to be the event type.}
 
 \item{strata}{for \code{"cox"} regression only.  A \code{\link{vector}} of
 character strings identifying the names of the covariates from either party
@@ -81,12 +111,12 @@ All other data partners must have an integer value from 2 to
 \code{inputfiles}, \code{macros}, \code{msoc}, and \code{rprograms} are
 located.}
 
-\item{sleep_time}{the number of seconds to wait after writing the last file to
-disk before signalling the PMN Datamart Client that files are ready to be
-transferred.}
+\item{sleep_time}{the number of seconds to wait after writing the last file
+to disk before signalling the PMN Datamart Client that files are ready to
+be transferred.}
 
-\item{max_waiting_time}{the number of seconds to wait to receive files before a
-transfer error is declared and the program halts execution. Should be the
+\item{max_waiting_time}{the number of seconds to wait to receive files before
+a transfer error is declared and the program halts execution. Should be the
 same for all parties when \code{delayOffset = TRUE}.}
 
 \item{popmednet}{logical value:  if \code{TRUE}, assumes that PopMednet is
@@ -112,11 +142,27 @@ and \code{"cox"} regression.}
 declared.}
 }
 \value{
-Returns an object of \code{\link{class}} \code{\link{vdralinear}} for linear
- regression, \code{\link{vdralogistic}} for logistic regression, or
- \code{\link{vdracox}} for cox regression.
+Returns an object of \code{\link{class}} \code{\link{vdralinear}} for
+  linear regression, \code{\link{vdralogistic}} for logistic regression, or
+  \code{\link{vdracox}} for cox regression.
+
+Returns an object of \code{\link{class}} \code{\link{vdralinear}} for
+  linear regression, \code{\link{vdralogistic}} for logistic regression, or
+  \code{\link{vdracox}} for cox regression.
 }
 \description{
+\code{AnalysisCenter.KParty} and \code{DataPartner.KParty} are
+  used in conjunction with PopMedNet to perform linear, logistic, or cox
+  regression on data that has been partitioned vertically between two or more
+  data partners.  The data partners which holds the data use
+  \code{DataPartner.KParty} while a trusted "third" party uses
+  \code{AnalysisCenter.KParty}.  Data partners are allowed to communicate
+  with each other and the analysis center, no information is shared between
+  the data partners or analysis center that would allow one data partner or
+  the analysis center to reconstruct part of the other data partners data.
+  Final coefficients and other regression statistics are computed by the
+  analysis center and shared with the data partners.
+
 \code{AnalysisCenter.KParty} and \code{DataPartner.KParty} are
   used in conjunction with PopMedNet to perform linear, logistic, or cox
   regression on data that has been partitioned vertically between two or more
@@ -226,7 +272,107 @@ fit <- DataPartner.KParty(regression = "cox",
                          data_partner_id = 2,
                          monitor_folder = tempdir())
 }
+\dontrun{
+## 3 party linear regression
+
+# Analysis Center -- To be run in one instance of R.
+# The working directory should be the same as specified in the PopMedNet
+# requset for the analysis center.
+
+fit <- AnalysisCenter.KParty(regression = "linear",
+                            num_data_partners = 2,
+                            monitor_folder = tempdir())
+
+# Data Partner 1 -- To be run in second instand of R, on perhaps a different
+# machine. The working directory should be the same as specified in the
+# PopMedNet request for the data partner.
+
+fit <- DataPartner.KParty(regression = "linear",
+                         data = vdra_data[, c(1, 5:7)],
+                         response = "Change_BMI",
+                         num_data_partners = 2,
+                         data_partner_id = 1,
+                         monitor_folder = tempdir())
+
+# Data Partner 2 -- To be run in third instand of R, on perhaps a different
+# machine. The working directory should be the same as specified in the
+# PopMedNet request for the data partner.
+
+fit <- DataPartner.KParty(regression = "linear",
+                         data = vdra_data[, 8:11],
+                         num_data_partners = 2,
+                         data_partner_id = 2,
+                         monitor_folder = tempdir())
+
+## 3 party logistic regression
+
+# Analysis Center -- To be run in one instance of R.
+# The working directory should be the same as specified in the PopMedNet
+# requset for the analysis center.
+
+fit <- AnalysisCenter.KParty(regression = "logistic",
+                            num_data_partners = 2,
+                            monitor_folder = tempdir())
+
+# Data Partner 1 -- To be run in second instand of R, on perhaps a different
+# machine. The working directory should be the same as specified in the
+# PopMedNet request for the data partner.
+
+fit <- DataPartner.KParty(regression = "logistic",
+                         data = vdra_data[, c(2, 5:7)],
+                         response = "WtLost",
+                         num_data_partners = 2,
+                         data_partner_id = 1,
+                         monitor_folder = tempdir())
+
+# Data Partner 2 -- To be run in third instand of R, on perhaps a different
+# machine. The working directory should be the same as specified in the
+# PopMedNet request for the data partner.
+
+fit <- DataPartner.KParty(regression = "logistic",
+                         data = vdra_data[, 8:11],
+                         num_data_partners = 2,
+                         data_partner_id = 2,
+                         monitor_folder = tempdir())
+
+## 3 party cox regression
+
+# Analysis Center -- To be run in one instance of R.
+# The working directory should be the same as specified in the PopMedNet
+# requset for the analysis center.
+
+fit <- AnalysisCenter.KParty(regression = "cox",
+                            num_data_partners = 2,
+                            monitor_folder = tempdir())
+
+# Data Partner 1 -- To be run in second instand of R, on perhaps a different
+# machine. The working directory should be the same as specified in the
+# PopMedNet request for the data partner.
+
+fit <- DataPartner.KParty(regression = "cox",
+                         data = vdra_data[, c(3:4, 5:7)],
+                         response = c("Time", "Status"),
+                         strata = c("Exposure", "Sex"),
+                         num_data_partners = 2,
+                         data_partner_id = 1,
+                         monitor_folder = tempdir())
+
+# Data Partner 2 -- To be run in third instand of R, on perhaps a different
+# machine. The working directory should be the same as specified in the
+# PopMedNet request for the data partner.
+
+fit <- DataPartner.KParty(regression = "cox",
+                         data = vdra_data[, 8:11],
+                         strata = c("Exposure", "Sex"),
+                         num_data_partners = 2,
+                         data_partner_id = 2,
+                         monitor_folder = tempdir())
+}
 }
 \seealso{
-\code{\link{analysis_center_2_party}} \code{\link{AnalysisCenter.KParty}}
+\code{\link{analysis_center_2_party}}
+  \code{\link{AnalysisCenter.KParty}}
+
+\code{\link{analysis_center_2_party}}
+  \code{\link{AnalysisCenter.KParty}}
 }

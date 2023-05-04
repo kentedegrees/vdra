@@ -603,9 +603,9 @@ check_colinearity_cox_t3 <- function(params) {
 }
 
 
-compute_initial_betas_cox_t3 <- function(params) {
+compute_init_betas_cox_t3 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "compute_initial_betas_cox_t3\n\n")
+                        "compute_init_betas_cox_t3\n\n")
   a_betas   <- rep(0, params$p1)
   b_betas   <- rep(0, params$p2)
   betas    <- c(a_betas, b_betas)
@@ -632,7 +632,7 @@ compute_initial_betas_cox_t3 <- function(params) {
                                           "converged.rdata"))))
   write_time <- proc.time()[3] - write_time
 
-  params <- add_to_log(params, "compute_initial_betas_cox_t3",
+  params <- add_to_log(params, "compute_init_betas_cox_t3",
                        0, 0, write_time, write_size)
 }
 
@@ -1332,10 +1332,10 @@ compute_results_cox_t3 <- function(params) {
   }
 
   stats$survival <- data.frame(
-    rank   <- params$survival$rank,
-    status <- params$survival$status,
-    sorted <- params$survival$sorted,
-    surv   <- survfit_cox_bt3(params, pred)
+    rank   = params$survival$rank,
+    status = params$survival$status,
+    sorted = params$survival$sorted,
+    surv   = survfit_cox_bt3(params, pred)
   )
   stats$strata <- as.data.frame(matrix(0, length(params$survival$strata), 3))
   stats$strata$label <- ""
@@ -2379,7 +2379,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
     return(params$stats)
   }
 
-  params <- compute_initial_betas_cox_t3(params)
+  params <- compute_init_betas_cox_t3(params)
 
   files_a <- c("Aindicies.rdata", "betasA.rdata", "converged.rdata")
   files_b <- c("Bindicies.rdata", "betasB.rdata", "converged.rdata")

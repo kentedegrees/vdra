@@ -1329,9 +1329,9 @@ compute_beta_cox_a2 <- function(params, data) {
 }
 
 
-get_converged_status_cox_b2 <- function(params) {
+get_conv_status_cox_b2 <- function(params) {
   if (params$trace) cat(as.character(Sys.time()),
-                        "get_converged_status_cox_b2\n\n")
+                        "get_conv_status_cox_b2\n\n")
   converged <- NULL
 
   read_time <- proc.time()[3]
@@ -1356,7 +1356,7 @@ get_converged_status_cox_b2 <- function(params) {
                                           "B_betas_ns.rdata")))
     write_time <- proc.time()[3] - write_time
   }
-  params <- add_to_log(params, "get_converged_status_cox_b2",
+  params <- add_to_log(params, "get_conv_status_cox_b2",
                        read_time, read_size, write_time, write_size)
   return(params)
 }
@@ -2319,7 +2319,7 @@ party_b_process_2_cox <- function(data,
       data <- update_data_cox_b2(params, data)
       params <- add_to_log(params, "update_data_cox_b2", 0, 0, 0, 0)
     } else {
-      params <- get_converged_status_cox_b2(params)
+      params <- get_conv_status_cox_b2(params)
       if (params$converged || params$halted) {
         break
       }

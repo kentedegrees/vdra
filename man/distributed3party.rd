@@ -47,6 +47,47 @@ AnalysisCenter.3Party(
   trace = FALSE,
   verbose = TRUE
 )
+
+DataPartner1.3Party(
+  regression = "linear",
+  data = NULL,
+  response = NULL,
+  strata = NULL,
+  mask = TRUE,
+  monitor_folder = NULL,
+  sleep_time = 10,
+  max_waiting_time = 86400,
+  popmednet = TRUE,
+  trace = FALSE,
+  verbose = TRUE
+)
+
+DataPartner2.3Party(
+  regression = "linear",
+  data = NULL,
+  strata = NULL,
+  mask = TRUE,
+  monitor_folder = NULL,
+  sleep_time = 10,
+  max_waiting_time = 86400,
+  popmednet = TRUE,
+  trace = FALSE,
+  verbose = TRUE
+)
+
+AnalysisCenter.3Party(
+  regression = "linear",
+  monitor_folder = NULL,
+  msreqid = "v_default_00_000",
+  blocksize = 500,
+  tol = 1e-08,
+  max_iterations = 25,
+  sleep_time = 10,
+  max_waiting_time = 86400,
+  popmednet = TRUE,
+  trace = FALSE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{regression}{the model to be used to fit the data.  The default
@@ -84,18 +125,18 @@ will be changed to \code{NA}.}
 \code{inputfiles}, \code{macros}, \code{msoc}, and \code{rprograms} are
 located.}
 
-\item{sleep_time}{the number of seconds to wait after writing the last file to
-disk before signalling the PMN Datamart Client that files are ready to be
-transferred.}
+\item{sleep_time}{the number of seconds to wait after writing the last file
+to disk before signalling the PMN Datamart Client that files are ready to
+be transferred.}
 
-\item{max_waiting_time}{the number of seconds to wait to receive files before a
-transfer error is declared and the program halts execution. Should be the
+\item{max_waiting_time}{the number of seconds to wait to receive files before
+a transfer error is declared and the program halts execution. Should be the
 same for both parties when \code{delayOffset = TRUE}.}
 
 \item{popmednet}{logical value:  if \code{TRUE}, assumes that PopMedNet is
 being used to transfer the files and implements PopMedNet specific
-routines. In particular, a 15 second offset between termination of
-routines that execute in parallel is implemented.}
+routines. In particular, a 15 second offset between termination of routines
+that execute in parallel is implemented.}
 
 \item{trace}{logical value: if \code{TRUE} and \code{verbose == TRUE}, prints
 every function call. Used for debugging.}
@@ -107,8 +148,8 @@ document the progression of the computation.}
 ID} as specified when creating the Distributed Regression request on
 PopMedNet. Used for logging purposes only.}
 
-\item{blocksize}{the minimum size used to horizontally partition the data
-for data transfer between the two parties.}
+\item{blocksize}{the minimum size used to horizontally partition the data for
+data transfer between the two parties.}
 
 \item{tol}{the tolerance used to determine convergence in \code{"logistic"}
 and \code{"cox"} regression.}
@@ -121,8 +162,32 @@ declared.}
 Returns an object of \code{\link{class}} \code{\link{vdralinear}} for
   linear regression, \code{\link{vdralogistic}} for logistic regression, or
   \code{\link{vdracox}} for cox regression.
+
+Returns an object of \code{\link{class}} \code{\link{vdralinear}} for
+  linear regression, \code{\link{vdralogistic}} for logistic regression, or
+  \code{\link{vdracox}} for cox regression.
 }
 \description{
+\code{AnalysisCenter.3Party}, \code{DataPartner1.3Party} and
+  \code{DataPartner2.3Party} are used in conjunction with PopMedNet to
+  perform linear, logistic, or cox regression on data that has been
+  partitioned vertically between two data partners.  The data partner which
+  holds the response variable(s) uses \code{Datapartner1.3Party} and the
+  other data partner uses \code{DataPartner2.3Party}.  Data partners are not
+  allowed to communicate with each other, but share information via a trusted
+  third party analysis center.  While any information that is shared with the
+  analysis center by a data partner, with the exception of some summary
+  statistics, is encrypted by the sending data partner, if the information
+  needs to be sent on to the other data partner for further analysis, the
+  analysis center further encrypts the data.  That way, any information that
+  deals directly with the raw data that moves between two data partners is
+  doubly encrypted to keep both the analysis center and the other data
+  partner from learning it.  Thus, no information is shared between the data
+  partners or analysis center that would allow one data partner to
+  reconstruct part of the other data partners data.  Final coefficients and
+  other regression statistics are computed by the analysis center and shared
+  with the data partners.
+
 \code{AnalysisCenter.3Party}, \code{DataPartner1.3Party} and
   \code{DataPartner2.3Party} are used in conjunction with PopMedNet to
   perform linear, logistic, or cox regression on data that has been
@@ -224,8 +289,91 @@ fit <- DataPartner2.3Party(regression = "cox",
                           strata = c("Exposure", "Sex"),
                           monitor_folder = tempdir())
 }
+\dontrun{
+## 3 party linear regression
+# Analysis Center -- To be run in one instance of R.
+# The working directory should be the same as specified in the PopMedNet
+# requset for the analysis center.
+
+fit <- AnalysisCenter.3Party(regression = "linear",
+                            monitor_folder = tempdir())
+
+# Data Partner 1 -- To be run in second instand of R, on perhaps a different
+# machine. The working directory should be the same as specified in the
+# PopMedNet request for the data partner.
+
+fit <- DataPartner1.3Party(regression = "linear",
+                          data = vdra_data[, c(1, 5:7)],
+                          response = "Change_BMI",
+                          monitor_folder = tempdir())
+
+# Data Partner 2 -- To be run in third instand of R, on perhaps a different
+# machine. The working directory should be the same as specified in the
+# PopMedNet request for the data partner.
+
+fit <- DataPartner2.3Party(regression = "linear",
+                          data = vdra_data[, 8:11],
+                          monitor_folder = tempdir())
+
+## 3 party logistic regression
+
+# Analysis Center -- To be run in one instance of R.
+# The working directory should be the same as specified in the PopMedNet
+# requset for the analysis center.
+
+fit <- AnalysisCenter.3Party(regression = "logistic",
+                            monitor_folder = tempdir())
+
+# Data Partner 1 -- To be run in second instand of R, on perhaps a different
+# machine. The working directory should be the same as specified in the
+# PopMedNet request for the data partner.
+
+fit <- DataPartner1.3Party(regression = "logistic",
+                          data = vdra_data[, c(2, 5:7)],
+                          response = "WtLost",
+                          monitor_folder = tempdir())
+
+# Data Partner 2 -- To be run in third instand of R, on perhaps a different
+# machine. The working directory should be the same as specified in the
+# PopMedNet request for the data partner.
+
+fit <- DataPartner2.3Party(regression = "logistic",
+                          data = vdra_data[, 8:11],
+                          monitor_folder = tempdir())
+
+## 3 party cox regression
+
+# Analysis Center -- To be run in one instance of R.
+# The working directory should be the same as specified in the PopMedNet
+# requset for the analysis center.
+
+fit <- AnalysisCenter.3Party(regression = "cox",
+                            monitor_folder = tempdir())
+
+# Data Partner 1 -- To be run in second instand of R, on perhaps a different
+# machine. The working directory should be the same as specified in the
+# PopMedNet request for the data partner.
+
+fit <- DataPartner1.3Party(regression = "cox",
+                          data = vdra_data[, c(3:4, 5:7)],
+                          response = c("Time", "Status"),
+                          strata = c("Exposure", "Sex"),
+                          monitor_folder = tempdir())
+
+# Data Partner 2 -- To be run in third instand of R, on perhaps a different
+# machine. The working directory should be the same as specified in the
+# PopMedNet request for the data partner.
+
+fit <- DataPartner2.3Party(regression = "cox",
+                          data = vdra_data[, 8:11],
+                          strata = c("Exposure", "Sex"),
+                          monitor_folder = tempdir())
+}
 }
 \seealso{
 \code{\link{analysis_center_2_party}}
-\code{\link{AnalysisCenter.KParty}}
+  \code{\link{AnalysisCenter.KParty}}
+
+\code{\link{analysis_center_2_party}}
+  \code{\link{AnalysisCenter.KParty}}
 }

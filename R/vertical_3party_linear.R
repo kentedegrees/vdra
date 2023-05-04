@@ -594,7 +594,7 @@ get_rw_linear_b3 <- function(params, data) {
     n    <- stp - strt + 1
     g <- params$blocks$g[i]
 
-    xb <- data$x[strt:stp, , drop <- FALSE]
+    xb <- data$x[strt:stp, , drop = FALSE]
     read_time <- read_time - proc.time()[3]
     rz <- matrix(readBin(con = to_read, what = numeric(), n = n * n,
                          endian = "little"), nrow = n, ncol = n)

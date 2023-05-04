@@ -7,6 +7,8 @@
 \title{Create the ROC for Vertical Distributed Logistic Regression}
 \usage{
 RocTest(x = NULL, bins = 10)
+
+RocTest(x = NULL, bins = 10)
 }
 \arguments{
 \item{x}{an object of type \code{\link{vdralogistic}}.}
@@ -22,13 +24,29 @@ Returns an object of class \code{rocdistributed}. Objects of this
  and sensitivity.}
  \item{auc}{numeric value which is area under the curve.}
 }
+
+Returns an object of class \code{rocdistributed}. Objects of this
+  class have a method for the function \code{print}. The following components
+  must be included in a \code{rocdistributed} object.
+\describe{
+ \item{roc}{a two column matrix containing the coordinates of 1 - specificity
+ and sensitivity.}
+ \item{auc}{numeric value which is area under the curve.}
+}
 }
 \description{
 Generate the receiver operator curve on an object created by
   2-party, 3-party, or K-party vdra logistic regression.  Only the party that
   holds the response may invoke this function.
+
+Generate the receiver operator curve on an object created by
+  2-party, 3-party, or K-party vdra logistic regression.  Only the party that
+  holds the response may invoke this function.
 }
 \examples{
+RocTest(vdra_fit_logistic_A)
+
+RocTest(vdra_fit_logistic_A, 40)
 RocTest(vdra_fit_logistic_A)
 
 RocTest(vdra_fit_logistic_A, 40)

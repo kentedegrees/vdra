@@ -2890,7 +2890,7 @@ StoreLogEntry.3p <- function(params, files) {
   params$log$current$End.Time <- GetUTCTime()
   params$log$current$Computation.Time <- round(as.numeric(difftime(
     params$log$current$End.Time,
-    params$log$current$Start.Time, units <- "secs")) -
+    params$log$current$Start.Time, units = "secs")) -
       params$log$current$Read.Time - params$log$current$Write.Time, 2)
   params$log$current$Files.Sent <- paste(files, collapse = ", ")
   params$log$current$Bytes.Sent <-
@@ -2949,7 +2949,7 @@ SummarizeLog.3p <- function(params) {
   Party.A.Start.Time <- log$Start.Time[indexA[1]]
   Party.A.End.Time   <- log$End.Time[indexA[length(indexA)]]
   Party.A.Total.Time <- round(as.numeric(difftime(
-    Party.A.End.Time, Party.A.Start.Time, units <- "secs")), digits = 2)
+    Party.A.End.Time, Party.A.Start.Time, units = "secs")), digits = 2)
   Party.A.Reading.Time <- sum(log$Read.Time[indexA])
   Party.A.Writing.Time <- sum(log$Write.Time[indexA])
   Party.A.Computing.Time <- sum(log$Computation.Time[indexA])
@@ -2970,7 +2970,7 @@ SummarizeLog.3p <- function(params) {
   Party.B.Start.Time <- log$Start.Time[indexB[1]]
   Party.B.End.Time   <- log$End.Time[indexB[length(indexB)]]
   Party.B.Total.Time <- round(as.numeric(difftime(
-    Party.B.End.Time, Party.B.Start.Time, units <- "secs")), digits = 2)
+    Party.B.End.Time, Party.B.Start.Time, units = "secs")), digits = 2)
   Party.B.Reading.Time <- sum(log$Read.Time[indexB])
   Party.B.Writing.Time <- sum(log$Write.Time[indexB])
   Party.B.Computing.Time <- sum(log$Computation.Time[indexB])
@@ -3848,7 +3848,6 @@ summary.vdralinear <- function(object, ...) {
 
 #' @export
 print.summary.vdralinear <- function(x, lion = FALSE, ...) {
-  arguments <- list(...)
 
   if (x$failed) {
     warning("Distributed linear regression failed.  No results to print.")
@@ -7804,7 +7803,7 @@ StoreLogEntry.3p <- function(params, files) {
   params$log$current$End.Time <- GetUTCTime()
   params$log$current$Computation.Time <- round(as.numeric(difftime(
     params$log$current$End.Time,
-    params$log$current$Start.Time, units <- "secs")) -
+    params$log$current$Start.Time, units = "secs")) -
       params$log$current$Read.Time - params$log$current$Write.Time, 2)
   params$log$current$Files.Sent <- paste(files, collapse = ", ")
   params$log$current$Bytes.Sent <-
@@ -7863,7 +7862,7 @@ SummarizeLog.3p <- function(params) {
   Party.A.Start.Time <- log$Start.Time[indexA[1]]
   Party.A.End.Time   <- log$End.Time[indexA[length(indexA)]]
   Party.A.Total.Time <- round(as.numeric(difftime(
-    Party.A.End.Time, Party.A.Start.Time, units <- "secs")), digits = 2)
+    Party.A.End.Time, Party.A.Start.Time, units = "secs")), digits = 2)
   Party.A.Reading.Time <- sum(log$Read.Time[indexA])
   Party.A.Writing.Time <- sum(log$Write.Time[indexA])
   Party.A.Computing.Time <- sum(log$Computation.Time[indexA])
@@ -7884,7 +7883,7 @@ SummarizeLog.3p <- function(params) {
   Party.B.Start.Time <- log$Start.Time[indexB[1]]
   Party.B.End.Time   <- log$End.Time[indexB[length(indexB)]]
   Party.B.Total.Time <- round(as.numeric(difftime(
-    Party.B.End.Time, Party.B.Start.Time, units <- "secs")), digits = 2)
+    Party.B.End.Time, Party.B.Start.Time, units = "secs")), digits = 2)
   Party.B.Reading.Time <- sum(log$Read.Time[indexB])
   Party.B.Writing.Time <- sum(log$Write.Time[indexB])
   Party.B.Computing.Time <- sum(log$Computation.Time[indexB])
@@ -8762,7 +8761,6 @@ summary.vdralinear <- function(object, ...) {
 
 #' @export
 print.summary.vdralinear <- function(x, lion = FALSE, ...) {
-  arguments <- list(...)
 
   if (x$failed) {
     warning("Distributed linear regression failed.  No results to print.")
