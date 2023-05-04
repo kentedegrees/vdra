@@ -272,7 +272,7 @@ prepare_params_logistic_b2 <- function(params, data) {
   pb$tags      <- data$tags
 
   write_time <- proc.time()[3]
-  save(pb, file <- file.path(params$write_path, "pb.rdata"))
+  save(pb, file = file.path(params$write_path, "pb.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, "pb.rdata")))
   write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "prepare_params_logistic_b2",
@@ -814,7 +814,7 @@ get_weights_logistic_a2 <- function(params, data) {
   params$pi_ <- pi_
 
   write_time <- proc.time()[3]
-  save(pi_, file <- file.path(params$write_path, "pi_.rdata"))
+  save(pi_, file = file.path(params$write_path, "pi_.rdata"))
   write_size <- file.size(file.path(params$write_path, "pi_.rdata"))
   write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "get_weights_logistic_a2",
@@ -993,7 +993,7 @@ get_ii_logistic_a2 <- function(params, data) {
     params$a11i1 <- a11i1
 
     write_time <- proc.time()[3]
-    save(a21i1, x_t_w_x, file <- file.path(params$write_path,
+    save(a21i1, x_t_w_x, file = file.path(params$write_path,
                                            "a21i1_xtwx.rdata"))
     write_size <- sum(file.size(file.path(params$write_path,
                                           "a21i1_xtwx.rdata")))
@@ -1212,7 +1212,7 @@ compute_results_logistic_a2 <- function(params, data) {
   names(stats$pvals) <- names_old
 
   write_time <- proc.time()[3]
-  save(stats, file <- file.path(params$write_path, "stats.rdata"))
+  save(stats, file = file.path(params$write_path, "stats.rdata"))
   write_size <- file.size(file.path(params$write_path, "stats.rdata"))
   write_time <- proc.time()[3] - write_time
 

@@ -295,7 +295,7 @@ prepare_params_cox_b2 <- function(params, data) {
   pb$tags      <- data$tags
 
   write_time <- proc.time()[3]
-  save(pb, file <- file.path(params$write_path, "pb.rdata"))
+  save(pb, file = file.path(params$write_path, "pb.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, "pb.rdata")))
   write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "prepare_params_cox_b2", 0, 0,
@@ -559,7 +559,7 @@ prepare_params_cox_a2 <- function(params,
   pa$tags <- data$tags
 
   write_time <- proc.time()[3]
-  save(pa, file <- file.path(params$write_path, "pa.rdata"))
+  save(pa, file = file.path(params$write_path, "pa.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, "pa.rdata")))
   write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "prepare_params_cox_a2", read_time, read_size,

@@ -272,7 +272,7 @@ prepare_params_linear_b2 <- function(params, data) {
   pb$tags        <- data$tags
 
   write_time <- proc.time()[3]
-  save(pb, file <- file.path(params$write_path, "pb.rdata"))
+  save(pb, file = file.path(params$write_path, "pb.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, "pb.rdata")))
   write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "prepare_params_linear_b2",
@@ -345,7 +345,7 @@ prepare_params_linear_a2 <- function(params, data) {
   pa$y_name  <- data$y_name
   pa$a_col_names <- params$a_col_names
   write_time <- proc.time()[3]
-  save(pa, file <- file.path(params$write_path, "pa.rdata"))
+  save(pa, file = file.path(params$write_path, "pa.rdata"))
   write_size <- sum(file.size(file.path(params$write_path, "pa.rdata")))
   write_time <- proc.time()[3] - write_time
   params <- add_to_log(params, "prepare_params_linear_a2", read_time, read_size,
@@ -759,7 +759,7 @@ compute_results_linear_a2 <- function(params, data) {
 
   params$stats <- stats
   write_time <- proc.time()[3]
-  save(stats, file <- file.path(params$write_path, "stats.rdata"))
+  save(stats, file = file.path(params$write_path, "stats.rdata"))
   write_size <- file.size(file.path(params$write_path, "stats.rdata"))
   write_time <- proc.time()[3] - write_time
 
