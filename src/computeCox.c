@@ -18,8 +18,7 @@ void flush_console() {
 #endif
 }
 
-bool strata_ok(SEXP x)
-{
+bool strata_ok(SEXP x) {
   bool ok = true;
   for (int i = 0; i < length(x); i++) {
     SEXP name = getAttrib(VECTOR_ELT(x, i), R_NamesSymbol);
@@ -43,8 +42,10 @@ int printInitialMessage(int verbose) {
   return(0);
 }
 
-int printMessage(int stepCounter, int numEvents, int currentPercent, int verbose)
-{
+int printMessage(int stepCounter,
+                 int numEvents,
+                 int currentPercent,
+                 int verbose) {
   int newPercent = 100 * stepCounter / (float)numEvents;
   int stars      = 20 * stepCounter  / (float)numEvents;
   if (newPercent > currentPercent) {
@@ -66,8 +67,7 @@ int printMessage(int stepCounter, int numEvents, int currentPercent, int verbose
 
 SEXP ComputeCox(SEXP _strata, SEXP _X, SEXP _w,
                 SEXP _deltal, SEXP _WX, SEXP _n,
-                SEXP _p, SEXP _numEvents, SEXP _verbose)
-{
+                SEXP _p, SEXP _numEvents, SEXP _verbose) {
   int verbose = INTEGER(_verbose)[0] == 1;
   bool ok = strata_ok(_strata);
   if (!ok) {
