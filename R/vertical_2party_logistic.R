@@ -446,7 +446,8 @@ get_z_logistic_a2 <- function(params, data) {
     stp <- params$blocks$stops[i]
     n <- stp - strt + 1
     g <- params$blocks$g[i]
-    z <- find_orthonormal_vectors(cbind(data$Y[strt:stp, ], data$x[strt:stp, ]), g)
+    z <- find_orthonormal_vectors(cbind(data$Y[strt:stp, ],
+                                        data$x[strt:stp, ]), g)
 
     write_time <- write_time - proc.time()[3]
     writeBin(as.vector(z), con = to_write, endian = "little")
