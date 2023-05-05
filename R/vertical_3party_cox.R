@@ -260,29 +260,29 @@ prepare_strata_cox_t3 <- function(params) {
     # number of unique observed times, including where no one fails
     m <- length(temp)
     # Count the number of 0's and 1's for each observed time
-    temp0 <- table(survival$rank[idx], survival$status[idx])
+    temp_0 <- table(survival$rank[idx], survival$status[idx])
     # Check if there are all 1's or all 0's .  If so, add them into the table.
-    if (ncol(temp0) == 1) {
-      if (which(c(0, 1) %in% colnames(temp0)) == 1) {
-        temp0 <- cbind(temp0, 0)
-        colnames(temp0) <- c("0", "1")
+    if (ncol(temp_0) == 1) {
+      if (which(c(0, 1) %in% colnames(temp_0)) == 1) {
+        temp_0 <- cbind(temp_0, 0)
+        colnames(temp_0) <- c("0", "1")
       } else {
-        temp0 <- cbind(0, temp0)
-        colnames(temp0) <- c("0", "1")
+        temp_0 <- cbind(0, temp_0)
+        colnames(temp_0) <- c("0", "1")
       }
     }
     # number of distinct failure times
-    strata[[i]]$J <- as.integer(sum(temp0[, 2] > 0))
+    strata[[i]]$J <- as.integer(sum(temp_0[, 2] > 0))
     # The number of failures at each rank which has a failure
-    strata[[i]]$nfails <- as.numeric(temp0[which(temp0[, 2] > 0), 2])
+    strata[[i]]$n_fails <- as.numeric(temp_0[which(temp_0[, 2] > 0), 2])
     # The first index of the ranks for which the number of failures is > 0.
     strata[[i]]$start0 <-
-      c(1, (cumsum(temp)[1:(m - 1)] + 1))[which(temp0[, 2] > 0)]
+      c(1, (cumsum(temp)[1:(m - 1)] + 1))[which(temp_0[, 2] > 0)]
     # The first index of a failure for each rank which has a failure
-    strata[[i]]$start1 <- strata[[i]]$start0 + temp0[which(temp0[, 2] > 0), 1]
+    strata[[i]]$start1 <- strata[[i]]$start0 + temp_0[which(temp_0[, 2] > 0), 1]
     # The last index of a failure for each rank which has a failure
     strata[[i]]$stop1  <- as.numeric(strata[[i]]$start1 +
-                                       strata[[i]]$nfails - 1)
+                                       strata[[i]]$n_fails - 1)
     strata[[i]]$start0 <- as.numeric(strata[[i]]$start0 +
                                        strata[[i]]$start - 1)
     strata[[i]]$start1 <- as.numeric(strata[[i]]$start1 +
@@ -339,7 +339,7 @@ get_z_cox_a3 <- function(params, data) {
     stp <- params$blocks$stops[i]
     n <- stp - strt + 1
     g <- params$blocks$g[i]
-    z <- FindOrthogonalVectors(data$x[strt:stp, ], g)
+    z <- find_orthonormal_vectors(data$x[strt:stp, ], g)
 
     write_time <- write_time - proc.time()[3]
     writeBin(as.vector(z), con = to_write, endian = "little")
@@ -786,7 +786,7 @@ comp_log_likelihood_cox_t3 <- function(params) {
     for (i in seq_along(params$survival$strata)) {
       if (params$survival$strata[[i]]$J > 0) {
         for (j in 1:params$survival$strata[[i]]$J) {
-          nj <- params$survival$strata[[i]]$nfails[j]
+          nj <- params$survival$strata[[i]]$n_fails[j]
           start1 <- params$survival$strata[[i]]$start0[j]
           stop1  <- params$survival$strata[[i]]$end
           y_index <- start1:stop1
@@ -1567,7 +1567,7 @@ comp_cox_b3 <- function(params, data) {
       for (i in seq_along(data$survival$strata)) {
         if (data$survival$strata[[i]]$J > 0) {
           for (j in 1:data$survival$strata[[i]]$J) {
-            nj      <- data$survival$strata[[i]]$nfails[j]
+            nj      <- data$survival$strata[[i]]$n_fails[j]
             start1  <- data$survival$strata[[i]]$start0[j]
             end1    <- data$survival$strata[[i]]$end
             y_index <- start1:end1
@@ -2196,7 +2196,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
     return(invisible(NULL))
   }
 
-  params <- PauseContinue.3p(params, from = c("A", "B"),
+  params <- pause_continue_3p(params, from = c("A", "B"),
                              max_waiting_time = max_waiting_time)
 
   if (file.exists(file.path(params$read_path[["A"]], "error_message.rdata")) &&
@@ -2263,7 +2263,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
 
   if (params$p1 == 0) {
     params$alg_iteration_counter <- 1
-    MakeTransferMessage(params$write_path)
+    make_transfer_message(params$write_path)
     files <- c("transfercontrol.rdata", "max_iterations.rdata",
                "survival.rdata")
     params <- send_pause_continue_3p(params, files_b = files, from = "B",
@@ -2347,7 +2347,7 @@ party_t_process_3_cox <- function(monitor_folder         = NULL,
 
   if (params$p1 == 0) {
     params$alg_iteration_counter <- 1
-    MakeTransferMessage(params$write_path)
+    make_transfer_message(params$write_path)
     files <- c("transfercontrol.rdata", "Bindicies.rdata",
                "max_iterations.rdata", "survival.rdata")
     params <- send_pause_continue_3p(params, files_b = files, from = "B",

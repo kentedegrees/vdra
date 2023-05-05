@@ -809,7 +809,7 @@ data_partner_k_logistic <- function(data,
                                    max_waiting_time = max_waiting_time,
                                    wait_for_turn = TRUE)
 
-  possible_error <- ReceivedError.kp(params, from = "AC")
+  possible_error <- received_error_kp(params, from = "AC")
   if (possible_error$error) {
     params$error_message <- possible_error$message
     warning(possible_error$message)
@@ -837,7 +837,7 @@ data_partner_k_logistic <- function(data,
                                    max_waiting_time = max_waiting_time,
                                    wait_for_turn = TRUE)
 
-  possible_error <- ReceivedError.kp(params, from = "AC")
+  possible_error <- received_error_kp(params, from = "AC")
   if (possible_error$error) {
     params$error_message <- possible_error$message
     warning(possible_error$message)
@@ -874,7 +874,7 @@ data_partner_k_logistic <- function(data,
                                      max_waiting_time = max_waiting_time,
                                      wait_for_turn = TRUE)
 
-    possible_error <- ReceivedError.kp(params, from = "AC")
+    possible_error <- received_error_kp(params, from = "AC")
     if (possible_error$error) {
       params$error_message <- possible_error$message
       warning(possible_error$message)
@@ -971,7 +971,7 @@ analysis_center_k_logistic <- function(num_data_partners = NULL,
   params <- pause_continue_kp(params, from = "DP",
                              max_waiting_time = max_waiting_time)
 
-  possible_error <- ReceivedError.kp(params, from = "DP")
+  possible_error <- received_error_kp(params, from = "DP")
   if (possible_error$error) {
     params$error_message <- possible_error$message
     warning(possible_error$message)

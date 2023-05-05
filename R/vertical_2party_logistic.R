@@ -446,7 +446,7 @@ get_z_logistic_a2 <- function(params, data) {
     stp <- params$blocks$stops[i]
     n <- stp - strt + 1
     g <- params$blocks$g[i]
-    z <- FindOrthogonalVectors(cbind(data$Y[strt:stp, ], data$x[strt:stp, ]), g)
+    z <- find_orthonormal_vectors(cbind(data$Y[strt:stp, ], data$x[strt:stp, ]), g)
 
     write_time <- write_time - proc.time()[3]
     writeBin(as.vector(z), con = to_write, endian = "little")
@@ -1270,7 +1270,7 @@ party_a_process_2_logistic <- function(data,
   }
   data <- prepare_data_logistic_a23(params, data, y_name)
 
-  params <- PauseContinue.2p(params,  max_waiting_time)
+  params <- pause_continue_2p(params,  max_waiting_time)
   if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
     params$completed <- TRUE
     warning(read_error_message(params$read_path))

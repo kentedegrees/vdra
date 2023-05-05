@@ -149,7 +149,7 @@ analysis_center_2_party <- function(regression            = "linear",
                                     verbose               = TRUE) {
   start_time <- proc.time()
   stats <- list()
-  if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
+  if (verbose) cat("Process started on", as.character(get_utc_time()), "UTC.\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.")
   } else if (regression == "cox") {
@@ -170,9 +170,10 @@ analysis_center_2_party <- function(regression            = "linear",
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp <- GetElapsedTime(proc.time() - start_time,
+  elp <- get_elapsed_time(proc.time() - start_time,
                         final = TRUE, time_only = FALSE)
-  if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
+  if (verbose) cat("Process completed on",
+                   as.character(get_utc_time()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
 }
@@ -191,7 +192,7 @@ DataPartner.2Party <- function(regression          = "linear",
                                verbose             = TRUE) {
   start_time <- proc.time()
   stats <- list()
-  if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
+  if (verbose) cat("Process started on", as.character(get_utc_time()), "UTC.\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.")
   } else if (regression == "cox") {
@@ -210,9 +211,10 @@ DataPartner.2Party <- function(regression          = "linear",
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp <- GetElapsedTime(proc.time() - start_time, final = TRUE,
+  elp <- get_elapsed_time(proc.time() - start_time, final = TRUE,
                         time_only = FALSE)
-  if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
+  if (verbose) cat("Process completed on",
+                   as.character(get_utc_time()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
 }
@@ -235,7 +237,7 @@ DataPartner1.3Party <- function(regression            = "linear",
 
   start_time <- proc.time()
   stats <- list()
-  if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
+  if (verbose) cat("Process started on", as.character(get_utc_time()), "UTC.\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.")
   } else if (regression == "cox") {
@@ -256,9 +258,10 @@ DataPartner1.3Party <- function(regression            = "linear",
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp <- GetElapsedTime(proc.time() - start_time,
+  elp <- get_elapsed_time(proc.time() - start_time,
                         final = TRUE, time_only = FALSE)
-  if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
+  if (verbose) cat("Process completed on",
+                   as.character(get_utc_time()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
 }
@@ -278,7 +281,7 @@ DataPartner2.3Party <- function(regression          = "linear",
                                 verbose             = TRUE) {
   start_time <- proc.time()
   stats <- list()
-  if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
+  if (verbose) cat("Process started on", as.character(get_utc_time()), "UTC.\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.")
   } else if (regression == "cox") {
@@ -297,9 +300,10 @@ DataPartner2.3Party <- function(regression          = "linear",
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp <- GetElapsedTime(proc.time() - start_time,
+  elp <- get_elapsed_time(proc.time() - start_time,
                         final = TRUE, time_only = FALSE)
-  if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
+  if (verbose) cat("Process completed on",
+                   as.character(get_utc_time()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
 }
@@ -345,7 +349,7 @@ DataPartner2.3Party <- function(regression          = "linear",
 #'   second column is assumed to be the event type.
 #' @param strata for \code{"cox"} regression only.  A \code{\link{vector}} of
 #'   character strings identifying the names of the covariates from either party
-#'   which will be used as strata.  Both \code{DataPartner1.3party} and
+#'   which will be used as strata.  Both \code{DataPartner1_3party} and
 #'   \code{DataPartner2.3Party} must specify the same vector of strata.
 #' @param mask logical value: If \code{FALSE}, strata levels for the strata
 #'   which belong to the party which specified \code{FALSE} will be identified
@@ -481,7 +485,7 @@ AnalysisCenter.3Party <- function(regression            = "linear",
                                   verbose               = TRUE) {
   start_time <- proc.time()
   stats <- list()
-  if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
+  if (verbose) cat("Process started on", as.character(get_utc_time()), "UTC.\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.")
   } else if (regression == "cox") {
@@ -501,9 +505,10 @@ AnalysisCenter.3Party <- function(regression            = "linear",
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp <- GetElapsedTime(proc.time() - start_time,
+  elp <- get_elapsed_time(proc.time() - start_time,
                         final = TRUE, time_only = FALSE)
-  if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
+  if (verbose) cat("Process completed on",
+                   as.character(get_utc_time()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
 }
@@ -527,7 +532,7 @@ DataPartner.KParty <- function(regression            = "linear",
                                verbose               = TRUE) {
   start_time <- proc.time()
   stats <- list()
-  if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
+  if (verbose) cat("Process started on", as.character(get_utc_time()), "UTC.\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.")
   } else if (is.null(num_data_partners)) {
@@ -553,9 +558,10 @@ DataPartner.KParty <- function(regression            = "linear",
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp <- GetElapsedTime(proc.time() - start_time,
+  elp <- get_elapsed_time(proc.time() - start_time,
                         final = TRUE, time_only = FALSE)
-  if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
+  if (verbose) cat("Process completed on",
+                   as.character(get_utc_time()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
 }
@@ -748,7 +754,7 @@ AnalysisCenter.KParty <- function(regression          = "linear",
                                   verbose             = TRUE) {
   start_time <- proc.time()
   stats <- list()
-  if (verbose) cat("Process started on", as.character(GetUTCTime()), "UTC.\n")
+  if (verbose) cat("Process started on", as.character(get_utc_time()), "UTC.\n")
   if (is.null(monitor_folder)) {
     warning("monitor_folder must be specified.")
   } else if (is.null(num_data_partners)) {
@@ -770,9 +776,10 @@ AnalysisCenter.KParty <- function(regression          = "linear",
     warning("Regression type must be \"cox\", \"linear\" or \"logistic\"")
   }
 
-  elp <- GetElapsedTime(proc.time() - start_time,
+  elp <- get_elapsed_time(proc.time() - start_time,
                         final = TRUE, time_only = FALSE)
-  if (verbose) cat("Process completed on", as.character(GetUTCTime()), "UTC.\n")
+  if (verbose) cat("Process completed on",
+                   as.character(get_utc_time()), "UTC.\n")
   if (verbose) cat(elp, "\n")
   return(stats)
 }
@@ -811,16 +818,16 @@ check_data_format <- function(params, data) {
     warning("The data is empty.")
     return(TRUE)
   }
-  badValue <- rep(FALSE, nrow(data))
+  bad_value <- rep(FALSE, nrow(data))
   for (i in seq_len(ncol(data))) {
     if (is.integer(data[, i]) || is.double(data[, i]) ||
         is.single(data[, i]) || is.numeric(data[, i])) {
-      badValue <- badValue | !is.finite(data[, i])
+      bad_value <- bad_value | !is.finite(data[, i])
     } else {
-      badValue <- badValue | is.na(data[, i])
+      bad_value <- bad_value | is.na(data[, i])
     }
   }
-  idx <- data.frame(which(badValue))
+  idx <- data.frame(which(bad_value))
   colnames(idx) <- "Observations with invalid entries"
   if (nrow(idx) > 0) {
     warning(
@@ -854,12 +861,12 @@ check_response <- function(params, data, y_name) {
                     params$analysis, "regression."))
       return(NULL)
     }
-    responseColIndex <- which(colnames(data) %in% y_name)
-    if (length(responseColIndex) == 0) {
+    response_col_index <- which(colnames(data) %in% y_name)
+    if (length(response_col_index) == 0) {
       warning("Response variable not found.")
       return(NULL)
     }
-    if (length(responseColIndex) > 1) {
+    if (length(response_col_index) > 1) {
       warning("Response variable appears more than once.")
       return(NULL)
     }
@@ -870,48 +877,48 @@ check_response <- function(params, data, y_name) {
               "(time and censor) for Cox regression.")
       return(NULL)
     }
-    responseColIndexTime   <- c(which(colnames(data) %in% y_name[1]))
-    responseColIndexCensor <- c(which(colnames(data) %in% y_name[2]))
-    if (length(responseColIndexTime) == 0) {
+    response_col_index_time   <- c(which(colnames(data) %in% y_name[1]))
+    response_col_index_censor <- c(which(colnames(data) %in% y_name[2]))
+    if (length(response_col_index_time) == 0) {
       warning("Time variable not found.")
       return(NULL)
     }
-    if (length(responseColIndexTime) > 1) {
+    if (length(response_col_index_time) > 1) {
       warning("Time variable appears more than once.")
       return(NULL)
     }
-    if (length(responseColIndexCensor) == 0) {
+    if (length(response_col_index_censor) == 0) {
       warning("Censor variable not found.")
       return(NULL)
     }
-    if (length(responseColIndexCensor) > 1) {
+    if (length(response_col_index_censor) > 1) {
       warning("Censor variable appears more than once.")
       return(NULL)
     }
-    responseColIndex <- c(responseColIndexTime, responseColIndexCensor)
+    response_col_index <- c(response_col_index_time, response_col_index_censor)
   }
   for (i in seq_along(y_name)) {
-    if (!is.numeric(data[, responseColIndex[i]]) &&
-        !is.integer(data[, responseColIndex[i]])) {
+    if (!is.numeric(data[, response_col_index[i]]) &&
+        !is.integer(data[, response_col_index[i]])) {
       warning(paste(y_name[i], "is not numeric."))
       return(NULL)
     }
   }
   if (params$analysis == "logistic") {
-    if (sum(!(data[, responseColIndex] %in% c(0, 1))) > 0) {
+    if (sum(!(data[, response_col_index] %in% c(0, 1))) > 0) {
       warning("Response variable is not binary. ",
               "It should only be 0's and  1's.")
       return(NULL)
     }
   }
   if (params$analysis == "cox") {
-    if (sum(!(data[, responseColIndex[2]] %in% c(0, 1))) > 0) {
+    if (sum(!(data[, response_col_index[2]] %in% c(0, 1))) > 0) {
       warning("Censoring variable is not binary. ",
               "It should only be 0's and  1's.")
       return(NULL)
     }
   }
-  return(responseColIndex)
+  return(response_col_index)
 }
 
 create_model_matrix_tags <- function(data) {
@@ -1053,103 +1060,103 @@ prepare_params_kp <- function(analysis, data_partner_id, num_data_partners,
 ########################### PRETTY OUTPUT FUNCTIONS ############################
 
 header <- function(params) {
-  large.cox <-
+  large_cox <-
     c("  ____ _____  __",
       " / ___/ _ \\ \\/ /",
       "| |  | | | \\  / ",
       "| |__| |_| /  \\ ",
       " \\____\\___/_/\\_\\")
-  large.linear <-
+  large_linear <-
     c(" _     ___ _   _ _____    _    ____  ",
       "| |   |_ _| \\ | | ____|  / \\  |  _ \\ ",
       "| |    | ||  \\| |  _|   / _ \\ | |_) |",
       "| |___ | || |\\  | |___ / ___ \\|  _ < ",
       "|_____|___|_| \\_|_____/_/   \\_|_| \\_\\")
-  large.logistic <-
+  large_logistic <-
     c(" _     ___   ____ ___ ____ _____ ___ ____ ",
       "| |   / _ \\ / ___|_ _/ ___|_   _|_ _/ ___|",
       "| |  | | | | |  _ | |\\___ \\ | |  | | |    ",
       "| |__| |_| | |_| || | ___) || |  | | |___ ",
       "|_____\\___/ \\____|___|____/ |_| |___\\____|")
-  large.regression <-
+  large_regression <-
     c(" ____  _____ ____ ____  _____ ____ ____ ___ ___  _   _ ",
       "|  _ \\| ____/ ___|  _ \\| ____/ ___/ ___|_ _/ _ \\| \\ | |",
       "| |_) |  _|| |  _| |_) |  _| \\___ \\___ \\| | | | |  \\| |",
       "|  _ <| |__| |_| |  _ <| |___ ___) ___) | | |_| | |\\  |",
       "|_| \\_|_____\\____|_| \\_|_____|____|____|___\\___/|_| \\_|")
-  small.cox <-
+  small_cox <-
     c("  ___ _____  __",
       " / __/ _ \\ \\/ /",
       "| (_| (_) >  < ",
       " \\___\\___/_/\\_\\")
-  small.linear <-
+  small_linear <-
     c(" _    ___ _  _ ___   _   ___ ",
       "| |  |_ _| \\| | __| /_\\ | _ \\",
       "| |__ | || .` | _| / _ \\|   /",
       "|____|___|_|\\_|___/_/ \\_\\_|_\\")
-  small.logistic <-
+  small_logistic <-
     c(" _    ___   ___ ___ ___ _____ ___ ___ ",
       "| |  / _ \\ / __|_ _/ __|_   _|_ _/ __|",
       "| |_| (_) | (_ || |\\__ \\ | |  | | (__ ",
       "|____\\___/ \\___|___|___/ |_| |___\\___|")
-  small.regression <-
+  small_regression <-
     c(" ___ ___ ___ ___ ___ ___ ___ ___ ___  _  _ ",
       "| _ \\ __/ __| _ \\ __/ __/ __|_ _/ _ \\| \\| |",
       "|   / _| (_ |   / _|\\__ \\__ \\| | (_) | .` |",
       "|_|_\\___\\___|_|_\\___|___/___/___\\___/|_|\\_|")
-  tiny.cox <-
+  tiny_cox <-
     c("+-+-+-+",
       "|C|O|X|")
-  tiny.linear <-
+  tiny_linear <-
     c("+-+-+-+-+-+-+",
       "|L|I|N|E|A|R|")
-  tiny.logistic <-
+  tiny_logistic <-
     c("+-+-+-+-+-+-+-+-+",
       "|L|O|G|I|S|T|I|C|")
-  tiny.regression <-
+  tiny_regression <-
     c("+-+-+-+-+-+-+-+-+-+-+",
       "|R|E|G|R|E|S|S|I|O|N|",
       "+-+-+-+-+-+-+-+-+-+-+")
 
   width <- getOption("width")
-  if (width > nchar(large.regression[1])) {
-    cox        <- large.cox
-    linear     <- large.linear
-    logistic   <- large.logistic
-    regression <- large.regression
-  } else if (width  > nchar(small.regression[1])) {
-    cox        <- small.cox
-    linear     <- small.linear
-    logistic   <- small.logistic
-    regression <- small.regression
+  if (width > nchar(large_regression[1])) {
+    cox        <- large_cox
+    linear     <- large_linear
+    logistic   <- large_logistic
+    regression <- large_regression
+  } else if (width  > nchar(small_regression[1])) {
+    cox        <- small_cox
+    linear     <- small_linear
+    logistic   <- small_logistic
+    regression <- small_regression
   } else {
-    cox        <- tiny.cox
-    linear     <- tiny.linear
-    logistic   <- tiny.logistic
-    regression <- tiny.regression
+    cox        <- tiny_cox
+    linear     <- tiny_linear
+    logistic   <- tiny_logistic
+    regression <- tiny_regression
   }
 
-  offset.cox        <- floor((width - nchar(cox[1])) / 2)
-  offset.linear     <- floor((width - nchar(linear[1])) / 2)
-  offset.logistic   <- floor((width - nchar(logistic[1])) / 2)
-  offset.regression <- floor((width - nchar(regression[1])) / 2)
+  offset_cox        <- floor((width - nchar(cox[1])) / 2)
+  offset_linear     <- floor((width - nchar(linear[1])) / 2)
+  offset_logistic   <- floor((width - nchar(logistic[1])) / 2)
+  offset_regression <- floor((width - nchar(regression[1])) / 2)
 
-  space.cox        <- paste(rep(" ", offset.cox), collapse = "")
-  space.linear     <- paste(rep(" ", offset.linear), collapse = "")
-  space.logistic   <- paste(rep(" ", offset.logistic), collapse = "")
-  space.regression <- paste(rep(" ", offset.regression), collapse = "")
+  space_cox        <- paste(rep(" ", offset_cox), collapse = "")
+  space_linear     <- paste(rep(" ", offset_linear), collapse = "")
+  space_logistic   <- paste(rep(" ", offset_logistic), collapse = "")
+  space_regression <- paste(rep(" ", offset_regression), collapse = "")
 
   if (params$analysis == "linear") {
-    if (params$verbose) cat(paste0("\r", space.linear, linear, "\n"))
-    if (params$verbose) cat(paste0("\r", space.regression, regression, "\n"))
+    if (params$verbose) cat(paste0("\r", space_linear, linear, "\n"))
+    if (params$verbose) cat(paste0("\r", space_regression, regression, "\n"))
   }
   if (params$analysis == "logistic") {
-    if (params$verbose) cat(paste0("\r", space.logistic, logistic, "\n"))
-    if (params$verbose) cat(paste0("\r", space.regression, regression, "\n"))
+    if (params$verbose) cat(paste0("\r", space_logistic, logistic, "\n"))
+    if (params$verbose) cat(paste0("\r", space_regression, regression, "\n"))
   }
   if (params$analysis == "cox") {
-    if (params$verbose) cat(paste0("\r", space.cox, cox, "\n"))
-    if (params$verbose) cat(paste0("\r", space.regression, regression, "\n"))
+    if (params$verbose) cat(paste0("\r", space_cox, cox, "\n"))
+    if (params$verbose) cat(paste0("\r", space_regression, regression, "\n"))
   }
   if (params$verbose) cat("\n")
 }
@@ -1223,24 +1230,24 @@ GetLion <- function(p) {
 #' @importFrom utils flush.console
 make_progress_bar_1 <- function(steps, message, verbose) {
   pb <- list()
-  messageLength    <- 18
-  pb$numSteps      <- steps
-  pb$numBlanks     <- 20
+  message_length    <- 18
+  pb$num_steps      <- steps
+  pb$num_blanks     <- 20
   pb$delimeter     <- "|"
   pb$filler        <- "#"
   pb$blank         <- "."
   pb$percent       <- 0
   pb$percentstr    <- "  0%"
   pb$prints <- 0
-  message <- substr(message, 1, messageLength)
+  message <- substr(message, 1, message_length)
   message <- paste0(message,
-                    paste(rep(" ", messageLength - nchar(message)),
+                    paste(rep(" ", message_length - nchar(message)),
                           collapse = ""))
   pb$header <- paste0("Processing ", message, ": ")
-  toPrint <- paste0(pb$header, pb$percentstr, pb$delimeter,
-                    paste(rep(pb$blank, pb$numBlanks), collapse = ""),
-                    pb$delimeter)
-  if (verbose) cat(toPrint, "\r")
+  to_print <- paste0(pb$header, pb$percentstr, pb$delimeter,
+                     paste(rep(pb$blank, pb$num_blanks), collapse = ""),
+                     pb$delimeter)
+  if (verbose) cat(to_print, "\r")
   if (verbose) flush.console()
   return(pb)
 }
@@ -1248,24 +1255,24 @@ make_progress_bar_1 <- function(steps, message, verbose) {
 
 #' @importFrom utils flush.console
 make_progress_bar_2 <- function(i, pb, verbose) {
-  percent <- floor(100 * i / pb$numSteps)
+  percent <- floor(100 * i / pb$num_steps)
   if (percent == pb$percent) {
     return(pb)
   }
   pb$percent <- percent
   pb$percentstr <- paste0(paste(rep(" ", 3 - nchar(percent)), collapse = ""),
                           percent, "%")
-  numFiller <- floor(pb$numBlanks * i / pb$numSteps)
-  toPrint <- paste0(pb$header, pb$percentstr, pb$delimeter,
-                    paste(rep(pb$filler, numFiller), collapse = ""),
-                    paste(rep(pb$blank, pb$numBlanks - numFiller),
-                          collapse = ""),
-                    pb$delimeter)
+  num_filler <- floor(pb$num_blanks * i / pb$num_steps)
+  to_print <- paste0(pb$header, pb$percentstr, pb$delimeter,
+                     paste(rep(pb$filler, num_filler), collapse = ""),
+                     paste(rep(pb$blank, pb$num_blanks - num_filler),
+                           collapse = ""),
+                     pb$delimeter)
 
-  if (i == pb$numSteps) {
-    if (verbose) cat(toPrint, "\n\n")
+  if (i == pb$num_steps) {
+    if (verbose) cat(to_print, "\n\n")
   } else {
-    if (verbose) cat(toPrint, "\r")
+    if (verbose) cat(to_print, "\r")
   }
   if (verbose) flush.console()
   return(pb)
@@ -1295,7 +1302,7 @@ MultiplyDiagonalWTimesX <- function(w, x) {
 
 
 #' @importFrom stats runif
-FindOrthogonalVectors <- function(x, g) {
+find_orthonormal_vectors <- function(x, g) {
   x <- as.matrix(x)
   x <- cbind(x, runif(nrow(x)))  # Randomize z
   # Save the Random Vector Here
@@ -1314,7 +1321,7 @@ random_orthonormal_matrix <- function(size) {
 #################### SHARED PMN COMMUNICATION FUNCTIONS ###################
 
 #' @importFrom utils write.csv
-MakeCSV <- function(file_nm, transfer_to_site_in, dp_cd_list, write_path) {
+make_csv <- function(file_nm, transfer_to_site_in, dp_cd_list, write_path) {
   dframe <- data.frame(file_nm, transfer_to_site_in, dp_cd_list)
   fp <- file.path(write_path, "file_list.csv")
   write.csv(dframe, fp, row.names = FALSE, quote = FALSE)
@@ -1326,7 +1333,7 @@ seq_zw <- function(letter = "Z_", nblocks = 1) {
 }
 
 
-Standby <- function(triggerName, triggerLocation,
+Standby <- function(trigger_name, trigger_location,
                     sleep_time = 1, max_waiting_time = NULL, remove = FALSE,
                     verbose = TRUE) {
 
@@ -1336,7 +1343,7 @@ Standby <- function(triggerName, triggerLocation,
     max_waiting_time <- 60 * 60 * 24
   }
 
-  fpath <- file.path(triggerLocation, triggerName)
+  fpath <- file.path(trigger_location, trigger_name)
   start_time <- proc.time()[3]
   elapsed_time <- 0
 
@@ -1361,7 +1368,7 @@ Standby <- function(triggerName, triggerLocation,
 
   Sys.sleep(sleep_time)
 
-  if (remove) delete_trigger(triggerName, triggerLocation)
+  if (remove) delete_trigger(trigger_name, trigger_location)
 
 }
 
@@ -1378,9 +1385,9 @@ CopyFile <- function(read_directory, write_directory, filename) {
 }
 
 
-MakeTrigger <- function(triggerName, triggerPath, message = "Trigger File") {
+make_trigger <- function(trigger_name, trigger_path, message = "Trigger File") {
 
-  fn <- file.path(triggerPath, triggerName)
+  fn <- file.path(trigger_path, trigger_name)
   if (file.exists(fn)) {
     file.remove(fn)
   }
@@ -1389,9 +1396,9 @@ MakeTrigger <- function(triggerName, triggerPath, message = "Trigger File") {
 }
 
 
-delete_trigger <- function(triggerName, triggerPath) {
+delete_trigger <- function(trigger_name, trigger_path) {
   Sys.sleep(1)
-  targets <- file.path(triggerPath, triggerName)
+  targets <- file.path(trigger_path, trigger_name)
   for (target in targets) {
     if (file.exists(target)) {
       start_time <- proc.time()[3]
@@ -1408,7 +1415,7 @@ delete_trigger <- function(triggerName, triggerPath) {
 }
 
 
-MakeTransferMessage <- function(write_path) {
+make_transfer_message <- function(write_path) {
   message <- "A has no covariates."
   save(message, file = file.path(write_path, "transferControl.rdata"))
 }
@@ -1461,7 +1468,7 @@ send_pause_quit_2p <- function(params,
     destination <- rep(0, length(files))
     destination[transfer == 10] <- 10
   }
-  MakeCSV(files, transfer, destination, params$write_path)
+  make_csv(files, transfer, destination, params$write_path)
   params <- store_stamp_entry(params, "Files done trigger file",
                               "Trigger File Created")
   params <- store_stamp_entry(
@@ -1471,11 +1478,11 @@ send_pause_quit_2p <- function(params,
   WriteStampsCSV(params)
   WriteStampsRaw(params)
   if (job_failed)  {
-    MakeTrigger("job_fail.ok",  params$write_path)
+    make_trigger("job_fail.ok",  params$write_path)
   } else {
-    MakeTrigger("job_done.ok",    params$write_path)
+    make_trigger("job_done.ok",    params$write_path)
   }
-  MakeTrigger("files_done.ok", params$write_path)
+  make_trigger("files_done.ok", params$write_path)
   return(params)
 }
 
@@ -1501,7 +1508,7 @@ send_pause_continue_2p <- function(params,
     destination <- rep(0, length(files))
     destination[transfer == 10] <- 10
   }
-  MakeCSV(files, transfer, destination, params$write_path)
+  make_csv(files, transfer, destination, params$write_path)
   params <- store_stamp_entry(params,
                               "Files done trigger file",
                               "Trigger File created")
@@ -1509,9 +1516,9 @@ send_pause_continue_2p <- function(params,
   WriteStampsRaw(params)
   params$pmn_step_counter      <- params$pmn_step_counter + 2
   if (job_started) {
-    MakeTrigger("job_started.ok", params$write_path)
+    make_trigger("job_started.ok", params$write_path)
   } else {
-    MakeTrigger("files_done.ok", params$write_path)
+    make_trigger("files_done.ok", params$write_path)
   }
   if (params$party_name == "A") {
     if (params$verbose) cat("Waiting for data partner\n")
@@ -1536,7 +1543,7 @@ send_pause_continue_2p <- function(params,
 }
 
 
-PauseContinue.2p <- function(params, max_waiting_time) {
+pause_continue_2p <- function(params, max_waiting_time) {
   params <- store_log_entry_2p(params, "")
   WriteLogCSV(params)
   if (params$party_name == "A") {
@@ -1559,7 +1566,7 @@ PauseContinue.2p <- function(params, max_waiting_time) {
 
 ###################### 3 PARTY PMN COMMUNICATION FUNCTIONS #####################
 
-wait_for_turn.3p <- function(params, sleep_time) {
+wait_for_turn_3p <- function(params, sleep_time) {
   Sys.sleep(sleep_time)
   if ((params$party_name == "T") || (!params$popmednet)) return(NULL)
 
@@ -1567,16 +1574,16 @@ wait_for_turn.3p <- function(params, sleep_time) {
   start_time <- proc.time()[3]
   if (params$verbose) cat("Elapsed Time:", HMS(0), "\r")
 
-  if (exists("partyOffset")) {
+  if (exists("party_offset")) {
     if (params$verbose) cat("\n\n")
     return()
   }
 
-  partyOffset <- 15
+  party_offset <- 15
 
-  modulus   <- 2 * partyOffset
+  modulus   <- 2 * party_offset
   if (params$party_name == "A") targetTime <- 0
-  if (params$party_name == "B") targetTime <- partyOffset
+  if (params$party_name == "B") targetTime <- party_offset
 
 
   while (as.integer(Sys.time()) %% modulus != targetTime) {
@@ -1625,7 +1632,7 @@ send_pause_quit_3p <- function(params,
     destination <- c(destination, 10)
   }
   params <- store_log_entry_3p(params, c(files_a, files_b, files_t))
-  params <- StoreTrackingTableEntry.3p(params)
+  params <- StoreTrackingTableEntry_3p(params)
   WriteLogCSV(params)
   write_log_raw(params)
 
@@ -1640,7 +1647,7 @@ send_pause_quit_3p <- function(params,
     transfer <- c(transfer, 1)
     destination <- c(destination, 0)
   }
-  MakeCSV(files, transfer, destination, params$write_path)
+  make_csv(files, transfer, destination, params$write_path)
   params <- store_stamp_entry(params,
                               "Files done trigger file",
                               "Trigger File Created")
@@ -1652,7 +1659,7 @@ send_pause_quit_3p <- function(params,
     params <- store_stamp_entry(params,
                                 "R program execution delayed",
                                 "Tracking Table")
-    wait_for_turn.3p(params, sleep_time)
+    wait_for_turn_3p(params, sleep_time)
     params <- store_stamp_entry(params,
                                 "R program execution restarted",
                                 "Tracking Table")
@@ -1661,12 +1668,12 @@ send_pause_quit_3p <- function(params,
   WriteStampsRaw(params)
   if (params$party == "T") {
     if (job_failed)  {
-      MakeTrigger("job_fail.ok",  params$write_path)
+      make_trigger("job_fail.ok",  params$write_path)
     } else {
-      MakeTrigger("job_done.ok",  params$write_path)
+      make_trigger("job_done.ok",  params$write_path)
     }
   }
-  MakeTrigger("files_done.ok", params$write_path)
+  make_trigger("files_done.ok", params$write_path)
   return(params)
 }
 
@@ -1680,7 +1687,7 @@ send_pause_continue_3p <- function(params,
                                    job_started = FALSE,
                                    wait_for_turn = FALSE) {
   params <- store_log_entry_3p(params, c(files_a, files_b, files_t))
-  params <- StoreTrackingTableEntry.3p(params)
+  params <- StoreTrackingTableEntry_3p(params)
   WriteLogCSV(params)
   write_log_raw(params)
 
@@ -1713,7 +1720,7 @@ send_pause_continue_3p <- function(params,
     transfer    <- c(transfer, 10)
     destination <- c(destination, 10)
   }
-  MakeCSV(files, transfer, destination, params$write_path)
+  make_csv(files, transfer, destination, params$write_path)
   params <- store_stamp_entry(params,
                               "Files done trigger file",
                               "Trigger File created")
@@ -1721,7 +1728,7 @@ send_pause_continue_3p <- function(params,
     params <- store_stamp_entry(params,
                                 "R program execution delayed",
                                 "Tracking Table")
-    wait_for_turn.3p(params, sleep_time)
+    wait_for_turn_3p(params, sleep_time)
     params <- store_stamp_entry(params,
                                 "R program execution restarted",
                                 "Tracking Table")
@@ -1729,9 +1736,9 @@ send_pause_continue_3p <- function(params,
   WriteStampsCSV(params)
   WriteStampsRaw(params)
   if (job_started) {
-    MakeTrigger("job_started.ok", params$write_path)
+    make_trigger("job_started.ok", params$write_path)
   } else {
-    MakeTrigger("files_done.ok", params$write_path)
+    make_trigger("files_done.ok", params$write_path)
   }
   if (length(from) == 1) {
     if (from == "T") {
@@ -1750,21 +1757,21 @@ send_pause_continue_3p <- function(params,
   if (params$verbose) cat("Resuming local processing\n\n")
   delete_trigger("files_done.ok", params$read_path[from])
   params <- merge_log_raw_3p(params, from)
-  params <- UpdateCounters.3p(params)
+  params <- UpdateCounters_3p(params)
   params <- new_log_entry_3p(params)
-  params <- MergeStampsRaw.3p(params, from)
+  params <- MergeStampsRaw_3p(params, from)
   params <- store_stamp_entry(params,
                               "R program execution begins",
                               "Tracking Table")
-  params <- MergeTrackingTableRAW.3p(params, from)
+  params <- MergeTrackingTableRAW_3p(params, from)
   return(params)
 }
 
 
-PauseContinue.3p <- function(params, from = NULL,
-                             max_waiting_time = 24 * 60 * 60) {
+pause_continue_3p <- function(params, from = NULL,
+                              max_waiting_time = 24 * 60 * 60) {
   params <- store_log_entry_3p(params, "")
-  params <- StoreTrackingTableEntry.3p(params)
+  params <- StoreTrackingTableEntry_3p(params)
   WriteLogCSV(params)
   if (length(from) == 1) {
     if (from == "T") {
@@ -1783,16 +1790,16 @@ PauseContinue.3p <- function(params, from = NULL,
   if (params$verbose) cat("Resuming local processing\n\n")
   delete_trigger("files_done.ok", params$read_path[from])
   params <- merge_log_raw_3p(params, from)
-  params <- UpdateCounters.3p(params)
+  params <- UpdateCounters_3p(params)
   params <- new_log_entry_3p(params)
-  params <- MergeStampsRaw.3p(params, from)
-  params <- MergeTrackingTableRAW.3p(params, from)
+  params <- MergeStampsRaw_3p(params, from)
+  params <- MergeTrackingTableRAW_3p(params, from)
   WriteLogCSV(params)
   return(params)
 }
 
 
-UpdateCounters.3p <- function(params) {
+UpdateCounters_3p <- function(params) {
   params$pmn_step_counter <- max(params$log$history$Step) + 1
   return(params)
 }
@@ -1808,15 +1815,15 @@ wait_for_turn.kp <- function(params, sleep_time) {
   start_time <- proc.time()[3]
   if (params$verbose) cat("Elapsed Time:", HMS(0), "\r")
 
-  if (exists("partyOffset")) {
+  if (exists("party_offset")) {
     if (params$verbose) cat("\n\n")
     return()
   }
 
-  partyOffset <- 15
+  party_offset <- 15
 
-  modulus   <- (params$num_data_partners + 1) * partyOffset
-  targetTime <- params$data_partner_id * partyOffset
+  modulus   <- (params$num_data_partners + 1) * party_offset
+  targetTime <- params$data_partner_id * party_offset
 
   if (params$verbose) cat("Elapsed Time:", HMS(0), "\r")
   while (as.integer(Sys.time()) %% modulus != targetTime) {
@@ -1881,7 +1888,7 @@ send_pause_quit_kp <- function(params,
     destination <- c(10, 10, 10)
   }
 
-  MakeCSV(files, transfer, destination, params$write_path)
+  make_csv(files, transfer, destination, params$write_path)
   params <- store_stamp_entry(params, "Files done trigger file",
                               "Trigger File Created")
   params <- store_stamp_entry(
@@ -1901,12 +1908,12 @@ send_pause_quit_kp <- function(params,
   WriteStampsRaw(params)
   if (params$data_partner_id == 0) {
     if (job_failed)  {
-      MakeTrigger("job_fail.ok",  params$write_path)
+      make_trigger("job_fail.ok",  params$write_path)
     } else {
-      MakeTrigger("job_done.ok",  params$write_path)
+      make_trigger("job_done.ok",  params$write_path)
     }
   }
-  MakeTrigger("files_done.ok", params$write_path)
+  make_trigger("files_done.ok", params$write_path)
   return(params)
 }
 
@@ -1930,13 +1937,13 @@ send_pause_continue_kp <- function(params,
 
     if (!is.null(files_ac)) {
       files_ac <- c(files_ac, "stamps.rdata",
-                   "log.rdata",
-                   "tr_tb_updt.rdata")
+                    "log.rdata",
+                    "tr_tb_updt.rdata")
     }
     if (!is.null(files_dp)) {
       files_dp <- c(files_dp, "stamps.rdata",
-                   "log.rdata",
-                   "tr_tb_updt.rdata")
+                    "log.rdata",
+                    "tr_tb_updt.rdata")
     }
     dataPartnerTarget <- 1:params$num_data_partners
     if (params$data_partner_id != 0) {
@@ -1963,8 +1970,8 @@ send_pause_continue_kp <- function(params,
     }
     if (!is.null(files_ac)) {
       files_ac <- c(files_ac, "stamps.rdata",
-                   "log.rdata",
-                   "tr_tb_updt.rdata")
+                    "log.rdata",
+                    "tr_tb_updt.rdata")
     }
     files <- files_ac
     transfer <- rep(1, length(files))
@@ -1988,7 +1995,7 @@ send_pause_continue_kp <- function(params,
     transfer    <- c(transfer, 10)
     destination <- c(destination, 10)
   }
-  MakeCSV(files, transfer, destination, params$write_path)
+  make_csv(files, transfer, destination, params$write_path)
   params <- store_stamp_entry(params,
                               "Files done trigger file",
                               "Trigger File created")
@@ -2004,9 +2011,9 @@ send_pause_continue_kp <- function(params,
   WriteStampsCSV(params)
   WriteStampsRaw(params)
   if (job_started) {
-    MakeTrigger("job_started.ok", params$write_path)
+    make_trigger("job_started.ok", params$write_path)
   } else {
-    MakeTrigger("files_done.ok", params$write_path)
+    make_trigger("files_done.ok", params$write_path)
   }
   if (from == "AC") {
     if (params$verbose) cat("Waiting for analysis center\n")
@@ -2046,7 +2053,7 @@ send_pause_continue_kp <- function(params,
   }
   if (params$verbose) cat("Resuming local processing\n\n")
   params <- merge_log_raw_kp(params, from)
-  params <- UpdateCounters.kp(params)
+  params <- update_counters_kp(params)
   params <- new_log_entry_kp(params)
   params <- MergeStampsRaw.kp(params, from)
   params <- store_stamp_entry(params,
@@ -2058,7 +2065,7 @@ send_pause_continue_kp <- function(params,
 
 
 pause_continue_kp <- function(params, from = NULL,
-                             max_waiting_time = 24 * 60 * 60) {
+                              max_waiting_time = 24 * 60 * 60) {
   params <- store_log_entry_kp(params, "")
   params <- StoreTrackingTableEntry.kp(params)
   WriteLogCSV(params)
@@ -2091,7 +2098,7 @@ pause_continue_kp <- function(params, from = NULL,
   }
   if (params$verbose) cat("Resuming local processing\n\n")
   params <- merge_log_raw_kp(params, from)
-  params <- UpdateCounters.kp(params)
+  params <- update_counters_kp(params)
   params <- new_log_entry_kp(params)
   params <- MergeStampsRaw.kp(params, from)
   params <- store_stamp_entry(params,
@@ -2103,51 +2110,51 @@ pause_continue_kp <- function(params, from = NULL,
 }
 
 
-UpdateCounters.kp <- function(params) {
+update_counters_kp <- function(params) {
   params$pmn_step_counter <- max(params$log$history$Step) + 1
   return(params)
 }
 
-ReceivedError.kp <- function(params, from) {
+received_error_kp <- function(params, from) {
   result <- list()
   message <- ""
   if (from == "AC") {
-    messageExists <- file.exists(file.path(params$readPathAC,
+    message_exists <- file.exists(file.path(params$readPathAC,
                                            "errorMessage.rdata"))
-    if (messageExists) {
+    if (message_exists) {
       message <- read_error_message(params$readPathAC)
     }
   } else {
-    messageExists <- file.exists(file.path(params$readPathDP,
+    message_exists <- file.exists(file.path(params$readPathDP,
                                            "errorMessage.rdata"))
     for (id in 1:params$num_data_partners) {
-      if (messageExists[id]) {
+      if (message_exists[id]) {
         message <- paste0(message,
                           read_error_message(params$readPathDP[id]), " ")
       }
     }
   }
-  result$error <- any(messageExists)
+  result$error <- any(message_exists)
   result$message <- message
   return(result)
 }
 
 ################################ TIME FUNCTIONS ################################
 
-GetUTCTime <- function() {
+get_utc_time <- function() {
   t <- Sys.time()
   attr(t, "tzone") <- "UTC"
   return(as.POSIXlt(t))
 }
 
 
-GetUTCOffset <- function() {
+get_utc_offset <- function() {
   t <- Sys.time()
   return(format(t, "%z"))
 }
 
 
-GetUTCOffsetSeconds <- function() {
+get_utc_offset_seconds <- function() {
   t <- Sys.time()
   offset <- format(t, "%z")
   hour <- as.numeric(substr(offset, 2, 3))
@@ -2157,7 +2164,7 @@ GetUTCOffsetSeconds <- function() {
 }
 
 
-ConvertUTCtoRoundTripTime <- function(t) {
+convert_utc_roundtrip_time <- function(t) {
   month <- ifelse(t$mon  < 9,  paste0("0", t$mon + 1), t$mon + 1)
   day   <- ifelse(t$mday < 10, paste0("0", t$mday),    t$mday)
   hour  <- ifelse(t$hour < 10, paste0("0", t$hour),    t$hour)
@@ -2167,12 +2174,12 @@ ConvertUTCtoRoundTripTime <- function(t) {
               min, ":", sec)
 }
 
-GetRoundTripTime <- function() {
-  return(ConvertUTCtoRoundTripTime(GetUTCTime()))
+get_round_trip_time <- function() {
+  return(convert_utc_roundtrip_time(get_utc_time()))
 }
 
 
-GetElapsedTime <- function(time1, final = FALSE, time_only = FALSE) {
+get_elapsed_time <- function(time1, final = FALSE, time_only = FALSE) {
   etime <- floor(time1[3])
   hrs <- floor(etime / 3600)
   mins <- floor((etime %% 3600) / 60)
@@ -2508,7 +2515,7 @@ store_stamp_entry <- function(params, description = "", type = "") {
   newEntry             <- params$stamps$blank
   newEntry$Step        <- params$pmn_step_counter
   newEntry$Description <- description
-  newEntry$Time        <- GetRoundTripTime()
+  newEntry$Time        <- get_round_trip_time()
   newEntry$Type        <- type
   params$stamps$history <- rbind(params$stamps$history, newEntry)
   return(params)
@@ -2535,7 +2542,7 @@ initialize_time_stamps_2p <- function(params) {
     Step        = params$pmn_step_counter,
     Source      = paste("Org", params$party_name, "Dist Reg"),
     Description = "R program execution begins",
-    Time        = GetRoundTripTime(),
+    Time        = get_round_trip_time(),
     Type        = "Tracking Table")
   stamps$history <- stamps$blank
   params$stamps <- stamps
@@ -2570,7 +2577,7 @@ initialize_time_stamps_3p <- function(params) {
     Step        = params$pmn_step_counter,
     Source      = paste("Org", params$party_name, "Dist Reg"),
     Description = "R program execution begins",
-    Time        = GetRoundTripTime(),
+    Time        = get_round_trip_time(),
     Type        = "Tracking Table")
   stamps$history <- stamps$blank
   params$stamps <- stamps
@@ -2578,7 +2585,7 @@ initialize_time_stamps_3p <- function(params) {
 }
 
 
-MergeStampsRaw.3p <- function(params, from) {
+MergeStampsRaw_3p <- function(params, from) {
   stamps <- NULL
   for (party in from) {
     load(file.path(params$read_path[[party]], "stamps.rdata"))
@@ -2609,7 +2616,7 @@ initialize_time_stamps_kp <- function(params) {
                                                   params$data_partner_id,
                                                   " Dist Reg"),
                              Description = "R program execution begins",
-                             Time        = GetRoundTripTime(),
+                             Time        = get_round_trip_time(),
                              Type        = "Tracking Table")
   stamps$history <- stamps$blank
   params$stamps <- stamps
@@ -2707,7 +2714,7 @@ WriteLogCSV <- function(params) {
 
 #' @importFrom utils write.table
 write_to_log_summary <- function(c1 = "", c2 = "", c3 = "",
-                              write_path = NULL, append = TRUE) {
+                                 write_path = NULL, append = TRUE) {
   if (is.numeric(c2)) {
     c2 <- round(c2, 2)
   }
@@ -2726,8 +2733,8 @@ initialize_log_2p <- function(params) {
                           Party            = "",
                           functions        = "",
                           wait_time        = 0,
-                          start_time       = GetUTCTime(),
-                          end_time         = GetUTCTime(),
+                          start_time       = get_utc_time(),
+                          end_time         = get_utc_time(),
                           read_time        = 0,
                           read_Size        = 0,
                           write_time       = 0,
@@ -2745,7 +2752,7 @@ initialize_log_2p <- function(params) {
 new_log_entry_2p <- function(params) {
   params$log$current <- params$log$blank
   params$log$current$Party         <- params$party_name
-  params$log$current$start_time    <- GetUTCTime()
+  params$log$current$start_time    <- get_utc_time()
   return(params)
 }
 
@@ -2754,7 +2761,7 @@ store_log_entry_2p <- function(params, files) {
   params$log$current$Step          <- params$pmn_step_counter
   params$log$current$iteration_alg <- params$algIterationCounter
   params$log$current$Party <- params$party_name
-  params$log$current$end_time <- GetUTCTime()
+  params$log$current$end_time <- get_utc_time()
   params$log$current$computetation_time <-
     round(as.numeric(difftime(
       params$log$current$end_time,
@@ -2881,20 +2888,20 @@ summarize_log_2p <- function(params) {
   kb_per_second <- round(total_Bytes_transferred /
                            (total_transfer_time * 1024), digits = 2)
   write_to_log_summary(c1 = "Analysis",
-                    c2 = params$analysis,
-                    write_path = write_path, append = FALSE)
+                       c2 = params$analysis,
+                       write_path = write_path, append = FALSE)
   if (!is.null(params$blocks)) {
     write_to_log_summary(c1 = "Blocksize",
-                      c2 = params$blocks$little_blocksize,
-                      write_path = write_path)
+                         c2 = params$blocks$little_blocksize,
+                         write_path = write_path)
     write_to_log_summary(c1 = "Number of Blocks",
-                      c2 = params$blocks$numLittleBlocks +
-                        params$blocks$numBigBlocks,
-                      write_path = write_path)
+                         c2 = params$blocks$numLittleBlocks +
+                           params$blocks$numBigBlocks,
+                         write_path = write_path)
   }
   if (!is.null(params$n))   write_to_log_summary(c1 = "N",
-                                              c2 = params$n,
-                                              write_path = write_path)
+                                                 c2 = params$n,
+                                                 write_path = write_path)
 
   p <- max(0, params$p1_old - (params$analysis != "cox"))
   write_to_log_summary(c1 = "p_a", c2 = p, write_path = write_path)
@@ -2903,72 +2910,75 @@ summarize_log_2p <- function(params) {
 
   write_to_log_summary(write_path = write_path)
   write_to_log_summary(c1 = "Party A Start Time",
-                    c2 = party_a_start_time, write_path = write_path)
+                       c2 = party_a_start_time, write_path = write_path)
   write_to_log_summary(c1 = "Party A End Time",
-                    c2 = party_a_end_time, write_path = write_path)
+                       c2 = party_a_end_time, write_path = write_path)
   write_to_log_summary(c1 = "Party A Total Run Time",
-                    c2 = party_a_total_time,
-                    c3 = party_a_total_time_hms, write_path = write_path)
+                       c2 = party_a_total_time,
+                       c3 = party_a_total_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Party A Total Reading Time",
-                    c2 = party_a_reading_time,
-                    c3 = party_a_reading_time_hms, write_path = write_path)
+                       c2 = party_a_reading_time,
+                       c3 = party_a_reading_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Party A Total Bytes Read",
-                    c2 = party_a_Bytes_read, write_path = write_path)
+                       c2 = party_a_Bytes_read, write_path = write_path)
   write_to_log_summary(c1 = "Party A Total Writing Time",
-                    c2 = party_a_writing_time,
-                    c3 = party_a_writing_time_hms, write_path = write_path)
+                       c2 = party_a_writing_time,
+                       c3 = party_a_writing_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Party A Total Bytes Written",
-                    c2 = party_a_Bytes_written, write_path = write_path)
+                       c2 = party_a_Bytes_written, write_path = write_path)
   write_to_log_summary(c1 = "Party A Total Computing Time",
-                    c2 = party_a_computing_time,
-                    c3 = party_a_computing_time_hms, write_path = write_path)
+                       c2 = party_a_computing_time,
+                       c3 = party_a_computing_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Party A Total Waiting Time",
-                    c2 = party_a_waiting_time,
-                    c3 = party_a_waiting_time_hms, write_path = write_path)
+                       c2 = party_a_waiting_time,
+                       c3 = party_a_waiting_time_hms, write_path = write_path)
   write_to_log_summary(write_path = write_path)
   write_to_log_summary(c1 = "Party B Start Time",
-                    c2 = party_b_start_time, write_path = write_path)
+                       c2 = party_b_start_time, write_path = write_path)
   write_to_log_summary(c1 = "Party B End Time",
-                    c2 = party_b_end_time, write_path = write_path)
+                       c2 = party_b_end_time, write_path = write_path)
   write_to_log_summary(c1 = "Party B Total Run Time",
-                    c2 = party_b_total_time,
-                    c3 = party_b_total_time_hms, write_path = write_path)
+                       c2 = party_b_total_time,
+                       c3 = party_b_total_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Party B Total Reading Time",
-                    c2 = party_b_reading_time,
-                    c3 = party_b_reading_time_hms, write_path = write_path)
+                       c2 = party_b_reading_time,
+                       c3 = party_b_reading_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Party B Total Bytes Read",
-                    c2 = party_b_Bytes_read, write_path = write_path)
+                       c2 = party_b_Bytes_read, write_path = write_path)
   write_to_log_summary(c1 = "Party B Total Writing Time",
-                    c2 = party_b_writing_time,
-                    c3 = party_b_writing_time_hms, write_path = write_path)
+                       c2 = party_b_writing_time,
+                       c3 = party_b_writing_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Party B Total Bytes Written",
-                    c2 = party_b_Bytes_written, write_path = write_path)
+                       c2 = party_b_Bytes_written, write_path = write_path)
   write_to_log_summary(c1 = "Party B Total Computing Time",
-                    c2 = party_b_computing_time,
-                    c3 = party_b_computing_time_hms, write_path = write_path)
+                       c2 = party_b_computing_time,
+                       c3 = party_b_computing_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Party B Total Waiting Time",
-                    c2 = party_b_waiting_time,
-                    c3 = party_b_waiting_time_hms, write_path = write_path)
+                       c2 = party_b_waiting_time,
+                       c3 = party_b_waiting_time_hms, write_path = write_path)
   write_to_log_summary(write_path = write_path)
   write_to_log_summary(c1 = "Total Reading Time",
-                    c2 = total_reading_time,
-                    c3 = total_reading_time_hms, write_path = write_path)
+                       c2 = total_reading_time,
+                       c3 = total_reading_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Total Writing Time",
-                    c2 = total_writing_time,
-                    c3 = total_writing_time_hms, write_path = write_path)
+                       c2 = total_writing_time,
+                       c3 = total_writing_time_hms,
+                       write_path = write_path)
   write_to_log_summary(c1 = "Total Computing Time",
-                    c2 = total_computing_time,
-                    c3 = total_computing_time_hms,  write_path = write_path)
+                       c2 = total_computing_time,
+                       c3 = total_computing_time_hms,
+                       write_path = write_path)
   write_to_log_summary(c1 = "Elapsed Computing Time",
-                    c2 = elapsed_computing_time,
-                    c3 = elapsed_computing_time_hms,  write_path = write_path)
+                       c2 = elapsed_computing_time,
+                       c3 = elapsed_computing_time_hms,
+                       write_path = write_path)
   write_to_log_summary(c1 = "Total Transfer Time",
-                    c2 = total_transfer_time,
-                    c3 = total_transfer_time_hms, write_path = write_path)
+                       c2 = total_transfer_time,
+                       c3 = total_transfer_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Total Bytes Transferred",
-                    c2 = total_Bytes_transferred, write_path = write_path)
+                       c2 = total_Bytes_transferred, write_path = write_path)
   write_to_log_summary(c1 = "KB / Sec Transfer Rate",
-                    c2 = kb_per_second, write_path = write_path)
+                       c2 = kb_per_second, write_path = write_path)
 
 }
 
@@ -2981,8 +2991,8 @@ initialize_log_3p <- function(params) {
                           Party            = "",
                           functions        = "",
                           wait_time        = 0,
-                          start_time       = GetUTCTime(),
-                          end_time         = GetUTCTime(),
+                          start_time       = get_utc_time(),
+                          end_time         = get_utc_time(),
                           read_time        = 0,
                           read_Size        = 0,
                           write_time       = 0,
@@ -3000,7 +3010,7 @@ initialize_log_3p <- function(params) {
 new_log_entry_3p <- function(params) {
   params$log$current <- params$log$blank
   params$log$current$Party         <- params$party_name
-  params$log$current$start_time    <- GetUTCTime()
+  params$log$current$start_time    <- get_utc_time()
   return(params)
 }
 
@@ -3009,7 +3019,7 @@ store_log_entry_3p <- function(params, files) {
   params$log$current$Step          <- params$pmn_step_counter
   params$log$current$iteration_alg <- params$algIterationCounter
   params$log$current$Party <- params$party_name
-  params$log$current$end_time <- GetUTCTime()
+  params$log$current$end_time <- get_utc_time()
   params$log$current$computetation_time <- round(as.numeric(difftime(
     params$log$current$end_time,
     params$log$current$start_time, units = "secs")) -
@@ -3162,21 +3172,21 @@ summarize_log_3p <- function(params) {
                            (total_transfer_time * 1024), digits = 2)
 
   write_to_log_summary(c1 = "Analysis",
-                    c2 = params$analysis,
-                    write_path = write_path,
-                    append = FALSE)
+                       c2 = params$analysis,
+                       write_path = write_path,
+                       append = FALSE)
   if (!is.null(params$blocks)) {
     write_to_log_summary(c1 = "Blocksize",
-                      c2 = params$blocks$little_blocksize,
-                      write_path = write_path)
+                         c2 = params$blocks$little_blocksize,
+                         write_path = write_path)
     write_to_log_summary(c1 = "Number of Blocks",
-                      c2 = params$blocks$numLittleBlocks +
-                        params$blocks$numBigBlocks,
-                      write_path = write_path)
+                         c2 = params$blocks$numLittleBlocks +
+                           params$blocks$numBigBlocks,
+                         write_path = write_path)
   }
   if (!is.null(params$n))   write_to_log_summary(c1 = "N",
-                                              c2 = params$n,
-                                              write_path = write_path)
+                                                 c2 = params$n,
+                                                 write_path = write_path)
 
   p <- max(0, params$p1_old - (params$analysis != "cox"))
   write_to_log_summary(c1 = "p_a", c2 = p, write_path = write_path)
@@ -3185,96 +3195,99 @@ summarize_log_3p <- function(params) {
 
   write_to_log_summary(write_path = write_path)
   write_to_log_summary(c1 = "Party A Start Time",
-                    c2 = party_a_start_time, write_path = write_path)
+                       c2 = party_a_start_time, write_path = write_path)
   write_to_log_summary(c1 = "Party A End Time",
-                    c2 = party_a_end_time, write_path = write_path)
+                       c2 = party_a_end_time, write_path = write_path)
   write_to_log_summary(c1 = "Party A Total Run Time",
-                    c2 = party_a_total_time,
-                    c3 = party_a_total_time_hms, write_path = write_path)
+                       c2 = party_a_total_time,
+                       c3 = party_a_total_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Party A Total Reading Time",
-                    c2 = party_a_reading_time,
-                    c3 = party_a_reading_time_hms, write_path = write_path)
+                       c2 = party_a_reading_time,
+                       c3 = party_a_reading_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Party A Total Bytes Read",
-                    c2 = party_a_Bytes_read, write_path = write_path)
+                       c2 = party_a_Bytes_read, write_path = write_path)
   write_to_log_summary(c1 = "Party A Total Writing Time",
-                    c2 = party_a_writing_time,
-                    c3 = party_a_writing_time_hms, write_path = write_path)
+                       c2 = party_a_writing_time,
+                       c3 = party_a_writing_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Party A Total Bytes Written",
-                    c2 = party_a_Bytes_written, write_path = write_path)
+                       c2 = party_a_Bytes_written, write_path = write_path)
   write_to_log_summary(c1 = "Party A Total Computing Time",
-                    c2 = party_a_computing_time,
-                    c3 = party_a_computing_time_hms, write_path = write_path)
+                       c2 = party_a_computing_time,
+                       c3 = party_a_computing_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Party A Total Waiting Time",
-                    c2 = party_a_waiting_time,
-                    c3 = party_a_waiting_time_hms, write_path = write_path)
+                       c2 = party_a_waiting_time,
+                       c3 = party_a_waiting_time_hms, write_path = write_path)
   write_to_log_summary(write_path = write_path)
   write_to_log_summary(c1 = "Party B Start Time",
-                    c2 = party_b_start_time, write_path = write_path)
+                       c2 = party_b_start_time, write_path = write_path)
   write_to_log_summary(c1 = "Party B End Time",
-                    c2 = party_b_end_time, write_path = write_path)
+                       c2 = party_b_end_time, write_path = write_path)
   write_to_log_summary(c1 = "Party B Total Run Time",
-                    c2 = party_b_total_time,
-                    c3 = party_b_total_time_hms, write_path = write_path)
+                       c2 = party_b_total_time,
+                       c3 = party_b_total_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Party B Total Reading Time",
-                    c2 = party_b_reading_time,
-                    c3 = party_b_reading_time_hms, write_path = write_path)
+                       c2 = party_b_reading_time,
+                       c3 = party_b_reading_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Party B Total Bytes Read",
-                    c2 = party_b_Bytes_read, write_path = write_path)
+                       c2 = party_b_Bytes_read, write_path = write_path)
   write_to_log_summary(c1 = "Party B Total Writing Time",
-                    c2 = party_b_writing_time,
-                    c3 = party_b_writing_time_hms, write_path = write_path)
+                       c2 = party_b_writing_time,
+                       c3 = party_b_writing_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Party B Total Bytes Written",
-                    c2 = party_b_Bytes_written, write_path = write_path)
+                       c2 = party_b_Bytes_written, write_path = write_path)
   write_to_log_summary(c1 = "Party B Total Computing Time",
-                    c2 = party_b_computing_time,
-                    c3 = party_b_computing_time_hms, write_path = write_path)
+                       c2 = party_b_computing_time,
+                       c3 = party_b_computing_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Party B Total Waiting Time",
-                    c2 = party_b_waiting_time,
-                    c3 = party_b_waiting_time_hms, write_path = write_path)
+                       c2 = party_b_waiting_time,
+                       c3 = party_b_waiting_time_hms, write_path = write_path)
   write_to_log_summary(write_path = write_path)
   write_to_log_summary(c1 = "Party T Start Time",
-                    c2 = party_t_start_time, write_path = write_path)
+                       c2 = party_t_start_time, write_path = write_path)
   write_to_log_summary(c1 = "Party T End Time",
-                    c2 = party_t_end_time, write_path = write_path)
+                       c2 = party_t_end_time, write_path = write_path)
   write_to_log_summary(c1 = "Party T Total Run Time",
-                    c2 = party_t_total_time,
-                    c3 = party_t_total_time_hms, write_path = write_path)
+                       c2 = party_t_total_time,
+                       c3 = party_t_total_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Party T Total Reading Time",
-                    c2 = party_t_reading_time,
-                    c3 = party_t_reading_time_hms, write_path = write_path)
+                       c2 = party_t_reading_time,
+                       c3 = party_t_reading_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Party T Total Bytes Read",
-                    c2 = party_t_Bytes_read, write_path = write_path)
+                       c2 = party_t_Bytes_read, write_path = write_path)
   write_to_log_summary(c1 = "Party T Total Writing Time",
-                    c2 = party_t_writing_time,
-                    c3 = party_t_writing_time_hms, write_path = write_path)
+                       c2 = party_t_writing_time,
+                       c3 = party_t_writing_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Party T Total Bytes Written",
-                    c2 = party_t_Bytes_written, write_path = write_path)
+                       c2 = party_t_Bytes_written, write_path = write_path)
   write_to_log_summary(c1 = "Party T Total Computing Time",
-                    c2 = party_t_computing_time,
-                    c3 = party_t_computing_time_hms, write_path = write_path)
+                       c2 = party_t_computing_time,
+                       c3 = party_t_computing_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Party T Total Waiting Time",
-                    c2 = party_t_waiting_time,
-                    c3 = party_t_waiting_time_hms, write_path = write_path)
+                       c2 = party_t_waiting_time,
+                       c3 = party_t_waiting_time_hms, write_path = write_path)
   write_to_log_summary(write_path = write_path)
   write_to_log_summary(c1 = "Total Reading Time",
-                    c2 = total_reading_time,
-                    c3 = total_reading_time_hms, write_path = write_path)
+                       c2 = total_reading_time,
+                       c3 = total_reading_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Total Writing Time",
-                    c2 = total_writing_time,
-                    c3 = total_writing_time_hms, write_path = write_path)
+                       c2 = total_writing_time,
+                       c3 = total_writing_time_hms,
+                       write_path = write_path)
   write_to_log_summary(c1 = "Total Computing Time",
-                    c2 = total_computing_time,
-                    c3 = total_computing_time_hms,  write_path = write_path)
+                       c2 = total_computing_time,
+                       c3 = total_computing_time_hms,
+                       write_path = write_path)
   write_to_log_summary(c1 = "Elapsed Computing Time",
-                    c2 = elapsed_computing_time,
-                    c3 = elapsed_computing_time_hms,  write_path = write_path)
+                       c2 = elapsed_computing_time,
+                       c3 = elapsed_computing_time_hms,
+                       write_path = write_path)
   write_to_log_summary(c1 = "Total Transfer Time",
-                    c2 = total_transfer_time,
-                    c3 = total_transfer_time_hms, write_path = write_path)
+                       c2 = total_transfer_time,
+                       c3 = total_transfer_time_hms, write_path = write_path)
   write_to_log_summary(c1 = "Total Bytes Transferred",
-                    c2 = total_Bytes_transferred, write_path = write_path)
+                       c2 = total_Bytes_transferred, write_path = write_path)
   write_to_log_summary(c1 = "KB / Sec Transfer Rate",
-                    c2 = kb_per_second, write_path = write_path)
+                       c2 = kb_per_second, write_path = write_path)
 
 }
 
@@ -3287,8 +3300,8 @@ initialize_log_kp <- function(params) {
                           Party            = "",
                           functions        = "",
                           wait_time        = 0,
-                          start_time       = GetUTCTime(),
-                          end_time         = GetUTCTime(),
+                          start_time       = get_utc_time(),
+                          end_time         = get_utc_time(),
                           read_time        = 0,
                           read_Size        = 0,
                           write_time       = 0,
@@ -3306,7 +3319,7 @@ initialize_log_kp <- function(params) {
 new_log_entry_kp <- function(params) {
   params$log$current <- params$log$blank
   params$log$current$Party         <- paste0("dp", params$data_partner_id)
-  params$log$current$start_time    <- GetUTCTime()
+  params$log$current$start_time    <- get_utc_time()
   return(params)
 }
 
@@ -3315,7 +3328,7 @@ store_log_entry_kp <- function(params, files) {
   params$log$current$Step          <- params$pmn_step_counter
   params$log$current$iteration_alg <- params$algIterationCounter
   params$log$current$Party <- paste0("dp", params$data_partner_id)
-  params$log$current$end_time <- GetUTCTime()
+  params$log$current$end_time <- get_utc_time()
   params$log$current$computetation_time <- round(as.numeric(difftime(
     params$log$current$end_time,
     params$log$current$start_time, units = "secs")) -
@@ -3394,11 +3407,11 @@ summarize_log_kp <- function(params) {
   log       <- params$log$history
 
   write_to_log_summary(c1 = "Analysis",
-                    c2 = params$analysis,
-                    write_path = write_path, append = FALSE)
+                       c2 = params$analysis,
+                       write_path = write_path, append = FALSE)
   if (!is.null(params$n))   write_to_log_summary(c1 = "N",
-                                              c2 = params$n,
-                                              write_path = write_path)
+                                                 c2 = params$n,
+                                                 write_path = write_path)
 
   for (i in 1:params$num_data_partners) {
     if (is.null(params$pi))  {
@@ -3428,36 +3441,41 @@ summarize_log_kp <- function(params) {
       writing_time <- sum(log$write_time[index])
       computing_time <- sum(log$computetation_time[index])
       waiting_time <- sum(log$wait_time[index])
-      total_time_hms <- convert_secs_to_hms(total_time, time_only = TRUE)
-      reading_time_hms <- convert_secs_to_hms(reading_time, time_only = TRUE)
-      writing_time_hms <- convert_secs_to_hms(writing_time, time_only = TRUE)
-      computing_time_hms <- convert_secs_to_hms(computing_time, time_only = TRUE)
-      waiting_time_hms <- convert_secs_to_hms(waiting_time, time_only = TRUE)
+      total_time_hms <-
+        convert_secs_to_hms(total_time, time_only = TRUE)
+      reading_time_hms <-
+        convert_secs_to_hms(reading_time, time_only = TRUE)
+      writing_time_hms <-
+        convert_secs_to_hms(writing_time, time_only = TRUE)
+      computing_time_hms <-
+        convert_secs_to_hms(computing_time, time_only = TRUE)
+      waiting_time_hms <-
+        convert_secs_to_hms(waiting_time, time_only = TRUE)
       Bytes_read <- sum(log$read_Size[index])
       Bytes_written <- sum(log$write_Size[index])
       write_to_log_summary(c1 = paste(party_name, "Start Time"),
-                        c2 = start_time, write_path = write_path)
+                           c2 = start_time, write_path = write_path)
       write_to_log_summary(c1 = paste(party_name, "End Time"),
-                        c2 = end_time, write_path = write_path)
+                           c2 = end_time, write_path = write_path)
       write_to_log_summary(c1 = paste(party_name, "Total Run Time"),
-                        c2 = total_time,
-                        c3 = total_time_hms, write_path = write_path)
+                           c2 = total_time,
+                           c3 = total_time_hms, write_path = write_path)
       write_to_log_summary(c1 = paste(party_name, "Total Reading Time"),
-                        c2 = reading_time,
-                        c3 = reading_time_hms, write_path = write_path)
+                           c2 = reading_time,
+                           c3 = reading_time_hms, write_path = write_path)
       write_to_log_summary(c1 = paste(party_name, "Total Bytes Read"),
-                        c2 = Bytes_read, write_path = write_path)
+                           c2 = Bytes_read, write_path = write_path)
       write_to_log_summary(c1 = paste(party_name, "Total Writing Time"),
-                        c2 = writing_time,
-                        c3 = writing_time_hms, write_path = write_path)
+                           c2 = writing_time,
+                           c3 = writing_time_hms, write_path = write_path)
       write_to_log_summary(c1 = paste(party_name, "Total Bytes Written"),
-                        c2 = Bytes_written, write_path = write_path)
+                           c2 = Bytes_written, write_path = write_path)
       write_to_log_summary(c1 = paste(party_name, "Total Computing Time"),
-                        c2 = computing_time,
-                        c3 = computing_time_hms, write_path = write_path)
+                           c2 = computing_time,
+                           c3 = computing_time_hms, write_path = write_path)
       write_to_log_summary(c1 = paste(party_name, "Total Waiting Time"),
-                        c2 = waiting_time,
-                        c3 = waiting_time_hms, write_path = write_path)
+                           c2 = waiting_time,
+                           c3 = waiting_time_hms, write_path = write_path)
       write_to_log_summary(write_path = write_path)
     }
   }
@@ -3494,31 +3512,31 @@ summarize_log_kp <- function(params) {
     round(total_Bytes_transferred / (total_transfer_time * 1024), digits = 2)
 
   write_to_log_summary(c1 = "Total Reading Time",
-                    c2 = total_reading_time,
-                    c3 = total_reading_time_hms,
-                    write_path = write_path)
+                       c2 = total_reading_time,
+                       c3 = total_reading_time_hms,
+                       write_path = write_path)
   write_to_log_summary(c1 = "Total Writing Time",
-                    c2 = total_writing_time,
-                    c3 = total_writing_time_hms,
-                    write_path = write_path)
+                       c2 = total_writing_time,
+                       c3 = total_writing_time_hms,
+                       write_path = write_path)
   write_to_log_summary(c1 = "Total Computing Time",
-                    c2 = total_computing_time,
-                    c3 = total_computing_time_hms,
-                    write_path = write_path)
+                       c2 = total_computing_time,
+                       c3 = total_computing_time_hms,
+                       write_path = write_path)
   write_to_log_summary(c1 = "Elapsed Computing Time",
-                    c2 = elapsed_computing_time,
-                    c3 = elapsed_computing_time_hms,
-                    write_path = write_path)
+                       c2 = elapsed_computing_time,
+                       c3 = elapsed_computing_time_hms,
+                       write_path = write_path)
   write_to_log_summary(c1 = "Total Transfer Time",
-                    c2 = total_transfer_time,
-                    c3 = total_transfer_time_hms,
-                    write_path = write_path)
+                       c2 = total_transfer_time,
+                       c3 = total_transfer_time_hms,
+                       write_path = write_path)
   write_to_log_summary(c1 = "Total Bytes Transferred",
-                    c2 = total_Bytes_transferred,
-                    write_path = write_path)
+                       c2 = total_Bytes_transferred,
+                       write_path = write_path)
   write_to_log_summary(c1 = "KB / Sec Transfer Rate",
-                    c2 = kb_per_second,
-                    write_path = write_path)
+                       c2 = kb_per_second,
+                       write_path = write_path)
 }
 
 ####################### SHARED TRACKING TABLE FUNCTIONS ########################
@@ -3551,9 +3569,9 @@ initialize_tracking_table_2p <- function(params) {
                # if params$party_name is "A" then 2 else 1
                STEP_NB            = 0,
                # from log$start_time
-               START_DTM          = GetUTCTime(),
+               START_DTM          = get_utc_time(),
                # from log$end_time
-               END_DTM            = GetUTCTime(),
+               END_DTM            = get_utc_time(),
                CURR_STEP_IN       = 0,
                STEP_RETURN_CD     = 0,
                # copy errorMessage.rdata here if exists
@@ -3565,8 +3583,8 @@ initialize_tracking_table_2p <- function(params) {
                # 1 at last iteration, so right before quit
                LAST_ITER_IN       = 0,
                LAST_RUNID_IN      = 0,
-               UTC_OFFSET_DISPLAY = GetUTCOffset(),
-               UTC_OFFSET_SEC     = GetUTCOffsetSeconds(),
+               UTC_OFFSET_DISPLAY = get_utc_offset(),
+               UTC_OFFSET_SEC     = get_utc_offset_seconds(),
                REGR_TYPE_CD       = params$analysis
     )
   trackingTable$history <- NA
@@ -3636,8 +3654,8 @@ initialize_tracking_table_3p <- function(params) {
                RUNID           = "dl",
                ITER_NB         = 0,  # params$pmnIterationCounter
                STEP_NB         = 0,
-               START_DTM       = GetUTCTime(), # from log$start_time
-               END_DTM         = GetUTCTime(), # from log$end_time
+               START_DTM       = get_utc_time(), # from log$start_time
+               END_DTM         = get_utc_time(), # from log$end_time
                CURR_STEP_IN    = 0,
                STEP_RETURN_CD  = 0,
                # copy errorMessage.rdata here if exists
@@ -3649,8 +3667,8 @@ initialize_tracking_table_3p <- function(params) {
                # 1 at last iteration, so right before quit
                LAST_ITER_IN    = 0,
                LAST_RUNID_IN   = 0,
-               UTC_OFFSET_DISPLAY = GetUTCOffset(),
-               UTC_OFFSET_SEC  = GetUTCOffsetSeconds(),
+               UTC_OFFSET_DISPLAY = get_utc_offset(),
+               UTC_OFFSET_SEC  = get_utc_offset_seconds(),
                REGR_TYPE_CD    = params$analysis
     )
   trackingTable$history <- NA
@@ -3658,7 +3676,7 @@ initialize_tracking_table_3p <- function(params) {
   return(params)
 }
 
-StoreTrackingTableEntry.3p <- function(params) {
+StoreTrackingTableEntry_3p <- function(params) {
   params$trackingTable$current$ITER_NB <- params$pmn_step_counter
   params$trackingTable$current$START_DTM <- params$log$current$start_time
   params$trackingTable$current$END_DTM <- params$log$current$end_time
@@ -3694,7 +3712,7 @@ StoreTrackingTableEntry.3p <- function(params) {
 }
 
 
-MergeTrackingTableRAW.3p <- function(params, from) {
+MergeTrackingTableRAW_3p <- function(params, from) {
   trackingTable <- NULL
   for (party in from) {
     load(file.path(params$read_path[[party]], "tr_tb_updt.rdata"))
@@ -3730,9 +3748,9 @@ initialize_tracking_table_kp <- function(params) {
     ITER_NB            = 0,
     STEP_NB            = 0,
     # from log$start_time
-    START_DTM          = GetUTCTime(),
+    START_DTM          = get_utc_time(),
     # from log$end_time
-    END_DTM            = GetUTCTime(),
+    END_DTM            = get_utc_time(),
     CURR_STEP_IN       = 0,
     STEP_RETURN_CD     = 0,
     # copy errorMessage.rdata here if exists
@@ -3744,8 +3762,8 @@ initialize_tracking_table_kp <- function(params) {
     # 1 at last iteration, right before quit
     LAST_ITER_IN       = 0,
     LAST_RUNID_IN      = 0,
-    UTC_OFFSET_DISPLAY = GetUTCOffset(),
-    UTC_OFFSET_SEC     = GetUTCOffsetSeconds(),
+    UTC_OFFSET_DISPLAY = get_utc_offset(),
+    UTC_OFFSET_SEC     = get_utc_offset_seconds(),
     REGR_TYPE_CD       = params$analysis
   )
   trackingTable$history <- NA
@@ -4966,15 +4984,15 @@ survfitDistributed.formula <- function(x, formula, data) {
     }
     idx <- which(temp0[, 2] > 0)
     if (temp0[nrow(temp0), 2] == 0) idx <- c(idx, nrow(temp0))
-    nfails <- temp0[idx, 2]
+    n_fails <- temp0[idx, 2]
     start0 <- c(1, (cumsum(temp)[1:(m - 1)] + 1))[idx]
     start1 <- start0 + temp0[idx, 1]
-    stop1  <- start1 + nfails  - 1
+    stop1  <- start1 + n_fails  - 1
     final <- length(rank2)
     S <- 1
-    t2 <- rep(0, length(nfails))
-    S2 <- rep(0, length(nfails))
-    for (j in seq_along(nfails)) {
+    t2 <- rep(0, length(n_fails))
+    S2 <- rep(0, length(n_fails))
+    for (j in seq_along(n_fails)) {
       n <- final - start0[j] + 1
       d <- stop1[j] - start1[j] + 1
       S <- S * (n - d) / n

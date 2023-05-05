@@ -439,32 +439,32 @@ prepare_strata_cox_a2 <- function(params, data) {
     m <- length(temp)
     # number of unique observed times, including where no one fails
     # Count the number of 0's and 1's for each observed time
-    temp0 <- table(data$survival$rank[idx], data$survival$status[idx])
+    temp_0 <- table(data$survival$rank[idx], data$survival$status[idx])
     # Check if there are all 1's or all 0's .  If so, add them into the table.
-    if (ncol(temp0) == 1) {
-      if (which(c(0, 1) %in% colnames(temp0)) == 1) {
-        temp0 <- cbind(temp0, 0)
-        colnames(temp0) <- c("0", "1")
+    if (ncol(temp_0) == 1) {
+      if (which(c(0, 1) %in% colnames(temp_0)) == 1) {
+        temp_0 <- cbind(temp_0, 0)
+        colnames(temp_0) <- c("0", "1")
       } else {
-        temp0 <- cbind(0, temp0)
-        colnames(temp0) <- c("0", "1")
+        temp_0 <- cbind(0, temp_0)
+        colnames(temp_0) <- c("0", "1")
       }
     }
     # number of distinct failure times
-    strata[[i]]$J <- as.integer(sum(temp0[, 2] > 0))
+    strata[[i]]$J <- as.integer(sum(temp_0[, 2] > 0))
     if (strata[[i]]$J == 0) {
       empty_strata <- c(empty_strata, i)
     }
     # The number of failures at each rank which has a failure
-    strata[[i]]$nfails <- as.numeric(temp0[which(temp0[, 2] > 0), 2])
+    strata[[i]]$n_fails <- as.numeric(temp_0[which(temp_0[, 2] > 0), 2])
     # The first index of the ranks for which the number of failures is > 0.
     strata[[i]]$start0 <- c(1, (cumsum(temp)[1:(m - 1)] +
-                                  1))[which(temp0[, 2] > 0)]
+                                  1))[which(temp_0[, 2] > 0)]
     # The first index of a failure for each rank which has a failure
-    strata[[i]]$start1 <- strata[[i]]$start0 + temp0[which(temp0[, 2] > 0), 1]
+    strata[[i]]$start1 <- strata[[i]]$start0 + temp_0[which(temp_0[, 2] > 0), 1]
     # The last index of a failure for each rank which has a failure
     strata[[i]]$stop1  <- as.numeric(strata[[i]]$start1 +
-                                       strata[[i]]$nfails - 1)
+                                       strata[[i]]$n_fails - 1)
     strata[[i]]$start0 <- as.numeric(strata[[i]]$start0 +
                                        strata[[i]]$start - 1)
     strata[[i]]$start1 <- as.numeric(strata[[i]]$start1 +
@@ -649,7 +649,7 @@ get_z_cox_a2 <- function(params, data) {
     strt <- params$blocks$starts[i]
     stp <- params$blocks$stops[i]
     g <- params$blocks$g[i]
-    z <- FindOrthogonalVectors(data$x[strt:stp, ], g)
+    z <- find_orthonormal_vectors(data$x[strt:stp, ], g)
     write_time <- write_time - proc.time()[3]
     writeBin(as.vector(z), con = to_write, endian = "little")
     write_time <- write_time + proc.time()[3]
@@ -949,7 +949,7 @@ comp_log_likelihood_cox_a2 <- function(params, data) {
     for (i in seq_along(data$survival$strata)) {
       if (data$survival$strata[[i]]$J > 0) {
         for (j in 1:data$survival$strata[[i]]$J) {
-          nj <- data$survival$strata[[i]]$nfails[j]
+          nj <- data$survival$strata[[i]]$n_fails[j]
           y_start <- data$survival$strata[[i]]$start0[j]
           y_end   <- data$survival$strata[[i]]$end
           y_index <- y_start:y_end
@@ -1728,7 +1728,7 @@ comp_cox_b2 <- function(params, data) {
       for (i in seq_along(data$survival$strata)) {
         if (data$survival$strata[[i]]$J > 0) {
           for (j in 1:data$survival$strata[[i]]$J) {
-            nj <- data$survival$strata[[i]]$nfails[j]
+            nj <- data$survival$strata[[i]]$n_fails[j]
             y_start <- data$survival$strata[[i]]$start0[j]
             y_end   <- data$survival$strata[[i]]$end
             z_start <- data$survival$strata[[i]]$start1[j]
@@ -1992,7 +1992,7 @@ party_a_process_2_cox <- function(data,
   }
   data <- prepare_data_cox_23(params, data, y_name, strata, mask)
 
-  params <- PauseContinue.2p(params, max_waiting_time)
+  params <- pause_continue_2p(params, max_waiting_time)
   if (file.exists(file.path(params$read_path, "error_message.rdata"))) {
     params$complete <- TRUE
     warning(read_error_message(params$read_path))
@@ -2044,7 +2044,7 @@ party_a_process_2_cox <- function(data,
 
   # Check for $p1 == 0 => no covariates, only strata
   if (params$p1 == 0) {
-    MakeTransferMessage(params$write_path)
+    make_transfer_message(params$write_path)
     files <- c("transferControl.rdata", "pa.rdata", "survival.rdata")
     params <- send_pause_continue_2p(params, files,
                                      sleep_time, max_waiting_time)
@@ -2099,7 +2099,7 @@ party_a_process_2_cox <- function(data,
   }
 
   if (params$p1 == 0) { # No covariates left.  All colinear with Strata
-    MakeTransferMessage(params$write_path)
+    make_transfer_message(params$write_path)
     files <- c("transferControl.rdata", "indicies.rdata")
     params <- send_pause_continue_2p(params, files, sleep_time = sleep_time)
     if (file.exists(file.path(params$read_path, "error_message.rdata"))) {

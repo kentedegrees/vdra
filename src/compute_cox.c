@@ -28,7 +28,7 @@ bool strata_ok(SEXP x)
       strcmp("end",    CHAR(STRING_ELT(name, 1))) == 0 &&
       strcmp("label",  CHAR(STRING_ELT(name, 2))) == 0 &&
       strcmp("J",      CHAR(STRING_ELT(name, 3))) == 0 &&
-      strcmp("nfails", CHAR(STRING_ELT(name, 4))) == 0 &&
+      strcmp("n_fails", CHAR(STRING_ELT(name, 4))) == 0 &&
       strcmp("start0", CHAR(STRING_ELT(name, 5))) == 0 &&
       strcmp("start1", CHAR(STRING_ELT(name, 6))) == 0 &&
       strcmp("stop1",  CHAR(STRING_ELT(name, 7))) == 0;
@@ -107,7 +107,7 @@ SEXP compute_cox(SEXP _strata, SEXP _X, SEXP _w,
     SEXP level   = VECTOR_ELT(_strata, i);
     int end     = INTEGER(VECTOR_ELT(level, 1))[0];
     int J       = INTEGER(VECTOR_ELT(level, 3))[0];
-    double *nfails = REAL(VECTOR_ELT(level, 4));
+    double *n_fails = REAL(VECTOR_ELT(level, 4));
     double *start0 = REAL(VECTOR_ELT(level, 5));
     double *start1 = REAL(VECTOR_ELT(level, 6));
     double *stop1  = REAL(VECTOR_ELT(level, 7));
@@ -116,7 +116,7 @@ SEXP compute_cox(SEXP _strata, SEXP _X, SEXP _w,
       //Rprintf("J > 0\n");
       for (int j = 0; j < J; j++) {
         //Rprintf("%d / %d\n", j, J);
-        int nj = nfails[j];
+        int nj = n_fails[j];
         int y_index_start = start0[j] - 1;
         int y_index_end   = end;
         int zIndexStart = start1[j] - 1;

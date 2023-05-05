@@ -1240,7 +1240,7 @@ party_t_process_3_logistic <- function(monitor_folder   = NULL,
     return(invisible(NULL))
   }
 
-  params <- PauseContinue.3p(params, from = c("A", "B"),
+  params <- pause_continue_3p(params, from = c("A", "B"),
                              max_waiting_time = max_waiting_time)
 
   if (file.exists(file.path(params$read_path[["A"]], "error_message.rdata")) &&

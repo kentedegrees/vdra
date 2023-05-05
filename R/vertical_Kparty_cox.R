@@ -300,29 +300,29 @@ prepare_strata_cox_dp <- function(params, data) {
     # number of unique observed times, including where no one fails
     # Count the number of 0's and 1's for each observed time
     m <- length(temp)
-    temp0 <- table(survival$rank[idx], survival$status[idx])
+    temp_0 <- table(survival$rank[idx], survival$status[idx])
     # Check if there are all 1's or all 0's .  If so, add them into the table.
-    if (ncol(temp0) == 1) {
-      if (which(c(0, 1) %in% colnames(temp0)) == 1) {
-        temp0 <- cbind(temp0, 0)
-        colnames(temp0) <- c("0", "1")
+    if (ncol(temp_0) == 1) {
+      if (which(c(0, 1) %in% colnames(temp_0)) == 1) {
+        temp_0 <- cbind(temp_0, 0)
+        colnames(temp_0) <- c("0", "1")
       } else {
-        temp0 <- cbind(0, temp0)
-        colnames(temp0) <- c("0", "1")
+        temp_0 <- cbind(0, temp_0)
+        colnames(temp_0) <- c("0", "1")
       }
     }
     # number of distinct failure times
-    strata[[i]]$J <- as.integer(sum(temp0[, 2] > 0))
+    strata[[i]]$J <- as.integer(sum(temp_0[, 2] > 0))
     # The number of failures at each rank which has a failure
-    strata[[i]]$nfails <- as.numeric(temp0[which(temp0[, 2] > 0), 2])
+    strata[[i]]$n_fails <- as.numeric(temp_0[which(temp_0[, 2] > 0), 2])
     # The first index of the ranks for which the number of failures is > 0.
     strata[[i]]$start0 <-
-      c(1, (cumsum(temp)[1:(m - 1)] + 1))[which(temp0[, 2] > 0)]
+      c(1, (cumsum(temp)[1:(m - 1)] + 1))[which(temp_0[, 2] > 0)]
     # The first index of a failure for each rank which has a failure
-    strata[[i]]$start1 <- strata[[i]]$start0 + temp0[which(temp0[, 2] > 0), 1]
+    strata[[i]]$start1 <- strata[[i]]$start0 + temp_0[which(temp_0[, 2] > 0), 1]
     # The last index of a failure for each rank which has a failure
     strata[[i]]$stop1  <-
-      as.numeric(strata[[i]]$start1 + strata[[i]]$nfails  - 1)
+      as.numeric(strata[[i]]$start1 + strata[[i]]$n_fails  - 1)
     strata[[i]]$start0 <-
       as.numeric(strata[[i]]$start0 + strata[[i]]$start - 1)
     strata[[i]]$start1 <-
@@ -861,7 +861,7 @@ comp_log_likelihood_cox_dp <- function(params, data) {
     for (i in seq_along(params$survival$strata)) {
       if (params$survival$strata[[i]]$J > 0) {
         for (j in 1:params$survival$strata[[i]]$J) {
-          nj <- params$survival$strata[[i]]$nfails[j]
+          nj <- params$survival$strata[[i]]$n_fails[j]
           start1 <- params$survival$strata[[i]]$start0[j]
           end1   <- params$survival$strata[[i]]$end
           start2 <- params$survival$strata[[i]]$start1[j]
@@ -1676,7 +1676,7 @@ data_partner_k_cox <- function(data,
                                    max_waiting_time = max_waiting_time,
                                    wait_for_turn = TRUE)
 
-  possible_error <- ReceivedError.kp(params, from = "AC")
+  possible_error <- received_error_kp(params, from = "AC")
   if (possible_error$error) {
     params$error_message <- possible_error$message
     warning(possible_error$message)
@@ -1739,7 +1739,7 @@ data_partner_k_cox <- function(data,
                                      wait_for_turn = TRUE)
 
 
-    possible_error <- ReceivedError.kp(params, from = "DP1")
+    possible_error <- received_error_kp(params, from = "DP1")
     if (possible_error$error) {
       params$error_message <- possible_error$message
       warning(possible_error$message)
@@ -1780,7 +1780,7 @@ data_partner_k_cox <- function(data,
                                    max_waiting_time = max_waiting_time,
                                    wait_for_turn = TRUE)
 
-  possible_error <- ReceivedError.kp(params, from = "AC")
+  possible_error <- received_error_kp(params, from = "AC")
   if (possible_error$error) {
     params$error_message <- possible_error$message
     warning(possible_error$message)
@@ -1868,7 +1868,7 @@ data_partner_k_cox <- function(data,
                                      max_waiting_time = max_waiting_time,
                                      wait_for_turn = TRUE)
 
-    possible_error <- ReceivedError.kp(params, from = "AC")
+    possible_error <- received_error_kp(params, from = "AC")
     if (possible_error$error) {
       params$error_message <- possible_error$message
       warning(possible_error$message)
@@ -1946,7 +1946,7 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
   params <- pause_continue_kp(params, from = "DP",
                              max_waiting_time = max_waiting_time)
 
-  possible_error <- ReceivedError.kp(params, from = "DP")
+  possible_error <- received_error_kp(params, from = "DP")
   if (possible_error$error) {
     params$error_message <- possible_error$message
     warning(possible_error$message)
@@ -1999,7 +1999,7 @@ analysis_center_k_cox <- function(num_data_partners = NULL,
                                    sleep_time = sleep_time,
                                    max_waiting_time = max_waiting_time)
 
-  possible_error <- ReceivedError.kp(params, from = "DP")
+  possible_error <- received_error_kp(params, from = "DP")
   if (possible_error$error) {
     params$error_message <- possible_error$message
     warning(possible_error$message)
