@@ -1,6 +1,6 @@
 ---
 title: "An Introduction to the VDRA Package"
-date: "2021-09-03"
+date: "2025-04-12"
 output: 
   rmarkdown::html_vignette:
     keep_md: true
@@ -96,7 +96,7 @@ For $2$-party Vertically Distributed Regression, we will run three sessions of R
 In our code, we assume that we run `pmn()` first, as this simulates PopMedNet being run first, which delivers the requests in a real-world setting.  Before you run `pmn()`, be sure that `~/vdra` is empty (or at least does not contain any files of the form `*.ok`.  When we run `pmn()`, we tell it that there will be one data partner beyond the analysis center and that the working directory is `~/vdra`.
 
 
-```r
+``` r
 library(vdra)
 if (!dir.exists("~/vdra")) dir.create("~/vdra")
 pmn(2, "~/vdra")
@@ -111,7 +111,7 @@ Once `pmn()` is running, proceed to the section indicating the regression you wi
 In order to perform linear regression in a $2$-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first.
 
 
-```r
+``` r
 library(vdra)
 fit = AnalysisCenter.2Party(regression    = "linear",
                             data          = vdra_data[, c(1, 5:7)],
@@ -124,7 +124,7 @@ summary(fit)
 Now, run the following code in the third R session simultaneously with the other two R sessions.  This code is for Data Partner 1.
 	
 
-```r
+``` r
 library(vdra)
 fit = DataPartner.2Party(regression    = "linear",
                          data          = vdra_data[, 8:11],
@@ -161,7 +161,7 @@ After a few minutes, you should see the following output for both parties.
 The output is similar if we had used `lm()`:
 	
 
-```r
+``` r
 fit = lm(Change_BMI ~ ., vdra_data[, c(1, 5:11)])
 summary(fit)
 ```
@@ -203,7 +203,7 @@ summary(fit)
 As with the linear regression, we are already running the following block of code in an R session.
 
 
-```r
+``` r
 library(vdra)
 if (!dir.exists("~/vdra")) dir.create("~/vdra")
 pmn(2, "~/vdra")
@@ -212,7 +212,7 @@ pmn(2, "~/vdra")
 In order to perform logistic regression in a $2$-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first. Notice that this time we are using the binary variable `WtLost` as the response.
 	
 
-```r
+``` r
 library(vdra)
 fit = AnalysisCenter.2Party(regression    = "logistic",
                             data          = vdra_data[, c(2, 5:7)],
@@ -225,7 +225,7 @@ summary(fit)
 Now, run the following code in the third R session simultaneously with the other two R sessions.  This code is for Data Partner 1.
 	
 
-```r
+``` r
 library(vdra)
 fit = DataPartner.2Party(regression    = "logistic",
                          data          = vdra_data[, 8:11],
@@ -267,7 +267,7 @@ After a few minutes, you should see the following output:
 The output is similar if we had used `glm()`:
 	
 
-```r
+``` r
 fit = glm(WtLost ~ ., vdra_data[c(2, 5:11)], family = binomial)
 summary(fit)
 ```
@@ -277,10 +277,6 @@ summary(fit)
 ## Call:
 ## glm(formula = WtLost ~ ., family = binomial, data = vdra_data[c(2, 
 ##     5:11)])
-## 
-## Deviance Residuals: 
-##     Min       1Q   Median       3Q      Max  
-## -2.8468   0.2797   0.3737   0.4848   1.0130  
 ## 
 ## Coefficients:
 ##                Estimate Std. Error z value Pr(>|z|)    
@@ -313,7 +309,7 @@ summary(fit)
 As with the linear regression, we are already running the following block of code in an R session.
 
 
-```r
+``` r
 library(vdra)
 if (!dir.exists("~/vdra")) dir.create("~/vdra")
 pmn(2, "~/vdra")
@@ -322,7 +318,7 @@ pmn(2, "~/vdra")
 In order to perform Cox regression in a $2$-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first. Notice that this time we are using the two variables for the response: `Time` which measures the time to event and the binary variable `Status` which records if the event happened or was censored.  
 	
 
-```r
+``` r
 library(vdra)
 fit = AnalysisCenter.2Party(regression    = "cox",
                             data          = vdra_data[, c(3:4, 5:7)],
@@ -335,7 +331,7 @@ summary(fit)
 Now, run the following code in the third R session simultaneously with the other two R sessions.  This code is for Data Partner 1.
 	
 
-```r
+``` r
 library(vdra)
 fit = DataPartner.2Party(regression    = "cox",
                          data          = vdra_data[, 8:11],
@@ -390,15 +386,8 @@ The output is similar if we had used `coxph()` in the `survival` package:
 
 
 
-```r
+``` r
 library(survival)
-```
-
-```
-## Warning: package 'survival' was built under R version 4.0.5
-```
-
-```r
 fit = coxph(Surv(Time, Status) ~ ., data = vdra_data[, 3:11])
 summary(fit)            
 ```
@@ -450,7 +439,7 @@ For $2^T$-party Vertically Distributed Regression, we will run four sessions of 
 In our code, we assume that we run `pmn()` first, as this simulates PopMedNet being run first, which delivers the requests in a real-world setting.  Before you run `pmn()`, be sure that `~/vdra` is empty (or at least does not contain any files of the form `*.ok`).  When we run `pmn()`, we tell it that there will be one data partner beyond the analysis center and that the working directory is `~/vdra`.
 
 
-```r
+``` r
 library(vdra)
 if (!dir.exists("~/vdra")) dir.create("~/vdra")
 pmn(3, "~/vdra")
@@ -465,7 +454,7 @@ Once `pmn()` is running, proceed to the section indicating the regression you wi
 In order to perform linear regression in a $2^T$-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first.
 
 
-```r
+``` r
 library(vdra)
 fit = AnalysisCenter.3Party(regression    = "linear",
                             monitorFolder = "~/vdra/dp0",
@@ -476,7 +465,7 @@ summary(fit)
 Now, run the following code in the third R session simultaneously with the other two R sessions.  This code is for Data Partner 1.
 	
 
-```r
+``` r
 library(vdra)
 fit = DataPartner1.3Party(regression    = "linear",
                           data          = vdra_data[, c(1, 5:7)],
@@ -489,7 +478,7 @@ summary(fit)
 Finally, run the following code in the fourth R session simultaneously with the other two R sessions.  This code is for Data Partner 2.
 	
 
-```r
+``` r
 library(vdra)
 fit = DataPartner2.3Party(regression    = "linear",
                           data          = vdra_data[, 8:11],
@@ -505,7 +494,7 @@ After a few minutes, you should see the same output as in the $2$-party scenario
 As with linear regression, we are already running the following block of code in an R session.
 
 
-```r
+``` r
 library(vdra)
 if (!dir.exists("~/vdra")) dir.create("~/vdra")
 pmn(3, "~/vdra")
@@ -515,7 +504,7 @@ pmn(3, "~/vdra")
 In order to perform logistic regression in a $2^T$-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first. Notice that this time we are using the binary variable `WtLost` as the response.
 	
 
-```r
+``` r
 library(vdra)
 fit = AnalysisCenter.3Party(regression    = "logistic",
                             monitorFolder = "~/vdra/dp0",
@@ -526,7 +515,7 @@ summary(fit)
 Now, run the following code in the third R session simultaneously with the other two R sessions.  This code is for Data Partner 1.
 	
 
-```r
+``` r
 library(vdra)
 fit = DataPartner1.3Party(regression    = "logistic",
                           data          = vdra_data[, c(2, 5:7)],
@@ -539,7 +528,7 @@ summary(fit)
 Finally, run the following code in the fourth R session simultaneously with the other two R sessions.  This code is for Data Partner 2.
 	
 
-```r
+``` r
 library(vdra)
 fit = DataPartner2.3Party(regression    = "logistic",
                           data          = vdra_data[, 8:11],
@@ -555,7 +544,7 @@ After a few minutes, you should see the same output as in the $2$-party scenario
 As with linear regression, we are already running the following block of code in an R session.
 
 
-```r
+``` r
 library(vdra)
 if (!dir.exists("~/vdra")) dir.create("~/vdra")
 pmn(3, "~/vdra")
@@ -564,7 +553,7 @@ pmn(3, "~/vdra")
 In order to perform Cox regression in a $2^T$-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first. Notice that this time we are using the two variables for the response: `Time` which measures the time to event and the binary variable `Status` which records if the event happened or was censored.  
 	
 
-```r
+``` r
 library(vdra)
 fit = AnalysisCenter.3Party(regression    = "cox",
                             monitorFolder = "~/vdra/dp0",
@@ -575,7 +564,7 @@ summary(fit)
 Now, run the following code in the third R session simultaneously with the other two R sessions.  This code is for Data Partner 1.
 	
 
-```r
+``` r
 library(vdra)
 fit = DataPartner1.3Party(regression    = "cox",
                           data          = vdra_data[, c(3:4, 5:7)],
@@ -588,7 +577,7 @@ summary(fit)
 Finally, run the following code in the fourth R session simultaneously with the other two R sessions.  This code is for Data Partner 2.
 	
 
-```r
+``` r
 library(vdra)
 fit = DataPartner2.3Party(regression    = "cox",
                           data          = vdra_data[, 8:11],
@@ -607,7 +596,7 @@ For $k$-party Vertically Distributed Regression, we are not limited to two data 
 In our code, we assume that we run `pmn()` first, as this simulates PopMedNet being run first, which delivers the requests in a real-world setting.  Before you run `pmn()`, be sure that `~/vdra` is empty (or at least does not contain any files of the form `*.ok`).  When we run `pmn()`, we tell it that there will be one data partner beyond the analysis center and that the working directory is `~/vdra`.
 
 
-```r
+``` r
 library(vdra)
 if (!dir.exists("~/vdra")) dir.create("~/vdra")
 pmn(3, "~/vdra")
@@ -623,7 +612,7 @@ Once `pmn()` is running, proceed to the section indicating the regression you wi
 In order to perform linear regression in a $k^T$-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first.
 
 
-```r
+``` r
 library(vdra)
 fit = AnalysisCenter.KParty(regression      = "linear",
                             numDataPartners = 2,
@@ -635,7 +624,7 @@ summary(fit)
 Now, run the following code in the third R session simultaneously with the other two R sessions.  This code is for Data Partner 1.
 
 
-```r
+``` r
 library(vdra)
 fit = DataPartner.KParty(regression      = "linear",
                          data            = vdra_data[, c(1, 5:7)],
@@ -650,7 +639,7 @@ summary(fit)
 Finally, run the following code in the fourth R session simultaneously with the other two R sessions.  This code is for Data Partner 2.
 
 
-```r
+``` r
 library(vdra)
 fit = DataPartner.KParty(regression      = "linear",
                          data            = vdra_data[, 8:11],
@@ -666,7 +655,7 @@ summary(fit)
 As with linear regression, we are already running the following block of code in an R session.
 
 
-```r
+``` r
 library(vdra)
 if (!dir.exists("~/vdra")) dir.create("~/vdra")
 pmn(3, "~/vdra")
@@ -675,7 +664,7 @@ pmn(3, "~/vdra")
 In order to perform logistic regression in a $k^T$-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first. Notice that this time we are using the binary variable `WtLost` as the response.
 
 
-```r
+``` r
 library(vdra)
 fit = AnalysisCenter.KParty(regression      = "logistic",
                             numDataPartners = 2,
@@ -687,7 +676,7 @@ summary(fit)
 Now, run the following code in the third R session simultaneously with the other two R sessions.  This code is for Data Partner 1.
 
 
-```r
+``` r
 library(vdra)
 fit = DataPartner.KParty(regression      = "logistic",
                          data            = vdra_data[, c(2, 5:7)],
@@ -702,7 +691,7 @@ summary(fit)
 Finally, run the following code in the fourth R session simultaneously with the other two R sessions.  This code is for Data Partner 2.
 
 
-```r
+``` r
 library(vdra)
 fit = DataPartner.KParty(regression      = "logistic",
                          data            = vdra_data[, 8:11],
@@ -718,7 +707,7 @@ summary(fit)
 As with linear regression, we are already running the following block of code in an R session.
 
 
-```r
+``` r
 library(vdra)
 if (!dir.exists("~/vdra")) dir.create("~/vdra")
 pmn(3, "~/vdra")
@@ -727,7 +716,7 @@ pmn(3, "~/vdra")
 In order to perform Cox regression in a $k^T$-party setting run the following code in the second R session simultaneously with the first R session.  This code is for the analysis center (Data Partner 0).  In reality, it does not matter which data partner is run first. Notice that this time we are using the two variables for the response: `Time` which measures the time to event and the binary variable `Status` which records if the event happened or was censored.  
 
 
-```r
+``` r
 library(vdra)
 fit = AnalysisCenter.KParty(regression      = "cox",
                             numDataPartners = 2,
@@ -740,7 +729,7 @@ Now, run the following code in the third R session simultaneously with the other
 
 
 
-```r
+``` r
 library(vdra)
 fit = DataPartner.KParty(regression      = "cox",
                          data            = vdra_data[, c(3:4, 5:7)],
@@ -755,7 +744,7 @@ summary(fit)
 Finally, run the following code in the fourth R session simultaneously with the other two R sessions.  This code is for Data Partner 2.
 
 
-```r
+``` r
 library(vdra)
 fit = DataPartner.KParty(regression      = "cox",
                          data            = vdra_data[, 8:11],
@@ -775,7 +764,7 @@ In order to facilitate the the user to further analyze the data and the model, f
 For linear regression, we allow the creation of sub-models.  As an example, we have stored the output of the distributed linear regression (either [2-party](#twoparty-linear), [$2^T$-party](#twoTparty-linear), or [$k^T$-party](#kTparty-linear)) from the data partner which holds the response in `vdra_fit_linear_A` (which comes with the package).  We can check the fit of different sub-models as shown in the following script.  All data partners can use this function.  The first argument is a standard R formula using the variables that are found in the fit, and the second argument is the results of the regression.
 
 
-```r
+``` r
 library(vdra)
 fit1 = differentModel(Age ~ ., vdra_fit_linear_A)
 summary(fit1)
@@ -803,7 +792,7 @@ summary(fit1)
 ## F-statistic: 10.62 on 11 and 5728 DF, p-value: < 2.22e-16
 ```
 
-```r
+``` r
 fit2 = differentModel(Change_BMI ~ Exposure + Age, vdra_fit_linear_A)
 summary(fit2)
 ```
@@ -821,7 +810,7 @@ summary(fit2)
 ## F-statistic: 155 on 2 and 5737 DF, p-value: < 2.22e-16
 ```
 
-```r
+``` r
 fit3 = differentModel(Change_BMI ~ Exposure, vdra_fit_linear_A)
 summary(fit3)
 ```
@@ -838,7 +827,7 @@ summary(fit3)
 ## F-statistic: 204.6 on 1 and 5738 DF, p-value: < 2.22e-16
 ```
 
-```r
+``` r
 fit4 = differentModel(Change_BMI ~ Exposure + Age + `Sex:M` + `Race:Race 1`, vdra_fit_linear_A)
 summary(fit4)
 ```
@@ -864,7 +853,7 @@ summary(fit4)
 For logistic regression, we can perform both the Hosmer-Lemeshow goodness of fit test for logistic regression and plot the receiver operating curve (ROC).  We run these tests on `vdra_fit_logistic_A`, which is the results of the distributed logistic regression (either [2-party](#twoparty-logistic), [$2^T$-party](#twoTparty-logistic), or [$k^T$-party](#kTparty-logistic)) as seen by the data partner which holds the response.  Only the data partner which holds the response can run these functions.  In both cases, the second argument is optional and is the number or groups, or bins, on which to perform the analysis.
 
 
-```r
+``` r
 HoslemTest(vdra_fit_logistic_A)
 ```
 
@@ -873,7 +862,7 @@ HoslemTest(vdra_fit_logistic_A)
 ##         Chi-squared: 4.167579 with DF 8,  p-value: 0.8416962
 ```
 
-```r
+``` r
 HoslemTest(vdra_fit_logistic_A, 50)
 ```
 
@@ -882,24 +871,24 @@ HoslemTest(vdra_fit_logistic_A, 50)
 ##         Chi-squared: 41.12232 with DF 48,  p-value: 0.7484554
 ```
 
-```r
+``` r
 RocTest(vdra_fit_logistic_A)
 ```
 
-<img src="D:\Dropbox\Tom\PSU\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-46-1.png" width="75%" />
+<img src="D:\Dropbox\Tom\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-46-1.png" width="75%" />
 
-```r
+``` r
 RocTest(vdra_fit_logistic_A, 50)
 ```
 
-<img src="D:\Dropbox\Tom\PSU\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-46-2.png" width="75%" />
+<img src="D:\Dropbox\Tom\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-46-2.png" width="75%" />
 
 ## Cox Regression
 
 We can compute the survival curve for a distributed Cox regression (either [2-party](#twoparty-cox), [$2^T$-party](#twoTparty-cox), or [$k^T$-party](#kTparty-cox)).  This function is works similar to `survfit()` in the `survival` package.  The results can be both printed and plotted.  Only the data partner which holds the response can run this function.  The plot command takes only takes the plotting parameters: `xlim`, `ylim`, `xlab`, `ylab`, and `main`.
 
 
-```r
+``` r
 sf = survfitDistributed(vdra_fit_cox_A)
 print(sf)
 ```
@@ -909,13 +898,13 @@ print(sf)
 ##  5740   4127
 ```
 
-```r
+``` r
 plot(sf)
 ```
 
-<img src="D:\Dropbox\Tom\PSU\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-47-1.png" width="75%" />
+<img src="D:\Dropbox\Tom\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-47-1.png" width="75%" />
 
-```r
+``` r
 # Calculate the results based on strat that the data partner with the response holds
 sf = survfitDistributed(vdra_fit_cox_A, ~ Exposure, data = vdra_data[c(3:4, 5:7)])
 print(sf)
@@ -927,18 +916,18 @@ print(sf)
 ## Exposure=1 2879   1968
 ```
 
-```r
+``` r
 # plot both curves in the same plot
 plot(sf, xlim = c(0, 400), ylim = c(0, 1), 
          xlab = "Time to Event", ylab = "Survival Percentage", 
          main = "BMI Study")
 ```
 
-<img src="D:\Dropbox\Tom\PSU\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-47-2.png" width="75%" /><img src="D:\Dropbox\Tom\PSU\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-47-3.png" width="75%" />
+<img src="D:\Dropbox\Tom\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-47-2.png" width="75%" /><img src="D:\Dropbox\Tom\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-47-3.png" width="75%" />
 
-```r
+``` r
 # plot curves in two different plots.
 plot(sf, merge = FALSE)
 ```
 
-<img src="D:\Dropbox\Tom\PSU\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-47-4.png" width="75%" /><img src="D:\Dropbox\Tom\PSU\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-47-5.png" width="75%" />
+<img src="D:\Dropbox\Tom\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-47-4.png" width="75%" /><img src="D:\Dropbox\Tom\Distributed Regression\vdra\vignettes\An-Introduction-to-the-VDRA-Package_files/figure-html/unnamed-chunk-47-5.png" width="75%" />
