@@ -131,6 +131,7 @@ PrepareFolderLinear.B2 = function(params, monitorFolder) {
 	return(params)
 }
 
+#' @importFrom stats model.matrix sd
 PrepareDataLinear.A23 = function(params, data, yname = NULL) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareDataLinear.A23\n\n")
 
@@ -180,6 +181,7 @@ PrepareDataLinear.A23 = function(params, data, yname = NULL) {
   return(workdata)
 }
 
+#' @importFrom stats model.matrix sd
 PrepareDataLinear.B23 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "PrepareDataLinear.B23\n\n")
 
@@ -587,7 +589,7 @@ GetProductsLinear.A2 = function(params, data) {
   return(params)
 }
 
-
+#' @importFrom  stats pf pt
 ComputeResultsLinear.A2 = function(params, data) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLinear.A2\n\n")
   stats    = params$stats

@@ -735,7 +735,7 @@ ComputeResultsLogistic.A3 = function(params, data) {
 	return(params)
 }
 
-
+#' @importFrom stats pnorm
 ComputeResultsLogistic.T3 = function(params) {
   if (params$trace) cat(as.character(Sys.time()), "ComputeResultsLogistic.T3\n\n")
   nulldev = NULL
