@@ -7,7 +7,7 @@ static const R_CallMethodDef Callentries[] = {
   {NULL, NULL, 0}
 };
 
-void R_init_vdra(DllInfo *dll){
+void R_init_vdra(DllInfo *dll) {
   R_registerRoutines(dll, NULL, Callentries, NULL, NULL);
   R_useDynamicSymbols(dll, FALSE);
 }

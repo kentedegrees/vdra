@@ -25,7 +25,7 @@ Description: Implements linear, logistic, and Cox regression on vertically
 BugReports: https://github.com/kentedegrees/vdra/issues
 License: GPL-3
 NeedsCompilation: yes
-Packaged: 2021-08-20
+Packaged: 2023-05-04
 URL: 
 Encoding: UTF-8
 LazyData: true
